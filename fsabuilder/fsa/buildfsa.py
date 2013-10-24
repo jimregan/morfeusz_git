@@ -24,6 +24,7 @@ class OutputFormat():
 class InputFormat():
     ENCODED = 'ENCODED'
     POLIMORF = 'POLIMORF'
+    PLAIN = 'PLAIN'
 
 def parseOptions():
     """
@@ -58,7 +59,7 @@ def parseOptions():
     if not opts.outputFormat.upper() in [OutputFormat.BINARY, OutputFormat.CPP]:
         print >> sys.stderr, 'output format must be one of ('+str([OutputFormat.BINARY, OutputFormat.CPP])+')'
         exit(1)
-    if not opts.inputFormat.upper() in [InputFormat.ENCODED, InputFormat.POLIMORF]:
+    if not opts.inputFormat.upper() in [InputFormat.ENCODED, InputFormat.POLIMORF, InputFormat.PLAIN]:
         print >> sys.stderr, 'input format must be one of ('+str([InputFormat.ENCODED, InputFormat.POLIMORF])+')'
         exit(1)
     return opts
@@ -74,15 +75,23 @@ def readPolimorfInput(inputFile, encoder):
         for entry in convertinput.convertPolimorf(f.readlines(), lambda (word, interp): encoder.word2SortKey(word)):
             yield entry
 
+def readPlainInput(inputFile, encoder):
+    with codecs.open(inputFile, 'r', 'utf8') as f:
+        for line in sorted(f.readlines(), key=encoder.word2SortKey):
+            word = line.strip()
+            yield word, ''
+
 if __name__ == '__main__':
     opts = parseOptions()
     encoder = encode.Encoder()
     fsa = FSA(encoder)
     serializer = SimpleSerializerWithStringValues()
     
-    inputData = readEncodedInput(opts.inputFile) \
-        if opts.inputFormat == InputFormat.ENCODED \
-        else readPolimorfInput(opts.inputFile, encoder)
+    inputData = {
+                 InputFormat.ENCODED: readEncodedInput(opts.inputFile),
+                 InputFormat.POLIMORF: readPolimorfInput(opts.inputFile, encoder),
+                 InputFormat.PLAIN: readPlainInput(opts.inputFile, encoder)
+                 }[opts.inputFormat]
     
     logging.info('feeding FSA with data ...')
     fsa.feed(inputData)

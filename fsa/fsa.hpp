@@ -54,25 +54,9 @@ public:
     /**
      * Get this automaton's initial state.
      */
-    State<T> getInitialState() const {
-        return State<T>(*this);
-    }
+    State<T> getInitialState() const;
     
-    bool tryToRecognize(const char* input, T& value) const {
-        State<T> currState = this->getInitialState();
-        int i = 0;
-        while (!currState.isSink() && input[i] != '\0') {
-            currState.proceedToNext(input[i]);
-            i++;
-        }
-        if (currState.isAccepting()) {
-            value = currState.getValue();
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool tryToRecognize(const char* input, T& value) const;
 
     virtual ~FSA() {
     }
@@ -83,10 +67,6 @@ protected:
     }
     /**
      * Proceed to next state
-     * 
-     * @param fromPointer - wskaźnik
-     * @param c - char for the transition.
-     * @return next state
      */
     virtual void proceedToNext(const char c, State<T>& state) const = 0;
     const unsigned char* startPtr;
@@ -107,7 +87,7 @@ private:
 
 };
 
-#include "_simple_fsa_impl.hpp"
+#include "_fsa_impl.hpp"
 
 /**
  * A state in an FSA.

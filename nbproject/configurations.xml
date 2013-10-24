@@ -2,10 +2,11 @@
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="fsa" name="0">
-      <in>_state_impl.hpp</in>
+      <in>test_dict.cpp</in>
+      <in>test_speed.cpp</in>
+      <in>utils.hpp</in>
     </df>
     <df root="morfeusz" name="1">
-      <in>default_fsa.hpp</in>
       <in>main.cpp</in>
       <in>morfeusz.cpp</in>
     </df>
@@ -38,17 +39,30 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath></executablePath>
-          <ccTool>
-            <incDir>
-              <pElem>fsa</pElem>
-              <pElem>build/morfeusz</pElem>
-            </incDir>
-          </ccTool>
         </makeTool>
       </makefileType>
-      <item path="fsa/_state_impl.hpp" ex="false" tool="3" flavor2="0">
+      <folder path="0">
+        <ccTool>
+          <incDir>
+            <pElem>build/fsa</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1">
+        <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <item path="fsa/test_dict.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
-      <item path="morfeusz/default_fsa.hpp" ex="false" tool="3" flavor2="0">
+      <item path="fsa/test_speed.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="fsa/utils.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>

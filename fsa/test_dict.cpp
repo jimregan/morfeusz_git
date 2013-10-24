@@ -14,33 +14,11 @@
 #include <functional> 
 #include <cctype>
 #include <locale>
+#include <vector>
 #include "fsa.hpp"
+#include "utils.hpp"
 
 using namespace std;
-
-void validate(const bool cond, const string& msg) {
-    if (!cond) {
-        cerr << msg << endl;
-        exit(1);
-    }
-}
-
-unsigned char* readFile(const char* fname) {
-    ifstream ifs;
-    ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    ifs.open(fname, ios::in | ios::binary | ios::ate);
-    //    if (ifs.is_open()) {
-    int size = ifs.tellg();
-    unsigned char* memblock = new unsigned char [size];
-    ifs.seekg(0, ios::beg);
-    ifs.read(reinterpret_cast<char*> (memblock), size);
-    ifs.close();
-    return memblock;
-    //    } 
-    //    else {
-    //        cerr << "Unable to open file " << fname << endl;
-    //    }
-}
 
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);

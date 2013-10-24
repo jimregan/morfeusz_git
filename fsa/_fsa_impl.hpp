@@ -55,9 +55,9 @@ static void debugTransitions(const TransitionData* transitionsTable, const Trans
     while (transitionsTable + offset < transitionsEnd) {
         const TransitionData td = *(transitionsTable + offset);
         if ((td.label <= 'z' && 'a' <= td.label))
-        cerr <<  td.label << " " << td.targetOffset << endl;
+            cerr << td.label << " " << td.targetOffset << endl;
         else {
-            cerr <<  ((int) td.label) << " " << td.targetOffset << endl;
+            cerr << ((int) td.label) << " " << td.targetOffset << endl;
         }
         offset++;
     }
@@ -65,43 +65,62 @@ static void debugTransitions(const TransitionData* transitionsTable, const Trans
 
 template <class T>
 void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
-    if (c<= 'z' && 'a' <= c)
-    cerr << "NEXT " << c << " from " << state.getOffset() << endl;
-    else
-        cerr << "NEXT " << (short) c << " from " << state.getOffset() << endl;
+//    if (c <= 'z' && 'a' <= c)
+//        cerr << "NEXT " << c << " from " << state.getOffset() << endl;
+//    else
+//        cerr << "NEXT " << (short) c << " from " << state.getOffset() << endl;
     const unsigned char* fromPointer = this->startPtr + state.getOffset();
     int transitionsTableOffset = sizeof (StateData);
     if (state.isAccepting()) {
         transitionsTableOffset += state.getValueSize();
-        cerr << "transitionsTableOffset " << transitionsTableOffset + state.getOffset() << " because value is " << state.getValue() << endl;
+//        cerr << "transitionsTableOffset " << transitionsTableOffset + state.getOffset() << " because value is " << state.getValue() << endl;
     }
     const StateData* stateData = reinterpret_cast<const StateData*> (fromPointer);
     const TransitionData* transitionsTable = reinterpret_cast<const TransitionData*> (fromPointer + transitionsTableOffset);
     const TransitionData* transitionsEnd = transitionsTable + stateData->transitionsNum;
-    debugState(stateData);
-    debugTransitions(transitionsTable, transitionsEnd);
+//    debugState(stateData);
+//    debugTransitions(transitionsTable, transitionsEnd);
     const TransitionData* foundTransition = std::lower_bound(
             transitionsTable, transitionsEnd,
-            TransitionData{c, 0},
-            compareTransitions);
+            TransitionData{c, 0}, compareTransitions);
     if (foundTransition == transitionsEnd || foundTransition->label != c) {
-        cerr << "SINK" << (foundTransition == transitionsEnd) << " " << foundTransition->label << " for " << c << endl;
+//        cerr << "SINK" << (foundTransition == transitionsEnd) << " " << foundTransition->label << " for " << c << endl;
         state.setNextAsSink();
     }
     else {
-//        cerr << "FOUND " << foundTransition->label << " " << foundTransition->targetOffset << endl;
+        //        cerr << "FOUND " << foundTransition->label << " " << foundTransition->targetOffset << endl;
         const unsigned char* nextStatePointer = this->startPtr + foundTransition->targetOffset;
         const StateData* nextStateData = reinterpret_cast<const StateData*> (nextStatePointer);
         if (nextStateData->accepting) {
-            cerr << "ACCEPTING" << endl;
+//            cerr << "ACCEPTING" << endl;
             T object;
             int size = this->deserializer.deserialize(nextStatePointer + sizeof (StateData), object);
             state.setNext(foundTransition->targetOffset, object, size);
-        }
-        else {
+        } else {
             state.setNext(foundTransition->targetOffset);
         }
     }
+}
+
+template <class T>
+bool FSA<T>::tryToRecognize(const char* input, T& value) const {
+    State<T> currState = this->getInitialState();
+    int i = 0;
+    while (!currState.isSink() && input[i] != '\0') {
+        currState.proceedToNext(input[i]);
+        i++;
+    }
+    if (currState.isAccepting()) {
+        value = currState.getValue();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+template <class T>
+State<T> FSA<T>::getInitialState() const {
+    return State<T>(*this);
 }
 
 #endif	/* _SIMPLE_FSA_IMPL_HPP */
