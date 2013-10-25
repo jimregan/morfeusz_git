@@ -11,6 +11,7 @@ class State(object):
 
     def __init__(self):
         self.transitionsMap = {}
+        self.freq = 0
         self.encodedData = None
         self.reverseOffset = None
         self.offset = None
@@ -21,7 +22,9 @@ class State(object):
     def hasNext(self, byte):
         return byte in self.transitionsMap
     
-    def getNext(self, byte):
+    def getNext(self, byte, addFreq=False):
+        if addFreq:
+            self.freq += 1
         return self.transitionsMap.get(byte, None)
     
     def getRegisterKey(self):
@@ -30,11 +33,11 @@ class State(object):
     def isAccepting(self):
         return self.encodedData is not None
     
-    def tryToRecognize(self, word):
+    def tryToRecognize(self, word, addFreq=False):
         if word:
-            nextState = self.getNext(word[0])
+            nextState = self.getNext(word[0], addFreq)
             if nextState:
-                return nextState.tryToRecognize(word[1:])
+                return nextState.tryToRecognize(word[1:], addFreq)
             else:
                 return False
         else:
@@ -42,7 +45,7 @@ class State(object):
     
     def dfs(self, alreadyVisited):
         if not self in alreadyVisited:
-            for _, state in sorted(self.transitionsMap.iteritems()):
+            for _, state in sorted(self.transitionsMap.iteritems(), key=lambda (_, state): -state.freq):
                 for state1 in state.dfs(alreadyVisited):
                     yield state1
             alreadyVisited.add(self)

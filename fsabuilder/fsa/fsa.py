@@ -22,11 +22,12 @@ class FSA(object):
         self.initialState = state.State()
         self.register = register.Register()
     
-    def tryToRecognize(self, word):
-        return self.decodeData(self.initialState.tryToRecognize(self.encodeWord(word)))
+    def tryToRecognize(self, word, addFreq=False):
+        return self.decodeData(self.initialState.tryToRecognize(self.encodeWord(word), addFreq))
     
     def feed(self, input):
         
+        allWords = []
         for n, (word, data) in enumerate(input, start=1):
             assert data is not None
             if type(data) in [str, unicode]:
@@ -38,9 +39,13 @@ class FSA(object):
             assert self.tryToRecognize(word) == data
             if n % 10000 == 0:
                 logging.info(word)
+            allWords.append(word)
         
         self.initialState = self._replaceOrRegister(self.initialState, self.encodeWord(word))
         self.encodedPrevWord = None
+        
+        for w in allWords:
+            self.tryToRecognize(w, True)
     
     def getStatesNum(self):
         return self.register.getStatesNum()

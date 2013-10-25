@@ -54,7 +54,8 @@ class SimpleSerializer(Serializer):
         return 1 + 4 * len(state.transitionsMap.keys()) + self.getDataSize(state)
     
     def getDataSize(self, state):
-        raise NotImplementedError('Not implemented')
+        assert type(state.encodedData) == bytearray or not state.isAccepting()
+        return len(state.encodedData) if state.isAccepting() else 0
     
     def state2bytearray(self, state):
         res = bytearray()
@@ -77,17 +78,10 @@ class SimpleSerializer(Serializer):
     def _transitionsData2bytearray(self, state):
         res = bytearray()
         # must sort that strange way because it must be sorted according to char, not unsigned char
-        for byte, nextState in sorted(state.transitionsMap.iteritems(), key=lambda (c, _): c if (c >= 0 and c < 128) else c - 256):
+        for byte, nextState in sorted(state.transitionsMap.iteritems(), key=lambda (_, state): -state.freq):
             res.append(byte)
             offset = nextState.offset
             res.append(offset & 0x0000FF)
             res.append((offset & 0x00FF00) >> 8)
             res.append((offset & 0xFF0000) >> 16)
         return res
-
-class SimpleSerializerWithStringValues(SimpleSerializer):
-    
-    def getDataSize(self, state):
-        assert type(state.encodedData) == bytearray or not state.isAccepting()
-        return len(state.encodedData) if state.isAccepting() else 0
-        

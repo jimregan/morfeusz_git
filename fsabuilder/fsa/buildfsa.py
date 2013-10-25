@@ -11,7 +11,7 @@ import codecs
 import encode
 import convertinput
 from fsa import FSA
-from serializer import SimpleSerializerWithStringValues
+from serializer import SimpleSerializer
 from visualizer import Visualizer
 from optparse import OptionParser
 
@@ -26,6 +26,10 @@ class InputFormat():
     POLIMORF = 'POLIMORF'
     PLAIN = 'PLAIN'
 
+class FSAType():
+    MORPH = 'MORPH'
+    SPELL = 'SPELL'
+
 def parseOptions():
     """
     Parses commandline args
@@ -39,9 +43,12 @@ def parseOptions():
                         dest='outputFile',
                         metavar='FILE',
                         help='path to output file')
+    parser.add_option('-t', '--fsa-type',
+                        dest='fsaType',
+                        help='result FSA type - MORPH (for morphological analysis) or SPELL (for simple spell checker)')
     parser.add_option('--input-format',
                         dest='inputFormat',
-                        help='input format - ENCODED or POLIMORF')
+                        help='input format - ENCODED, POLIMORF or PLAIN')
     parser.add_option('--output-format',
                         dest='outputFormat',
                         help='output format - BINARY or CPP')
@@ -53,14 +60,30 @@ def parseOptions():
     
     opts, args = parser.parse_args()
     
-    if None in [opts.inputFile, opts.outputFile, opts.outputFormat, opts.inputFormat]:
+    if None in [opts.inputFile, opts.outputFile, opts.outputFormat, opts.inputFormat, opts.fsaType]:
         parser.print_help()
         exit(1)
     if not opts.outputFormat.upper() in [OutputFormat.BINARY, OutputFormat.CPP]:
-        print >> sys.stderr, 'output format must be one of ('+str([OutputFormat.BINARY, OutputFormat.CPP])+')'
+        logging.error('output format must be one of ('+str([OutputFormat.BINARY, OutputFormat.CPP])+')')
+        parser.print_help()
         exit(1)
     if not opts.inputFormat.upper() in [InputFormat.ENCODED, InputFormat.POLIMORF, InputFormat.PLAIN]:
-        print >> sys.stderr, 'input format must be one of ('+str([InputFormat.ENCODED, InputFormat.POLIMORF])+')'
+        logging.error('input format must be one of ('+str([InputFormat.ENCODED, InputFormat.POLIMORF, InputFormat.PLAIN])+')')
+        parser.print_help()
+        exit(1)
+    if not opts.fsaType.upper() in [FSAType.MORPH, FSAType.SPELL]:
+        logging.error('input format must be one of ('+str([InputFormat.ENCODED, InputFormat.POLIMORF])+')')
+        parser.print_help()
+        exit(1)
+    if opts.inputFormat.upper() == FSAType.MORPH \
+        and not opts.inputFormat.upper() in [InputFormat.ENCODED, InputFormat.POLIMORF]:
+        logging.error('input format for morph analysis FSA must be one of ('+str([InputFormat.ENCODED, InputFormat.POLIMORF])+')')
+        parser.print_help()
+        exit(1)
+    if opts.inputFormat.upper() == FSAType.SPELL \
+        and not opts.inputFormat.upper() in [InputFormat.PLAIN]:
+        logging.error('input format for simple spelling FSA must be '+InputFormat.PLAIN)
+        parser.print_help()
         exit(1)
     return opts
 
@@ -85,7 +108,7 @@ if __name__ == '__main__':
     opts = parseOptions()
     encoder = encode.Encoder()
     fsa = FSA(encoder)
-    serializer = SimpleSerializerWithStringValues()
+    serializer = SimpleSerializer()
     
     inputData = {
                  InputFormat.ENCODED: readEncodedInput(opts.inputFile),
@@ -96,9 +119,12 @@ if __name__ == '__main__':
     logging.info('feeding FSA with data ...')
     fsa.feed(inputData)
     logging.info('states num: '+str(fsa.getStatesNum()))
-    if opts.outputFormat == 'CPP':
-        serializer.serialize2CppFile(fsa, opts.outputFile)
-    else:
-        serializer.serialize2BinaryFile(fsa, opts.outputFile)
+    
+    {
+     OutputFormat.CPP: serializer.serialize2CppFile,
+     OutputFormat.BINARY: serializer.serialize2BinaryFile
+     }[opts.outputFormat](fsa, opts.outputFile)
+    
     if opts.visualize:
         Visualizer().visualize(fsa)
+
