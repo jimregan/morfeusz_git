@@ -28,11 +28,12 @@ int main(int argc, char** argv) {
     string line;
     while (getline(ifs, line)) {
         char* val;
+//        cout << line << endl;
         if (fsa.tryToRecognize(line.c_str(), val)) {
 //            printf("%s: *OK*\n", line.c_str());
         }
         else {
-//            printf("%s: NOT FOUND", line.c_str());
+//            printf("%s: NOT FOUND\n", line.c_str());
         }
     }
     return 0;

@@ -87,8 +87,6 @@ private:
 
 };
 
-#include "_fsa_impl.hpp"
-
 /**
  * A state in an FSA.
  */
@@ -143,6 +141,7 @@ private:
     int valueSize;
 };
 
+#include "_fsa_impl.hpp"
 #include "_state_impl.hpp"
 
 #endif	/* FSA_HPP */

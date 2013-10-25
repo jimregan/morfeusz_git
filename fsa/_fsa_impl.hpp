@@ -30,9 +30,9 @@ struct TransitionData {
 
 #pragma pack(pop)   /* restore original alignment from stack */
 
-static bool compareTransitions(TransitionData t1, TransitionData t2) {
-    return t1.label < t2.label;
-}
+//static bool compareTransitions(TransitionData t1, TransitionData t2) {
+//    return t1.label < t2.label;
+//}
 
 template <class T>
 SimpleFSA<T>::SimpleFSA(const unsigned char* ptr, const Deserializer<T>& deserializer)
@@ -44,23 +44,32 @@ SimpleFSA<T>::~SimpleFSA() {
 
 }
 
-static void debugState(const StateData* stateData) {
-    cerr << "STATE" << endl;
-    cerr << stateData->transitionsNum << " " << stateData->accepting << endl;
-}
+//static void debugState(const StateData* stateData) {
+//    cerr << "STATE" << endl;
+//    cerr << stateData->transitionsNum << " " << stateData->accepting << endl;
+//}
+//
+//static void debugTransitions(const TransitionData* transitionsTable, const TransitionData* transitionsEnd) {
+//    int offset = 0;
+//    cerr << "TRANSITIONS" << endl;
+//    while (transitionsTable + offset < transitionsEnd) {
+//        const TransitionData td = *(transitionsTable + offset);
+//        if ((td.label <= 'z' && 'a' <= td.label))
+//            cerr << td.label << " " << td.targetOffset << endl;
+//        else {
+//            cerr << ((int) td.label) << " " << td.targetOffset << endl;
+//        }
+//        offset++;
+//    }
+//}
 
-static void debugTransitions(const TransitionData* transitionsTable, const TransitionData* transitionsEnd) {
-    int offset = 0;
-    cerr << "TRANSITIONS" << endl;
-    while (transitionsTable + offset < transitionsEnd) {
-        const TransitionData td = *(transitionsTable + offset);
-        if ((td.label <= 'z' && 'a' <= td.label))
-            cerr << td.label << " " << td.targetOffset << endl;
-        else {
-            cerr << ((int) td.label) << " " << td.targetOffset << endl;
+static inline const TransitionData* findTransition(const TransitionData* start, const TransitionData* end, const char c) {
+    for (const TransitionData* td = start; td != end; td++) {
+        if (td->label == c) {
+            return td;
         }
-        offset++;
     }
+    return end;
 }
 
 template <class T>
@@ -75,14 +84,10 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
         transitionsTableOffset += state.getValueSize();
 //        cerr << "transitionsTableOffset " << transitionsTableOffset + state.getOffset() << " because value is " << state.getValue() << endl;
     }
-    const StateData* stateData = reinterpret_cast<const StateData*> (fromPointer);
-    const TransitionData* transitionsTable = reinterpret_cast<const TransitionData*> (fromPointer + transitionsTableOffset);
-    const TransitionData* transitionsEnd = transitionsTable + stateData->transitionsNum;
-//    debugState(stateData);
-//    debugTransitions(transitionsTable, transitionsEnd);
-    const TransitionData* foundTransition = std::lower_bound(
-            transitionsTable, transitionsEnd,
-            TransitionData{c, 0}, compareTransitions);
+    const StateData stateData = *reinterpret_cast<const StateData*> (fromPointer);
+    const TransitionData* transitionsStart = reinterpret_cast<const TransitionData*> (fromPointer + transitionsTableOffset);
+    const TransitionData* transitionsEnd = transitionsStart + stateData.transitionsNum;
+    const TransitionData* foundTransition = findTransition(transitionsStart, transitionsEnd, c);
     if (foundTransition == transitionsEnd || foundTransition->label != c) {
 //        cerr << "SINK" << (foundTransition == transitionsEnd) << " " << foundTransition->label << " for " << c << endl;
         state.setNextAsSink();

@@ -30,7 +30,7 @@ bool State<T>::isAccepting() const {
 
 template <class T>
 void State<T>::proceedToNext(const char c) {
-    if (this->isSink()) {
+    if (this->sink) {
         return;
     }
     else {
@@ -63,14 +63,14 @@ State<T>::~State() {
 
 template <class T>
 void State<T>::setNext(const unsigned int offset) {
-    assert(!this->isSink());
+//    assert(!this->isSink());
     this->offset = offset;
     this->accepting = false;
 }
 
 template <class T>
 void State<T>::setNext(const unsigned int offset, const T& value, const unsigned int valueSize) {
-    assert(!this->isSink());
+//    assert(!this->isSink());
     this->offset = offset;
     this->accepting = true;
     this->value = value;
