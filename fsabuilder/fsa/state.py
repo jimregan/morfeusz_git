@@ -43,9 +43,9 @@ class State(object):
         else:
             return self.encodedData
     
-    def dfs(self, alreadyVisited):
+    def dfs(self, alreadyVisited=set(), sortKey=lambda (_, state): -state.freq):
         if not self in alreadyVisited:
-            for _, state in sorted(self.transitionsMap.iteritems(), key=lambda (_, state): -state.freq):
+            for _, state in sorted(self.transitionsMap.iteritems(), key=sortKey):
                 for state1 in state.dfs(alreadyVisited):
                     yield state1
             alreadyVisited.add(self)

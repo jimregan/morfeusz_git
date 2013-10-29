@@ -21,6 +21,7 @@ class FSA(object):
         self.encodedPrevWord = None
         self.initialState = state.State()
         self.register = register.Register()
+        self.label2Freq = {0: float('inf')}
     
     def tryToRecognize(self, word, addFreq=False):
         return self.decodeData(self.initialState.tryToRecognize(self.encodeWord(word), addFreq))
@@ -40,12 +41,21 @@ class FSA(object):
             if n % 10000 == 0:
                 logging.info(word)
             allWords.append(word)
+            for label in encodedWord:
+                self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
         
         self.initialState = self._replaceOrRegister(self.initialState, self.encodeWord(word))
         self.encodedPrevWord = None
         
-        for w in allWords:
-            self.tryToRecognize(w, True)
+#         for w in allWords:
+#             self.tryToRecognize(w, True)
+    
+    def train(self, trainData):
+        self.label2Freq = {0: float('inf')}
+        for word in trainData:
+            self.tryToRecognize(word, addFreq=True)
+            for label in self.encodeWord(word):
+                self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
     
     def getStatesNum(self):
         return self.register.getStatesNum()

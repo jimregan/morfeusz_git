@@ -57,6 +57,9 @@ def parseOptions():
                         action='store_true', 
                         default=False,
                         help='visualize result')
+    parser.add_option('--train-file',
+                        dest='trainFile',
+                        help='A text file used for training. Should contain words from some large corpus - one word in each line')
     
     opts, args = parser.parse_args()
     
@@ -89,26 +92,30 @@ def parseOptions():
 
 def readEncodedInput(inputFile):
     with codecs.open(inputFile, 'r', 'utf8') as f:
-        for line in f.readlines():
+        for line in f:
             word, interps = line.strip().split()
             yield word, interps.split(u'|')
 
 def readPolimorfInput(inputFile, encoder):
     with codecs.open(inputFile, 'r', 'utf8') as f:
-        for entry in convertinput.convertPolimorf(f.readlines(), lambda (word, interp): encoder.word2SortKey(word)):
+        for entry in convertinput.convertPolimorf(f, lambda (word, interp): encoder.word2SortKey(word)):
             yield entry
 
 def readPlainInput(inputFile, encoder):
     with codecs.open(inputFile, 'r', 'utf8') as f:
-        for line in sorted(f.readlines(), key=encoder.word2SortKey):
+        for line in sorted(f, key=encoder.word2SortKey):
             word = line.strip()
             yield word, ''
+
+def readTrainData(trainFile):
+    with codecs.open(trainFile, 'r', 'utf8') as f:
+        for line in f:
+            yield line.strip()
 
 if __name__ == '__main__':
     opts = parseOptions()
     encoder = encode.Encoder()
     fsa = FSA(encoder)
-    serializer = SimpleSerializer()
     
     inputData = {
                  InputFormat.ENCODED: readEncodedInput(opts.inputFile),
@@ -117,13 +124,19 @@ if __name__ == '__main__':
                  }[opts.inputFormat]
     
     logging.info('feeding FSA with data ...')
-    fsa.feed(inputData)
+    fsa.feed(inputData, appendZero=True)
+    if opts.trainFile:
+        logging.info('training with '+opts.trainFile+' ...')
+        fsa.train(readTrainData(opts.trainFile))
+        logging.info('done training')
+    serializer = SimpleSerializer(fsa)
     logging.info('states num: '+str(fsa.getStatesNum()))
-    
+    logging.info('accepting states num: '+str(len([s for s in fsa.initialState.dfs(set()) if s.isAccepting()])))
+    logging.info('sink states num: '+str(len([s for s in fsa.initialState.dfs(set()) if len(s.transitionsMap.items()) == 0])))
     {
      OutputFormat.CPP: serializer.serialize2CppFile,
      OutputFormat.BINARY: serializer.serialize2BinaryFile
-     }[opts.outputFormat](fsa, opts.outputFile)
+     }[opts.outputFormat](opts.outputFile)
     
     if opts.visualize:
         Visualizer().visualize(fsa)
