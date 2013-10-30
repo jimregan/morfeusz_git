@@ -11,11 +11,11 @@ import codecs
 import encode
 import convertinput
 from fsa import FSA
-from serializer import SimpleSerializer
+from serializer import VLengthSerializer
 from visualizer import Visualizer
 from optparse import OptionParser
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 class OutputFormat():
     BINARY = 'BINARY'
@@ -124,20 +124,23 @@ if __name__ == '__main__':
                  }[opts.inputFormat]
     
     logging.info('feeding FSA with data ...')
-    fsa.feed(inputData, appendZero=True)
+    fsa.feed(inputData)
     if opts.trainFile:
         logging.info('training with '+opts.trainFile+' ...')
         fsa.train(readTrainData(opts.trainFile))
         logging.info('done training')
-    serializer = SimpleSerializer(fsa)
+    serializer = VLengthSerializer(fsa)
     logging.info('states num: '+str(fsa.getStatesNum()))
+    logging.info('transitions num: '+str(fsa.getTransitionsNum()))
     logging.info('accepting states num: '+str(len([s for s in fsa.initialState.dfs(set()) if s.isAccepting()])))
     logging.info('sink states num: '+str(len([s for s in fsa.initialState.dfs(set()) if len(s.transitionsMap.items()) == 0])))
     {
      OutputFormat.CPP: serializer.serialize2CppFile,
      OutputFormat.BINARY: serializer.serialize2BinaryFile
      }[opts.outputFormat](opts.outputFile)
-    
+    logging.info('size: '+str(fsa.initialState.reverseOffset))
+#     for s in fsa.initialState.dfs(set()):
+#         logging.info(s.offset)
     if opts.visualize:
         Visualizer().visualize(fsa)
 

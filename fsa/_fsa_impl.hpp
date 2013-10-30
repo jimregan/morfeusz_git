@@ -63,39 +63,38 @@ SimpleFSA<T>::~SimpleFSA() {
 //    }
 //}
 
-static inline const TransitionData* findTransition(const TransitionData* start, const TransitionData* end, const char c) {
-    for (const TransitionData* td = start; td != end; td++) {
-        if (td->label == c) {
-            return td;
-        }
-    }
-    return end;
-}
-
 template <class T>
 void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
 //    if (c <= 'z' && 'a' <= c)
 //        cerr << "NEXT " << c << " from " << state.getOffset() << endl;
 //    else
 //        cerr << "NEXT " << (short) c << " from " << state.getOffset() << endl;
+//    cerr << "NEXT" << endl;
     const unsigned char* fromPointer = this->startPtr + state.getOffset();
     int transitionsTableOffset = sizeof (StateData);
     if (state.isAccepting()) {
         transitionsTableOffset += state.getValueSize();
 //        cerr << "transitionsTableOffset " << transitionsTableOffset + state.getOffset() << " because value is " << state.getValue() << endl;
     }
-    const StateData stateData = *reinterpret_cast<const StateData*> (fromPointer);
-    const TransitionData* transitionsStart = reinterpret_cast<const TransitionData*> (fromPointer + transitionsTableOffset);
-    const TransitionData* transitionsEnd = transitionsStart + stateData.transitionsNum;
-    const TransitionData* foundTransition = findTransition(transitionsStart, transitionsEnd, c);
-    if (foundTransition == transitionsEnd || foundTransition->label != c) {
+    StateData stateData = *(StateData*) (fromPointer);
+    TransitionData* foundTransition = (TransitionData*) (fromPointer + transitionsTableOffset);
+    bool found = false;
+    for (int i = 0; i < stateData.transitionsNum; i++, foundTransition++) {
+//        cerr << foundTransition->label << endl;
+        if (foundTransition->label == c) {
+            found = true;
+            break;
+        }
+    }
+//    const_cast<Counter*>(&counter)->increment(foundTransition - transitionsStart + 1);
+    if (!found) {
 //        cerr << "SINK" << (foundTransition == transitionsEnd) << " " << foundTransition->label << " for " << c << endl;
         state.setNextAsSink();
     }
     else {
         //        cerr << "FOUND " << foundTransition->label << " " << foundTransition->targetOffset << endl;
         const unsigned char* nextStatePointer = this->startPtr + foundTransition->targetOffset;
-        const StateData* nextStateData = reinterpret_cast<const StateData*> (nextStatePointer);
+        StateData* nextStateData = (StateData*) (nextStatePointer);
         if (nextStateData->accepting) {
 //            cerr << "ACCEPTING" << endl;
             T object;
@@ -115,8 +114,12 @@ bool FSA<T>::tryToRecognize(const char* input, T& value) const {
         currState.proceedToNext(input[i]);
         i++;
     }
+    // input[i] == '\0'
+    currState.proceedToNext(0);
+    
     if (currState.isAccepting()) {
         value = currState.getValue();
+        cerr << "RECOGNIZED " << input << endl;
         return true;
     } else {
         return false;

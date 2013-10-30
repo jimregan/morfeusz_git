@@ -25,17 +25,23 @@ int main(int argc, char** argv) {
     ifstream ifs;
 //    ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     ifs.open(argv[2], ios::binary);
-    string line;
-    while (getline(ifs, line)) {
+    char line[65536];
+    int recognized = 0;
+    int unrecognized = 0;
+    while (ifs.getline(line, 65536, '\n')) {
         char* val;
 //        cout << line << endl;
-        if (fsa.tryToRecognize(line.c_str(), val)) {
-//            printf("%s: *OK*\n", line.c_str());
+        if (fsa.tryToRecognize(line, val)) {
+//            printf("%s: *OK*\n", line);
+            recognized++;
         }
         else {
-//            printf("%s: NOT FOUND\n", line.c_str());
+            unrecognized++;
+//            printf("%s: NOT FOUND\n", line);
         }
     }
+    cout << "recognized: " << recognized << endl;
+    cout << "unrecognized: " << unrecognized << endl;
+    cout << "total: " << (recognized + unrecognized) << endl;
     return 0;
 }
-

@@ -46,10 +46,12 @@ class Serializer(object):
         raise NotImplementedError('Not implemented')
     
     def fsa2bytearray(self):
+        
         res = bytearray()
         res.extend(self.serializePrologue())
         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
-        for state in sorted(self.fsa.initialState.dfs(set()), key=state.offset):
+        logging.debug('SERIALIZE')
+        for state in sorted(self.fsa.initialState.dfs(set()), key=lambda s: s.offset):
             res.extend(self.state2bytearray(state))
         return res
     
@@ -111,14 +113,17 @@ class VLengthSerializer(Serializer):
     
     def __init__(self, fsa):
         super(VLengthSerializer, self).__init__(fsa)
-        self.statesTable = list(reversed(fsa.dfs(set())))
+        self.statesTable = list(reversed(list(fsa.initialState.dfs(set()))))
         self.state2Index = dict([(state, idx) for (idx, state) in enumerate(self.statesTable)])
         
         # labels sorted by popularity
-        self.sortedLabels = [label for (label, freq) in sorted(self.fsa.label2Freq.iteritems(), key=lambda label, freq: (-freq, label))]
+        self.sortedLabels = [label for (label, freq) in sorted(self.fsa.label2Freq.iteritems(), key=lambda (label, freq): (-freq, label))]
+        remainingChars = [c for c in range(256) if not c in self.sortedLabels]
+        while len(self.sortedLabels) < 256:
+            self.sortedLabels.append(remainingChars.pop())
         
         # popular labels table
-        self.label2Index = dict([(label, sortedLabels.index(label)) for label in sortedLabels][:31])
+        self.label2Index = dict([(label, self.sortedLabels.index(label)) for label in self.sortedLabels][:31])
     
     def serializePrologue(self):
         res = bytearray()
@@ -133,7 +138,8 @@ class VLengthSerializer(Serializer):
         res.append(VLengthSerializer.VERSION)
         
         # serialize popular labels
-        for label, freq in self.sortedLabels[:31]:
+        logging.debug(self.sortedLabels)
+        for label in self.sortedLabels[:31]:
             res.append(label)
         
         return res
@@ -159,20 +165,23 @@ class VLengthSerializer(Serializer):
      
     def _transitionsData2bytearray(self, state):
         res = bytearray()
-        transitions = sorted(state.transitionsMap.iteritems(), key=lambda (label, _): (-next.freq, -self.label2Count[label]))
+        transitions = sorted(state.transitionsMap.iteritems(), key=lambda (label, nextState): self.sortedLabels.index(label))
         thisIdx = self.state2Index[state]
-        
+        logging.debug('state '+str(state.offset))
         if len(transitions) == 0:
             assert state.isAccepting()
             return bytearray()
         else:
-            offsetToStateAfterThis = 0
             stateAfterThis = self.statesTable[thisIdx + 1]
             for reversedN, (label, nextState) in enumerate(reversed(transitions)):
+                transitionBytes = bytearray()
                 assert nextState.reverseOffset is not None
+                assert stateAfterThis.reverseOffset is not None
+                logging.debug('next state reverse: '+str(nextState.reverseOffset))
+                logging.debug('after state reverse: '+str(stateAfterThis.reverseOffset))
                 n = len(transitions) - reversedN
                 
-                popularLabel = self.label2Index[label] < 31
+                popularLabel = label in self.label2Index
                 firstByte = self.label2Index[label] if popularLabel else 31
                 
                 last = len(transitions) == n
@@ -185,26 +194,29 @@ class VLengthSerializer(Serializer):
                 offset = 0
                 if not next:
                     offsetSize = 1
-                    offset = (stateAfterThis.reverseOffset - nextState.reverseOffset) + offsetSize
+#                     nextState.offset - stateAfterThis.offset
+                    offset = (stateAfterThis.reverseOffset - nextState.reverseOffset) + offsetSize + len(res)
                     if offset >= 256:
-                        offset += 1
+#                         offset += 1
                         offsetSize += 1
                     if offset >= 256 * 256:
-                        offset += 1
+#                         offset += 1
                         offsetSize += 1
                     assert offset < 256 * 256 * 256 #TODO - przerobic na jakis porzadny wyjatek
                     
                 firstByte |= (32 * offsetSize)
                 
-                res.append(firstByte)
+                transitionBytes.append(firstByte)
                 if not popularLabel:
-                    res.append(label)
+                    transitionBytes.append(label)
                 # serialize offset in big-endian order
                 if offsetSize == 3:
-                    res.append((offset & 0xFF0000) >> 16)
+                    transitionBytes.append((offset & 0xFF0000) >> 16)
                 if offsetSize >= 2:
-                    res.append((offset & 0x00FF00) >> 8)
+                    transitionBytes.append((offset & 0x00FF00) >> 8)
                 if offsetSize >= 1:
-                    res.append(offset & 0x0000FF)
-                
+                    transitionBytes.append(offset & 0x0000FF)
+                for b in reversed(transitionBytes):
+                    res.insert(0, b)
+                logging.debug('inserted transition at beginning '+chr(label)+' -> '+str(offset))
         return res

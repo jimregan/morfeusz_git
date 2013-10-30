@@ -59,6 +59,12 @@ class FSA(object):
     
     def getStatesNum(self):
         return self.register.getStatesNum()
+    
+    def getTransitionsNum(self):
+        res = 0
+        for s in self.initialState.dfs(set()):
+            res += len(s.transitionsMap)
+        return res
         
     def _addSorted(self, encodedWord, data):
         assert self.encodedPrevWord < encodedWord

@@ -9,13 +9,17 @@
 #define FSA_HPP
 
 //#include <iostream>
-#include <cstring>
+//#include <cstring>
 #include <typeinfo>
 #include <cassert>
+#include <exception>
+#include <string>
+#include <vector>
 
 template <class T> class State;
 template <class T> class FSA;
 template <class T> class Deserializer;
+class FSAException;
 
 template <class T>
 class Deserializer {
@@ -39,9 +43,23 @@ public:
      * Returns number of bytes read or -1 on error.
      */
     int deserialize(const unsigned char* ptr, char*& text) const {
-        text = const_cast<char*> (reinterpret_cast<const char*> (ptr));
-        return strlen(text) + 1;
+        //        text = const_cast<char*> (reinterpret_cast<const char*> (ptr));
+        //        return strlen(text) + 1;
+        return 1;
     }
+};
+
+class Counter {
+public:
+
+    Counter() : count(0) {
+
+    }
+
+    void increment(const int n) {
+        count += n;
+    }
+    long long count;
 };
 
 /**
@@ -50,12 +68,11 @@ public:
 template <class T>
 class FSA {
 public:
-
     /**
      * Get this automaton's initial state.
      */
     State<T> getInitialState() const;
-    
+
     bool tryToRecognize(const char* input, T& value) const;
 
     virtual ~FSA() {
@@ -81,10 +98,41 @@ class SimpleFSA : public FSA<T> {
 public:
     SimpleFSA(const unsigned char* ptr, const Deserializer<T>& deserializer);
     virtual ~SimpleFSA();
+
+    long long transitionsCount() {
+        return counter.count;
+    }
 protected:
     void proceedToNext(const char c, State<T>& state) const;
 private:
+    Counter counter;
+};
 
+template <class T>
+class FSAImpl : public FSA<T> {
+public:
+    FSAImpl(const unsigned char* ptr, const Deserializer<T>& deserializer);
+    virtual ~FSAImpl();
+
+    long long transitionsCount() {
+        return counter.count;
+    }
+
+    static const uint32_t MAGIC_NUMBER = 0x8fc2bc1b;
+    static const unsigned char VERSION_NUM = 1;
+    static const unsigned int POPULAR_CHARS_NUM = 31;
+
+protected:
+    void proceedToNext(const char c, State<T>& state) const;
+private:
+    Counter counter;
+    const std::vector<unsigned char> char2PopularCharIdx;
+
+    static int getMagicNumberOffset();
+    static int getVersionNumOffset();
+    static int getPopularCharsOffset();
+    static int getInitialStateOffset();
+    static std::vector<unsigned char> initializeChar2PopularCharIdx(const unsigned char* ptr);
 };
 
 /**
@@ -122,15 +170,15 @@ public:
      * For non-accepting states is throws an exception.
      */
     unsigned int getValueSize() const;
-    
+
     unsigned int getOffset() const;
-    
+
     void setNext(const unsigned int offset);
     void setNext(const unsigned int offset, const T& value, const unsigned int valueSize);
     void setNextAsSink();
-    
+
     State(const FSA<T>& fsa);
-    
+
     virtual ~State();
 private:
     const FSA<T>& fsa;
@@ -141,7 +189,19 @@ private:
     int valueSize;
 };
 
+class FSAException : public std::exception {
+public:
+    FSAException(const char* what): msg(what) {}
+    virtual ~FSAException() throw() {}
+    virtual const char* what() const throw () {
+        return this->msg.c_str();
+    }
+private:
+    const std::string msg;
+};
+
 #include "_fsa_impl.hpp"
+#include "_vfsa_impl.hpp"
 #include "_state_impl.hpp"
 
 #endif	/* FSA_HPP */

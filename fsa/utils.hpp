@@ -10,6 +10,10 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <vector>
+
+using namespace std;
 
 void validate(const bool cond, const std::string& msg) {
     if (!cond) {
