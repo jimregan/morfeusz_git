@@ -1,8 +1,8 @@
 /* 
- * File:   test_recognize.cpp
+ * File:   test_not_recognize.cpp
  * Author: mlenart
  *
- * Created on October 30, 2013, 5:26 PM
+ * Created on 31 październik 2013, 11:40
  */
 
 #include <cstdlib>
@@ -22,10 +22,10 @@ void doTest(const FSA<char*>& fsa, const char* fname) {
         vector<string> splitVector(split(line, '\t'));
         string key = splitVector[0];
         
-//        cerr << "test " << key << endl;
+        cerr << "test " << key << endl;
         
         char* value2;
-        validate(fsa.tryToRecognize(key.c_str(), value2), "Failed to recognize "+key);
+        validate(!fsa.tryToRecognize(key.c_str(), value2), "Recognized "+key+" but should not");
     }
 //    validate(ifs.good(), "Something wrong with the input file");
 //    validate(!ifs.fail(), "Something wrong with the input file");
@@ -42,4 +42,3 @@ int main(int argc, char** argv) {
 //    cout << argc << endl;
     return 0;
 }
-

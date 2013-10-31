@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     validate(argc == 3, "Must provide exactly two arguments - FSA filename and test data filename.");
     const unsigned char* fsaData = readFile(argv[1]);
     StringDeserializer deserializer;
-    SimpleFSA<char*> fsa(fsaData, deserializer);
+    FSAImpl<char*> fsa(fsaData, deserializer);
     ifstream ifs;
 //    ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     ifs.open(argv[2], ios::binary);
@@ -43,5 +43,6 @@ int main(int argc, char** argv) {
     cout << "recognized: " << recognized << endl;
     cout << "unrecognized: " << unrecognized << endl;
     cout << "total: " << (recognized + unrecognized) << endl;
+    cout << "transitions visited: " << fsa.transitionsCount() << endl;
     return 0;
 }

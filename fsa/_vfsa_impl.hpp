@@ -19,11 +19,11 @@ using namespace std;
 #pragma pack(push)  /* push current alignment to stack */
 #pragma pack(1)     /* set alignment to 1 byte boundary */
 
-struct VTransitionData {
-    unsigned label : 5;
-    unsigned offsetSize : 2;
-    unsigned last : 1;
-};
+//struct VTransitionData {
+//    unsigned label : 5;
+//    unsigned offsetSize : 2;
+//    unsigned last : 1;
+//};
 
 #pragma pack(pop)   /* restore original alignment from stack */
 
@@ -69,7 +69,7 @@ char2PopularCharIdx(initializeChar2PopularCharIdx(ptr)) {
     if (versionNum != VERSION_NUM) {
         throw FSAException("Invalid version number");
     }
-    cerr << "initial state offset " << getInitialStateOffset() << endl;
+    //    cerr << "initial state offset " << getInitialStateOffset() << endl;
 }
 
 template <class T>
@@ -84,74 +84,86 @@ void FSAImpl<T>::proceedToNext(const char c, State<T>& state) const {
     //    else
     //        cerr << "NEXT " << (short) c << " from " << state.getOffset() << endl;
     const unsigned char* fromPointer = this->startPtr + state.getOffset();
-    int transitionsTableOffset = 0;
+    unsigned int transitionsTableOffset = 0;
     if (state.isAccepting()) {
         transitionsTableOffset += state.getValueSize();
-        cerr << "transitionsTableOffset " << transitionsTableOffset + state.getOffset() << " because value is " << state.getValue() << endl;
+        //        cerr << "transitionsTableOffset " << transitionsTableOffset + state.getOffset() << " because value is " << state.getValue() << endl;
     }
-    const unsigned char* currPtr = fromPointer + transitionsTableOffset;
+    
     bool found = false;
-    bool failed = false;
-    unsigned char shortLabel = char2PopularCharIdx[(unsigned char) c];
-    cerr << "NEXT " << c << " " << (int) shortLabel << endl;
-    VTransitionData td;
-    while (!found && !failed) {
-        td = *((VTransitionData*) currPtr);
-        cerr << "transition at " << (currPtr - this->startPtr) << endl;
-        cerr << "short label: " << (int) td.label << endl;
-        if (td.label == shortLabel) {
-            if (td.label != POPULAR_CHARS_NUM) {
+//    bool failed = false;
+    unsigned int requiredShortLabel = char2PopularCharIdx[(unsigned char) c];
+    //    cerr << "NEXT " << c << " " << (int) shortLabel << endl;
+//    VTransitionData* td;
+//    unsigned char transitionByte = *currPtr;
+    unsigned int offsetSize;
+    register const unsigned char* currPtr = fromPointer + transitionsTableOffset;
+    
+    while (!found) {
+        
+        register unsigned char firstByte = *currPtr;
+        
+        unsigned int shortLabel = firstByte & 0b00011111;
+        bool last = (firstByte & 0b10000000);
+        offsetSize = (firstByte & 0b01100000) >> 5;
+
+        const_cast<FSAImpl<T>*>(this)->counter.increment(1);
+        
+        if (shortLabel != requiredShortLabel) {
+            if (last || shortLabel == POPULAR_CHARS_NUM) {
+                break;
+            }
+            currPtr += offsetSize + 1;
+            if (shortLabel == POPULAR_CHARS_NUM) {
+                currPtr++;
+            }
+        }
+        else if (shortLabel != POPULAR_CHARS_NUM) {
+            found = true;
+            currPtr++;
+        }
+        else {
+            currPtr++;
+            char realLabel = (char) *currPtr;
+            if (realLabel != c) {
+                if (last) {
+                    break;
+                }
+                currPtr += offsetSize + 1;
+            }
+            else {
                 found = true;
                 currPtr++;
             }
-            else {
-                currPtr++;
-                char realLabel = (char) *currPtr;
-                cerr << "full label: " << realLabel << endl;
-                if (realLabel != c) {
-                    failed = td.last;
-                    currPtr += td.offsetSize + 1;
-                } else {
-                    found = true;
-                    currPtr++;
-                }
-            }
-        } else if (td.last) {
-            cerr << "last" << endl;
-            failed = true;
-        } else {
-            if (td.label == POPULAR_CHARS_NUM) {
-                currPtr++;
-            }
-            currPtr += td.offsetSize + 1;
         }
     }
 
     if (found) {
-        // currPtr points at the offset
-        // or next state (iff offset==0)
-        int offsetFromHere = 0;
-        cerr << "offset size " << td.offsetSize << endl;
-        for (int i = 0; i < td.offsetSize; i++) {
-            offsetFromHere <<= 8;
-            cerr << "offset from here " << offsetFromHere << endl;
-            offsetFromHere += *currPtr;
-            if (i + 1 < td.offsetSize)
-                currPtr++;
-            cerr << "offset from here " << offsetFromHere << endl;
+        switch (offsetSize) {
+            case 0:
+                break;
+            case 1:
+                currPtr += *currPtr + 1;
+                break;
+            case 2:
+                currPtr += ntohs(*((uint16_t*) currPtr)) + 2;
+                break;
+            case 3:
+                currPtr += (((unsigned int) ntohs(*((uint16_t*) currPtr))) << 8) + currPtr[2] + 3;
+                break;
         }
-        currPtr += offsetFromHere;
-        cerr << "offset " << currPtr - this->startPtr << endl;
         bool accepting = c == '\0';
         if (accepting) {
             T value;
             int valueSize = this->deserializer.deserialize(currPtr, value);
             currPtr += valueSize;
             state.setNext(currPtr - this->startPtr, value, valueSize);
-        } else {
+        }
+        else {
             state.setNext(currPtr - this->startPtr);
         }
-    } else {
+    }
+    else {
         state.setNextAsSink();
     }
 }

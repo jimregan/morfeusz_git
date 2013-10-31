@@ -119,7 +119,7 @@ bool FSA<T>::tryToRecognize(const char* input, T& value) const {
     
     if (currState.isAccepting()) {
         value = currState.getValue();
-        cerr << "RECOGNIZED " << input << endl;
+//        cerr << "RECOGNIZED " << input << endl;
         return true;
     } else {
         return false;

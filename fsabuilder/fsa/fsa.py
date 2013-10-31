@@ -28,21 +28,22 @@ class FSA(object):
     
     def feed(self, input):
         
-        allWords = []
+#         allWords = []
         for n, (word, data) in enumerate(input, start=1):
             assert data is not None
             if type(data) in [str, unicode]:
                 data = [data]
             encodedWord = self.encodeWord(word)
-            assert encodedWord > self.encodedPrevWord
-            self._addSorted(encodedWord, self.encodeData(data))
-            self.encodedPrevWord = encodedWord
-            assert self.tryToRecognize(word) == data
-            if n % 10000 == 0:
-                logging.info(word)
-            allWords.append(word)
-            for label in encodedWord:
-                self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
+            assert encodedWord >= self.encodedPrevWord
+            if encodedWord > self.encodedPrevWord:
+                self._addSorted(encodedWord, self.encodeData(data))
+                self.encodedPrevWord = encodedWord
+                assert self.tryToRecognize(word) == data
+                if n % 10000 == 0:
+                    logging.info(word)
+    #             allWords.append(word)
+                for label in encodedWord:
+                    self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
         
         self.initialState = self._replaceOrRegister(self.initialState, self.encodeWord(word))
         self.encodedPrevWord = None
@@ -52,10 +53,16 @@ class FSA(object):
     
     def train(self, trainData):
         self.label2Freq = {0: float('inf')}
-        for word in trainData:
+        for idx, word in enumerate(trainData):
             self.tryToRecognize(word, addFreq=True)
             for label in self.encodeWord(word):
                 self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
+            if idx % 100000 == 0:
+                logging.info(str(idx))
+    
+    def dfs(self):
+        for state in self.initialState.dfs(set()):
+            yield state
     
     def getStatesNum(self):
         return self.register.getStatesNum()

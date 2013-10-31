@@ -18,6 +18,7 @@ class Encoder(object):
         self.appendZero = appendZero
     
     def encodeWord(self, word):
+        assert type(word) == unicode
         res = bytearray(word, self.encoding)
         if self.appendZero:
             res.append(0)
