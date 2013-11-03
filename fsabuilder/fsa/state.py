@@ -15,6 +15,8 @@ class State(object):
         self.encodedData = None
         self.reverseOffset = None
         self.offset = None
+        self.label2Freq = {}
+        self.serializeAsArray = False
     
     def setTransition(self, byte, nextState):
         self.transitionsMap[byte] = nextState
@@ -25,6 +27,7 @@ class State(object):
     def getNext(self, byte, addFreq=False):
         if addFreq:
             self.freq += 1
+            self.label2Freq[byte] = self.label2Freq.get(byte, 0) + 1
         return self.transitionsMap.get(byte, None)
     
     def getRegisterKey(self):

@@ -11,11 +11,9 @@ import codecs
 import encode
 import convertinput
 from fsa import FSA
-from serializer import VLengthSerializer
+from serializer import VLengthSerializer2, VLengthSerializer3
 from visualizer import Visualizer
 from optparse import OptionParser
-
-logging.basicConfig(level=logging.INFO)
 
 class OutputFormat():
     BINARY = 'BINARY'
@@ -52,6 +50,11 @@ def parseOptions():
     parser.add_option('--output-format',
                         dest='outputFormat',
                         help='output format - BINARY or CPP')
+    parser.add_option('--use-arrays',
+                        dest='useArrays',
+                        action='store_true',
+                        default=False,
+                        help='store states reachable by 2 transitions in arrays (should speed up recognition)')
     parser.add_option('--visualize',
                         dest='visualize',
                         action='store_true', 
@@ -60,6 +63,11 @@ def parseOptions():
     parser.add_option('--train-file',
                         dest='trainFile',
                         help='A text file used for training. Should contain words from some large corpus - one word in each line')
+    parser.add_option('--debug',
+                        dest='debug',
+                        action='store_true',
+                        default=False,
+                        help='output some debugging info')
     
     opts, args = parser.parse_args()
     
@@ -114,6 +122,10 @@ def readTrainData(trainFile):
 
 if __name__ == '__main__':
     opts = parseOptions()
+    if opts.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
     encoder = encode.Encoder()
     fsa = FSA(encoder)
     
@@ -129,16 +141,19 @@ if __name__ == '__main__':
         logging.info('training with '+opts.trainFile+' ...')
         fsa.train(readTrainData(opts.trainFile))
         logging.info('done training')
-    serializer = VLengthSerializer(fsa)
+    serializer = VLengthSerializer3(fsa, useArrays=opts.useArrays)
     logging.info('states num: '+str(fsa.getStatesNum()))
     logging.info('transitions num: '+str(fsa.getTransitionsNum()))
     logging.info('accepting states num: '+str(len([s for s in fsa.initialState.dfs(set()) if s.isAccepting()])))
     logging.info('sink states num: '+str(len([s for s in fsa.initialState.dfs(set()) if len(s.transitionsMap.items()) == 0])))
+    logging.info('array states num: '+str(len([s for s in fsa.dfs() if s.serializeAsArray])))
     {
      OutputFormat.CPP: serializer.serialize2CppFile,
      OutputFormat.BINARY: serializer.serialize2BinaryFile
      }[opts.outputFormat](opts.outputFile)
     logging.info('size: '+str(fsa.initialState.reverseOffset))
+#     for s in fsa.dfs():
+#         logging.debug('%d %s' % (s.offset, str(s.transitionsMap)))
 #     for s in fsa.initialState.dfs(set()):
 #         logging.info(s.offset)
     if opts.visualize:

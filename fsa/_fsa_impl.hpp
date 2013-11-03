@@ -115,7 +115,7 @@ bool FSA<T>::tryToRecognize(const char* input, T& value) const {
         i++;
     }
     // input[i] == '\0'
-    currState.proceedToNext(0);
+//    currState.proceedToNext(0);
     
     if (currState.isAccepting()) {
         value = currState.getValue();

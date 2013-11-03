@@ -119,20 +119,36 @@ public:
     }
 
     static const uint32_t MAGIC_NUMBER = 0x8fc2bc1b;
-    static const unsigned char VERSION_NUM = 1;
-    static const unsigned int POPULAR_CHARS_NUM = 31;
+    static const unsigned char VERSION_NUM = 4;
+    
+    static const unsigned char ACCEPTING_FLAG =         0b10000000;
+    static const unsigned char ARRAY_FLAG =             0b01000000;
+    static const unsigned char TRANSITIONS_NUM_MASK =   0b00111111;
 
 protected:
     void proceedToNext(const char c, State<T>& state) const;
 private:
     Counter counter;
-    const std::vector<unsigned char> char2PopularCharIdx;
+    const std::vector<unsigned char> label2ShortLabel;
 
     static int getMagicNumberOffset();
     static int getVersionNumOffset();
     static int getPopularCharsOffset();
     static int getInitialStateOffset();
     static std::vector<unsigned char> initializeChar2PopularCharIdx(const unsigned char* ptr);
+    void doProceedToNextByList(
+        const char c,
+        const unsigned char shortLabel,
+        const unsigned char* ptr, 
+        const unsigned int transitionsNum, 
+        State<T>& state) const;
+    void doProceedToNextByArray(
+        const unsigned char shortLabel, 
+        const uint32_t* ptr, 
+        State<T>& state) const;
+    void reallyDoProceed(
+        const unsigned char* statePtr,
+        State<T>& state) const;
 };
 
 /**
@@ -201,7 +217,8 @@ private:
 };
 
 #include "_fsa_impl.hpp"
-#include "_vfsa_impl.hpp"
+#include "_fsaimpl.hpp"
+//#include "_vfsa_impl.hpp"
 #include "_state_impl.hpp"
 
 #endif	/* FSA_HPP */

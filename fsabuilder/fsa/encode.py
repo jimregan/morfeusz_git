@@ -10,7 +10,7 @@ class Encoder(object):
     '''
 
 
-    def __init__(self, encoding='utf8', appendZero=True):
+    def __init__(self, encoding='utf8', appendZero=False):
         '''
         Constructor
         '''

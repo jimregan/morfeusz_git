@@ -30,13 +30,14 @@ int main(int argc, char** argv) {
     int unrecognized = 0;
     while (ifs.getline(line, 65536, '\n')) {
         char* val;
-//        cout << line << endl;
+//        cerr << line << endl;
         if (fsa.tryToRecognize(line, val)) {
 //            printf("%s: *OK*\n", line);
             recognized++;
         }
         else {
             unrecognized++;
+//            exit(1);
 //            printf("%s: NOT FOUND\n", line);
         }
     }

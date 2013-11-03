@@ -21,7 +21,7 @@ class FSA(object):
         self.encodedPrevWord = None
         self.initialState = state.State()
         self.register = register.Register()
-        self.label2Freq = {0: float('inf')}
+        self.label2Freq = {}
     
     def tryToRecognize(self, word, addFreq=False):
         return self.decodeData(self.initialState.tryToRecognize(self.encodeWord(word), addFreq))
@@ -52,7 +52,7 @@ class FSA(object):
 #             self.tryToRecognize(w, True)
     
     def train(self, trainData):
-        self.label2Freq = {0: float('inf')}
+        self.label2Freq = {}
         for idx, word in enumerate(trainData):
             self.tryToRecognize(word, addFreq=True)
             for label in self.encodeWord(word):
@@ -115,6 +115,4 @@ class FSA(object):
             state.reverseOffset = currReverseOffset
         for state in self.initialState.dfs(set()):
             state.offset = currReverseOffset - state.reverseOffset
-        
-        
         
