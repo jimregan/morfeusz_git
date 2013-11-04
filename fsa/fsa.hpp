@@ -77,19 +77,33 @@ public:
 
     virtual ~FSA() {
     }
+    
+    /**
+     * Create an FSA object from pointer
+     */
+    static FSA<T>* getFSA(const unsigned char* ptr, const Deserializer<T>& deserializer);
+    
+    static const uint32_t MAGIC_NUMBER = 0x8fc2bc1b;
+    static const uint8_t VERSION_NUM = 8;
 protected:
 
-    FSA(const unsigned char* ptr, const Deserializer<T>& deserializer)
-    : startPtr(ptr), deserializer(deserializer) {
-    }
+    /**
+     * Create FSA object for givent initial state pointer and deserializer
+     */
+    FSA(const unsigned char* initialStatePtr, const Deserializer<T>& deserializer);
+    
     /**
      * Proceed to next state
      */
     virtual void proceedToNext(const char c, State<T>& state) const = 0;
-    const unsigned char* startPtr;
+    const unsigned char* initialStatePtr;
     const Deserializer<T>& deserializer;
     friend class State<T>;
 private:
+    static int getMagicNumberOffset();
+    static int getVersionNumOffset();
+    static int getPopularCharsOffset();
+    static int getInitialStateOffset();
     //    FSA();
 };
 
@@ -109,45 +123,61 @@ private:
 };
 
 template <class T>
-class FSAImpl : public FSA<T> {
+class CompressedFSA1 : public FSA<T> {
 public:
-    FSAImpl(const unsigned char* ptr, const Deserializer<T>& deserializer);
-    virtual ~FSAImpl();
+    CompressedFSA1(const unsigned char* ptr, const Deserializer<T>& deserializer);
+    virtual ~CompressedFSA1();
 
     long long transitionsCount() {
         return counter.count;
     }
-
-    static const uint32_t MAGIC_NUMBER = 0x8fc2bc1b;
-    static const unsigned char VERSION_NUM = 4;
-    
-    static const unsigned char ACCEPTING_FLAG =         0b10000000;
-    static const unsigned char ARRAY_FLAG =             0b01000000;
-    static const unsigned char TRANSITIONS_NUM_MASK =   0b00111111;
-
 protected:
     void proceedToNext(const char c, State<T>& state) const;
 private:
     Counter counter;
     const std::vector<unsigned char> label2ShortLabel;
-
-    static int getMagicNumberOffset();
-    static int getVersionNumOffset();
-    static int getPopularCharsOffset();
-    static int getInitialStateOffset();
+    
     static std::vector<unsigned char> initializeChar2PopularCharIdx(const unsigned char* ptr);
+    
     void doProceedToNextByList(
         const char c,
         const unsigned char shortLabel,
-        const unsigned char* ptr, 
-        const unsigned int transitionsNum, 
-        State<T>& state) const;
-    void doProceedToNextByArray(
-        const unsigned char shortLabel, 
-        const uint32_t* ptr, 
+        const unsigned char* ptr,
+        const unsigned int transitionsNum,
         State<T>& state) const;
     void reallyDoProceed(
         const unsigned char* statePtr,
+        State<T>& state) const;
+    void doProceedToNextByArray(
+        const unsigned char shortLabel,
+        const uint32_t* ptr,
+        State<T>& state) const;
+};
+
+
+template <class T>
+class CompressedFSA2 : public FSA<T> {
+public:
+    CompressedFSA2(const unsigned char* ptr, const Deserializer<T>& deserializer);
+    virtual ~CompressedFSA2();
+
+    long long transitionsCount() {
+        return counter.count;
+    }
+protected:
+    void proceedToNext(const char c, State<T>& state) const;
+private:
+    Counter counter;
+    
+    static std::vector<unsigned char> initializeChar2PopularCharIdx(const unsigned char* ptr);
+    
+    void doProceedToNextByList(
+        const char c,
+        const unsigned char* ptr, 
+        State<T>& state) const;
+    void reallyDoProceed(
+        const unsigned char* statePtr,
+        const bool accepting,
         State<T>& state) const;
 };
 
@@ -208,6 +238,7 @@ private:
 class FSAException : public std::exception {
 public:
     FSAException(const char* what): msg(what) {}
+    FSAException(const std::string& what): msg(what.c_str()) {}
     virtual ~FSAException() throw() {}
     virtual const char* what() const throw () {
         return this->msg.c_str();
@@ -216,10 +247,11 @@ private:
     const std::string msg;
 };
 
-#include "_fsa_impl.hpp"
-#include "_fsaimpl.hpp"
-//#include "_vfsa_impl.hpp"
-#include "_state_impl.hpp"
+#include "state_impl.hpp"
+#include "fsa_impl.hpp"
+#include "simplefsa_impl.hpp"
+#include "cfsa1_impl.hpp"
+#include "cfsa2_impl.hpp"
 
 #endif	/* FSA_HPP */
 

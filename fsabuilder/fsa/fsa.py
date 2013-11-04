@@ -38,7 +38,7 @@ class FSA(object):
             if encodedWord > self.encodedPrevWord:
                 self._addSorted(encodedWord, self.encodeData(data))
                 self.encodedPrevWord = encodedWord
-                assert self.tryToRecognize(word) == data
+#                 assert self.tryToRecognize(word) == data
                 if n % 10000 == 0:
                     logging.info(word)
     #             allWords.append(word)

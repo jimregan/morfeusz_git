@@ -18,6 +18,10 @@ class State(object):
         self.label2Freq = {}
         self.serializeAsArray = False
     
+    @property
+    def transitionsNum(self):
+        return len(self.transitionsMap)
+    
     def setTransition(self, byte, nextState):
         self.transitionsMap[byte] = nextState
     

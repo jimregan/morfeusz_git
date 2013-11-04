@@ -1,0 +1,149 @@
+/* 
+ * File:   _vfsa_impl.hpp
+ * Author: lennyn
+ *
+ * Created on October 29, 2013, 9:57 PM
+ */
+
+#ifndef _VFSA_IMPL_HPP
+#define	_VFSA_IMPL_HPP
+
+#include <algorithm>
+#include <utility>
+#include <iostream>
+#include <netinet/in.h>
+#include "fsa.hpp"
+#include "utils.hpp"
+
+static const unsigned char HAS_REMAINING_FLAG = 128;
+static const unsigned char ACCEPTING_FLAG = 64;
+static const unsigned char LAST_FLAG = 32;
+static const unsigned char OFFSET_MASK = 0b01111111;
+static const unsigned char FIRST_BYTE_OFFSET_MASK = 0b00011111;
+
+using namespace std;
+
+template <class T>
+vector<unsigned char> CompressedFSA2<T>::initializeChar2PopularCharIdx(const unsigned char* ptr) {
+    return vector<unsigned char>();
+    //    return vector<unsigned char>(ptr + getPopularCharsOffset(), ptr + getPopularCharsOffset() + 256);
+}
+
+template <class T>
+CompressedFSA2<T>::CompressedFSA2(const unsigned char* ptr, const Deserializer<T>& deserializer)
+: FSA<T>(ptr, deserializer) {
+}
+
+template <class T>
+CompressedFSA2<T>::~CompressedFSA2() {
+
+}
+
+template <class T>
+void CompressedFSA2<T>::reallyDoProceed(
+        const unsigned char* statePtr,
+        const bool accepting,
+        State<T>& state) const {
+    if (accepting) {
+        T object;
+        int size = this->deserializer.deserialize(statePtr + 1, object);
+        state.setNext(statePtr - this->initialStatePtr, object, size);
+    } else {
+        state.setNext(statePtr - this->initialStatePtr);
+    }
+}
+
+static inline void passThroughOffsetBytes(unsigned char*& ptr) {
+    while (*ptr & HAS_REMAINING_FLAG) {
+        ptr++;
+    }
+    ptr++;
+}
+
+static inline unsigned int readOffsetBytes(unsigned char*& ptr) {
+    unsigned int res = *ptr & FIRST_BYTE_OFFSET_MASK;
+    if (*ptr & HAS_REMAINING_FLAG) {
+        ptr++;
+        while (*ptr & HAS_REMAINING_FLAG) {
+            res <<= 7;
+            res += *ptr & OFFSET_MASK;
+            ptr++;
+        }
+        res <<= 7;
+        res += *ptr & OFFSET_MASK;
+    }
+    ptr++;
+    return res;
+}
+
+template <class T>
+void CompressedFSA2<T>::doProceedToNextByList(
+        const char c,
+        const unsigned char* ptr,
+        State<T>& state) const {
+    register unsigned char* currPtr = const_cast<unsigned char*> (ptr);
+    while (true) {
+        //        const_cast<Counter*>(&counter)->increment(1);
+        if ((char) *currPtr == c) {
+            currPtr++;
+            bool accepting = *currPtr & ACCEPTING_FLAG;
+            unsigned int offset = readOffsetBytes(currPtr);
+            currPtr += offset;
+            reallyDoProceed(currPtr, accepting, state);
+            
+            return;
+        } 
+        else {
+            currPtr++;
+            if (*currPtr & LAST_FLAG) {
+                state.setNextAsSink();
+                return;
+            }
+            else {
+                passThroughOffsetBytes(currPtr);
+            }
+        }
+    }
+}
+
+//template <class T>
+//void FSAImpl<T>::doProceedToNextByArray(
+//        const unsigned char shortLabel,
+//        const uint32_t* ptr,
+//        State<T>& state) const {
+//#ifdef DEBUG_BUILD
+//    cerr << "next by array " << (unsigned int) shortLabel << endl;
+//#endif
+//    uint32_t offset = ntohl(ptr[shortLabel]);
+//#ifdef DEBUG_BUILD
+//    cerr << "still alive " << endl;
+//#endif
+//    if (offset != 0) {
+//        const unsigned char* currPtr = this->startPtr + offset;
+//        reallyDoProceed(currPtr, state);
+//    } else {
+//        state.setNextAsSink();
+//    }
+//}
+
+template <class T>
+void CompressedFSA2<T>::proceedToNext(const char c, State<T>& state) const {
+#ifdef DEBUG_BUILD
+    if (c <= 'z' && 'a' <= c)
+        cerr << "NEXT " << c << " from " << state.getOffset() << endl;
+    else
+        cerr << "NEXT " << (short) c << " from " << state.getOffset() << endl;
+#endif
+    const unsigned char* fromPointer = this->initialStatePtr + state.getOffset();
+    unsigned int transitionsTableOffset = 0;
+    if (state.isAccepting()) {
+        transitionsTableOffset += state.getValueSize();
+    }
+    this->doProceedToNextByList(
+            c,
+            (unsigned char*) (fromPointer + transitionsTableOffset),
+            state);
+}
+
+#endif	/* _VFSA_IMPL_HPP */
+

@@ -2,7 +2,10 @@
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="fsa" name="0">
-      <in>_fsaimpl.hpp</in>
+      <in>cfsa1_impl.hpp</in>
+      <in>cfsa2_impl.hpp</in>
+      <in>interpretation.hpp</in>
+      <in>simplefsa_impl.hpp</in>
       <in>test_not_recognize.cpp</in>
       <in>test_recognize.cpp</in>
       <in>test_speed.cpp</in>
@@ -18,6 +21,7 @@
       <itemPath>CMakeLists.txt</itemPath>
       <itemPath>build/Makefile</itemPath>
     </logicalFolder>
+    <itemPath>cfsa1_impl.hpp</itemPath>
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
@@ -42,6 +46,8 @@
           <executablePath>build/fsa/test_dict</executablePath>
         </makeTool>
       </makefileType>
+      <item path="cfsa1_impl.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <folder path="0">
         <ccTool>
           <incDir>
@@ -57,7 +63,13 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="fsa/_fsaimpl.hpp" ex="false" tool="3" flavor2="0">
+      <item path="fsa/cfsa1_impl.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fsa/cfsa2_impl.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fsa/interpretation.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fsa/simplefsa_impl.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="fsa/test_not_recognize.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>

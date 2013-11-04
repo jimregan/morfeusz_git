@@ -37,8 +37,9 @@ int main(int argc, char** argv) {
     validate(argc == 3, "Must provide exactly two arguments - FSA filename and dictionary filename.");
     const unsigned char* fsaData = readFile(argv[1]);
     StringDeserializer deserializer;
-    FSAImpl<char*> fsa(fsaData, deserializer);
-    doTest(fsa, argv[2]);
+    FSA<char*>* fsa = FSA<char*>::getFSA(fsaData, deserializer);
+    doTest(*fsa, argv[2]);
 //    cout << argc << endl;
+    delete fsa;
     return 0;
 }

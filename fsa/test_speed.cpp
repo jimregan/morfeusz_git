@@ -10,7 +10,7 @@
 #include "fsa.hpp"
 #include "utils.hpp"
 
-#define NDEBUG
+//#define NDEBUG
 
 using namespace std;
 
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     validate(argc == 3, "Must provide exactly two arguments - FSA filename and test data filename.");
     const unsigned char* fsaData = readFile(argv[1]);
     StringDeserializer deserializer;
-    FSAImpl<char*> fsa(fsaData, deserializer);
+    FSA<char*>* fsa = FSA<char*>::getFSA(fsaData, deserializer);
     ifstream ifs;
 //    ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     ifs.open(argv[2], ios::binary);
@@ -30,8 +30,7 @@ int main(int argc, char** argv) {
     int unrecognized = 0;
     while (ifs.getline(line, 65536, '\n')) {
         char* val;
-//        cerr << line << endl;
-        if (fsa.tryToRecognize(line, val)) {
+        if (fsa->tryToRecognize(line, val)) {
 //            printf("%s: *OK*\n", line);
             recognized++;
         }
@@ -44,6 +43,6 @@ int main(int argc, char** argv) {
     cout << "recognized: " << recognized << endl;
     cout << "unrecognized: " << unrecognized << endl;
     cout << "total: " << (recognized + unrecognized) << endl;
-    cout << "transitions visited: " << fsa.transitionsCount() << endl;
+//    cout << "transitions visited: " << fsa->transitionsCount() << endl;
     return 0;
 }
