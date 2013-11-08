@@ -35,7 +35,6 @@ void doTest(const FSA<char*>& fsa, const char* fname) {
 }
 
 int main(int argc, char** argv) {
-    cerr << (int) ((unsigned char) - 123) << endl;
     validate(argc == 3, "Must provide exactly two arguments - FSA filename and dictionary filename.");
     const unsigned char* fsaData = readFile(argv[1]);
     StringDeserializer deserializer;

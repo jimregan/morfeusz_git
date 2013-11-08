@@ -54,11 +54,11 @@ void CompressedFSA1<T>::reallyDoProceed(
         const unsigned char* statePtr,
         State<T>& state) const {
 //    const unsigned char stateByte = *statePtr;
-    StateData2* sd = (StateData2*) statePtr;
+    const StateData2* sd = reinterpret_cast<const StateData2*>(statePtr);
     if (sd->accepting) {
 //                                            cerr << "ACCEPTING" << endl;
         T object;
-        int size = this->deserializer.deserialize(statePtr + 1, object);
+        long size = this->deserializer.deserialize(statePtr + 1, object);
         state.setNext(statePtr - this->initialStatePtr, object, size);
     }
     else {
@@ -163,11 +163,11 @@ void CompressedFSA1<T>::proceedToNext(const char c, State<T>& state) const {
         if (shortLabel > 0) {
             this->doProceedToNextByArray(
                     shortLabel,
-                    (uint32_t*) (fromPointer + transitionsTableOffset),
+                    reinterpret_cast<const uint32_t*>(fromPointer + transitionsTableOffset),
                     state);
         }
         else {
-            reallyDoProceed((unsigned char*) fromPointer + transitionsTableOffset + 256, state);
+            reallyDoProceed(fromPointer + transitionsTableOffset + 256, state);
             proceedToNext(c, state);
         }
     } 
@@ -175,7 +175,7 @@ void CompressedFSA1<T>::proceedToNext(const char c, State<T>& state) const {
         this->doProceedToNextByList(
                 c,
                 shortLabel,
-                (unsigned char*) (fromPointer + transitionsTableOffset),
+                fromPointer + transitionsTableOffset,
                 sd->transitionsNum,
                 state);
     }

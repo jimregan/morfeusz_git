@@ -6,6 +6,7 @@
       <in>cfsa2_impl.hpp</in>
       <in>interpretation.hpp</in>
       <in>simplefsa_impl.hpp</in>
+      <in>test_morph.cpp</in>
       <in>test_not_recognize.cpp</in>
       <in>test_recognize.cpp</in>
       <in>test_speed.cpp</in>
@@ -70,6 +71,8 @@
       <item path="fsa/interpretation.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="fsa/simplefsa_impl.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fsa/test_morph.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="fsa/test_not_recognize.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>

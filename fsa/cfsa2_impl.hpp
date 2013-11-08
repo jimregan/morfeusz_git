@@ -46,7 +46,7 @@ void CompressedFSA2<T>::reallyDoProceed(
         State<T>& state) const {
     if (accepting) {
         T object;
-        int size = this->deserializer.deserialize(statePtr + 1, object);
+        long size = this->deserializer.deserialize(statePtr + 1, object);
         state.setNext(statePtr - this->initialStatePtr, object, size);
     } else {
         state.setNext(statePtr - this->initialStatePtr);
@@ -81,7 +81,7 @@ void CompressedFSA2<T>::doProceedToNextByList(
         const char c,
         const unsigned char* ptr,
         State<T>& state) const {
-    register unsigned char* currPtr = const_cast<unsigned char*> (ptr);
+    unsigned char* currPtr = const_cast<unsigned char*> (ptr);
     while (true) {
         //        const_cast<Counter*>(&counter)->increment(1);
         if ((char) *currPtr == c) {
@@ -141,7 +141,7 @@ void CompressedFSA2<T>::proceedToNext(const char c, State<T>& state) const {
     }
     this->doProceedToNextByList(
             c,
-            (unsigned char*) (fromPointer + transitionsTableOffset),
+            fromPointer + transitionsTableOffset,
             state);
 }
 

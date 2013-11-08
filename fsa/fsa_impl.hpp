@@ -8,9 +8,11 @@
 #ifndef _SIMPLE_FSA_IMPL_HPP
 #define	_SIMPLE_FSA_IMPL_HPP
 
+#include <cstring>
 #include <algorithm>
 #include <utility>
 #include <iostream>
+#include <vector>
 #include <netinet/in.h>
 #include "fsa.hpp"
 #include "utils.hpp"
@@ -82,6 +84,36 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
         default:
             throw FSAException(string("Invalid implementation number: ") + to_string(versionNum) + ", should be: " + to_string(VERSION_NUM));
     }
+}
+
+static void deserializeLemma(const unsigned char*& ptr, Lemma& lemma) {
+    // XXX uważać na poprawność danych
+    lemma.suffixToCut = *ptr;
+    ptr++;
+    lemma.suffixToAdd = (const char*) ptr;
+    ptr += strlen((const char*) ptr) + 1;
+}
+
+static void deserializeInterp(const unsigned char*& ptr, Interpretation& interp) {
+    deserializeLemma(ptr, interp.lemma);
+    interp.tag = ntohs(*(reinterpret_cast<const uint16_t*>(ptr)));
+    ptr += 2;
+    interp.nameClassifier = *ptr;
+    ptr++;
+}
+
+long MorphDeserializer::deserialize(const unsigned char* ptr, vector<Interpretation>& interps) const {
+    const unsigned char* currPtr = ptr;
+    uint8_t interpsNum = *ptr;
+    interps.clear();
+    interps.reserve(interpsNum);
+    currPtr++;
+    for (unsigned int i = 0; i < interpsNum; i++) {
+        Interpretation interp;
+        deserializeInterp(currPtr, interp);
+        interps.push_back(interp);
+    }
+    return currPtr - ptr;
 }
 
 #endif	/* _SIMPLE_FSA_IMPL_HPP */

@@ -15,6 +15,7 @@
 #include <exception>
 #include <string>
 #include <vector>
+#include "interpretation.hpp"
 
 template <class T> class State;
 template <class T> class FSA;
@@ -29,7 +30,7 @@ public:
      * Deserialize object from ptr.
      * Returns number of bytes read or -1 on error.
      */
-    virtual int deserialize(const unsigned char* ptr, T& object) const = 0;
+    virtual long deserialize(const unsigned char* ptr, T& object) const = 0;
 };
 
 class StringDeserializer : public Deserializer<char*> {
@@ -42,11 +43,15 @@ public:
      * Deserialize object from ptr.
      * Returns number of bytes read or -1 on error.
      */
-    int deserialize(const unsigned char* ptr, char*& text) const {
+    long deserialize(const unsigned char* ptr, char*& text) const {
         //        text = const_cast<char*> (reinterpret_cast<const char*> (ptr));
         //        return strlen(text) + 1;
         return 1;
     }
+};
+
+class MorphDeserializer: public Deserializer<std::vector<Interpretation>> {
+    long deserialize(const unsigned char* ptr, std::vector<Interpretation>& interp) const;
 };
 
 class Counter {
@@ -217,18 +222,18 @@ public:
      */
     unsigned int getValueSize() const;
 
-    unsigned int getOffset() const;
+    unsigned long getOffset() const;
 
-    void setNext(const unsigned int offset);
-    void setNext(const unsigned int offset, const T& value, const unsigned int valueSize);
+    void setNext(const unsigned long offset);
+    void setNext(const unsigned long offset, const T& value, const unsigned int valueSize);
     void setNextAsSink();
 
-    State(const FSA<T>& fsa);
+    explicit State(const FSA<T>& fsa);
 
     virtual ~State();
 private:
     const FSA<T>& fsa;
-    unsigned int offset;
+    unsigned long offset;
     bool accepting;
     bool sink;
     T value;

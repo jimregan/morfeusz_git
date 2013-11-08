@@ -14,15 +14,15 @@
 using namespace std;
 
 struct Lemma {
-    int suffixToCut;
-    string suffixToAdd;
+    unsigned short suffixToCut;
+    const char* suffixToAdd;
 };
 
 struct Interpretation {
     Lemma lemma;
-    list<int> tag;      // np. subst:sg:nom:m1
-    int nameClassifier; // np. "pospolita"
-    int qualifier;      // np. "dawne" lub "potoczne"
+    unsigned int tag;      // np. subst:sg:nom:m1
+    unsigned short nameClassifier; // np. "pospolita"
+    unsigned short qualifier;      // np. "dawne" lub "potoczne"
 };
 
 #endif	/* INTERPRETATION_HPP */

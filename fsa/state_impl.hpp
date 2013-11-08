@@ -39,7 +39,7 @@ void State<T>::proceedToNext(const char c) {
 }
 
 template <class T>
-unsigned int State<T>::getOffset() const {
+unsigned long State<T>::getOffset() const {
     assert(!this->isSink());
     return this->offset;
 }
@@ -62,14 +62,14 @@ State<T>::~State() {
 }
 
 template <class T>
-void State<T>::setNext(const unsigned int offset) {
+void State<T>::setNext(const unsigned long offset) {
 //    assert(!this->isSink());
     this->offset = offset;
     this->accepting = false;
 }
 
 template <class T>
-void State<T>::setNext(const unsigned int offset, const T& value, const unsigned int valueSize) {
+void State<T>::setNext(const unsigned long offset, const T& value, const unsigned int valueSize) {
 //    assert(!this->isSink());
     this->offset = offset;
     this->accepting = true;
