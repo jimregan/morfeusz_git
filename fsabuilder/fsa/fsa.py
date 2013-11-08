@@ -31,16 +31,15 @@ class FSA(object):
 #         allWords = []
         for n, (word, data) in enumerate(input, start=1):
             assert data is not None
-            if type(data) in [str, unicode]:
-                data = [data]
             encodedWord = self.encodeWord(word)
-            assert encodedWord >= self.encodedPrevWord
+            assert encodedWord > self.encodedPrevWord
             if encodedWord > self.encodedPrevWord:
                 self._addSorted(encodedWord, self.encodeData(data))
                 self.encodedPrevWord = encodedWord
 #                 assert self.tryToRecognize(word) == data
                 if n % 10000 == 0:
                     logging.info(word)
+                    logging.info(str(self.register.getStatesNum()))
     #             allWords.append(word)
                 for label in encodedWord:
                     self.label2Freq[label] = self.label2Freq.get(label, 0) + 1

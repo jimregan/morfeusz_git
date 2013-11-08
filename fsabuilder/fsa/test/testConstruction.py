@@ -2,17 +2,16 @@
 '''
 Created on Oct 8, 2013
 
-@author: lennyn
+@author: mlenart
 '''
 import unittest
-from fsa import fsa, visualizer, encode
+import os
+from fsa import fsa, visualizer, encode, buildfsa
 
 class Test(unittest.TestCase):
 
-
     def testSimpleConstruction(self):
-        print 'dupa'
-        a = fsa.FSA(encode.Encoder())
+        a = fsa.FSA(encode.SimpleEncoder())
         input = sorted([
                 (u'bić', ''),
                 (u'bij', ''),
@@ -50,19 +49,17 @@ class Test(unittest.TestCase):
                 (u'biłyśmy', ''),
                 ], key=lambda w: bytearray(w[0], 'utf8'))
         a.feed(input)
-        print a.getStatesNum()
-#         print a.tryToRecognize(u'bi')
-#         print a.tryToRecognize(u'bić')
-#         print a.tryToRecognize(u'bili')
         for w, res in input:
-            print w, res, a.tryToRecognize(w)
             recognized = a.tryToRecognize(w)
-            if type(res) in [str, unicode]:
-                recognized = recognized[0]
             assert recognized == res
         a.calculateOffsets(lambda state: 1 + 4 * len(state.transitionsMap.keys()) + (len(state.encodedData) if state.isAccepting() else 0))
         visualizer.Visualizer().visualize(a)
-        print 'done'
+    
+    def testPolimorfConstruction(self):
+        inputFile = os.path.join(os.path.dirname(__file__), 'PoliMorfSmall.tab')
+        tagsetFile = os.path.join(os.path.dirname(__file__), 'polimorf.tagset')
+        fsa = buildfsa.buildFromPoliMorf(inputFile, tagsetFile)
+#         visualizer.Visualizer().visualize(fsa)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testSimpleConstruction']

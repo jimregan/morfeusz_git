@@ -3,59 +3,42 @@ Created on Oct 23, 2013
 
 @author: mlenart
 '''
-import sys
-import fileinput
 import logging
-from encode import Encoder
+from common import Interpretation
 
-def _encodeInterp(orth, base, tag, name):
-    removePrefix = 0
-    root = u''
-    for o, b in zip(orth, base):
-        if o == b:
-            root += o
-        else:
-            break
-    removeSuffixNum = len(orth) - len(root)
-    addSuffix = base[len(root):]
-    return u'+'.join([
-        chr(ord('A')+removePrefix) + chr(ord('A')+removeSuffixNum) + addSuffix, 
-        tag,
-        name])
+def _sortLines(inputLines, encoder):
+    logging.info('sorting input...')
+    lines = list(inputLines)
+    logging.info('done read data into list')
+    lines.sort(key=lambda line: encoder.word2SortKey(line.split('\t')[0]))
+    logging.info('done sorting')
+    return lines
 
-def _parsePolimorf(inputLines):
-    for line0 in inputLines:
-        line = line0.strip(u'\n')
+def _parseLines(inputLines, tagset, encoder):
+    for line in inputLines:
+        line = line.strip(u'\n')
         if line:
 #             print line
             orth, base, tag, name = line.split(u'\t')
-            yield (orth, _encodeInterp(orth, base, tag, name))
+            tagnum = tagset.tag2tagnum[tag]
+            namenum = tagset.name2namenum[name]
+            yield (orth, Interpretation(orth, base, tagnum, namenum, encoder))
 
-def _sortAndMergeParsedInput(inputData, key=lambda k: k):
-    logging.info('sorting input...')
-    entries = list(inputData)
-    entries.sort(key=key)
-    logging.info('done sorting')
+def _mergeEntries(inputLines):
     prevOrth = None
     prevInterps = None
-    for orth, interp in entries:
+    for orth, interp in inputLines:
+        orth = orth.lower()
+        assert orth
         if prevOrth and prevOrth == orth:
             prevInterps.append(interp)
         else:
             if prevOrth:
-                yield (prevOrth, sorted(set(prevInterps)))
+                yield (prevOrth, frozenset(prevInterps))
             prevOrth = orth
             prevInterps = [interp]
+    yield (prevOrth, frozenset(prevInterps))
 
-def convertPolimorf(inputLines, sortKey=lambda k: k):
-    for orth, interps in _sortAndMergeParsedInput(_parsePolimorf(inputLines), key=sortKey):
+def convertPolimorf(inputLines, tagset, encoder):
+    for orth, interps in _mergeEntries(_parseLines(_sortLines(inputLines, encoder), tagset, encoder)):
         yield orth, interps
-
-def _decodeInputLines(rawInputLines, encoding):
-    for line in rawInputLines:
-        yield line.decode(encoding)
-
-if __name__ == '__main__':
-    encoder = Encoder()
-    for orth, interps in convertPolimorf(_decodeInputLines(fileinput.input(), 'utf8'), lambda (orth, interp): encoder.word2SortKey(orth)):
-        print u'\t'.join([orth, u'|'.join(interps)]).encode('utf8')
