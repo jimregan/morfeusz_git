@@ -9,6 +9,7 @@
 #include <iostream>
 #include "fsa.hpp"
 #include "default_fsa.hpp"
+#include "Tagset.hpp"
 
 using namespace std;
 

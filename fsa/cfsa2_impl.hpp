@@ -135,7 +135,7 @@ void CompressedFSA2<T>::proceedToNext(const char c, State<T>& state) const {
         cerr << "NEXT " << (short) c << " from " << state.getOffset() << endl;
 #endif
     const unsigned char* fromPointer = this->initialStatePtr + state.getOffset();
-    unsigned int transitionsTableOffset = 0;
+    unsigned long transitionsTableOffset = 0;
     if (state.isAccepting()) {
         transitionsTableOffset += state.getValueSize();
     }

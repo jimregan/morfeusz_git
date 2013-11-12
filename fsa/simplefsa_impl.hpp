@@ -37,7 +37,7 @@ static unsigned int decodeOffset(const unsigned char* ptr) {
 template <class T>
 void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
     const unsigned char* fromPointer = this->initialStatePtr + state.getOffset();
-    int transitionsTableOffset = sizeof (StateData);
+    long transitionsTableOffset = sizeof (StateData);
     if (state.isAccepting()) {
         transitionsTableOffset += state.getValueSize();
     }
@@ -60,7 +60,7 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
         const StateData* nextStateData = reinterpret_cast<const StateData*>(nextStatePointer);
         if (nextStateData->accepting) {
             T object;
-            int size = this->deserializer.deserialize(nextStatePointer + sizeof (StateData), object);
+            long size = this->deserializer.deserialize(nextStatePointer + sizeof (StateData), object);
             state.setNext(offset, object, size);
         } else {
             state.setNext(offset);

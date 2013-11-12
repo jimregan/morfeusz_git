@@ -79,7 +79,7 @@ void CompressedFSA1<T>::doProceedToNextByList(
     TransitionData2 td;
     for (unsigned int i = 0; i < transitionsNum; i++) {
         //        const_cast<Counter*>(&counter)->increment(1);
-        td = *((TransitionData2*) currPtr);
+        td = *(reinterpret_cast<const TransitionData2*>(currPtr));
         if (td.shortLabel == shortLabel) {
             if (shortLabel == 0) {
                 currPtr++;
@@ -107,7 +107,8 @@ void CompressedFSA1<T>::doProceedToNextByList(
     if (!found) {
 //                                cerr << "SINK for " << c << endl;
         state.setNextAsSink();
-    } else {
+    } 
+    else {
         currPtr++;
 //                                        cerr << "offset size " << td.offsetSize << endl;
 //                            cerr << "offset " << offset << endl;
@@ -152,12 +153,12 @@ void CompressedFSA1<T>::proceedToNext(const char c, State<T>& state) const {
 //                        cerr << "NEXT " << (short) c << " from " << state.getOffset() << endl;
     const unsigned char* fromPointer = this->initialStatePtr + state.getOffset();
     unsigned char shortLabel = this->label2ShortLabel[(const unsigned char) c];
-    unsigned int transitionsTableOffset = 1;
+    unsigned long transitionsTableOffset = 1;
     if (state.isAccepting()) {
         transitionsTableOffset += state.getValueSize();
 //                                cerr << "transitionsTableOffset " << transitionsTableOffset + state.getOffset() << " because value is " << state.getValue() << endl;
     }
-    StateData2* sd = (StateData2*) (fromPointer);
+    const StateData2* sd = reinterpret_cast<const StateData2*>(fromPointer);
 //                cerr << "transitions num=" << sd->transitionsNum << endl;
     if (sd->array) {
         if (shortLabel > 0) {

@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="2.8.11.2"
+                   displayName="2.8.11.2"
+                   projectFiles="true"
+                   root="build/CMakeFiles/2.8.11.2">
+      <logicalFolder name="CompilerIdC" displayName="CompilerIdC" projectFiles="true">
+        <itemPath>build/CMakeFiles/2.8.11.2/CompilerIdC/CMakeCCompilerId.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="CompilerIdCXX"
+                     displayName="CompilerIdCXX"
+                     projectFiles="true">
+        <itemPath>build/CMakeFiles/2.8.11.2/CompilerIdCXX/CMakeCXXCompilerId.cpp</itemPath>
+      </logicalFolder>
+    </logicalFolder>
     <df root="fsa" name="0">
-      <in>cfsa1_impl.hpp</in>
-      <in>cfsa2_impl.hpp</in>
-      <in>interpretation.hpp</in>
-      <in>simplefsa_impl.hpp</in>
-      <in>test_morph.cpp</in>
       <in>test_not_recognize.cpp</in>
       <in>test_recognize.cpp</in>
       <in>test_speed.cpp</in>
     </df>
+    <logicalFolder name="Modules"
+                   displayName="Modules"
+                   projectFiles="true"
+                   root="/usr/share/cmake-2.8/Modules">
+      <itemPath>/usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c</itemPath>
+      <itemPath>/usr/share/cmake-2.8/Modules/CMakeCXXCompilerABI.cpp</itemPath>
+      <itemPath>/usr/share/cmake-2.8/Modules/CMakeCompilerABI.h</itemPath>
+    </logicalFolder>
     <df root="morfeusz" name="1">
+      <in>interpretations.cpp</in>
       <in>main.cpp</in>
       <in>morfeusz.cpp</in>
     </df>
@@ -22,7 +39,6 @@
       <itemPath>CMakeLists.txt</itemPath>
       <itemPath>build/Makefile</itemPath>
     </logicalFolder>
-    <itemPath>cfsa1_impl.hpp</itemPath>
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
@@ -44,10 +60,41 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/fsa/test_dict</executablePath>
+          <executablePath>build/fsa/test_speed</executablePath>
+          <cTool>
+            <incDir>
+              <pElem>build/CMakeFiles/CMakeTmp</pElem>
+            </incDir>
+          </cTool>
         </makeTool>
       </makefileType>
-      <item path="cfsa1_impl.hpp" ex="false" tool="3" flavor2="0">
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c"
+            ex="false"
+            tool="0"
+            flavor2="2">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCXXCompilerABI.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="build/CMakeFiles/2.8.11.2/CompilerIdC/CMakeCCompilerId.c"
+            ex="false"
+            tool="0"
+            flavor2="2">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="build/CMakeFiles/2.8.11.2/CompilerIdCXX/CMakeCXXCompilerId.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <folder path="0">
         <ccTool>
@@ -56,23 +103,27 @@
           </incDir>
         </ccTool>
       </folder>
-      <folder path="1">
+      <folder path="2.8.11.2">
+        <ccTool>
+          <incDir>
+            <pElem>build/CMakeFiles/CMakeTmp</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="Modules">
+        <ccTool>
+          <incDir>
+            <pElem>build/CMakeFiles/CMakeTmp</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <item path="fsa/const.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
           <incDir>
             <pElem>fsa</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
         </ccTool>
-      </folder>
-      <item path="fsa/cfsa1_impl.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="fsa/cfsa2_impl.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="fsa/interpretation.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="fsa/simplefsa_impl.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="fsa/test_morph.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="fsa/test_not_recognize.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
@@ -86,12 +137,53 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="morfeusz/MorphDeserializer.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="morfeusz/Tagset.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="morfeusz/interpretations.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+        </ccTool>
+      </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/morfeusz.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>build/CMakeFiles/CMakeTmp</pElem>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="morfeusz/test_morph.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
         </ccTool>
       </item>
     </conf>

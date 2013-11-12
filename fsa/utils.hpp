@@ -9,14 +9,15 @@
 #define	UTILS_HPP
 
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <fstream>
 #include <vector>
 
-using namespace std;
+//using namespace std;
 
-//#define DEBUG_BUILD
+#define DEBUG_BUILD
 
 #ifdef DEBUG_BUILD
 #  define DEBUG(x) do { std::cerr << x << std::endl; } while (0)
@@ -24,14 +25,14 @@ using namespace std;
 #  define DEBUG(x)
 #endif
 
-void validate(const bool cond, const std::string& msg) {
+inline void validate(const bool cond, const std::string& msg) {
     if (!cond) {
         std::cerr << msg << std::endl;
         exit(1);
     }
 }
 
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+inline std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
     while (std::getline(ss, item, delim)) {
@@ -41,25 +42,25 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 }
 
 
-std::vector<std::string> split(const std::string &s, char delim) {
+inline std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, elems);
     return elems;
 }
 
-string &rtrim(string &s) {
-        s.erase(find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(), s.end());
-        return s;
-}
+//string &rtrim(string &s) {
+//        s.erase(find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(), s.end());
+//        return s;
+//}
 
-unsigned char* readFile(const char* fname) {
-    ifstream ifs;
+inline unsigned char* readFile(const char* fname) {
+    std::ifstream ifs;
     ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    ifs.open(fname, ios::in | ios::binary | ios::ate);
+    ifs.open(fname, std::ios::in | std::ios::binary | std::ios::ate);
     //    if (ifs.is_open()) {
-    int size = ifs.tellg();
+    long size = ifs.tellg();
     unsigned char* memblock = new unsigned char [size];
-    ifs.seekg(0, ios::beg);
+    ifs.seekg(0, std::ios::beg);
     ifs.read(reinterpret_cast<char*> (memblock), size);
     ifs.close();
     return memblock;

@@ -14,14 +14,11 @@
 #include <iostream>
 #include <vector>
 #include <netinet/in.h>
-#include "fsa.hpp"
 #include "utils.hpp"
+#include "const.hpp"
 
 using namespace std;
-
-static const unsigned int VERSION_NUM_OFFSET = 4;
-static const unsigned int IMPLEMENTATION_NUM_OFFSET = 5;
-static const unsigned int FSA_OFFSET = 6;
+//static const unsigned int FSA_OFFSET = 6;
 
 template <class T>
 bool FSA<T>::tryToRecognize(const char* input, T& value) const {
@@ -73,7 +70,9 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
     }
     
     uint8_t implementationNum = *(ptr + IMPLEMENTATION_NUM_OFFSET);
-    const unsigned char* startPtr = ptr + FSA_OFFSET;
+    
+    uint32_t additionalDataSize = ntohl(*(reinterpret_cast<const uint32_t*>(ptr + ADDITIONAL_DATA_SIZE_OFFSET)));
+    const unsigned char* startPtr = ptr + ADDITIONAL_DATA_OFFSET + additionalDataSize;
     switch (implementationNum) {
         case 0:
             return new SimpleFSA<T>(startPtr, deserializer);
@@ -84,36 +83,6 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
         default:
             throw FSAException(string("Invalid implementation number: ") + to_string(versionNum) + ", should be: " + to_string(VERSION_NUM));
     }
-}
-
-static void deserializeLemma(const unsigned char*& ptr, Lemma& lemma) {
-    // XXX uważać na poprawność danych
-    lemma.suffixToCut = *ptr;
-    ptr++;
-    lemma.suffixToAdd = (const char*) ptr;
-    ptr += strlen((const char*) ptr) + 1;
-}
-
-static void deserializeInterp(const unsigned char*& ptr, Interpretation& interp) {
-    deserializeLemma(ptr, interp.lemma);
-    interp.tag = ntohs(*(reinterpret_cast<const uint16_t*>(ptr)));
-    ptr += 2;
-    interp.nameClassifier = *ptr;
-    ptr++;
-}
-
-long MorphDeserializer::deserialize(const unsigned char* ptr, vector<Interpretation>& interps) const {
-    const unsigned char* currPtr = ptr;
-    uint8_t interpsNum = *ptr;
-    interps.clear();
-    interps.reserve(interpsNum);
-    currPtr++;
-    for (unsigned int i = 0; i < interpsNum; i++) {
-        Interpretation interp;
-        deserializeInterp(currPtr, interp);
-        interps.push_back(interp);
-    }
-    return currPtr - ptr;
 }
 
 #endif	/* _SIMPLE_FSA_IMPL_HPP */

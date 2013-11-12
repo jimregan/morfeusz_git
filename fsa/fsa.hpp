@@ -9,13 +9,12 @@
 #define FSA_HPP
 
 //#include <iostream>
-//#include <cstring>
-#include <typeinfo>
+#include <cstring>
 #include <cassert>
+#include <typeinfo>
 #include <exception>
 #include <string>
 #include <vector>
-#include "interpretation.hpp"
 
 template <class T> class State;
 template <class T> class FSA;
@@ -44,14 +43,10 @@ public:
      * Returns number of bytes read or -1 on error.
      */
     long deserialize(const unsigned char* ptr, char*& text) const {
-        //        text = const_cast<char*> (reinterpret_cast<const char*> (ptr));
-        //        return strlen(text) + 1;
-        return 1;
+        text = const_cast<char*> (reinterpret_cast<const char*> (ptr));
+        return strlen(text) + 1;
+//        return 1;
     }
-};
-
-class MorphDeserializer: public Deserializer<std::vector<Interpretation>> {
-    long deserialize(const unsigned char* ptr, std::vector<Interpretation>& interp) const;
 };
 
 class Counter {
@@ -88,8 +83,6 @@ public:
      */
     static FSA<T>* getFSA(const unsigned char* ptr, const Deserializer<T>& deserializer);
     
-    static const uint32_t MAGIC_NUMBER = 0x8fc2bc1b;
-    static const uint8_t VERSION_NUM = 8;
 protected:
 
     /**
@@ -105,10 +98,6 @@ protected:
     const Deserializer<T>& deserializer;
     friend class State<T>;
 private:
-    static int getMagicNumberOffset();
-    static int getVersionNumOffset();
-    static int getPopularCharsOffset();
-    static int getInitialStateOffset();
     //    FSA();
 };
 
@@ -220,12 +209,12 @@ public:
      * Makes sense only for accepting states.
      * For non-accepting states is throws an exception.
      */
-    unsigned int getValueSize() const;
+    unsigned long getValueSize() const;
 
     unsigned long getOffset() const;
 
     void setNext(const unsigned long offset);
-    void setNext(const unsigned long offset, const T& value, const unsigned int valueSize);
+    void setNext(const unsigned long offset, const T& value, const unsigned long valueSize);
     void setNextAsSink();
 
     explicit State(const FSA<T>& fsa);
@@ -237,7 +226,7 @@ private:
     bool accepting;
     bool sink;
     T value;
-    int valueSize;
+    long valueSize;
 };
 
 class FSAException : public std::exception {

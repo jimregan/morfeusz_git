@@ -51,7 +51,7 @@ T State<T>::getValue() const {
 }
 
 template <class T>
-unsigned int State<T>::getValueSize() const {
+unsigned long State<T>::getValueSize() const {
     assert(this->isAccepting());
     return this->valueSize;
 }
@@ -69,7 +69,7 @@ void State<T>::setNext(const unsigned long offset) {
 }
 
 template <class T>
-void State<T>::setNext(const unsigned long offset, const T& value, const unsigned int valueSize) {
+void State<T>::setNext(const unsigned long offset, const T& value, const unsigned long valueSize) {
 //    assert(!this->isSink());
     this->offset = offset;
     this->accepting = true;
