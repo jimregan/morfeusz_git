@@ -23,15 +23,15 @@ class Interpretation(object):
                 root += o
             else:
                 break
-        cutLength = len(orth) - len(root)
+        cutLength = len(encoder.encodeWord(orth)) - len(encoder.encodeWord(root))
         self.lemma = Lemma(
                            cutLength=cutLength,
-                           suffixToAdd=base[len(root):])
+                           suffixToAdd=encoder.encodeWord(base[len(root):], lowercase=False))
         self.tagnum = tagnum
         self.namenum = namenum
     
     def getSortKey(self):
-        return (self.lemma.cutLength, self.lemma.suffixToAdd, self.tagnum, self.namenum)
+        return (self.lemma.cutLength, tuple(self.lemma.suffixToAdd), self.tagnum, self.namenum)
     
     def __eq__(self, other):
         if isinstance(other, Interpretation):

@@ -16,9 +16,6 @@ from serializer import VLengthSerializer1, VLengthSerializer2, SimpleSerializer
 from visualizer import Visualizer
 from optparse import OptionParser
 
-from pycallgraph import PyCallGraph
-from pycallgraph.output import GraphvizOutput
-
 class OutputFormat():
     BINARY = 'BINARY'
     CPP = 'CPP'
@@ -131,8 +128,7 @@ def _parseOptions():
 #         exit(1)
     return opts
 
-def _readPolimorfInput(inputFile, tagsetFile, encoder):
-    tagset = common.Tagset(tagsetFile)
+def _readPolimorfInput(inputFile, tagset, encoder):
     with codecs.open(inputFile, 'r', 'utf8') as f:
         for entry in convertinput.convertPolimorf(f, tagset, encoder):
             yield entry
@@ -167,8 +163,9 @@ def _printStats(fsa):
 
 def buildFromPoliMorf(inputFile, tagsetFile):
     encoder = encode.MorphEncoder()
-    fsa = FSA(encoder)
-    inputData = _readPolimorfInput(inputFile, tagsetFile, encoder)
+    tagset = common.Tagset(tagsetFile)
+    fsa = FSA(encoder, tagset)
+    inputData = _readPolimorfInput(inputFile, tagset, encoder)
     fsa.feed(inputData)
     _printStats(fsa)
     return fsa
@@ -230,6 +227,8 @@ def main(opts):
 if __name__ == '__main__':
     opts = _parseOptions()
     if opts.profile:
+        from pycallgraph import PyCallGraph
+        from pycallgraph.output import GraphvizOutput
         with PyCallGraph(output=GraphvizOutput()):
             main(opts)
     else:

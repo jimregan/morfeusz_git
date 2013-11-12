@@ -18,6 +18,9 @@ class Serializer(object):
     def fsa(self):
         return self._fsa
     
+    def getVersion(self):
+        return 9
+    
     def serialize2CppFile(self, fname):
         res = []
 #         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
@@ -39,14 +42,48 @@ class Serializer(object):
     def fsa2bytearray(self):
         
         res = bytearray()
-        res.extend(self.serializePrologue())
+        res.extend(self.serializePrologue(self.serializeTagset(self.fsa.tagset)))
         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
         logging.debug('SERIALIZE')
         for state in sorted(self.fsa.dfs(), key=lambda s: s.offset):
             res.extend(self.state2bytearray(state))
         return res
     
-    def serializePrologue(self):
+    def serializeTags(self, tagsMap):
+        res = bytearray()
+        numOfTags = len(tagsMap)
+        res.extend(self.htons(numOfTags))
+        for tag, tagnum in sorted(tagsMap.iteritems(), key=lambda (tag, tagnum): tagnum):
+            res.extend(self.htons(tagnum))
+            res.extend(self.fsa.encodeWord(tag))
+            res.append(0)
+        return res
+    
+    def serializeTagset(self, tagset):
+        res = bytearray()
+        if tagset:
+            res.extend(self.serializeTags(tagset.tag2tagnum))
+            res.extend(self.serializeTags(tagset.name2namenum))
+        return res
+    
+    def htons(self, n):
+        assert n < 65536
+        assert n >= 0
+        res = bytearray()
+        res.append((n & 0x00FF00) >> 8)
+        res.append(n & 0x0000FF)
+        return res
+    
+    def htonl(self, n):
+        assert n >= 0
+        res = bytearray()
+        res.append((n & 0xFF000000) >> 24)
+        res.append((n & 0x00FF0000) >> 16)
+        res.append((n & 0x0000FF00) >> 8)
+        res.append(n & 0x000000FF)
+        return res
+    
+    def serializePrologue(self, additionalData=None):
         res = bytearray()
         
         # serialize magic number in big-endian order
@@ -60,6 +97,15 @@ class Serializer(object):
         
         # serialize implementation code 
         res.append(self.getImplementationCode())
+        
+        # serialize additional data size in 2-byte big-endian
+        additionalDataSize = len(additionalData) if additionalData else 0
+        res.extend(self.htonl(additionalDataSize))
+        
+        # add additional data itself
+        if additionalDataSize:
+            assert type(additionalData) == bytearray
+            res.extend(additionalData)
         
         return res
     
@@ -81,9 +127,6 @@ class Serializer(object):
     def transitionsData2bytearray(self, state):
         raise NotImplementedError('Not implemented')
     
-    def getVersion(self):
-        raise NotImplementedError('Not implemented')
-    
     def getImplementationCode(self):
         raise NotImplementedError('Not implemented')
 
@@ -92,9 +135,6 @@ class SimpleSerializer(Serializer):
     def __init__(self, fsa):
         super(SimpleSerializer, self).__init__(fsa)
         self.ACCEPTING_FLAG = 128
-    
-    def getVersion(self):
-        return 8
     
     def getImplementationCode(self):
         return 0
@@ -140,9 +180,6 @@ class VLengthSerializer1(Serializer):
         
         self.ACCEPTING_FLAG =   0b10000000
         self.ARRAY_FLAG =       0b01000000
-    
-    def getVersion(self):
-        return 8
     
     def getImplementationCode(self):
         return 1
@@ -301,9 +338,6 @@ class VLengthSerializer2(Serializer):
         self.HAS_REMAINING_FLAG = 128
         self.ACCEPTING_FLAG =    64
         self.LAST_FLAG = 32
-    
-    def getVersion(self):
-        return 8
     
     def getImplementationCode(self):
         return 2

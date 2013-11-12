@@ -14,11 +14,12 @@ class FSA(object):
     '''
 
 
-    def __init__(self, encoder):
+    def __init__(self, encoder, tagset=None):
         self.encodeWord = encoder.encodeWord
         self.encodeData = encoder.encodeData
         self.decodeData = encoder.decodeData
         self.encodedPrevWord = None
+        self.tagset = tagset
         self.initialState = state.State()
         self.register = register.Register()
         self.label2Freq = {}

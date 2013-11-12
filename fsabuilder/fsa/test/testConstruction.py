@@ -7,6 +7,7 @@ Created on Oct 8, 2013
 import unittest
 import os
 from fsa import fsa, visualizer, encode, buildfsa
+from fsa.serializer import SimpleSerializer
 
 class Test(unittest.TestCase):
 
@@ -59,6 +60,8 @@ class Test(unittest.TestCase):
         inputFile = os.path.join(os.path.dirname(__file__), 'PoliMorfSmall.tab')
         tagsetFile = os.path.join(os.path.dirname(__file__), 'polimorf.tagset')
         fsa = buildfsa.buildFromPoliMorf(inputFile, tagsetFile)
+        serializer = SimpleSerializer(fsa)
+        serializer.serialize2BinaryFile('/tmp/test0.fsa')
 #         visualizer.Visualizer().visualize(fsa)
 
 if __name__ == "__main__":

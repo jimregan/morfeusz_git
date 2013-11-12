@@ -38,8 +38,8 @@ class Encoder(object):
 
 class SimpleEncoder(Encoder):
     
-    def __init__(self, encoding='utf8', appendZero=False):
-        super(SimpleEncoder, self).__init__(encoding, appendZero)
+    def __init__(self, encoding='utf8'):
+        super(SimpleEncoder, self).__init__(encoding)
     
     def encodeData(self, data):
         return bytearray(data, encoding=self.encoding) + bytearray([0])
@@ -70,7 +70,7 @@ class MorphEncoder(Encoder):
         res = bytearray()
         assert lemma.cutLength < 256 and lemma.cutLength >= 0
         res.append(lemma.cutLength)
-        res.extend(self.encodeWord(lemma.suffixToAdd, lowercase=False))
+        res.extend(lemma.suffixToAdd)
         res.append(0)
         return res
     
