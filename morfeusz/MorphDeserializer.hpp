@@ -12,14 +12,14 @@
 #include "fsa.hpp"
 #include "interpretations.hpp"
 
-class MorphDeserializer: public Deserializer<std::vector<Interpretation>> {
+class MorphDeserializer: public Deserializer<std::vector<EncodedInterpretation>> {
 public:
     MorphDeserializer();
     MorphDeserializer(const MorphDeserializer& orig);
     virtual ~MorphDeserializer();
     long deserialize(
         const unsigned char* ptr, 
-        std::vector<Interpretation>& interps) const;
+        std::vector<EncodedInterpretation>& interps) const;
 private:
 
 };

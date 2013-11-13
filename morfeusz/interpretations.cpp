@@ -4,33 +4,16 @@
 
 using namespace std;
 
-Interpretation::Interpretation()
-: lemma(), tag(), nameClassifier() {
-
-}
-
-Interpretation::Interpretation(const Lemma& lemma, const int tag, const int name)
-: lemma(lemma), tag(tag), nameClassifier(name) {
-
-}
-
-StringInterpretation::StringInterpretation(
-        const string& lemma,
-        const string& tag,
-        const string& name)
-: lemma(lemma), tag(tag), name(name) {
-
-}
-
-string StringInterpretation::toString() const {
+string TaggedInterpretation::toString() const {
     std::stringstream ss;
     ss << lemma << ":" << tag << ":" << name;
     return ss.str();
 }
 
-string LemmaConverter::convertLemma(
+template <class T>
+string InterpretationsDecoder<T>::convertLemma(
         const string& orth,
-        const Lemma& lemma) const {
+        const EncodedLemma& lemma) const {
     string res(orth);
     res.erase(
             res.end() - lemma.suffixToCut,
@@ -39,18 +22,25 @@ string LemmaConverter::convertLemma(
     return res;
 }
 
-InterpretationsConverter::InterpretationsConverter(const unsigned char* data)
-: tagset(Tagset(data)) {
-
+RawInterpretation RawInterpretationsDecoder::getInterpretation(
+        const string& orth,
+        const EncodedInterpretation& interp) const {
+    string lemma = this->convertLemma(orth, interp.lemma);
+    RawInterpretation res = {lemma, interp.tag, interp.nameClassifier};
+    return res;
 }
 
-StringInterpretation InterpretationsConverter::convertInterpretation(
+TaggedInterpretationsDecoder::TaggedInterpretationsDecoder(const Tagset& tagset)
+: tagset(tagset) {
+    
+}
+
+TaggedInterpretation TaggedInterpretationsDecoder::getInterpretation(
         const string& orth,
-        const Interpretation& interp) const {
-    string lemma = this->lemmaConverter.convertLemma(orth, interp.lemma);
+        const EncodedInterpretation& interp) const {
+    string lemma = this->convertLemma(orth, interp.lemma);
     const string& tag = this->tagset.getTag(interp.tag);
     const string& name = this->tagset.getName(interp.nameClassifier);
-    return StringInterpretation(lemma, tag, name);
+    TaggedInterpretation res = {lemma, tag, name};
+    return res;
 }
-
-

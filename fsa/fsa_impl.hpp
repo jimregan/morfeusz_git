@@ -36,9 +36,7 @@ bool FSA<T>::tryToRecognize(const char* input, T& value) const {
 
     if (currState.isAccepting()) {
         value = currState.getValue();
-#ifdef DEBUG_BUILD
-        cerr << "RECOGNIZED " << input << endl;
-#endif
+        DEBUG(string("recognized: ")+input);
         return true;
     } else {
         return false;

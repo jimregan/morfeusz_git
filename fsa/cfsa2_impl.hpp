@@ -46,7 +46,7 @@ void CompressedFSA2<T>::reallyDoProceed(
         State<T>& state) const {
     if (accepting) {
         T object;
-        long size = this->deserializer.deserialize(statePtr + 1, object);
+        long size = this->deserializer.deserialize(statePtr, object);
         state.setNext(statePtr - this->initialStatePtr, object, size);
     } else {
         state.setNext(statePtr - this->initialStatePtr);

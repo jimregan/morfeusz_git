@@ -3,7 +3,7 @@
 
 # Make sure the linker can find the Hello library once it is built. 
 #link_directories (${Morfeusz_BINARY_DIR}/Hello) 
-include_directories (${Morfeusz_SOURCE_DIR}/fsa) 
+include_directories (${Morfeusz_SOURCE_DIR}/fsa)
 add_library (morfeusz2 morfeusz.hpp morfeusz.cpp)
 add_executable (morfeusz2_analyze main.cpp)
 add_executable (test_morph test_morph.cpp interpretations.cpp MorphDeserializer.cpp Tagset.cpp ../fsa/const.cpp)

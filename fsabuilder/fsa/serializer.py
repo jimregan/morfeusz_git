@@ -184,8 +184,8 @@ class VLengthSerializer1(Serializer):
     def getImplementationCode(self):
         return 1
     
-    def serializePrologue(self):
-        res = super(VLengthSerializer1, self).serializePrologue()
+    def serializePrologue(self, additionalData):
+        res = super(VLengthSerializer1, self).serializePrologue(additionalData)
         
         # labels sorted by popularity
         sortedLabels = [label for (label, freq) in sorted(self.fsa.label2Freq.iteritems(), key=lambda (label, freq): (-freq, label))]
@@ -345,11 +345,11 @@ class VLengthSerializer2(Serializer):
     def getStateSize(self, state):
         return len(self.state2bytearray(state))
      
-    def getDataSize(self, state):
-        assert type(state.encodedData) == bytearray or not state.isAccepting()
-        return len(state.encodedData) if state.isAccepting() else 0
+#     def getDataSize(self, state):
+#         assert type(state.encodedData) == bytearray or not state.isAccepting()
+#         return len(state.encodedData) if state.isAccepting() else 0
     
-    def stateData2bytearray(self, state, originalState=None):
+    def stateData2bytearray(self, state):
         res = bytearray()
         if state.isAccepting():
             res.extend(state.encodedData)
@@ -382,7 +382,6 @@ class VLengthSerializer2(Serializer):
         transitions = self.getSortedTransitions(state)
         if len(transitions) == 0:
             assert state.isAccepting()
-            res.append(0)
             res.append(self.LAST_FLAG)
             return res
         else:
