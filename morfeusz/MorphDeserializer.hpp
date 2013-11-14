@@ -10,7 +10,7 @@
 
 #include <vector>
 #include "fsa.hpp"
-#include "interpretations.hpp"
+#include "EncodedInterpretation.hpp"
 
 class MorphDeserializer: public Deserializer<std::vector<EncodedInterpretation>> {
 public:

@@ -6,7 +6,7 @@
 include_directories (${Morfeusz_SOURCE_DIR}/fsa)
 add_library (morfeusz2 morfeusz.hpp morfeusz.cpp)
 add_executable (morfeusz2_analyze main.cpp)
-add_executable (test_morph test_morph.cpp interpretations.cpp MorphDeserializer.cpp Tagset.cpp ../fsa/const.cpp)
+add_executable (test_morph test_morph.cpp MorphDeserializer.cpp Tagset.cpp ../fsa/const.cpp MorphInterpretation.cpp)
 
 # Link the executable to the Hello library. 
 target_link_libraries (morfeusz2_analyze morfeusz2)

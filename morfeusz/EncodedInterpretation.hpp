@@ -1,0 +1,32 @@
+/* 
+ * File:   interpretation.hpp
+ * Author: mlenart
+ *
+ * Created on November 4, 2013, 3:11 PM
+ */
+
+#ifndef INTERPRETATION_HPP
+#define	INTERPRETATION_HPP
+
+#include <string>
+#include <sstream>
+#include <iterator>
+#include "Tagset.hpp"
+
+using namespace std;
+
+struct EncodedLemma {
+    int suffixToCut;
+    string suffixToAdd;
+};
+
+/*
+ * Internal representation of an interpretation - with lemma encoded
+ */
+struct EncodedInterpretation {
+    EncodedLemma lemma;
+    int tag;
+    int nameClassifier;
+};
+
+#endif	/* INTERPRETATION_HPP */

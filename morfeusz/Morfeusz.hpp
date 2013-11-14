@@ -9,7 +9,8 @@
 #define	MORFEUSZ_HPP
 
 #include <string>
-#include "interpretations.hpp"
+#include "MorphInterpretation.hpp"
+//#include "interpretations.hpp"
 
 class Morfeusz;
 class AnalyzeResult;

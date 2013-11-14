@@ -11,8 +11,9 @@
       <in>Morfeusz.cpp</in>
       <in>Morfeusz.hpp</in>
       <in>MorphDeserializer.cpp</in>
+      <in>MorphInterpretation.cpp</in>
+      <in>MorphInterpretation.hpp</in>
       <in>Tagset.cpp</in>
-      <in>interpretations.cpp</in>
       <in>main.cpp</in>
       <in>morfeusz.cpp</in>
       <in>test_morph.cpp</in>
@@ -93,11 +94,11 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="morfeusz/Tagset.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool>
-        </ccTool>
+      <item path="morfeusz/MorphInterpretation.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="morfeusz/interpretations.cpp" ex="false" tool="1" flavor2="8">
+      <item path="morfeusz/MorphInterpretation.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="morfeusz/Tagset.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>

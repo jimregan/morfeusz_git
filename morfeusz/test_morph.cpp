@@ -9,10 +9,11 @@
 #include <sstream>
 #include <iostream>
 #include "fsa.hpp"
-#include "interpretations.hpp"
+#include "EncodedInterpretation.hpp"
 #include "utils.hpp"
 #include "MorphDeserializer.hpp"
 #include "Morfeusz.hpp"
+#include "MorphInterpretation.hpp"
 
 using namespace std;
 
@@ -27,13 +28,14 @@ void debug(const string& key, const vector<EncodedInterpretation> value) {
     cerr << "==================" << endl;
 }
 
-void debug(const string& key, const TaggedInterpretation& value) {
-    cerr << key << '\t' << value.toString() << endl;
-}
+//void debug(const string& key, const TaggedInterpretation& value) {
+//    cerr << key << '\t' << value.toString() << endl;
+//}
 
 void doTest(
-        const FSA<vector<EncodedInterpretation>>& fsa, 
-        const InterpretationsDecoder<TaggedInterpretation>& interpsConverter, 
+        const FSA<vector<EncodedInterpretation>>& fsa,
+        const Tagset& tagset,
+//        const InterpretationsDecoder<TaggedInterpretation>& interpsConverter, 
         const char* fname) {
     ifstream ifs;
     //    ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -41,28 +43,29 @@ void doTest(
     string line;
     while (getline(ifs, line)) {
         vector<string> splitVector(split(line, '\t'));
-        string key = splitVector[0];
+        string orth = splitVector[0];
         string lemma = splitVector[1];
         string tag = splitVector[2];
         string name = splitVector[3];
         vector<EncodedInterpretation> value2;
-        fsa.tryToRecognize(key.c_str(), value2);
+        fsa.tryToRecognize(orth.c_str(), value2);
         DEBUG("recognized "+to_string(value2.size()));
-        vector<TaggedInterpretation> parsedValues;
+//        vector<TaggedInterpretation> parsedValues;
         bool found = false;
-        for (EncodedInterpretation interp: value2) {
-            TaggedInterpretation parsedValue = interpsConverter.getInterpretation(key, interp);
+        for (EncodedInterpretation encodedInterp: value2) {
+//            TaggedInterpretation parsedValue = interpsConverter.getInterpretation(key, interp);
+            MorphInterpretation interp(0, 0, orth, encodedInterp, tagset);
 //            parsedValues.push_back(parsedValue);
-            debug(key, parsedValue);
-            if (lemma == parsedValue.lemma && tag == parsedValue.tag && name == parsedValue.name) {
+//            debug(orth, parsedValue);
+            if (lemma == interp.getLemma() && tag == interp.getTag() && name == interp.getName()) {
                 DEBUG("RECOGNIZED");
                 found = true;
             }
             else {
-                DEBUG("not matching "+parsedValue.lemma+ " " + parsedValue.tag + " " + parsedValue.name);
+                DEBUG("not matching "+interp.getLemma()+ " " + interp.getTag() + " " + interp.getName());
             }
         }
-        validate(found, "Failed to recognize " + key + " " + lemma + ":" + tag + ":" + name);
+        validate(found, "Failed to recognize " + orth + " " + lemma + ":" + tag + ":" + name);
 //        debug(key, value2);
 //        validate(fsa.tryToRecognize(key.c_str(), value2), "Failed to recognize " + key);
     }
@@ -79,10 +82,10 @@ int main(int argc, char** argv) {
     DEBUG("DONE read FSA");
     DEBUG("will read tagset");
     Tagset tagset(fsaData);
-    TaggedInterpretationsDecoder interpsDecoder(tagset);
+//    TaggedInterpretationsDecoder interpsDecoder(tagset);
     DEBUG("DONE read tagset");
     DEBUG("still alive");
-    doTest(*fsa, interpsDecoder, argv[2]);
+    doTest(*fsa, tagset, argv[2]);
     delete fsa;
     return 0;
 }
