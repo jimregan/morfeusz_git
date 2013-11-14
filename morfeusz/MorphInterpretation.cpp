@@ -42,6 +42,14 @@ MorphInterpretation::MorphInterpretation(
 MorphInterpretation::~MorphInterpretation() {
 }
 
+int MorphInterpretation::getStartNode() const {
+    return this->startNode;
+}
+
+int MorphInterpretation::getEndNode() const {
+    return this->endNode;
+}
+
 const std::string& MorphInterpretation::getOrth() const {
     return this->orth;
 }

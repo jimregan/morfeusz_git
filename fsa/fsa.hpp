@@ -15,6 +15,7 @@
 #include <exception>
 #include <string>
 #include <vector>
+#include <netinet/in.h>
 
 template <class T> class State;
 template <class T> class FSA;
@@ -82,6 +83,11 @@ public:
      * Create an FSA object from pointer
      */
     static FSA<T>* getFSA(const unsigned char* ptr, const Deserializer<T>& deserializer);
+    
+    /**
+     * Create an FSA object from file
+     */
+    static FSA<T>* getFSA(const std::string& filename, const Deserializer<T>& deserializer);
     
 protected:
 

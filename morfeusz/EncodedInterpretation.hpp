@@ -15,6 +15,9 @@
 
 using namespace std;
 
+/*
+ * Lemma in a compressed format (as in an automaton)
+ */
 struct EncodedLemma {
     int suffixToCut;
     string suffixToAdd;

@@ -21,6 +21,8 @@ public:
             const EncodedInterpretation& encodedInterp,
             const Tagset& tagset);
     virtual ~MorphInterpretation();
+    int getStartNode() const;
+    int getEndNode() const;
     const std::string& getOrth() const;
     const std::string& getLemma() const;
     int getTagnum() const;

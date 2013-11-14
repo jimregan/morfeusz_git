@@ -13,6 +13,7 @@
 #include <utility>
 #include <iostream>
 #include <vector>
+#include <string>
 #include <netinet/in.h>
 #include "utils.hpp"
 #include "const.hpp"
@@ -55,6 +56,11 @@ State<T> FSA<T>::getInitialState() const {
 }
 
 template <class T>
+FSA<T>* FSA<T>::getFSA(const std::string& filename, const Deserializer<T>& deserializer) {
+    return getFSA(readFile(filename.c_str()), deserializer);
+}
+
+template <class T>
 FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserializer) {
     
     uint32_t magicNumber = ntohl(*((uint32_t*) ptr));
@@ -64,7 +70,7 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
     
     uint8_t versionNum = *(ptr + VERSION_NUM_OFFSET);
     if (versionNum != VERSION_NUM) {
-        throw FSAException(string("Invalid version number: ") + to_string(versionNum) + ", should be: " + to_string(VERSION_NUM));
+        throw FSAException(string("Invalid version number: ") + std::to_string(versionNum) + ", should be: " + to_string(VERSION_NUM));
     }
     
     uint8_t implementationNum = *(ptr + IMPLEMENTATION_NUM_OFFSET);

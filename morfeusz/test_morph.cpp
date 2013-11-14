@@ -17,21 +17,6 @@
 
 using namespace std;
 
-void debug(const string& key, const vector<EncodedInterpretation> value) {
-    cerr << key << endl;
-    for (EncodedInterpretation i: value) {
-        cerr << "suffix to cut: " << i.lemma.suffixToCut << endl;
-        cerr << "suffix to add: " << i.lemma.suffixToAdd << endl;
-        cerr << "tag: " << i.tag << endl;
-        cerr << "name: " << i.nameClassifier << endl;
-    }
-    cerr << "==================" << endl;
-}
-
-//void debug(const string& key, const TaggedInterpretation& value) {
-//    cerr << key << '\t' << value.toString() << endl;
-//}
-
 void doTest(
         const FSA<vector<EncodedInterpretation>>& fsa,
         const Tagset& tagset,

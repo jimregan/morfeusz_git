@@ -9,8 +9,11 @@
 #define	MORFEUSZ_HPP
 
 #include <string>
+#include <vector>
+#include "EncodedInterpretation.hpp"
+#include "fsa.hpp"
 #include "MorphInterpretation.hpp"
-//#include "interpretations.hpp"
+#include "encoding/CharsetConverter.hpp"
 
 class Morfeusz;
 class AnalyzeResult;
@@ -18,21 +21,20 @@ class ResultsIterator;
 
 class Morfeusz {
 public:
-    
+    explicit Morfeusz(const std::string& filename);
+    virtual ~Morfeusz();
+//    Morfeusz(const Morfeusz& orig);
     AnalyzeResult analyze(const std::string& text);
 
-    Morfeusz();
-    Morfeusz(const Morfeusz& orig);
-    virtual ~Morfeusz();
+//    Morfeusz();
 private:
-    void processOneWord(const char*& inputData, int startNodeNum, vector<MorphInterpretation>& resInterps);
+    void processOneWord(const char*& inputData, int startNodeNum, std::vector<MorphInterpretation>& resInterps);
+    const FSA<std::vector<EncodedInterpretation>>* fsa;
+    CharsetConverter* charsetConverter;
 };
 
 class ResultsIterator {
 public:
-    ResultsIterator(
-                const std::string& text, 
-                const Morfeusz& morfeusz);
     ResultsIterator(
                 const char* startOfInput,
                 const char* endOfInput,

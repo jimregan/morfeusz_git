@@ -8,11 +8,13 @@
       <in>test_speed.cpp</in>
     </df>
     <df root="morfeusz" name="1">
+      <df name="encoding">
+        <in>CharsetConverter.cpp</in>
+        <in>CharsetConverter.hpp</in>
+      </df>
       <in>Morfeusz.cpp</in>
-      <in>Morfeusz.hpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
-      <in>MorphInterpretation.hpp</in>
       <in>Tagset.cpp</in>
       <in>main.cpp</in>
       <in>morfeusz.cpp</in>
@@ -49,19 +51,11 @@
           <executablePath>build/fsa/test_dict</executablePath>
         </makeTool>
       </makefileType>
-      <folder path="1">
+      <item path="fsa/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
             <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <item path="fsa/const.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/4.8/include</pElem>
           </incDir>
         </ccTool>
       </item>
@@ -86,32 +80,86 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="morfeusz/Morfeusz.hpp" ex="false" tool="3" flavor2="0">
+      <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="morfeusz/MorphDeserializer.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
         </ccTool>
       </item>
-      <item path="morfeusz/MorphInterpretation.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="morfeusz/MorphInterpretation.hpp" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="morfeusz/Tagset.cpp" ex="false" tool="1" flavor2="8">
+      <item path="morfeusz/MorphInterpretation.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>morfeusz</pElem>
+            <pElem>/usr/include/c++/4.8/bits</pElem>
+            <pElem>/usr/include/c++/4.8/ext</pElem>
+            <pElem>/usr/include/c++/4.8</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/4.8/bits</pElem>
+            <pElem>/usr/include/c++/4.8/debug</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/4.8/include</pElem>
+            <pElem>/usr/include/c++/4.8/backward</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/4.8</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
         </ccTool>
+      </item>
+      <item path="morfeusz/Tagset.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>morfeusz</pElem>
+            <pElem>/usr/include/c++/4.8/bits</pElem>
+            <pElem>/usr/include/c++/4.8/ext</pElem>
+            <pElem>/usr/include/c++/4.8</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/4.8/bits</pElem>
+            <pElem>/usr/include/c++/4.8/debug</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/4.8/include</pElem>
+            <pElem>fsa</pElem>
+            <pElem>/usr/include/c++/4.8/backward</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/4.8</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="morfeusz/encoding/CharsetConverter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="morfeusz/encoding/CharsetConverter.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/morfeusz.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>morfeusz</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/test_morph.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
         </ccTool>
       </item>
     </conf>
