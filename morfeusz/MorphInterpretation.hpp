@@ -36,8 +36,8 @@ private:
     std::string lemma;
     int tagnum;
     int namenum;
-    const std::string& tag;
-    const std::string& name;
+    std::string tag;
+    std::string name;
 };
 
 #endif	/* MORPHINTERPRETATION_HPP */

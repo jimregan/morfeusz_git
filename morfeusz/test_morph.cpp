@@ -18,7 +18,7 @@
 using namespace std;
 
 void doTest(
-        const FSA<vector<EncodedInterpretation>>& fsa,
+        const FSA<vector<InterpsGroup>>& fsa,
         const Tagset& tagset,
 //        const InterpretationsDecoder<TaggedInterpretation>& interpsConverter, 
         const char* fname) {
@@ -32,14 +32,15 @@ void doTest(
         string lemma = splitVector[1];
         string tag = splitVector[2];
         string name = splitVector[3];
-        vector<EncodedInterpretation> value2;
+        vector<InterpsGroup> value2;
         fsa.tryToRecognize(orth.c_str(), value2);
         DEBUG("recognized "+to_string(value2.size()));
 //        vector<TaggedInterpretation> parsedValues;
         bool found = false;
-        for (EncodedInterpretation encodedInterp: value2) {
+        for (InterpsGroup gi: value2)
+        for (MorphInterpretation interp: gi.getRealInterps(orth, tagset)) {
 //            TaggedInterpretation parsedValue = interpsConverter.getInterpretation(key, interp);
-            MorphInterpretation interp(0, 0, orth, encodedInterp, tagset);
+//            (0, 0, orth, encodedInterp, tagset);
 //            parsedValues.push_back(parsedValue);
 //            debug(orth, parsedValue);
             if (lemma == interp.getLemma() && tag == interp.getTag() && name == interp.getName()) {
@@ -62,10 +63,7 @@ int main(int argc, char** argv) {
     validate(argc == 3, "Must provide exactly two arguments - FSA filename, and dictionary filename.");
     const unsigned char* fsaData = readFile(argv[1]);
     MorphDeserializer deserializer;
-    DEBUG("will read FSA");
-    FSA<vector<EncodedInterpretation>>* fsa = FSA<vector<EncodedInterpretation>>::getFSA(fsaData, deserializer);
-    DEBUG("DONE read FSA");
-    DEBUG("will read tagset");
+    FSA<vector<InterpsGroup>>* fsa = FSA<vector<InterpsGroup>>::getFSA(fsaData, deserializer);
     Tagset tagset(fsaData);
 //    TaggedInterpretationsDecoder interpsDecoder(tagset);
     DEBUG("DONE read tagset");

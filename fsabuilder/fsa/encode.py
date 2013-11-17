@@ -61,10 +61,15 @@ class MorphEncoder(Encoder):
         res.append(firstByte)
         assert type(interpsList) == frozenset
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+            res.extend(self._encodeTypeNum(interp.typenum))
             res.extend(self._encodeLemma(interp.lemma))
             res.extend(self._encodeTagNum(interp.tagnum))
             res.extend(self._encodeNameNum(interp.namenum))
         return res
+    
+    def _encodeTypeNum(self, typenum):
+        assert typenum >= 0 and typenum < 256
+        return bytearray([typenum])
     
     def _encodeLemma(self, lemma):
         res = bytearray()

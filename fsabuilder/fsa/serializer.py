@@ -40,7 +40,6 @@ class Serializer(object):
         raise NotImplementedError('Not implemented')
     
     def fsa2bytearray(self):
-        
         res = bytearray()
         res.extend(self.serializePrologue(self.serializeTagset(self.fsa.tagset)))
         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))

@@ -14,7 +14,7 @@ class Lemma(object):
 
 class Interpretation(object):
     
-    def __init__(self, orth, base, tagnum, namenum, encoder):
+    def __init__(self, orth, base, tagnum, namenum, typenum, encoder):
         assert type(orth) == unicode
         assert type(base) == unicode
         root = u''
@@ -29,6 +29,7 @@ class Interpretation(object):
                            suffixToAdd=encoder.encodeWord(base[len(root):], lowercase=False))
         self.tagnum = tagnum
         self.namenum = namenum
+        self.typenum = typenum
     
     def getSortKey(self):
         return (self.lemma.cutLength, tuple(self.lemma.suffixToAdd), self.tagnum, self.namenum)
