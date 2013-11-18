@@ -6,6 +6,7 @@
  */
 
 #include <string>
+#include <iostream>
 #include "fsa.hpp"
 #include "utils.hpp"
 #include "Morfeusz.hpp"
@@ -18,18 +19,28 @@
 using namespace std;
 
 static FSA<vector<InterpsGroup >> *initializeFSA(const string& filename) {
+    cerr << "initialize FSA" << endl;
     static Deserializer < vector < InterpsGroup >> *deserializer
             = new MorphDeserializer();
     return FSA < vector < InterpsGroup >> ::getFSA(filename, *deserializer);
 }
 
 static CharsetConverter* initializeCharsetConverter() {
+    cerr << "initialize charset converter" << endl;
     static CharsetConverter* converter = new UTF8CharsetConverter();
     return converter;
 }
 
+static Tagset* initializeTagset(const string& filename) {
+    cerr << "initialize tagset" << endl;
+    static Tagset* tagset = new Tagset(readFile(filename.c_str()));
+    return tagset;
+}
+
 Morfeusz::Morfeusz(const string& filename)
-: fsa(initializeFSA(filename)), charsetConverter(initializeCharsetConverter()) {
+: fsa(initializeFSA(filename)), 
+        charsetConverter(initializeCharsetConverter()),
+        tagset(initializeTagset(filename)) {
 
 }
 
@@ -47,7 +58,7 @@ void Morfeusz::processOneWord(
     FlexionGraph graph(startNodeNum);
     const char* currInput = inputData;
     doProcessOneWord(currInput, inputEnd, accum, graph);
-    graph.appendToResults(this->tagset, results);
+    graph.appendToResults(*this->tagset, results);
     inputData = currInput;
 }
 
@@ -88,10 +99,14 @@ void Morfeusz::feedState(
     }
 }
 
-ResultsIterator Morfeusz::analyze(const std::string& text) {
+ResultsIterator Morfeusz::analyze(const string& text) {
     //    const char* textStart = text.c_str();
     //    const char* textEnd = text.c_str() + text.length();
     return ResultsIterator(text, *this);
+}
+
+void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results) {
+    
 }
 
 ResultsIterator::ResultsIterator(const string& text, const Morfeusz& morfeusz)

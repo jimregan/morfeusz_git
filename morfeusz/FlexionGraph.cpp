@@ -30,7 +30,7 @@ void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
 
 void FlexionGraph::appendToResults(const Tagset& tagset, std::vector<MorphInterpretation>& results) {
     int endNode = graph.size();
-    for (int i = 0; i < graph.size(); i++) {
+    for (unsigned int i = 0; i < graph.size(); i++) {
         vector<Edge>& edges = graph[i];
         for (Edge& e: edges) {
             int realStartNode = i + this->startNode;

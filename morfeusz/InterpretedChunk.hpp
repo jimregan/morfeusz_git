@@ -13,7 +13,7 @@
 struct InterpretedChunk {
     const char* chunk;
     long chunkLength;
-    InterpsGroup& interpsGroup;
+    InterpsGroup interpsGroup;
 };
 
 #endif	/* INTERPRETEDCHUNK_HPP */

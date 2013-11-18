@@ -32,15 +32,17 @@ public:
     virtual ~Morfeusz();
 //    Morfeusz(const Morfeusz& orig);
     ResultsIterator analyze(const std::string& text);
-
-//    Morfeusz();
-    friend class ResultsIterator;
-private:
+    void analyze(const std::string& text, std::vector<MorphInterpretation>& result);
+    
     void processOneWord(
         const char*& inputData,
         const char* inputEnd,
         const int startNodeNum, 
         std::vector<MorphInterpretation>& result) const;
+
+//    Morfeusz();
+    friend class ResultsIterator;
+private:
     
     void doProcessOneWord(
         const char*& inputData,
@@ -54,6 +56,7 @@ private:
     
     FSAType* fsa;
     CharsetConverter* charsetConverter;
+    Tagset* tagset;
 };
 
 class ResultsIterator {
