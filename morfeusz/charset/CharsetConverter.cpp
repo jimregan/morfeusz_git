@@ -1,16 +1,15 @@
-/* 
- * File:   EncodingConverter.cpp
- * Author: mlenart
- * 
- * Created on 14 listopad 2013, 17:28
- */
 
+#include <vector>
+#include <iterator>
 #include "utf8.h"
 #include "CharsetConverter.hpp"
+
+using namespace std;
 
 uint32_t UTF8CharsetConverter::next(const char*& it, const char* end) const {
     return utf8::next(it, end);
 }
-char* UTF8CharsetConverter::append(uint32_t cp, char* result) const {
-    return utf8::append(cp, result);
+
+void UTF8CharsetConverter::append(uint32_t cp, vector<char>& result) const {
+    utf8::append(cp, back_inserter(result));
 }

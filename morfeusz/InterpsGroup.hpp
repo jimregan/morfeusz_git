@@ -1,12 +1,12 @@
 /* 
  * File:   GroupedInterpretations.hpp
- * Author: lennyn
+ * Author: mlenart
  *
  * Created on November 16, 2013, 7:58 PM
  */
 
-#ifndef GROUPEDINTERPRETATIONS_HPP
-#define	GROUPEDINTERPRETATIONS_HPP
+#ifndef INTERPSGROUP_HPP
+#define	INTERPSGROUP_HPP
 
 #include <vector>
 #include <string>
@@ -26,7 +26,11 @@ public:
         
     }
     
-    std::vector<MorphInterpretation> getRealInterps(const std::string& orth, const Tagset& tagset) {
+    std::vector<MorphInterpretation> getRealInterps(
+                const std::string& orth, 
+                const int startNode, 
+                const int endNode,
+                const Tagset& tagset) {
         std::vector<MorphInterpretation> res;
         for (EncodedInterpretation& ei: interps) {
             res.push_back(MorphInterpretation(startNode, endNode, orth, ei, tagset));
@@ -39,8 +43,7 @@ public:
     }
     
     int type;
-    int startNode;
-    int endNode;
+    
 private:
     std::vector<EncodedInterpretation> interps;
 };

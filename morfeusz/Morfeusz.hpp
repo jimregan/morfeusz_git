@@ -16,6 +16,8 @@
 #include "MorphInterpretation.hpp"
 #include "InterpsGroup.hpp"
 #include "charset/CharsetConverter.hpp"
+#include "InterpretedChunk.hpp"
+#include "FlexionGraph.hpp"
 
 class Morfeusz;
 //class AnalyzeResult;
@@ -34,16 +36,25 @@ public:
 //    Morfeusz();
     friend class ResultsIterator;
 private:
-    template <class OutputIterator>
-//    void processOneWord(const char*& inputData, int startNodeNum, OutputIterator resInterps) const;
+    void processOneWord(
+        const char*& inputData,
+        const char* inputEnd,
+        const int startNodeNum, 
+        std::vector<MorphInterpretation>& result) const;
     
-    int doProcessOneWord(const char*& inputData, int startNodeNum, std::vector<InterpsGroup>& interps) const;
+    void doProcessOneWord(
+        const char*& inputData,
+        const char* inputEnd,
+        std::vector<InterpretedChunk>& accum,
+        FlexionGraph& graph) const;
     
-    const FSAType* fsa;
+    void feedState(
+        StateType& state,
+        const int codepoint) const;
+    
+    FSAType* fsa;
     CharsetConverter* charsetConverter;
 };
-
-#include "Morfeusz_impl.hpp"
 
 class ResultsIterator {
 public:

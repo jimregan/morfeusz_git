@@ -38,7 +38,7 @@ void doTest(
 //        vector<TaggedInterpretation> parsedValues;
         bool found = false;
         for (InterpsGroup gi: value2)
-        for (MorphInterpretation interp: gi.getRealInterps(orth, tagset)) {
+        for (MorphInterpretation interp: gi.getRealInterps(orth, 0, 0, tagset)) {
 //            TaggedInterpretation parsedValue = interpsConverter.getInterpretation(key, interp);
 //            (0, 0, orth, encodedInterp, tagset);
 //            parsedValues.push_back(parsedValue);
