@@ -6,6 +6,10 @@
 
 using namespace std;
 
+uint32_t UTF8CharsetConverter::peek(const char*& it, const char* end) const {
+    return utf8::peek_next(it, end);
+}
+
 uint32_t UTF8CharsetConverter::next(const char*& it, const char* end) const {
     return utf8::next(it, end);
 }

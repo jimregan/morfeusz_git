@@ -20,6 +20,7 @@ public:
             const std::string& orth,
             const EncodedInterpretation& encodedInterp,
             const Tagset& tagset);
+    static MorphInterpretation createIgn(int startNode, const std::string& orth, const Tagset& tagset);
     virtual ~MorphInterpretation();
     int getStartNode() const;
     int getEndNode() const;
@@ -30,6 +31,10 @@ public:
     const std::string& getTag() const;
     const std::string& getName() const;
 private:
+    MorphInterpretation(
+            int startNode,
+            const std::string& orth,
+            const Tagset& tagset);
     int startNode;
     int endNode;
     std::string orth;

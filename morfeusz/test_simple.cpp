@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 
+#include "utils.hpp"
 #include "Morfeusz.hpp"
 #include "MorphInterpretation.hpp"
 
@@ -16,11 +17,11 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-    Morfeusz morfeusz(argv[1]);
+    Morfeusz morfeusz("/tmp/test-SIMPLE-PoliMorfSmall.tab.fsa");
     vector<MorphInterpretation> res;
-    string word = "mijałem";
-    const char* ptr = word.c_str();
-    morfeusz.processOneWord(ptr, word.c_str() + word.size(), 0, res);
+    string word = "  mijałem   fasdfasd abdominalności   ";
+    morfeusz.analyze(word, res);
+    DEBUG("znaleziono "+to_string(res.size()));
     for (MorphInterpretation& mi: res) {
         cerr << mi.getStartNode() << " " << mi.getEndNode() << " " << mi.getLemma() << " " << mi.getTag() << " " << mi.getName() << endl;
     }

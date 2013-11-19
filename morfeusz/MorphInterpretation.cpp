@@ -39,6 +39,25 @@ MorphInterpretation::MorphInterpretation(
 
 }
 
+MorphInterpretation::MorphInterpretation(
+        int startNode,
+        const std::string& orth,
+        const Tagset& tagset)
+: startNode(startNode), 
+        endNode(startNode + 1), 
+        orth(orth),
+        lemma(orth),
+        tagnum(0),
+        namenum(0),
+        tag(tagset.getTag(0)),
+        name(tagset.getName(0)) {
+
+}
+
+MorphInterpretation MorphInterpretation::createIgn(int startNode, const std::string& orth, const Tagset& tagset) {
+    return MorphInterpretation(startNode, orth, tagset);
+}
+
 MorphInterpretation::~MorphInterpretation() {
 }
 

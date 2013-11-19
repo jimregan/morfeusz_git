@@ -17,9 +17,9 @@
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
       <in>main.cpp</in>
-      <in>morfeusz.cpp</in>
       <in>test_morfeusz.cpp</in>
       <in>test_morph.cpp</in>
+      <in>test_simple.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -49,7 +49,7 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/fsa/test_dict</executablePath>
+          <executablePath>build/morfeusz/test_simple</executablePath>
         </makeTool>
       </makefileType>
       <folder path="1">
@@ -120,10 +120,6 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="morfeusz/morfeusz.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool>
-        </ccTool>
-      </item>
       <item path="morfeusz/test_morfeusz.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
         </ccTool>
@@ -132,12 +128,8 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="morfeusz/test_simple.cpp" ex="false" tool="1" flavor2="0">
+      <item path="morfeusz/test_simple.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
     </conf>

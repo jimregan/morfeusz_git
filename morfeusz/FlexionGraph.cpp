@@ -1,4 +1,6 @@
 
+#include <string>
+#include "utils.hpp"
 #include "FlexionGraph.hpp"
 
 FlexionGraph::FlexionGraph(int startNode)
@@ -6,29 +8,56 @@ FlexionGraph::FlexionGraph(int startNode)
     
 }
 
-void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
+static inline void debugPath(const std::vector<InterpretedChunk>& path) {
     for (const InterpretedChunk& chunk: path) {
-        if (&chunk == &(path.back())) {
+        std::string text(chunk.chunk, chunk.chunkLength);
+        DEBUG(text);
+        DEBUG(chunk.chunkLength);
+    }
+}
+
+void FlexionGraph::addStartEdge(const Edge& e) {
+    if (this->graph.empty()) {
+        this->graph.push_back(vector<Edge>());
+    }
+    this->graph[0].push_back(e);
+}
+    
+void FlexionGraph::addMiddleEdge(const Edge& e) {
+    this->graph.push_back(vector<Edge>(1, e));
+}
+
+void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
+//    debugPath(path);
+    for (const InterpretedChunk& chunk: path) {
+        if (&chunk == &(path.front()) 
+                && &chunk == &(path.back())) {
             Edge e = { chunk, -1 };
-            vector<Edge> v;
-            v.push_back(e);
-            this->graph.push_back(v);
-//            this->graph[node].push_back(e);
+            this->addStartEdge(e);
         }
         else if (&chunk == &(path.front())) {
-            Edge e = { chunk, (int) this->graph.size() };
-            this->graph[0].push_back(e);
+            Edge e = { chunk, (int) this->graph.size() + 1 };
+            this->addStartEdge(e);
+        }
+        else if (&chunk == &(path.back())) {
+            Edge e = { chunk, -1 };
+            this->addMiddleEdge(e);
         }
         else {
-            Edge e = { chunk, (int) this->graph.size() };
-            vector<Edge> v;
-            v.push_back(e);
-            this->graph.push_back(v);
+            Edge e = { chunk, (int) this->graph.size() + 1 };
+            this->addMiddleEdge(e);
         }
     }
 }
 
+void FlexionGraph::minimizeGraph() {
+    if (this->graph.size() > 2) {
+        
+    }
+}
+
 void FlexionGraph::appendToResults(const Tagset& tagset, std::vector<MorphInterpretation>& results) {
+    this->minimizeGraph();
     int endNode = graph.size();
     for (unsigned int i = 0; i < graph.size(); i++) {
         vector<Edge>& edges = graph[i];
@@ -40,4 +69,8 @@ void FlexionGraph::appendToResults(const Tagset& tagset, std::vector<MorphInterp
             results.insert(results.end(), interps.begin(), interps.end());
         }
     }
+}
+
+bool FlexionGraph::empty() const {
+    return this->graph.empty();
 }

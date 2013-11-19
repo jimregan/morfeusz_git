@@ -31,8 +31,6 @@ struct EncodedInterpretation {
     int type;
     int tag;
     int nameClassifier;
-    int startNode;
-    int endNode;
 };
 
 #endif	/* INTERPRETATION_HPP */

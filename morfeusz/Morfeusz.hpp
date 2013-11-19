@@ -1,6 +1,6 @@
 /* 
  * File:   Morfeusz.hpp
- * Author: lennyn
+ * Author: mlenart
  *
  * Created on November 13, 2013, 5:21 PM
  */
@@ -37,7 +37,7 @@ public:
     void processOneWord(
         const char*& inputData,
         const char* inputEnd,
-        const int startNodeNum, 
+        int startNodeNum, 
         std::vector<MorphInterpretation>& result) const;
 
 //    Morfeusz();
@@ -52,7 +52,12 @@ private:
     
     void feedState(
         StateType& state,
-        const int codepoint) const;
+        int codepoint) const;
+    
+    void appendIgnotiumToResults(
+        const std::string& word,
+        int startNodeNum,
+        std::vector<MorphInterpretation>& results) const;
     
     FSAType* fsa;
     CharsetConverter* charsetConverter;

@@ -2,7 +2,7 @@
 
 [TAGS]
 
-0	adj:pl:acc:m1.p1:com
+0	ign
 1	adj:pl:acc:m1.p1:pos
 2	adj:pl:acc:m1.p1:sup
 3	adj:pl:acc:m2.m3.f.n1.n2.p2.p3:com
@@ -576,6 +576,7 @@
 571	winien:sg:f:imperf
 572	winien:sg:m1.m2.m3:imperf
 573	winien:sg:n1.n2:imperf
+574	adj:pl:acc:m1.p1:com
 
 [NAMES]
 

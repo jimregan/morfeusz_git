@@ -38,27 +38,37 @@ static Tagset* initializeTagset(const string& filename) {
 }
 
 Morfeusz::Morfeusz(const string& filename)
-: fsa(initializeFSA(filename)), 
-        charsetConverter(initializeCharsetConverter()),
-        tagset(initializeTagset(filename)) {
+: fsa(initializeFSA(filename)),
+charsetConverter(initializeCharsetConverter()),
+tagset(initializeTagset(filename)) {
 
 }
 
 Morfeusz::~Morfeusz() {
-    delete &this->fsa;
-    delete &this->charsetConverter;
+    //    delete &this->fsa;
+    //    delete &this->charsetConverter;
 }
 
 void Morfeusz::processOneWord(
         const char*& inputData,
         const char* inputEnd,
-        const int startNodeNum,
+        int startNodeNum,
         std::vector<MorphInterpretation>& results) const {
+    while (inputData != inputEnd 
+            && isEndOfWord(this->charsetConverter->peek(inputData, inputEnd))) {
+        this->charsetConverter->next(inputData, inputEnd);
+    }
+    const char* wordStart = inputData;
     vector<InterpretedChunk> accum;
     FlexionGraph graph(startNodeNum);
     const char* currInput = inputData;
     doProcessOneWord(currInput, inputEnd, accum, graph);
-    graph.appendToResults(*this->tagset, results);
+    if (!graph.empty()) {
+        graph.appendToResults(*this->tagset, results);
+    }
+    else if (wordStart != currInput) {
+        this->appendIgnotiumToResults(string(wordStart, currInput), startNodeNum, results);
+    }
     inputData = currInput;
 }
 
@@ -67,36 +77,54 @@ void Morfeusz::doProcessOneWord(
         const char* inputEnd,
         vector<InterpretedChunk>& accum,
         FlexionGraph& graph) const {
+    bool endOfWord = inputData == inputEnd;
     const char* currInput = inputData;
-    StateType state = this->fsa->getInitialState();
-    int codepoint = this->charsetConverter->next(currInput, inputEnd);
+    const char* prevInput = inputData;
+    int codepoint = endOfWord ? 0 : this->charsetConverter->next(currInput, inputEnd);
     
-    if (!accum.empty() && isEndOfWord(codepoint)) {
-        graph.addPath(accum);
-    }
-    else
-        while (!isEndOfWord(codepoint)) {
-            this->feedState(state, codepoint);
-            codepoint = this->charsetConverter->next(currInput, inputEnd);
-            if (state.isAccepting()) {
-                for (InterpsGroup& ig : state.getValue()) {
-                    InterpretedChunk ic = {inputData, currInput - inputData, ig};
-                    accum.push_back(ic);
-                    doProcessOneWord(currInput, inputEnd, accum, graph);
-                    accum.pop_back();
-                }
+    StateType state = this->fsa->getInitialState();
+
+    while (!isEndOfWord(codepoint)) {
+        this->feedState(state, codepoint);
+        if (state.isAccepting()) {
+            for (InterpsGroup& ig : state.getValue()) {
+                InterpretedChunk ic = {inputData, currInput - inputData, ig};
+                accum.push_back(ic);
+                const char* newCurrInput = currInput;
+                doProcessOneWord(newCurrInput, inputEnd, accum, graph);
+                accum.pop_back();
             }
         }
+        prevInput = currInput;
+        codepoint = currInput == inputEnd ? 0 : this->charsetConverter->next(currInput, inputEnd);
+    }
+    if (state.isAccepting()) {
+        for (InterpsGroup& ig : state.getValue()) {
+            InterpretedChunk ic = {inputData, prevInput - inputData, ig};
+            accum.push_back(ic);
+            graph.addPath(accum);
+            accum.pop_back();
+        }
+    }
+    inputData = currInput;
 }
 
 void Morfeusz::feedState(
         StateType& state,
-        const int codepoint) const {
+        int codepoint) const {
     vector<char> chars;
     this->charsetConverter->append(codepoint, chars);
-    for (char c: chars) {
+    for (char c : chars) {
         state.proceedToNext(c);
     }
+}
+
+void Morfeusz::appendIgnotiumToResults(
+        const string& word,
+        int startNodeNum,
+        std::vector<MorphInterpretation>& results) const {
+    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, *this->tagset);
+    results.push_back(interp);
 }
 
 ResultsIterator Morfeusz::analyze(const string& text) {
@@ -106,7 +134,12 @@ ResultsIterator Morfeusz::analyze(const string& text) {
 }
 
 void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results) {
-    
+    const char* input = text.c_str();
+    const char* inputEnd = input + text.length();
+    while (input != inputEnd) {
+        int startNode = results.empty() ? 0 : results.back().getEndNode();
+        this->processOneWord(input, inputEnd, startNode, results);
+    }
 }
 
 ResultsIterator::ResultsIterator(const string& text, const Morfeusz& morfeusz)
