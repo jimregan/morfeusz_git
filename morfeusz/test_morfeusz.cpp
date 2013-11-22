@@ -30,6 +30,7 @@ void doTest(
     ifs.open(inputFilename, ios::binary);
     string line;
     while (getline(ifs, line)) {
+        DEBUG(line);
         AnalyzeResult res(morfeusz.analyze(line));
         while (res.iterator != res.end) {
             debug(*res);

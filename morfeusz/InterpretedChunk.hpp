@@ -8,11 +8,13 @@
 #ifndef INTERPRETEDCHUNK_HPP
 #define	INTERPRETEDCHUNK_HPP
 
+#include <vector>
 #include "InterpsGroup.hpp"
 
 struct InterpretedChunk {
-    const char* chunk;
-    long chunkLength;
+    const char* chunkStartPtr;
+    std::vector<uint32_t> originalCodepoints;
+    std::vector<uint32_t> lowercaseCodepoints;
     InterpsGroup interpsGroup;
 };
 

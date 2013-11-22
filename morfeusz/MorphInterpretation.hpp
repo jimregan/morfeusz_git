@@ -18,10 +18,13 @@ public:
             int startNode,
             int endNode,
             const std::string& orth,
-            const EncodedInterpretation& encodedInterp,
+            const std::string& lemma,
+            int tagnum,
+            int namenum,
+//            const EncodedInterpretation& encodedInterp,
             const Tagset& tagset);
     static MorphInterpretation createIgn(int startNode, const std::string& orth, const Tagset& tagset);
-    virtual ~MorphInterpretation();
+//    virtual ~MorphInterpretation();
     int getStartNode() const;
     int getEndNode() const;
     const std::string& getOrth() const;

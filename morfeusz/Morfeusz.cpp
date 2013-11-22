@@ -11,6 +11,7 @@
 #include "utils.hpp"
 #include "Morfeusz.hpp"
 #include "MorphDeserializer.hpp"
+#include "InterpretedChunksDecoder.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
 #include "charset/CaseConverter.hpp"
@@ -48,7 +49,8 @@ Morfeusz::Morfeusz(const string& filename)
 : fsa(initializeFSA(filename)),
 charsetConverter(initializeCharsetConverter()),
 tagset(initializeTagset(filename)),
-caseConverter(initializeCaseConverter()) {
+caseConverter(initializeCaseConverter()),
+caseSensitive(true) {
 
 }
 
@@ -68,11 +70,20 @@ void Morfeusz::processOneWord(
     }
     const char* wordStart = inputData;
     vector<InterpretedChunk> accum;
-    FlexionGraph graph(startNodeNum);
+    FlexionGraph graph;
     const char* currInput = inputData;
     doProcessOneWord(currInput, inputEnd, accum, graph);
     if (!graph.empty()) {
-        graph.appendToResults(*this->tagset, results);
+        InterpretedChunksDecoder interpretedChunksDecoder(*tagset, *charsetConverter);
+        int srcNode = startNodeNum;
+        for (vector<FlexionGraph::Edge>& edges: graph.getTheGraph()) {
+            for (FlexionGraph::Edge& e: edges) {
+                int targetNode = startNodeNum + e.nextNode;
+                interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, back_inserter(results));
+            }
+            srcNode++;
+        }
+//        graph.getResults(*this->tagset, results);
     }
     else if (wordStart != currInput) {
         this->appendIgnotiumToResults(string(wordStart, currInput), startNodeNum, results);
@@ -88,15 +99,21 @@ void Morfeusz::doProcessOneWord(
     bool endOfWord = inputData == inputEnd;
     const char* currInput = inputData;
     const char* prevInput = inputData;
-    int codepoint = endOfWord ? 0 : this->charsetConverter->next(currInput, inputEnd);
+    uint32_t codepoint = endOfWord ? 0 : this->charsetConverter->next(currInput, inputEnd);
+//    UnicodeChunk uchunk(*(this->charsetConverter), *(this->caseConverter));
+    vector<uint32_t> originalCodepoints;
+    vector<uint32_t> lowercaseCodepoints;
     
     StateType state = this->fsa->getInitialState();
 
     while (!isEndOfWord(codepoint)) {
-        this->feedState(state, this->caseConverter->toLower(codepoint));
+        uint32_t lowerCP = this->caseConverter->toLower(codepoint);
+        originalCodepoints.push_back(codepoint);
+        lowercaseCodepoints.push_back(lowerCP);
+        this->feedState(state, lowerCP);
         if (state.isAccepting()) {
             for (InterpsGroup& ig : state.getValue()) {
-                InterpretedChunk ic = {inputData, currInput - inputData, ig};
+                InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
                 accum.push_back(ic);
                 const char* newCurrInput = currInput;
                 doProcessOneWord(newCurrInput, inputEnd, accum, graph);
@@ -108,7 +125,7 @@ void Morfeusz::doProcessOneWord(
     }
     if (state.isAccepting()) {
         for (InterpsGroup& ig : state.getValue()) {
-            InterpretedChunk ic = {inputData, prevInput - inputData, ig};
+            InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
             accum.push_back(ic);
             graph.addPath(accum);
             accum.pop_back();
@@ -120,7 +137,7 @@ void Morfeusz::doProcessOneWord(
 void Morfeusz::feedState(
         StateType& state,
         int codepoint) const {
-    vector<char> chars;
+    string chars;
     this->charsetConverter->append(codepoint, chars);
     for (char c : chars) {
         state.proceedToNext(c);
@@ -146,6 +163,7 @@ void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results)
     const char* inputEnd = input + text.length();
     while (input != inputEnd) {
         int startNode = results.empty() ? 0 : results.back().getEndNode();
+        DEBUG("process "+string(input, inputEnd));
         this->processOneWord(input, inputEnd, startNode, results);
     }
 }

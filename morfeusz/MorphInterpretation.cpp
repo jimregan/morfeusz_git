@@ -25,17 +25,19 @@ static string convertLemma(
 MorphInterpretation::MorphInterpretation(
         int startNode,
         int endNode,
-        const std::string& orth,
-        const EncodedInterpretation& encodedInterp,
+        const string& orth,
+        const string& lemma,
+        int tagnum,
+        int namenum,
         const Tagset& tagset)
 : startNode(startNode), 
         endNode(endNode), 
         orth(orth),
-        lemma(convertLemma(orth, encodedInterp.lemma)),
-        tagnum(encodedInterp.tag),
-        namenum(encodedInterp.nameClassifier),
-        tag(tagset.getTag(encodedInterp.tag)),
-        name(tagset.getName(encodedInterp.nameClassifier)) {
+        lemma(lemma),
+        tagnum(tagnum),
+        namenum(namenum),
+        tag(tagset.getTag(tagnum)),
+        name(tagset.getName(namenum)) {
 
 }
 
@@ -56,9 +58,6 @@ MorphInterpretation::MorphInterpretation(
 
 MorphInterpretation MorphInterpretation::createIgn(int startNode, const std::string& orth, const Tagset& tagset) {
     return MorphInterpretation(startNode, orth, tagset);
-}
-
-MorphInterpretation::~MorphInterpretation() {
 }
 
 int MorphInterpretation::getStartNode() const {

@@ -37,20 +37,20 @@ void doTest(
         DEBUG("recognized "+to_string(value2.size()));
 //        vector<TaggedInterpretation> parsedValues;
         bool found = false;
-        for (InterpsGroup gi: value2)
-        for (MorphInterpretation interp: gi.getRealInterps(orth, 0, 0, tagset)) {
-//            TaggedInterpretation parsedValue = interpsConverter.getInterpretation(key, interp);
-//            (0, 0, orth, encodedInterp, tagset);
-//            parsedValues.push_back(parsedValue);
-//            debug(orth, parsedValue);
-            if (lemma == interp.getLemma() && tag == interp.getTag() && name == interp.getName()) {
-                DEBUG("RECOGNIZED");
-                found = true;
-            }
-            else {
-                DEBUG("not matching "+interp.getLemma()+ " " + interp.getTag() + " " + interp.getName());
-            }
-        }
+//        for (InterpsGroup gi: value2)
+//        for (MorphInterpretation interp: gi.getRealInterps(orth, 0, 0, tagset)) {
+////            TaggedInterpretation parsedValue = interpsConverter.getInterpretation(key, interp);
+////            (0, 0, orth, encodedInterp, tagset);
+////            parsedValues.push_back(parsedValue);
+////            debug(orth, parsedValue);
+//            if (lemma == interp.getLemma() && tag == interp.getTag() && name == interp.getName()) {
+//                DEBUG("RECOGNIZED");
+//                found = true;
+//            }
+//            else {
+//                DEBUG("not matching "+interp.getLemma()+ " " + interp.getTag() + " " + interp.getName());
+//            }
+//        }
         validate(found, "Failed to recognize " + orth + " " + lemma + ":" + tag + ":" + name);
 //        debug(key, value2);
 //        validate(fsa.tryToRecognize(key.c_str(), value2), "Failed to recognize " + key);
@@ -60,15 +60,15 @@ void doTest(
 
 int main(int argc, char** argv) {
     DEBUG("start test");
-    validate(argc == 3, "Must provide exactly two arguments - FSA filename, and dictionary filename.");
-    const unsigned char* fsaData = readFile(argv[1]);
-    MorphDeserializer deserializer;
-    FSA<vector<InterpsGroup>>* fsa = FSA<vector<InterpsGroup>>::getFSA(fsaData, deserializer);
-    Tagset tagset(fsaData);
-//    TaggedInterpretationsDecoder interpsDecoder(tagset);
-    DEBUG("DONE read tagset");
-    DEBUG("still alive");
-    doTest(*fsa, tagset, argv[2]);
-    delete fsa;
+//    validate(argc == 3, "Must provide exactly two arguments - FSA filename, and dictionary filename.");
+//    const unsigned char* fsaData = readFile(argv[1]);
+//    MorphDeserializer deserializer;
+//    FSA<vector<InterpsGroup>>* fsa = FSA<vector<InterpsGroup>>::getFSA(fsaData, deserializer);
+//    Tagset tagset(fsaData);
+////    TaggedInterpretationsDecoder interpsDecoder(tagset);
+//    DEBUG("DONE read tagset");
+//    DEBUG("still alive");
+//    doTest(*fsa, tagset, argv[2]);
+//    delete fsa;
     return 0;
 }

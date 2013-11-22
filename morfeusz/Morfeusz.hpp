@@ -24,46 +24,48 @@ class Morfeusz;
 //class AnalyzeResult;
 class ResultsIterator;
 
-typedef FSA<std::vector<InterpsGroup>> FSAType;
-typedef State<std::vector<InterpsGroup>> StateType;
+typedef FSA<std::vector<InterpsGroup >> FSAType;
+typedef State<std::vector<InterpsGroup >> StateType;
 
 class Morfeusz {
 public:
     explicit Morfeusz(const std::string& filename);
     virtual ~Morfeusz();
-//    Morfeusz(const Morfeusz& orig);
+    //    Morfeusz(const Morfeusz& orig);
     ResultsIterator analyze(const std::string& text);
     void analyze(const std::string& text, std::vector<MorphInterpretation>& result);
-    
-    void processOneWord(
-        const char*& inputData,
-        const char* inputEnd,
-        int startNodeNum, 
-        std::vector<MorphInterpretation>& result) const;
 
-//    Morfeusz();
+    void processOneWord(
+            const char*& inputData,
+            const char* inputEnd,
+            int startNodeNum,
+            std::vector<MorphInterpretation>& result) const;
+
+    //    Morfeusz();
     friend class ResultsIterator;
 private:
-    
+
     void doProcessOneWord(
-        const char*& inputData,
-        const char* inputEnd,
-        std::vector<InterpretedChunk>& accum,
-        FlexionGraph& graph) const;
-    
+            const char*& inputData,
+            const char* inputEnd,
+            std::vector<InterpretedChunk>& accum,
+            FlexionGraph& graph) const;
+
     void feedState(
-        StateType& state,
-        int codepoint) const;
-    
+            StateType& state,
+            int codepoint) const;
+
     void appendIgnotiumToResults(
-        const std::string& word,
-        int startNodeNum,
-        std::vector<MorphInterpretation>& results) const;
-    
+            const std::string& word,
+            int startNodeNum,
+            std::vector<MorphInterpretation>& results) const;
+
     FSAType* fsa;
     CharsetConverter* charsetConverter;
     Tagset* tagset;
     CaseConverter* caseConverter;
+
+    bool caseSensitive;
 };
 
 class ResultsIterator {

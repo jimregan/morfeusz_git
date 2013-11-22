@@ -14,6 +14,7 @@
         <in>case_folding.cpp</in>
       </df>
       <in>FlexionGraph.cpp</in>
+      <in>InterpretedChunksDecoder.hpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
@@ -94,6 +95,11 @@
       <item path="morfeusz/FlexionGraph.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="morfeusz/InterpretedChunksDecoder.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>

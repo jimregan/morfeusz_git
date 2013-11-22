@@ -9,51 +9,59 @@
 #define	FLEXIONGRAPH_HPP
 
 #include <vector>
+#include <set>
+#include <utility>
 #include "InterpretedChunk.hpp"
-
-struct Edge {
-    InterpretedChunk chunk;
-    int nextNode;
-};
-
-//struct EdgeLabel {
-//    int type;
-//    const char* textStart;
-//    int textLength;
-//    
-//    bool operator==(const EdgeLabel &el) const {
-//        return this->type == el.type 
-//                && this->textStart == el.textStart
-//                && this->textLength == el.textLength;
-//    }
-//
-//    bool operator<(const coord &o) {
-//        return x < o.x || (x == o.x && y < o.y);
-//    }
-//};
 
 class FlexionGraph {
 public:
-    
-    explicit FlexionGraph(int startNode);
-    
+
+    struct Edge {
+        InterpretedChunk chunk;
+        int nextNode;
+    };
+
     void addPath(const std::vector<InterpretedChunk>& path);
-    
-    void appendToResults(const Tagset& tagset, std::vector<MorphInterpretation>& results);
-    
+
+    //    void getResults(const Tagset& tagset, const CharsetConverter& charsetConverter, std::vector<MorphInterpretation>& results);
+
+    std::vector< std::vector<FlexionGraph::Edge> >& getTheGraph() {
+        repairLastNodeNumbers();
+        minimizeGraph();
+        return this->graph;
+    }
+
     bool empty() const;
-    
-//    virtual ~FlexionGraph();
+
+
+    //    virtual ~FlexionGraph();
 private:
-    
+
+    typedef std::pair<const char*, int> PathElement;
+    typedef std::set<PathElement> Path;
+
     void addStartEdge(const Edge& e);
-    
+
     void addMiddleEdge(const Edge& e);
-    
+
     void minimizeGraph();
+
+    bool canMergeNodes(unsigned int node1, unsigned int node2);
+
+    void doMergeNodes(unsigned int node1, unsigned int node2);
+
+    bool tryToMergeTwoNodes();
+
+    std::set<Path> getPossiblePaths(unsigned int node);
+
+    void redirectEdges(unsigned int fromNode, unsigned int toNode);
+
+    void doRemoveNode(unsigned int node);
     
-    int startNode;
+    void repairLastNodeNumbers();
+
     std::vector< std::vector<Edge> > graph;
+    std::vector< const char* > node2ChunkStartPtr;
 };
 
 #endif	/* FLEXIONGRAPH_HPP */

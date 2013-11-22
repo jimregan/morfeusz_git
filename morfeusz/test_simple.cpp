@@ -18,8 +18,9 @@ using namespace std;
  */
 int main(int argc, char** argv) {
     Morfeusz morfeusz("/tmp/test-SIMPLE-PoliMorfSmall.tab.fsa");
+    DEBUG("żyję");
     vector<MorphInterpretation> res;
-    string word = "  mijałem   fasdfasd abdominalności   ";
+    string word = "  mijałem   fasASDfasd abdOminalności   ";
     morfeusz.analyze(word, res);
     DEBUG("znaleziono "+to_string(res.size()));
     for (MorphInterpretation& mi: res) {
