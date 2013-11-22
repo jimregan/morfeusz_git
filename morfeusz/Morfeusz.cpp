@@ -13,6 +13,7 @@
 #include "MorphDeserializer.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
+#include "charset/CaseConverter.hpp"
 
 // TODO - konstruktor kopiujący działający Tak-Jak-Trzeba
 
@@ -37,10 +38,17 @@ static Tagset* initializeTagset(const string& filename) {
     return tagset;
 }
 
+static CaseConverter* initializeCaseConverter() {
+    cerr << "initialize case converter" << endl;
+    static CaseConverter* cc = new CaseConverter();
+    return cc;
+}
+
 Morfeusz::Morfeusz(const string& filename)
 : fsa(initializeFSA(filename)),
 charsetConverter(initializeCharsetConverter()),
-tagset(initializeTagset(filename)) {
+tagset(initializeTagset(filename)),
+caseConverter(initializeCaseConverter()) {
 
 }
 
@@ -85,7 +93,7 @@ void Morfeusz::doProcessOneWord(
     StateType state = this->fsa->getInitialState();
 
     while (!isEndOfWord(codepoint)) {
-        this->feedState(state, codepoint);
+        this->feedState(state, this->caseConverter->toLower(codepoint));
         if (state.isAccepting()) {
             for (InterpsGroup& ig : state.getValue()) {
                 InterpretedChunk ic = {inputData, currInput - inputData, ig};

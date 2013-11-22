@@ -12,7 +12,7 @@
 
 bool isEndOfWord(int codepoint) {
     static std::set<int> whitespaces = { 0x00, 0x0A, 0x20 };
-    return whitespaces.count(codepoint) != 0;
+    return whitespaces.count(codepoint);
 }
 
 #endif	/* CHARSET_UTILS_HPP */

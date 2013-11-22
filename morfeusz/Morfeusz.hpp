@@ -16,6 +16,7 @@
 #include "MorphInterpretation.hpp"
 #include "InterpsGroup.hpp"
 #include "charset/CharsetConverter.hpp"
+#include "charset/CaseConverter.hpp"
 #include "InterpretedChunk.hpp"
 #include "FlexionGraph.hpp"
 
@@ -62,6 +63,7 @@ private:
     FSAType* fsa;
     CharsetConverter* charsetConverter;
     Tagset* tagset;
+    CaseConverter* caseConverter;
 };
 
 class ResultsIterator {
