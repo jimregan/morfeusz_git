@@ -74,7 +74,7 @@ void Morfeusz::processOneWord(
     const char* currInput = inputData;
     doProcessOneWord(currInput, inputEnd, accum, graph);
     if (!graph.empty()) {
-        InterpretedChunksDecoder interpretedChunksDecoder(*tagset, *charsetConverter);
+        InterpretedChunksDecoder interpretedChunksDecoder(*tagset, *charsetConverter, *caseConverter);
         int srcNode = startNodeNum;
         for (vector<FlexionGraph::Edge>& edges: graph.getTheGraph()) {
             for (FlexionGraph::Edge& e: edges) {

@@ -9,18 +9,17 @@
 #define	INTERPRETATION_HPP
 
 #include <string>
-#include <sstream>
-#include <iterator>
+#include <vector>
+#include <cstdint>
 #include "Tagset.hpp"
-
-using namespace std;
 
 /*
  * Lemma in a compressed format (as in an automaton)
  */
 struct EncodedLemma {
     int suffixToCut;
-    string suffixToAdd;
+    std::string suffixToAdd;
+    std::vector<bool> casePattern;
 };
 
 /*

@@ -2,8 +2,11 @@
 #include <string>
 #include <cassert>
 #include <climits>
+#include <vector>
 #include "utils.hpp"
 #include "FlexionGraph.hpp"
+
+using namespace std;
 
 static inline void debugPath(const std::vector<InterpretedChunk>& path) {
 //    for (const InterpretedChunk& chunk : path) {

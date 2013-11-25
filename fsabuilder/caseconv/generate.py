@@ -53,6 +53,31 @@ def _parseCaseFoldingTxtFile(f):
                     extendedTable[code] = targetCode
     return table, extendedTable
 
+def _parseUnicodeDataTxtFile(f):
+    toLowerTable = [code for code in range(ARRAY_SIZE)]
+    extToLowerTable = {}
+    toTitleTable = [code for code in range(ARRAY_SIZE)]
+    extToTitleTable = {}
+    for line in f:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            split = line.split(';')
+            code = int(split[0], 16)
+            lowercaseCode = int(split[13], 16) if split[13] else code
+            titlecaseCode = int(split[14], 16) if split[14] else code
+            if lowercaseCode != code:
+                if code < ARRAY_SIZE:
+                    toLowerTable[code] = lowercaseCode
+                else:
+                    extToLowerTable[code] = lowercaseCode
+            if titlecaseCode != code:
+                if code < ARRAY_SIZE:
+                    toTitleTable[code] = titlecaseCode
+                else:
+                    extToTitleTable[code] = titlecaseCode
+    return toLowerTable, extToLowerTable, toTitleTable, extToTitleTable
+    
+
 def _serializeTable(table):
     res = []
     res.append('{')
@@ -74,23 +99,32 @@ def _serializeExtendedTable(table):
     res.append('}')
     return ''.join(res)
 
-def _serialize(table, extendedTable):
+def _serialize(toLowerTable, extToLowerTable, toTitleTable, extToTitleTable):
     return '''
 #include "case_folding.hpp"
 
-const unsigned int CASE_FOLDING_TABLE_SIZE = {tableSize};
-const unsigned int EXT_CASE_FOLDING_TABLE_SIZE = {extendedTableSize};
-const uint32_t CASE_FOLDING_TABLE[] = {table};
-const uint32_t EXT_CASE_FOLDING_TABLE[][2] = {extendedTable};
+const unsigned int TO_LOWERCASE_TABLE_SIZE = {toLowerTableSize};
+const unsigned int EXT_TO_LOWERCASE_TABLE_SIZE = {extToLowerTableSize};
+const uint32_t TO_LOWERCASE_TABLE[] = {toLowerTable};
+const uint32_t EXT_TO_LOWERCASE_TABLE[][2] = {extToLowerTable};
+
+const unsigned int TO_TITLECASE_TABLE_SIZE = {toTitleTableSize};
+const unsigned int EXT_TO_TITLECASE_TABLE_SIZE = {extToTitleTableSize};
+const uint32_t TO_TITLECASE_TABLE[] = {toTitleTable};
+const uint32_t EXT_TO_TITLECASE_TABLE[][2] = {extToTitleTable};
 '''.format(
-           tableSize=len(table), 
-           table=_serializeTable(table),
-           extendedTableSize=len(extendedTable),
-           extendedTable=_serializeExtendedTable(extendedTable))
+           toLowerTableSize=len(toLowerTable), 
+           toLowerTable=_serializeTable(toLowerTable),
+           extToLowerTableSize=len(extToLowerTable),
+           extToLowerTable=_serializeExtendedTable(extToLowerTable),
+           toTitleTableSize=len(toTitleTable),
+           toTitleTable=_serializeTable(toTitleTable),
+           extToTitleTableSize=len(extToTitleTable),
+           extToTitleTable=_serializeExtendedTable(extToTitleTable))
 
 if __name__ == '__main__':
     outfile = sys.argv[1]
-    with open(os.path.join(os.path.dirname(__file__), 'CaseFolding.txt'), 'r') as f:
-        table, extendedTable = _parseCaseFoldingTxtFile(f)
+    with open(os.path.join(os.path.dirname(__file__), 'UnicodeData.txt'), 'r') as f:
+        toLowerTable, extToLowerTable, toTitleTable, extToTitleTable = _parseUnicodeDataTxtFile(f)
         with open(sys.argv[1], 'w') as f1:
-            f1.write(_serialize(table, extendedTable))
+            f1.write(_serialize(toLowerTable, extToLowerTable, toTitleTable, extToTitleTable))

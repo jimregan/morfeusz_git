@@ -6,38 +6,41 @@
  */
 
 #include "CaseConverter.hpp"
-#include "case_folding.hpp"
+#include "caseconv.hpp"
 
 using namespace std;
 
-//extern const unsigned int CASE_FOLDING_TABLE_SIZE;
-//extern const unsigned int EXT_CASE_FOLDING_TABLE_SIZE;
-//extern const uint32_t[] CASE_FOLDING_TABLE;
-//extern const uint32_t[][2] EXT_CASE_FOLDING_TABLE;
-
-map<uint32_t, uint32_t> initializeExtCaseMap() {
+map<uint32_t, uint32_t> initializeExtCaseMap(const uint32_t (*table)[2], unsigned int tableSize) {
     map<uint32_t, uint32_t> res;
-    for (unsigned int i = 0; i < EXT_CASE_FOLDING_TABLE_SIZE; i++) {
-        uint32_t key = EXT_CASE_FOLDING_TABLE[i][0];
-        uint32_t value = EXT_CASE_FOLDING_TABLE[i][1];
+    for (unsigned int i = 0; i < tableSize; i++) {
+        uint32_t key = table[i][0];
+        uint32_t value = table[i][1];
         res[key] = value;
     }
     return res;
 }
 
 CaseConverter::CaseConverter()
-: extCaseMap(initializeExtCaseMap()) {
+: extToLowercaseMap(initializeExtCaseMap(EXT_TO_LOWERCASE_TABLE, EXT_TO_LOWERCASE_TABLE_SIZE)),
+extToTitlecaseMap(initializeExtCaseMap(EXT_TO_TITLECASE_TABLE, EXT_TO_TITLECASE_TABLE_SIZE)) {
 }
 
-uint32_t CaseConverter::toLower(uint32_t codepoint) const {
-    if (codepoint < CASE_FOLDING_TABLE_SIZE) {
-        return CASE_FOLDING_TABLE[codepoint];
+static uint32_t getFromTables(const uint32_t* table, unsigned int tableSize, const map<uint32_t, uint32_t>& extMap, uint32_t codepoint) {
+    if (codepoint < tableSize) {
+        return table[codepoint];
     }
-    else if (this->extCaseMap.count(codepoint) != 0) {
-       return this->extCaseMap.at(codepoint); 
+    else if (extMap.count(codepoint) != 0) {
+        return extMap.at(codepoint);
     }
     else {
         return codepoint;
     }
 }
 
+uint32_t CaseConverter::toLower(uint32_t codepoint) const {
+    return getFromTables(TO_LOWERCASE_TABLE, TO_LOWERCASE_TABLE_SIZE, this->extToLowercaseMap, codepoint);
+}
+
+uint32_t CaseConverter::toTitle(uint32_t codepoint) const {
+    return getFromTables(TO_TITLECASE_TABLE, TO_TITLECASE_TABLE_SIZE, this->extToTitlecaseMap, codepoint);
+}

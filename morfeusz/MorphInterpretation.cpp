@@ -11,17 +11,6 @@
 
 using namespace std;
 
-static string convertLemma(
-        const string& orth,
-        const EncodedLemma& lemma) {
-    string res(orth);
-    res.erase(
-            res.end() - lemma.suffixToCut,
-            res.end());
-    res.append(lemma.suffixToAdd);
-    return res;
-}
-
 MorphInterpretation::MorphInterpretation(
         int startNode,
         int endNode,

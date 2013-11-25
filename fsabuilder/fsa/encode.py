@@ -51,6 +51,9 @@ class MorphEncoder(Encoder):
     
     def __init__(self, encoding='utf8'):
         super(MorphEncoder, self).__init__(encoding)
+        self.LEMMA_ONLY_LOWER = 0
+        self.LEMMA_UPPER_PREFIX = 1
+        self.LEMMA_MIXED_CASE = 2
     
     def encodeData(self, interpsList):
         res = bytearray()
@@ -75,9 +78,41 @@ class MorphEncoder(Encoder):
         res = bytearray()
         assert lemma.cutLength < 256 and lemma.cutLength >= 0
         res.append(lemma.cutLength)
-        res.extend(lemma.suffixToAdd)
+        res.extend(self.encodeWord(lemma.suffixToAdd, lowercase=False))
         res.append(0)
+        res.extend(self._encodeCasePattern(lemma.casePattern))
         return res
+    
+    def _encodeCasePattern(self, casePattern):
+        res = bytearray()
+        if True not in casePattern:
+            res.append(self.LEMMA_ONLY_LOWER)
+            return res
+        elif self._hasUpperPrefix(casePattern):
+            res.append(self.LEMMA_UPPER_PREFIX)
+            res.append(self._getUpperPrefixLength(casePattern))
+            return res
+        else:
+            assert len(casePattern) < 256
+            res.append(self.LEMMA_MIXED_CASE)
+            res.append(len([c for c in casePattern if c]))
+            for idx in range(len(casePattern)):
+                if casePattern[idx]:
+                    res.append(idx)
+            return res
+    
+    def _hasUpperPrefix(self, casePattern):
+        for i in range(len(casePattern)):
+            if all(casePattern[:i]) and not any(casePattern[i:]):
+                return True
+        return False
+    
+    def _getUpperPrefixLength(self, casePattern):
+        assert self._hasUpperPrefix(casePattern)
+        for i in range(len(casePattern)):
+            if not casePattern[i]:
+                return i
+        return len(casePattern)
     
     def _encodeTagNum(self, tagnum):
         res = bytearray()

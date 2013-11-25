@@ -6,9 +6,16 @@
  */
 
 #include <map>
+#include <algorithm>
+#include <cstdint>
 #include "MorphDeserializer.hpp"
 #include "EncodedInterpretation.hpp"
 #include "InterpsGroup.hpp"
+
+const uint8_t LEMMA_ONLY_LOWER = 0;
+const uint8_t LEMMA_UPPER_PREFIX = 1;
+const uint8_t LEMMA_MIXED_CASE = 2;
+const unsigned int MAX_WORD_SIZE = 256;
 
 MorphDeserializer::MorphDeserializer() {
 }
@@ -25,6 +32,34 @@ static void deserializeLemma(const unsigned char*& ptr, EncodedLemma& lemma) {
     ptr++;
     lemma.suffixToAdd = (const char*) ptr;
     ptr += strlen((const char*) ptr) + 1;
+    assert(lemma.casePattern.size() == 0);
+    lemma.casePattern.resize(MAX_WORD_SIZE, false);
+    uint8_t casePatternType = *ptr;
+    ptr++;
+    uint8_t prefixLength;
+    uint8_t patternLength;
+    switch (casePatternType) {
+        case LEMMA_ONLY_LOWER:
+            break;
+        case LEMMA_UPPER_PREFIX:
+            prefixLength = *ptr;
+            ptr++;
+            for (unsigned int i = 0; i < prefixLength; i++) {
+                lemma.casePattern[i] = true;
+            }
+//            lemma.casePattern.resize(prefixLength, true);
+            break;
+        case LEMMA_MIXED_CASE:
+            patternLength = *ptr;
+            ptr++;
+            for (unsigned int i = 0; i < patternLength; i++) {
+                uint8_t idx = *ptr;
+                ptr++;
+//                lemma.casePattern.resize(max(lemma.casePattern.size(), (unsigned long) idx + 1), false);
+                lemma.casePattern[idx] = true;
+            }
+            break;
+    }
 }
 
 static void deserializeInterp(const unsigned char*& ptr, EncodedInterpretation& interp) {

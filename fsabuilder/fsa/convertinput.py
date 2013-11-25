@@ -415,7 +415,7 @@ def _parseLines(inputLines, tagset, encoder):
             tagnum = tagset.tag2tagnum[tag]
             namenum = tagset.name2namenum[name]
             typenum = tag2typenum.get(tag, 0)
-            yield (orth, Interpretation(orth, base, tagnum, namenum, typenum, encoder))
+            yield (orth, Interpretation(orth, base, tagnum, namenum, typenum))
 
 def _mergeEntries(inputLines):
     prevOrth = None

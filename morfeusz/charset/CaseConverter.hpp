@@ -15,8 +15,10 @@ class CaseConverter {
 public:
     CaseConverter();
     uint32_t toLower(uint32_t codepoint) const;
+    uint32_t toTitle(uint32_t codepoint) const;
 private:
-    std::map<uint32_t, uint32_t> extCaseMap;
+    std::map<uint32_t, uint32_t> extToLowercaseMap;
+    std::map<uint32_t, uint32_t> extToTitlecaseMap;
 };
 
 #endif	/* CASECONVERTER_HPP */

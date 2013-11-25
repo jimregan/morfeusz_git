@@ -19,6 +19,7 @@
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
       <in>main.cpp</in>
+      <in>morfeusz.cpp</in>
       <in>test_morph.cpp</in>
       <in>test_simple.cpp</in>
     </df>
@@ -141,8 +142,14 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="morfeusz/charset/case_folding.cpp" ex="false" tool="1" flavor2="8">
+      <item path="morfeusz/charset/case_folding.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="morfeusz/charset/caseconv.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
+          <incDir>
+            <pElem>fsa</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="8">
@@ -152,6 +159,8 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="morfeusz/morfeusz.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="morfeusz/test_morph.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
