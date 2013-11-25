@@ -98,7 +98,6 @@ void Morfeusz::doProcessOneWord(
         FlexionGraph& graph) const {
     bool endOfWord = inputData == inputEnd;
     const char* currInput = inputData;
-    const char* prevInput = inputData;
     uint32_t codepoint = endOfWord ? 0 : this->charsetConverter->next(currInput, inputEnd);
 //    UnicodeChunk uchunk(*(this->charsetConverter), *(this->caseConverter));
     vector<uint32_t> originalCodepoints;
@@ -113,6 +112,9 @@ void Morfeusz::doProcessOneWord(
         this->feedState(state, lowerCP);
         if (state.isAccepting()) {
             for (InterpsGroup& ig : state.getValue()) {
+                for (EncodedInterpretation& ei: ig.interps) {
+                    cerr << "CUT: " << ei.lemma.suffixToCut << "; ADD: " << ei.lemma.suffixToAdd << endl;
+                }
                 InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
                 accum.push_back(ic);
                 const char* newCurrInput = currInput;
@@ -120,7 +122,6 @@ void Morfeusz::doProcessOneWord(
                 accum.pop_back();
             }
         }
-        prevInput = currInput;
         codepoint = currInput == inputEnd ? 0 : this->charsetConverter->next(currInput, inputEnd);
     }
     if (state.isAccepting()) {

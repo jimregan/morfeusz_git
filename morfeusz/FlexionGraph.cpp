@@ -1,6 +1,7 @@
 
 #include <string>
 #include <cassert>
+#include <climits>
 #include "utils.hpp"
 #include "FlexionGraph.hpp"
 
@@ -32,16 +33,16 @@ void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
     for (const InterpretedChunk& chunk : path) {
         if (&chunk == &(path.front())
                 && &chunk == &(path.back())) {
-            Edge e = {chunk, -1};
+            Edge e = {chunk, UINT_MAX};
             this->addStartEdge(e);
         } else if (&chunk == &(path.front())) {
-            Edge e = {chunk, (int) this->graph.size() + 1};
+            Edge e = {chunk, this->graph.size() + 1};
             this->addStartEdge(e);
         } else if (&chunk == &(path.back())) {
-            Edge e = {chunk, -1};
+            Edge e = {chunk, UINT_MAX};
             this->addMiddleEdge(e);
         } else {
-            Edge e = {chunk, (int) this->graph.size() + 1};
+            Edge e = {chunk, this->graph.size() + 1};
             this->addMiddleEdge(e);
         }
     }
@@ -53,7 +54,7 @@ bool FlexionGraph::canMergeNodes(unsigned int node1, unsigned int node2) {
 }
 
 set<FlexionGraph::Path> FlexionGraph::getPossiblePaths(unsigned int node) {
-    if (node == -1 || node == this->graph.size() - 1) {
+    if (node == UINT_MAX || node == this->graph.size() - 1) {
         return set<FlexionGraph::Path>();
     }
     else {
@@ -147,7 +148,7 @@ bool FlexionGraph::empty() const {
 void FlexionGraph::repairLastNodeNumbers() {
     for (vector<Edge>& edges: this->graph) {
         for (Edge& e: edges) {
-            if (e.nextNode == -1) {
+            if (e.nextNode == UINT_MAX) {
                 e.nextNode = this->graph.size();
             }
         }
