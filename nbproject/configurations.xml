@@ -12,6 +12,7 @@
         <in>CaseConverter.cpp</in>
         <in>CharsetConverter.cpp</in>
         <in>case_folding.cpp</in>
+        <in>caseconv.cpp</in>
       </df>
       <in>FlexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
@@ -19,7 +20,7 @@
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
       <in>main.cpp</in>
-      <in>morfeusz.cpp</in>
+      <in>test_morfeusz.cpp</in>
       <in>test_morph.cpp</in>
       <in>test_simple.cpp</in>
     </df>
@@ -51,10 +52,10 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/fsa/test_dict</executablePath>
+          <executablePath>build/morfeusz/test_simple</executablePath>
         </makeTool>
       </makefileType>
-      <folder path="1/charset">
+      <folder path="1">
         <ccTool>
           <incDir>
             <pElem>fsa</pElem>
@@ -93,42 +94,22 @@
       </item>
       <item path="morfeusz/FlexionGraph.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/MorphDeserializer.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/MorphInterpretation.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/Tagset.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/charset/CaseConverter.cpp" ex="false" tool="1" flavor2="8">
@@ -142,40 +123,28 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="morfeusz/charset/case_folding.cpp" ex="false" tool="1" flavor2="0">
+      <item path="morfeusz/charset/case_folding.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="morfeusz/charset/caseconv.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
-      <item path="morfeusz/morfeusz.cpp" ex="false" tool="1" flavor2="0">
+      <item path="morfeusz/test_morfeusz.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="morfeusz/test_morph.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/test_simple.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
     </conf>

@@ -102,7 +102,7 @@ class MorphEncoder(Encoder):
             return res
     
     def _hasUpperPrefix(self, casePattern):
-        for i in range(len(casePattern)):
+        for i in range(len(casePattern) + 1):
             if all(casePattern[:i]) and not any(casePattern[i:]):
                 return True
         return False

@@ -5,6 +5,7 @@ Created on Nov 7, 2013
 '''
 
 import codecs
+import logging
 
 class Lemma(object):
     
@@ -21,7 +22,7 @@ class Interpretation(object):
         root = u''
         for o, b in zip(orth, base):
             if o.lower() == b.lower():
-                root += o
+                root += b
             else:
                 break
         cutLength = len(orth) - len(root)
