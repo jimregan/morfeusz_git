@@ -26,8 +26,8 @@ public:
     //    void getResults(const Tagset& tagset, const CharsetConverter& charsetConverter, std::vector<MorphInterpretation>& results);
 
     std::vector< std::vector<FlexionGraph::Edge> >& getTheGraph() {
-        repairLastNodeNumbers();
         minimizeGraph();
+        repairLastNodeNumbers();
         return this->graph;
     }
 
@@ -42,7 +42,7 @@ private:
 
     void addStartEdge(const Edge& e);
 
-    void addMiddleEdge(const Edge& e);
+    void addMiddleEdge(unsigned int startNode, const Edge& e);
 
     void minimizeGraph();
 

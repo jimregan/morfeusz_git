@@ -38,8 +38,6 @@ static void deserializeLemma(const unsigned char*& ptr, EncodedLemma& lemma) {
     ptr++;
     uint8_t prefixLength;
     uint8_t patternLength;
-    DEBUG(to_string(lemma.suffixToCut));
-    DEBUG(lemma.suffixToAdd);
     switch (casePatternType) {
         case LEMMA_ONLY_LOWER:
             break;

@@ -3,7 +3,9 @@ a	a	qub	pospolita
 a	a	qub	pospolita
 a	a	conj	pospolita
 a	a	prep:nom	pospolita
-aa	AA	interj	pospolita
+b	b	prep:nom	pospolita
+c	c	prep:nom	pospolita
+bc	BC	interj	pospolita
 aaronowe	aaronowy	adj:sg:acc:n1.n2:pos	pospolita
 aaronowe	aaronowy	adj:sg:nom.voc:n1.n2:pos	pospolita
 aaronowego	aaronowy	adj:sg:acc:m1.m2:pos	pospolita
@@ -52,7 +54,7 @@ abadańczykami	abadańczyk	subst:pl:inst:m1	pospolita
 abadańczyki	abadańczyk	depr:pl:nom:m2	pospolita
 abadańczyki	abadańczyk	depr:pl:voc:m2	pospolita
 abadańczykiem	abadańczyk	subst:sg:inst:m1	pospolita
-abadańczykom	abadańczyk	subst:pl:dat:m1	pospolita
+abadańczykom	abadaŃczyk	subst:pl:dat:m1	pospolita
 abadańczykowi	abadańczyk	subst:sg:dat:m1	pospolita
 abadańczyków	abadańczyk	subst:pl:acc:m1	pospolita
 abadańczyków	abadańczyk	subst:pl:gen:m1	pospolita

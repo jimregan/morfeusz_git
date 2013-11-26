@@ -69,6 +69,7 @@ void Morfeusz::processOneWord(
         this->charsetConverter->next(inputData, inputEnd);
     }
     const char* wordStart = inputData;
+    DEBUG(wordStart);
     vector<InterpretedChunk> accum;
     FlexionGraph graph;
     const char* currInput = inputData;
@@ -112,9 +113,9 @@ void Morfeusz::doProcessOneWord(
         this->feedState(state, lowerCP);
         if (state.isAccepting()) {
             for (InterpsGroup& ig : state.getValue()) {
-                for (EncodedInterpretation& ei: ig.interps) {
-                    cerr << "CUT: " << ei.lemma.suffixToCut << "; ADD: " << ei.lemma.suffixToAdd << endl;
-                }
+//                for (EncodedInterpretation& ei: ig.interps) {
+//                    cerr << "CUT: " << ei.lemma.suffixToCut << "; ADD: " << ei.lemma.suffixToAdd << endl;
+//                }
                 InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
                 accum.push_back(ic);
                 const char* newCurrInput = currInput;
@@ -153,13 +154,13 @@ void Morfeusz::appendIgnotiumToResults(
     results.push_back(interp);
 }
 
-ResultsIterator Morfeusz::analyze(const string& text) {
+ResultsIterator Morfeusz::analyze(const string& text) const {
     //    const char* textStart = text.c_str();
     //    const char* textEnd = text.c_str() + text.length();
     return ResultsIterator(text, *this);
 }
 
-void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results) {
+void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results) const {
     const char* input = text.c_str();
     const char* inputEnd = input + text.length();
     while (input != inputEnd) {

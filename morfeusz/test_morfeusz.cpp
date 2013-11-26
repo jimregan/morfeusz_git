@@ -18,8 +18,8 @@ void debug(const MorphInterpretation& interp) {
     fprintf(stderr, 
             "%d %d %s %s %s %s\n",
             interp.getStartNode(), interp.getEndNode(),
-            interp.getOrth(), interp.getLemma(),
-            interp.getTag(), interp.getName());
+            interp.getOrth().c_str(), interp.getLemma().c_str(),
+            interp.getTag().c_str(), interp.getName().c_str());
 }
 
 void doTest(
@@ -31,10 +31,10 @@ void doTest(
     string line;
     while (getline(ifs, line)) {
         DEBUG(line);
-        AnalyzeResult res(morfeusz.analyze(line));
-        while (res.iterator != res.end) {
-            debug(*res);
-            res++;
+        vector<MorphInterpretation> res;
+        morfeusz.analyze(line, res);
+        for (MorphInterpretation& mi: res) {
+            debug(mi);
         }
     }
     validate(ifs.eof(), "Failed to read the input file to the end");
@@ -44,6 +44,8 @@ int main(int argc, char** argv) {
     validate(argc == 3, "Must provide exactly two arguments - FSA filename, and input filename.");
     string fsaFilename = argv[1];
     string inputFilename = argv[2];
+    DEBUG("FSA: "+fsaFilename);
+    DEBUG("input text: "+inputFilename);
     Morfeusz morfeusz(fsaFilename);
     doTest(morfeusz, inputFilename);
     return 0;

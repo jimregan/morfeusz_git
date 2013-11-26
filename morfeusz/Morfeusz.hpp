@@ -32,8 +32,8 @@ public:
     explicit Morfeusz(const std::string& filename);
     virtual ~Morfeusz();
     //    Morfeusz(const Morfeusz& orig);
-    ResultsIterator analyze(const std::string& text);
-    void analyze(const std::string& text, std::vector<MorphInterpretation>& result);
+    ResultsIterator analyze(const std::string& text) const;
+    void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const;
 
     void processOneWord(
             const char*& inputData,

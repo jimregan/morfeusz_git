@@ -52,7 +52,7 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/morfeusz/test_simple</executablePath>
+          <executablePath>build/morfeusz/test_morfeusz</executablePath>
         </makeTool>
       </makefileType>
       <folder path="1">
