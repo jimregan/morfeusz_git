@@ -14,6 +14,9 @@
         <in>case_folding.cpp</in>
         <in>caseconv.cpp</in>
       </df>
+      <df name="data">
+        <in>default_fsa.cpp</in>
+      </df>
       <in>FlexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
@@ -128,6 +131,10 @@
         </ccTool>
       </item>
       <item path="morfeusz/charset/caseconv.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="morfeusz/data/default_fsa.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>

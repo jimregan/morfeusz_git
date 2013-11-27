@@ -7,19 +7,37 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 #include "fsa.hpp"
-#include "default_fsa.hpp"
 #include "Tagset.hpp"
+#include "Morfeusz.hpp"
 
 using namespace std;
 
-/*
- * 
- */
 int main(int argc, char** argv) {
-    unsigned char dupa[3] = {0376 | 1, 0111, 0234, };
-    char x = 255;
-    cout << *reinterpret_cast<int*>(&x) << endl;
+    Morfeusz morfeusz;
+    string line;
+    while (getline(cin, line)) {
+        //        printf("%s\n", line.c_str());
+        vector<MorphInterpretation> res;
+        morfeusz.analyze(line, res);
+        int prevStart = -1;
+        printf("[");
+        for (MorphInterpretation& mi : res) {
+            if (prevStart != -1 && prevStart != mi.getStartNode()) {
+                printf("]\n[");
+            } else if (prevStart != -1) {
+                printf("; ");
+            }
+            printf("%d,%d,%s,%s,%s,%s",
+                    mi.getStartNode(), mi.getEndNode(),
+                    mi.getOrth().c_str(), mi.getLemma().c_str(),
+                    mi.getTag().c_str(), mi.getName().c_str());
+            prevStart = mi.getStartNode();
+        }
+        printf("]\n");
+    }
+    printf("\n");
     return 0;
 }
 

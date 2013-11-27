@@ -26,18 +26,6 @@ public:
         
     }
     
-//    std::vector<MorphInterpretation> getRealInterps(
-//                const std::string& orth, 
-//                const int startNode, 
-//                const int endNode,
-//                const Tagset& tagset) {
-//        std::vector<MorphInterpretation> res;
-//        for (EncodedInterpretation& ei: interps) {
-//            res.push_back(MorphInterpretation(startNode, endNode, orth, ei, tagset));
-//        }
-//        return res;
-//    }
-    
     void addInterpretation(const EncodedInterpretation& interp) {
         interps.push_back(interp);
     }

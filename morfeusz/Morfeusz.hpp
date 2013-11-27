@@ -29,6 +29,7 @@ typedef State<std::vector<InterpsGroup >> StateType;
 
 class Morfeusz {
 public:
+    Morfeusz();
     explicit Morfeusz(const std::string& filename);
     virtual ~Morfeusz();
     //    Morfeusz(const Morfeusz& orig);

@@ -11,8 +11,9 @@ class Serializer(object):
     
     MAGIC_NUMBER = 0x8fc2bc1b
 
-    def __init__(self, fsa):
+    def __init__(self, fsa, headerFilename="default_fsa.hpp"):
         self._fsa = fsa
+        self.headerFilename = headerFilename
     
     @property
     def fsa(self):
@@ -24,13 +25,20 @@ class Serializer(object):
     def serialize2CppFile(self, fname):
         res = []
 #         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
-        res.append('const unsigned char DEFAULT_FSA[] = {')
+        res.append('\n')
+        res.append('#include "%s"' % self.headerFilename)
+        res.append('\n')
+        res.append('\n')
+        res.append('extern const unsigned char DEFAULT_FSA[] = {')
+        res.append('\n')
         for byte in self.fsa2bytearray():
             res.append(hex(byte));
             res.append(',');
-        res.append('}')
+        res.append('\n')
+        res.append('};')
+        res.append('\n')
         with open(fname, 'w') as f:
-            f.write('\n'.join(res))
+            f.write(''.join(res))
     
     def serialize2BinaryFile(self, fname):
         with open(fname, 'wb') as f:
