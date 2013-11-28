@@ -32,6 +32,9 @@ class Encoder(object):
 #         print unicode(str(rawData), self.encoding)[:-1]
 #         print unicode(str(rawData), self.encoding)[:-1].split(u'|')
 #         return unicode(str(rawData), self.encoding)[:-1].split(u'|')
+
+    def decodeWord(self, rawWord):
+        return unicode(str(rawWord).strip('\x00'), self.encoding)
     
     def word2SortKey(self, word):
         return word.lower().encode(self.encoding)

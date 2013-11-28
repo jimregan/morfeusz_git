@@ -130,7 +130,7 @@ def _parseOptions():
 
 def _readPolimorfInput(inputFile, tagset, encoder):
     with open(inputFile, 'r') as f:
-        for entry in convertinput.convertPolimorf(f, tagset, encoder):
+        for entry in convertinput.PolimorfConverter(tagset, encoder, 'utf8').convert(f):
             yield entry
 
 def _readPlainInput(inputFile, encoder):
