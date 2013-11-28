@@ -398,23 +398,30 @@ tag2typenum = {
     'burk': 9,
 }
 
-def _sortLines(inputLines, encoder):
-    logging.info('sorting input...')
-    lines = list(inputLines)
-    logging.info('done read data into list')
-    lines.sort(key=lambda line: encoder.word2SortKey(line.split('\t')[0]))
-    logging.info('done sorting')
-    return lines
-
-def _parseLines(inputLines, tagset, encoder):
+def _partiallyParseLines(inputLines, tagset):
     for line in inputLines:
-        line = line.strip(u'\n')
+        line = line.decode('utf8').strip('\n')
+        orth, base, tag, name = line.split(u'\t')
+        tagnum = tagset.tag2tagnum[tag]
+        namenum = tagset.name2namenum[name]
+        typenum = tag2typenum.get(tag, 0)
+        yield '%s %s %d %d %d' % (orth.encode('utf8'), base.encode('utf8'), tagnum, namenum, typenum)
+
+def _sortLines(inputLines, encoder):
+    lines = list(inputLines)
+    lines.sort(key=lambda line: encoder.word2SortKey(line.split(' ')[0].decode('utf8')))
+    return lines
+#     return sorted(inputLines, key=lambda line: encoder.word2SortKey(line.split(' ')[0].decode('utf8')))
+
+def _reallyParseLines(inputLines):
+    for line in inputLines:
+        line = line.decode('utf8').strip(u'\n')
         if line:
 #             print line
-            orth, base, tag, name = line.split(u'\t')
-            tagnum = tagset.tag2tagnum[tag]
-            namenum = tagset.name2namenum[name]
-            typenum = tag2typenum.get(tag, 0)
+            orth, base, tagnum, namenum, typenum = line.split(u' ')
+            tagnum = int(tagnum)
+            namenum = int(namenum)
+            typenum = int(typenum)
             yield (orth, Interpretation(orth, base, tagnum, namenum, typenum))
 
 def _mergeEntries(inputLines):
@@ -433,5 +440,9 @@ def _mergeEntries(inputLines):
     yield (prevOrth, frozenset(prevInterps))
 
 def convertPolimorf(inputLines, tagset, encoder):
-    for orth, interps in _mergeEntries(_parseLines(_sortLines(inputLines, encoder), tagset, encoder)):
+    for orth, interps in _mergeEntries(_reallyParseLines(_sortLines(_partiallyParseLines(inputLines, tagset), encoder))):
         yield orth, interps
+
+# def convertPolimorf(inputLines, tagset, encoder):
+#     for orth, interps in _mergeEntries(_parseLines(_sortLines(inputLines, encoder), tagset, encoder)):
+#         yield orth, interps
