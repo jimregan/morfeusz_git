@@ -22,9 +22,11 @@ int main(int argc, char** argv) {
         vector<MorphInterpretation> res;
         morfeusz.analyze(line, res);
         int prevStart = -1;
+        int prevEnd = -1;
         printf("[");
         for (MorphInterpretation& mi : res) {
-            if (prevStart != -1 && prevStart != mi.getStartNode()) {
+            if (prevStart != -1 
+                    && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
                 printf("]\n[");
             } else if (prevStart != -1) {
                 printf("; ");
@@ -34,6 +36,7 @@ int main(int argc, char** argv) {
                     mi.getOrth().c_str(), mi.getLemma().c_str(),
                     mi.getTag().c_str(), mi.getName().c_str());
             prevStart = mi.getStartNode();
+            prevEnd = mi.getEndNode();
         }
         printf("]\n");
     }

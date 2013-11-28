@@ -55,7 +55,7 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/morfeusz/test_morfeusz</executablePath>
+          <executablePath>build/fsa/test_dict</executablePath>
         </makeTool>
       </makefileType>
       <folder path="1">
@@ -126,7 +126,7 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="morfeusz/charset/case_folding.cpp" ex="false" tool="1" flavor2="8">
+      <item path="morfeusz/charset/case_folding.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
         </ccTool>
       </item>
@@ -142,7 +142,7 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="morfeusz/test_morfeusz.cpp" ex="false" tool="1" flavor2="4">
+      <item path="morfeusz/test_morfeusz.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>
