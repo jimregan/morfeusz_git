@@ -1,0 +1,10 @@
+/* 
+ * File:   morfeusz_config.hpp.in
+ * Author: lennyn
+ *
+ * Created on November 29, 2013, 10:03 PM
+ */
+
+#define Morfeusz_VERSION_MAJOR @Morfeusz_VERSION_MAJOR@
+#define Morfeusz_VERSION_MINOR @Morfeusz_VERSION_MINOR@
+

@@ -15,7 +15,7 @@
 #include <exception>
 #include <string>
 #include <vector>
-#include <netinet/in.h>
+#include <cstdint>
 
 template <class T> class State;
 template <class T> class FSA;

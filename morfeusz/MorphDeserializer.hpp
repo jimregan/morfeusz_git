@@ -9,7 +9,7 @@
 #define	MORPHDESERIALIZER_HPP
 
 #include <vector>
-#include "fsa.hpp"
+#include "fsa/fsa.hpp"
 #include "InterpsGroup.hpp"
 
 class MorphDeserializer: public Deserializer<std::vector<InterpsGroup>> {

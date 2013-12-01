@@ -1,9 +1,9 @@
 
 #include <string>
-#include <netinet/in.h>
 #include "Tagset.hpp"
-#include "const.hpp"
+#include "fsa/const.hpp"
 #include "utils.hpp"
+#include "endianness.hpp"
 
 using namespace std;
 

@@ -28,7 +28,7 @@
 inline void validate(const bool cond, const std::string& msg) {
     if (!cond) {
         std::cerr << msg << std::endl;
-        exit(1);
+        throw msg;
     }
 }
 

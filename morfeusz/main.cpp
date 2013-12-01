@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include "fsa.hpp"
+#include "fsa/fsa.hpp"
 #include "Tagset.hpp"
 #include "Morfeusz.hpp"
 

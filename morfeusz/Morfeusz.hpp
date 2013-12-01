@@ -12,7 +12,7 @@
 #include <list>
 #include <vector>
 #include "EncodedInterpretation.hpp"
-#include "fsa.hpp"
+#include "fsa/fsa.hpp"
 #include "MorphInterpretation.hpp"
 #include "InterpsGroup.hpp"
 #include "charset/CharsetConverter.hpp"

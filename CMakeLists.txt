@@ -1,10 +1,21 @@
 
 cmake_minimum_required (VERSION 2.8) 
 project (Morfeusz) 
-#set(CMAKE_BUILD_TYPE "Debug")
+set (Morfeusz_VERSION_MAJOR 0)
+set (Morfeusz_VERSION_MINOR 1)
+set (CMAKE_BUILD_TYPE "Release")
+
+set (CMAKE_CXX_FLAGS "-std=gnu++0x -Wall -O2 -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
+
 enable_testing()
 
-add_subdirectory (fsa)
+configure_file (
+  "${PROJECT_SOURCE_DIR}/morfeusz/MorfeuszConfig.hpp.in"
+  "${PROJECT_BINARY_DIR}/morfeusz/MorfeuszConfig.hpp"
+)
+
+include_directories("${PROJECT_BINARY_DIR}")
+
 add_subdirectory (morfeusz)
 
 file(COPY fsabuilder testfiles DESTINATION .)

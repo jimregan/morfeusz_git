@@ -14,9 +14,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <netinet/in.h>
-#include "utils.hpp"
+#include <sstream>
 #include "const.hpp"
+#include "../utils.hpp"
+#include "../endianness.hpp"
 
 //using namespace std;
 //static const unsigned int FSA_OFFSET = 6;
@@ -70,7 +71,9 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
     
     uint8_t versionNum = *(ptr + VERSION_NUM_OFFSET);
     if (versionNum != VERSION_NUM) {
-        throw FSAException(string("Invalid version number: ") + std::to_string(versionNum) + ", should be: " + std::to_string(VERSION_NUM));
+        std::ostringstream oss;
+        oss << "Invalid version number: " << versionNum << ", should be: " << VERSION_NUM;
+        throw FSAException(oss.str());
     }
     
     uint8_t implementationNum = *(ptr + IMPLEMENTATION_NUM_OFFSET);
@@ -85,7 +88,9 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
         case 2:
             return new CompressedFSA2<T>(startPtr, deserializer);
         default:
-            throw FSAException(string("Invalid implementation number: ") + std::to_string(versionNum) + ", should be: " + std::to_string(VERSION_NUM));
+            std::ostringstream oss;
+            oss << "Invalid implementation number: " << versionNum << ", should be: " << VERSION_NUM;
+            throw FSAException(oss.str());
     }
 }
 

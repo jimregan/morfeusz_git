@@ -55,14 +55,14 @@ void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
             Edge e = {chunk, UINT_MAX};
             this->addStartEdge(e);
         } else if (&chunk == &(path.front())) {
-            Edge e = {chunk, this->graph.empty() ? 1 : this->graph.size()};
+            Edge e = {chunk, this->graph.empty() ? 1 : (unsigned int) this->graph.size()};
             this->addStartEdge(e);
         } else if (&chunk == &(path.back())) {
             Edge e = {chunk, UINT_MAX};
-            this->addMiddleEdge(this->graph.size(), e);
+            this->addMiddleEdge((unsigned int) this->graph.size(), e);
         } else {
-            Edge e = {chunk, this->graph.size() + 1};
-            this->addMiddleEdge(this->graph.size(), e);
+            Edge e = {chunk, (int) this->graph.size() + 1};
+            this->addMiddleEdge((unsigned int) this->graph.size(), e);
         }
     }
 }

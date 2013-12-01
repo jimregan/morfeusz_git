@@ -7,7 +7,7 @@
 
 #include <string>
 #include <iostream>
-#include "fsa.hpp"
+#include "fsa/fsa.hpp"
 #include "utils.hpp"
 #include "data/default_fsa.hpp"
 #include "Morfeusz.hpp"
