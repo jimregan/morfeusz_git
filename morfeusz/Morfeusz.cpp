@@ -16,6 +16,7 @@
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
 #include "charset/CaseConverter.hpp"
+#include "const.hpp"
 
 // TODO - konstruktor kopiujący działający Tak-Jak-Trzeba
 
@@ -32,10 +33,18 @@ static FSA<vector<InterpsGroup >> *initializeFSA(const string& filename) {
     return FSA < vector < InterpsGroup >> ::getFSA(filename, *initializeDeserializer());
 }
 
-static CharsetConverter* initializeCharsetConverter() {
-    cerr << "initialize charset converter" << endl;
-    static CharsetConverter* converter = new UTF8CharsetConverter();
-    return converter;
+static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
+    cerr << "initialize charset converter for " << charset << endl;
+    static CharsetConverter* utf8Converter = new UTF8CharsetConverter();
+    static CharsetConverter* utf16Converter = new UTF16CharsetConverter();
+    switch (charset) {
+        case UTF8:
+            return utf8Converter;
+        case UTF16_LE:
+            return utf16Converter;
+        default:
+            throw MorfeuszException("invalid charset");
+    }
 }
 
 static Tagset* initializeTagset(const string& filename) {
@@ -58,7 +67,7 @@ static CaseConverter* initializeCaseConverter() {
 
 Morfeusz::Morfeusz()
 : fsa(FSAType::getFSA(DEFAULT_FSA, *initializeDeserializer())),
-charsetConverter(initializeCharsetConverter()),
+charsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
 tagset(initializeTagset(DEFAULT_FSA)),
 caseConverter(initializeCaseConverter()),
 caseSensitive(true) {
@@ -67,7 +76,7 @@ caseSensitive(true) {
 
 Morfeusz::Morfeusz(const string& filename)
 : fsa(initializeFSA(filename)),
-charsetConverter(initializeCharsetConverter()),
+charsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
 tagset(initializeTagset(filename)),
 caseConverter(initializeCaseConverter()),
 caseSensitive(true) {

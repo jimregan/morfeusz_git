@@ -19,6 +19,19 @@
 #include "charset/CaseConverter.hpp"
 #include "InterpretedChunk.hpp"
 #include "FlexionGraph.hpp"
+#include "const.hpp"
+
+class MorfeuszException : public std::exception {
+public:
+    MorfeuszException(const char* what): msg(what) {}
+    MorfeuszException(const std::string& what): msg(what.c_str()) {}
+    virtual ~MorfeuszException() throw() {}
+    virtual const char* what() const throw () {
+        return this->msg.c_str();
+    }
+private:
+    const std::string msg;
+};
 
 class Morfeusz;
 //class AnalyzeResult;

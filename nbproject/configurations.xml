@@ -21,6 +21,7 @@
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
+      <in>const.cpp</in>
       <in>main.cpp</in>
       <in>test_morfeusz.cpp</in>
       <in>test_morph.cpp</in>
@@ -210,6 +211,26 @@
       </item>
       <item path="morfeusz/charset/caseconv.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
+        </ccTool>
+      </item>
+      <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+            <Elem>_OPTIMIZE__=1</Elem>
+            <Elem>__PIC__=2</Elem>
+            <Elem>__pic__=2</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+          <undefinedList>
+            <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
+            <Elem>__NO_INLINE__</Elem>
+          </undefinedList>
         </ccTool>
       </item>
       <item path="morfeusz/data/default_fsa.cpp" ex="false" tool="1" flavor2="8">
