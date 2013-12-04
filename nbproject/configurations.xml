@@ -6,6 +6,8 @@
         <in>CaseConverter.cpp</in>
         <in>CharsetConverter.cpp</in>
         <in>caseconv.cpp</in>
+        <in>conversion_tables.cpp</in>
+        <in>conversion_tables.hpp</in>
       </df>
       <df name="data">
         <in>default_fsa.cpp</in>
@@ -212,6 +214,16 @@
       <item path="morfeusz/charset/caseconv.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="morfeusz/charset/conversion_tables.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="morfeusz/charset/conversion_tables.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>

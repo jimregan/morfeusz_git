@@ -70,3 +70,30 @@ void UTF16CharsetConverter::append(uint32_t cp, string& result) const {
         appendWCharToString(wchar, result);
     }
 }
+
+static vector<char> reverseArray(const uint32_t* array) {
+    
+}
+
+OneByteCharsetConverter::OneByteCharsetConverter(const uint32_t* array)
+: array(array),
+codepoint2Char(reverseArray(array))
+{
+}
+
+uint32_t OneByteCharsetConverter::peek(const char*& it, const char* end) const {
+}
+
+uint32_t OneByteCharsetConverter::next(const char*& it, const char* end) const {
+}
+
+void OneByteCharsetConverter::append(uint32_t cp, std::string& result) const {
+}
+
+ISO8859_2_CharsetConverter::ISO8859_2_CharsetConverter(const uint32_t* array)
+: OneByteCharsetConverter(array) {
+}
+
+Windows_1250_CharsetConverter::Windows_1250_CharsetConverter(const uint32_t* array)
+: OneByteCharsetConverter(array) {
+}

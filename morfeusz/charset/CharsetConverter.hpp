@@ -10,6 +10,8 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
+#include <map>
 
 class CharsetConverter {
 public:
@@ -43,11 +45,29 @@ public:
 private:
 };
 
-class ISO8859_2_CharsetConverter: public CharsetConverter {
+/*
+ * Converter that uses a simple conversion table
+ */
+class OneByteCharsetConverter: public CharsetConverter {
 public:
+    explicit OneByteCharsetConverter(const uint32_t* array);
     uint32_t peek(const char*& it, const char* end) const;
     uint32_t next(const char*& it, const char* end) const;
     void append(uint32_t cp, std::string& result) const;
+private:
+    const uint32_t* array;
+    const std::vector<char> codepoint2Char;
+};
+
+class ISO8859_2_CharsetConverter: public OneByteCharsetConverter {
+public:
+    explicit ISO8859_2_CharsetConverter(const uint32_t* array);
+private:
+};
+
+class Windows_1250_CharsetConverter: public OneByteCharsetConverter {
+public:
+    explicit Windows_1250_CharsetConverter(const uint32_t* array);
 private:
 };
 
