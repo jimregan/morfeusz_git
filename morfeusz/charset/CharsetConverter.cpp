@@ -3,6 +3,7 @@
 #include <iterator>
 #include "utf8.h"
 #include "CharsetConverter.hpp"
+#include "conversion_tables.hpp"
 
 using namespace std;
 
@@ -90,10 +91,10 @@ uint32_t OneByteCharsetConverter::next(const char*& it, const char* end) const {
 void OneByteCharsetConverter::append(uint32_t cp, std::string& result) const {
 }
 
-ISO8859_2_CharsetConverter::ISO8859_2_CharsetConverter(const uint32_t* array)
-: OneByteCharsetConverter(array) {
+ISO8859_2_CharsetConverter::ISO8859_2_CharsetConverter()
+: OneByteCharsetConverter(ISO_8859_2_TO_CODEPOINT) {
 }
 
-Windows_1250_CharsetConverter::Windows_1250_CharsetConverter(const uint32_t* array)
-: OneByteCharsetConverter(array) {
+Windows_1250_CharsetConverter::Windows_1250_CharsetConverter()
+: OneByteCharsetConverter(WINDOWS_1250_TO_CODEPOINT) {
 }

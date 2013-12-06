@@ -10,11 +10,11 @@
 
 enum MorfeuszCharset {
     UTF8,
-    UTF16_LE
-//    UTF16_BE,
-//    UTF32,
-//    ISO_8859_2,
-//    CP_1252
+    UTF16_LE,
+    UTF16_BE,
+    UTF32,
+    ISO_8859_2,
+    WINDOWS_1250
 };
 
 extern const MorfeuszCharset DEFAULT_MORFEUSZ_CHARSET;

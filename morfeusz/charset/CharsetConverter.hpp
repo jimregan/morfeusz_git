@@ -61,13 +61,13 @@ private:
 
 class ISO8859_2_CharsetConverter: public OneByteCharsetConverter {
 public:
-    explicit ISO8859_2_CharsetConverter(const uint32_t* array);
+    ISO8859_2_CharsetConverter();
 private:
 };
 
 class Windows_1250_CharsetConverter: public OneByteCharsetConverter {
 public:
-    explicit Windows_1250_CharsetConverter(const uint32_t* array);
+    Windows_1250_CharsetConverter();
 private:
 };
 

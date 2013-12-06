@@ -4,7 +4,7 @@
 
 include_directories (.)
 
-add_library (libmorfeusz SHARED const.cpp data/default_fsa.cpp MorphDeserializer.cpp Tagset.cpp fsa/const.cpp MorphInterpretation.cpp Morfeusz.cpp charset/CharsetConverter.cpp charset/CaseConverter.cpp charset/caseconv.cpp FlexionGraph.cpp)
+add_library (libmorfeusz SHARED const.cpp data/default_fsa.cpp MorphDeserializer.cpp Tagset.cpp fsa/const.cpp MorphInterpretation.cpp Morfeusz.cpp charset/CharsetConverter.cpp charset/CaseConverter.cpp charset/caseconv.cpp charset/conversion_tables.cpp FlexionGraph.cpp)
 set_target_properties(libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz")
 
 #add_executable (test_morfeusz test_morfeusz.cpp)
