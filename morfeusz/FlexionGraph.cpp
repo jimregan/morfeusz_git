@@ -132,7 +132,7 @@ void FlexionGraph::doRemoveNode(unsigned int node) {
 }
 
 void FlexionGraph::doMergeNodes(unsigned int node1, unsigned int node2) {
-    DEBUG("MERGE "+to_string(node1) + " " + to_string(node2));
+//    DEBUG("MERGE "+to_string(node1) + " " + to_string(node2));
     if (node1 > node2) {
         doMergeNodes(node2, node1);
     } else {
@@ -142,14 +142,14 @@ void FlexionGraph::doMergeNodes(unsigned int node1, unsigned int node2) {
                 this->graph[node1].push_back(e);
             }
         }
-        DEBUG("1");
-        debugGraph(this->graph);
+//        DEBUG("1");
+//        debugGraph(this->graph);
         this->redirectEdges(node2, node1);
-        DEBUG("2");
-        debugGraph(this->graph);
+//        DEBUG("2");
+//        debugGraph(this->graph);
         this->doRemoveNode(node2);
-        DEBUG("3");
-        debugGraph(this->graph);
+//        DEBUG("3");
+//        debugGraph(this->graph);
     }
 }
 
@@ -167,9 +167,9 @@ bool FlexionGraph::tryToMergeTwoNodes() {
 
 void FlexionGraph::minimizeGraph() {
     if (this->graph.size() > 2) {
-        debugGraph(this->graph);
+//        debugGraph(this->graph);
         while (this->tryToMergeTwoNodes()) {
-            debugGraph(this->graph);
+//            debugGraph(this->graph);
         }
     }
 }

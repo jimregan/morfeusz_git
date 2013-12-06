@@ -49,7 +49,7 @@ static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
 
 static Tagset* initializeTagset(const string& filename) {
     cerr << "initialize tagset" << endl;
-    static Tagset* tagset = new Tagset(readFile(filename.c_str()));
+    static Tagset* tagset = new Tagset(readFile<unsigned char>(filename.c_str()));
     return tagset;
 }
 

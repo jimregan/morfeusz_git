@@ -14,15 +14,16 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "MorphInterpretation.hpp"
 
 //using namespace std;
 
 //#define DEBUG_BUILD
 
 #ifdef DEBUG_BUILD
-#  define DEBUG(x) do { std::cerr << x << std::endl; } while (0)
+#define DEBUG(x) do { std::cerr << x << std::endl; } while (0)
 #else
-#  define DEBUG(x)
+#define DEBUG(x)
 #endif
 
 inline void validate(const bool cond, const std::string& msg) {
@@ -41,7 +42,6 @@ inline std::vector<std::string> &split(const std::string &s, char delim, std::ve
     return elems;
 }
 
-
 inline std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, elems);
@@ -53,13 +53,14 @@ inline std::vector<std::string> split(const std::string &s, char delim) {
 //        return s;
 //}
 
-inline unsigned char* readFile(const char* fname) {
+template <class T>
+inline T* readFile(const char* fname) {
     std::ifstream ifs;
     ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     ifs.open(fname, std::ios::in | std::ios::binary | std::ios::ate);
     //    if (ifs.is_open()) {
     long size = ifs.tellg();
-    unsigned char* memblock = new unsigned char [size];
+    T* memblock = new T[size];
     ifs.seekg(0, std::ios::beg);
     ifs.read(reinterpret_cast<char*> (memblock), size);
     ifs.close();
@@ -68,6 +69,30 @@ inline unsigned char* readFile(const char* fname) {
     //    else {
     //        cerr << "Unable to open file " << fname << endl;
     //    }
+}
+
+template <class OutputStream>
+void appendMorfeuszResults(const std::vector<MorphInterpretation>& res, OutputStream& out) {
+    int prevStart = -1;
+    int prevEnd = -1;
+    out << "[";
+    for (const MorphInterpretation& mi : res) {
+        if (prevStart != -1
+                && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
+            out << "]\n[";
+        } else if (prevStart != -1) {
+            out << "; ";
+        }
+        out << mi.getStartNode() << ","
+                << mi.getEndNode() << ","
+                << mi.getOrth() << ","
+                << mi.getLemma() << ","
+                << mi.getTag() << ","
+                << mi.getName();
+        prevStart = mi.getStartNode();
+        prevEnd = mi.getEndNode();
+    }
+    out << "]\n";
 }
 
 #endif	/* UTILS_HPP */

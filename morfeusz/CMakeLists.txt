@@ -9,15 +9,17 @@ set_target_properties(libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz")
 
 #add_executable (test_morfeusz test_morfeusz.cpp)
 add_executable (morfeusz main.cpp)
+add_executable (test_result_equals test_result_equals.cpp)
 
 target_link_libraries (morfeusz libmorfeusz)
+target_link_libraries (test_result_equals libmorfeusz)
 #target_link_libraries (test_morfeusz libmorfeusz)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   target_link_libraries (libmorfeusz ws2_32)
 
   # here is the magic - must statically link libstdc++ and libgcc
-  # but exclude libgcc_eh.a as it causes multiple definition of (...) errors
+  # but exclude libgcc_eh.a as it causes "multiple definition of (...)" errors
 
   set (CMAKE_SHARED_LINKER_FLAGS "-static-libstdc++ -static-libgcc -Wl,--exclude-libs,libgcc_eh.a")
   set (CMAKE_EXE_LINKER_FLAGS "-static-libstdc++ -static-libgcc")

@@ -58,7 +58,7 @@ State<T> FSA<T>::getInitialState() const {
 
 template <class T>
 FSA<T>* FSA<T>::getFSA(const std::string& filename, const Deserializer<T>& deserializer) {
-    return getFSA(readFile(filename.c_str()), deserializer);
+    return getFSA(readFile<unsigned char>(filename.c_str()), deserializer);
 }
 
 template <class T>

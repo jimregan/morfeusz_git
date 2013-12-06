@@ -7,7 +7,6 @@
         <in>CharsetConverter.cpp</in>
         <in>caseconv.cpp</in>
         <in>conversion_tables.cpp</in>
-        <in>conversion_tables.hpp</in>
       </df>
       <df name="data">
         <in>default_fsa.cpp</in>
@@ -27,6 +26,7 @@
       <in>main.cpp</in>
       <in>test_morfeusz.cpp</in>
       <in>test_morph.cpp</in>
+      <in>test_result_equals.cpp</in>
       <in>test_simple.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -218,12 +218,9 @@
       <item path="morfeusz/charset/conversion_tables.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
-      </item>
-      <item path="morfeusz/charset/conversion_tables.hpp"
-            ex="false"
-            tool="3"
-            flavor2="0">
+            flavor2="4">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
@@ -331,6 +328,22 @@
             <pElem>fsa</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
+        </ccTool>
+      </item>
+      <item path="morfeusz/test_result_equals.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+            <Elem>_OPTIMIZE__=1</Elem>
+          </preprocessorList>
+          <undefinedList>
+            <Elem>__NO_INLINE__</Elem>
+          </undefinedList>
         </ccTool>
       </item>
       <item path="morfeusz/test_simple.cpp" ex="false" tool="1" flavor2="8">
