@@ -19,6 +19,7 @@
       </df>
       <in>FlexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
+      <in>MorfeuszOptions.hpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
@@ -139,6 +140,8 @@
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
+      </item>
+      <item path="morfeusz/MorfeuszOptions.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="morfeusz/MorphDeserializer.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>

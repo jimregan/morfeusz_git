@@ -10,32 +10,29 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <iostream>
 #include "Morfeusz.hpp"
 #include "utils.hpp"
 
 using namespace std;
 
-//string doRunTest(
-//        const Morfeusz& morfeusz,
-//        const string& inputFilename) {
-//    stringstream res;
-//    ifstream ifs;
-//    //    ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-//    ifs.open(inputFilename, ios::binary);
-//    string line;
-//    while (getline(ifs, line)) {
-//        DEBUG(line);
-//        vector<MorphInterpretation> res;
-//        morfeusz.analyze(line, res);
-//        for (MorphInterpretation& mi: res) {
-//            debug(mi);
-//        }
-//    }
-//    validate(ifs.eof(), "Failed to read the input file to the end");
-//}
+static MorfeuszCharset getEncoding(const string& encodingStr) {
+    if (encodingStr == "UTF8")
+        return UTF8;
+    else if (encodingStr == "ISO8859_2")
+        return ISO8859_2;
+    else if (encodingStr == "WINDOWS1250")
+        return WINDOWS1250;
+    else if (encodingStr == "UTF16_LE")
+        return UTF16_LE;
+    else {
+        cerr << "Invalid encoding: " << encodingStr << " must be one of: UTF8, ISO8859_2, WINDOWS1250, UTF16_LE" << endl;
+        assert(false);
+    }
+}
 
 int main(int argc, char** argv) {
-    validate(argc == 3, "Must provide exactly 2 arguments - input filename, required output filename.");
+    validate(argc == 3 || argc == 4, "Must provide exactly 2 or 3 arguments - input filename, required output filename, (optional) encoding.");
     string inputFilename = argv[1];
     ifstream in(inputFilename);
     string requiredOutputFilename = argv[2];
@@ -43,6 +40,10 @@ int main(int argc, char** argv) {
     //    string requiredOutput = readFile<char>(requiredOutputFilename);
     cerr << "TEST START" << endl;
     Morfeusz morfeusz;
+    if (argc == 4) {
+        MorfeuszCharset encoding = getEncoding(argv[3]);
+        morfeusz.setEncoding(encoding);
+    }
     string line;
     while (getline(in, line)) {
         cerr << "TEST " << line << endl;

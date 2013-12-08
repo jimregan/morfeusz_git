@@ -19,6 +19,7 @@
 #include "charset/CaseConverter.hpp"
 #include "InterpretedChunk.hpp"
 #include "FlexionGraph.hpp"
+#include "MorfeuszOptions.hpp"
 #include "const.hpp"
 
 class MorfeuszException : public std::exception {
@@ -54,7 +55,9 @@ public:
             const char* inputEnd,
             int startNodeNum,
             std::vector<MorphInterpretation>& result) const;
-
+    
+    void setEncoding(MorfeuszCharset encoding);
+    
     //    Morfeusz();
     friend class ResultsIterator;
 private:
@@ -78,8 +81,10 @@ private:
     CharsetConverter* charsetConverter;
     Tagset* tagset;
     CaseConverter* caseConverter;
-
-    bool caseSensitive;
+    
+    UTF8CharsetConverter utf8CharsetConverter;
+    
+    MorfeuszOptions options;
 };
 
 class ResultsIterator {

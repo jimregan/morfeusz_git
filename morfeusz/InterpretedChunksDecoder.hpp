@@ -34,7 +34,7 @@ public:
             unsigned int endNode,
             const InterpretedChunk& interpretedChunk,
             OutputIterator out) {
-        string orth = this->toString(interpretedChunk.originalCodepoints);
+        string orth = charsetConverter.toString(interpretedChunk.originalCodepoints);
         for (const EncodedInterpretation& ei : interpretedChunk.interpsGroup.interps) {
             string lemma = convertLemma(
                     interpretedChunk.lowercaseCodepoints,
@@ -47,14 +47,6 @@ public:
             ++out;
         }
         return out;
-    }
-
-    std::string toString(std::vector<uint32_t> codepoints) {
-        std::string res;
-        for (uint32_t cp : codepoints) {
-            charsetConverter.append(cp, res);
-        }
-        return res;
     }
 
 private:

@@ -2,7 +2,8 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
-#include <stdint.h>
+#include <cstdint>
+#include <iostream>
 #include "utf8.h"
 #include "CharsetConverter.hpp"
 #include "conversion_tables.hpp"
@@ -10,6 +11,14 @@
 using namespace std;
 
 const char DEFAULT_UNDEFINED_CHAR = static_cast<char>(0xF7);
+
+string CharsetConverter::toString(const vector<uint32_t>& codepoints) const {
+    string res;
+    for (uint32_t cp : codepoints) {
+        this->append(cp, res);
+    }
+    return res;
+}
 
 uint32_t UTF8CharsetConverter::peek(const char*& it, const char* end) const {
     return utf8::peek_next(it, end);
@@ -53,10 +62,11 @@ uint32_t UTF16CharsetConverter::next(const char*& it, const char* end) const {
 }
 
 static void appendWCharToString(uint16_t wchar, string& result) {
-    uint8_t b[2] = { 
-        static_cast<uint8_t>(wchar & 0x00FF), 
-        static_cast<uint8_t>((wchar & 0xFF00) >> 8)};
-    char* chars = reinterpret_cast<char*>(b);
+    uint8_t b[2] = {
+        static_cast<uint8_t> (wchar & 0x00FF),
+        static_cast<uint8_t> ((wchar & 0xFF00) >> 8)
+    };
+    char* chars = reinterpret_cast<char*> (b);
     result.push_back(chars[0]);
     result.push_back(chars[1]);
 }
@@ -81,34 +91,32 @@ static vector<char> reverseArray(const uint32_t* array) {
     unsigned char c = 0;
     do {
         uint32_t codepoint = array[c];
-        res.resize(max(static_cast<uint32_t>(res.size()), codepoint), DEFAULT_UNDEFINED_CHAR);
-        res[codepoint] = static_cast<char>(c);
+        res.resize(max(static_cast<uint32_t> (res.size()), codepoint + 1), DEFAULT_UNDEFINED_CHAR);
+        res[codepoint] = static_cast<char> (c);
         c++;
-    }
-    while (c != 255);
+    }    while (c != 255);
     return res;
 }
 
 OneByteCharsetConverter::OneByteCharsetConverter(const uint32_t* array)
 : array(array),
-codepoint2Char(reverseArray(array))
-{
+codepoint2Char(reverseArray(array)) {
 }
 
 // TODO - sprawdzanie zakresu
+
 uint32_t OneByteCharsetConverter::peek(const char*& it, const char* end) const {
-    return this->array[static_cast<unsigned char>(*it)];
+    return this->array[static_cast<unsigned char> (*it)];
 }
 
 uint32_t OneByteCharsetConverter::next(const char*& it, const char* end) const {
-    return this->array[static_cast<unsigned char>(*(it++))];
+    return this->array[static_cast<unsigned char> (*(it++))];
 }
 
 void OneByteCharsetConverter::append(uint32_t cp, std::string& result) const {
     if (cp < this->codepoint2Char.size()) {
         result.push_back(this->codepoint2Char[cp]);
-    }
-    else {
+    } else {
         result.push_back(DEFAULT_UNDEFINED_CHAR);
     }
 }

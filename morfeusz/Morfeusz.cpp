@@ -37,11 +37,17 @@ static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
     cerr << "initialize charset converter for " << charset << endl;
     static CharsetConverter* utf8Converter = new UTF8CharsetConverter();
     static CharsetConverter* utf16Converter = new UTF16CharsetConverter();
+    static CharsetConverter* iso8859_2Converter = new ISO8859_2_CharsetConverter();
+    static CharsetConverter* windows1250Converter = new Windows_1250_CharsetConverter();
     switch (charset) {
         case UTF8:
             return utf8Converter;
         case UTF16_LE:
             return utf16Converter;
+        case ISO8859_2:
+            return iso8859_2Converter;
+        case WINDOWS1250:
+            return windows1250Converter;
         default:
             throw MorfeuszException("invalid charset");
     }
@@ -65,12 +71,19 @@ static CaseConverter* initializeCaseConverter() {
     return cc;
 }
 
+static MorfeuszOptions createDefaultOptions() {
+    MorfeuszOptions res;
+    res.caseSensitive = true;
+    res.encoding = UTF8;
+    return res;
+}
+
 Morfeusz::Morfeusz()
 : fsa(FSAType::getFSA(DEFAULT_FSA, *initializeDeserializer())),
 charsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
 tagset(initializeTagset(DEFAULT_FSA)),
 caseConverter(initializeCaseConverter()),
-caseSensitive(true) {
+options(createDefaultOptions()) {
 
 }
 
@@ -79,7 +92,7 @@ Morfeusz::Morfeusz(const string& filename)
 charsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
 tagset(initializeTagset(filename)),
 caseConverter(initializeCaseConverter()),
-caseSensitive(true) {
+options(createDefaultOptions()) {
 
 }
 
@@ -136,6 +149,7 @@ void Morfeusz::doProcessOneWord(
 
     while (!isEndOfWord(codepoint)) {
         uint32_t lowerCP = this->caseConverter->toLower(codepoint);
+        cerr << "CP " << codepoint << " --> " << lowerCP << endl;
         originalCodepoints.push_back(codepoint);
         lowercaseCodepoints.push_back(lowerCP);
         this->feedState(state, lowerCP);
@@ -171,7 +185,7 @@ void Morfeusz::feedState(
         StateType& state,
         int codepoint) const {
     string chars;
-    this->charsetConverter->append(codepoint, chars);
+    this->utf8CharsetConverter.append(codepoint, chars);
     for (char c : chars) {
         state.proceedToNext(c);
     }
@@ -201,6 +215,11 @@ void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results)
     }
 }
 
+void Morfeusz::setEncoding(MorfeuszCharset encoding) {
+    this->options.encoding = encoding;
+    this->charsetConverter = getCharsetConverter(encoding);
+}
+
 ResultsIterator::ResultsIterator(const string& text, const Morfeusz& morfeusz)
 : rawInput(text.c_str()),
 morfeusz(morfeusz) {
@@ -219,33 +238,3 @@ MorphInterpretation ResultsIterator::getNext() {
 bool ResultsIterator::hasNext() {
     return rawInput[0] != '\0' && resultsBuffer.empty();
 }
-
-//int Morfeusz::doProcessOneWord(const char*& inputPtr, const char* inputEnd, int startNodeNum, std::vector<EncodedInterpretation>& interps) const {
-//    assert(inputPtr[0] != '\0');
-//    const char* start = inputPtr;
-//    StateType state = fsa->getInitialState();
-//    int currNodeNum = startNodeNum;
-//    int codepoint = this->charsetConverter->next(inputPtr, inputEnd);
-//    assert(!isEndOfWord(codepoint));
-//    while(!isEndOfWord(codepoint)) {
-//        feedState(state, codepoint);
-//        if (state.isAccepting()) {
-//            const char* currInputPtr = inputPtr;
-//            vector<EncodedInterpretation> startInterps = state.getValue();
-//            filterOutNonGluableInterps(startInterps);
-//            if (!startInterps.empty()) {
-//                
-//            }
-//            vector<EncodedInterpretation> additionalInterps;
-//            int nextNodeNum = doProcessOneWord(currInputPtr, inputEnd, currNodeNum + 1, additionalInterps);
-//            if (!additionalInterps.empty()) {
-//                for (EncodedInterpretation& interp: state.getValue()) {
-//                    interp.startNode = currNodeNum;
-//                    interp.endNode = currNodeNum + 1;
-//                    interps.push_back(interp);
-//                }
-//                
-//            }
-//        }
-//    }
-//}
