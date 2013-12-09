@@ -5,7 +5,7 @@ set (Morfeusz_VERSION_MAJOR 0)
 set (Morfeusz_VERSION_MINOR 1)
 set (CMAKE_BUILD_TYPE "Release")
 
-set (CMAKE_CXX_FLAGS "-std=gnu++0x -Wall -O2 -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
+set (CMAKE_CXX_FLAGS "-std=gnu++0x -Wall -g -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
 
 enable_testing()
 
@@ -29,14 +29,14 @@ endmacro (test_build_and_recognize)
 
 macro (test_result_equals inputFilename requiredOutputFilename encoding)
     # add_test (TestBuild4ResultEquals-${dictFilename}-${requiredOutputFilename} python fsabuilder/fsa/buildfsa.py -i ${dictFilename} -o /tmp/test.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=SIMPLE)
-    add_test (TestResultEquals-${dictFilename}-${requiredOutputFilename} morfeusz/test_result_equals ${inputFilename} ${requiredOutputFilename} ${encoding})
+    add_test (TestResultEquals-${inputFilename}-${requiredOutputFilename} morfeusz/test_result_equals ${inputFilename} ${requiredOutputFilename} ${encoding})
 endmacro (test_result_equals)
 
 test_build_and_recognize(PoliMorfSmall.tab SIMPLE)
 test_build_and_recognize(PoliMorfSmall.tab V1)
 test_build_and_recognize(PoliMorfSmall.tab V2)
 
-test_result_equals (test1.txt test1.txt.out UTF8)
-test_result_equals (test1_ISO8859-2.txt test1_ISO8859-2.txt.out ISO8859_2)
-test_result_equals (test1_WINDOWS1250.txt test1_WINDOWS1250.txt.out UTF8 WINDOWS1250)
-test_result_equals (test1_UTF16LE.txt test1_UTF16LE.txt.out UTF16LE)
+test_result_equals (testfiles/test1.txt             testfiles/test1.txt.out             UTF8)
+test_result_equals (testfiles/test1.txt.ISO8859-2   testfiles/test1.txt.out.ISO8859-2   ISO8859_2)
+test_result_equals (testfiles/test1.txt.CP1250      testfiles/test1.txt.out.CP1250      CP1250)
+# test_result_equals (testfiles/test1.txt.UTF16LE     testfiles/test1.txt.out.UTF16LE     UTF16LE)

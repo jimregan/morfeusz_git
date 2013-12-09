@@ -10,12 +10,13 @@
 
 #include <string>
 #include <vector>
+#include "charset/CharsetConverter.hpp"
 
 class Tagset {
 public:
     explicit Tagset(const unsigned char* fsaData);
-    const std::string& getTag(const int tagNum) const;
-    const std::string& getName(const int nameNum) const;
+    const std::string getTag(const int tagNum, const CharsetConverter& charsetConverter) const;
+    const std::string getName(const int nameNum, const CharsetConverter& charsetConverter) const;
 private:
     std::vector<std::string> tags;
     std::vector<std::string> names;

@@ -42,11 +42,11 @@ static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
     switch (charset) {
         case UTF8:
             return utf8Converter;
-        case UTF16_LE:
+        case UTF16LE:
             return utf16Converter;
         case ISO8859_2:
             return iso8859_2Converter;
-        case WINDOWS1250:
+        case CP1250:
             return windows1250Converter;
         default:
             throw MorfeuszException("invalid charset");
@@ -191,7 +191,7 @@ void Morfeusz::appendIgnotiumToResults(
         const string& word,
         int startNodeNum,
         std::vector<MorphInterpretation>& results) const {
-    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, *this->tagset);
+    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, *this->tagset, *this->charsetConverter);
     results.push_back(interp);
 }
 

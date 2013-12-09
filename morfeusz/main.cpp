@@ -11,11 +11,18 @@
 #include "fsa/fsa.hpp"
 #include "Tagset.hpp"
 #include "Morfeusz.hpp"
+#include "const.hpp"
 
 using namespace std;
 
 int main(int argc, char** argv) {
     Morfeusz morfeusz;
+#ifdef _WIN32
+    morfeusz.setEncoding(CP1250);
+#endif
+#ifdef _WIN64
+    morfeusz.setEncoding(CP1250);
+#endif
     string line;
     while (getline(cin, line)) {
         //        printf("%s\n", line.c_str());

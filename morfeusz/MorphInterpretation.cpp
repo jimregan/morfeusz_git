@@ -18,35 +18,37 @@ MorphInterpretation::MorphInterpretation(
         const string& lemma,
         int tagnum,
         int namenum,
-        const Tagset& tagset)
+        const Tagset& tagset,
+        const CharsetConverter& charsetConverter)
 : startNode(startNode), 
         endNode(endNode), 
         orth(orth),
         lemma(lemma),
         tagnum(tagnum),
         namenum(namenum),
-        tag(tagset.getTag(tagnum)),
-        name(tagset.getName(namenum)) {
+        tag(tagset.getTag(tagnum, charsetConverter)),
+        name(tagset.getName(namenum, charsetConverter)) {
 
 }
 
 MorphInterpretation::MorphInterpretation(
         int startNode,
         const std::string& orth,
-        const Tagset& tagset)
+        const Tagset& tagset,
+        const CharsetConverter& charsetConverter)
 : startNode(startNode), 
         endNode(startNode + 1), 
         orth(orth),
         lemma(orth),
         tagnum(0),
         namenum(0),
-        tag(tagset.getTag(0)),
-        name(tagset.getName(0)) {
+        tag(tagset.getTag(0, charsetConverter)),
+        name(tagset.getName(0, charsetConverter)) {
 
 }
 
-MorphInterpretation MorphInterpretation::createIgn(int startNode, const std::string& orth, const Tagset& tagset) {
-    return MorphInterpretation(startNode, orth, tagset);
+MorphInterpretation MorphInterpretation::createIgn(int startNode, const std::string& orth, const Tagset& tagset, const CharsetConverter& charsetConverter) {
+    return MorphInterpretation(startNode, orth, tagset, charsetConverter);
 }
 
 int MorphInterpretation::getStartNode() const {

@@ -55,7 +55,7 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/morfeusz/test_morfeusz</executablePath>
+          <executablePath>build/morfeusz/test_result_equals</executablePath>
         </makeTool>
       </makefileType>
       <folder path="0/charset">

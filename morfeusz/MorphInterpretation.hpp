@@ -11,6 +11,7 @@
 #include <string>
 #include "Tagset.hpp"
 #include "EncodedInterpretation.hpp"
+#include "charset/CharsetConverter.hpp"
 
 class MorphInterpretation {
 public:
@@ -22,8 +23,9 @@ public:
             int tagnum,
             int namenum,
 //            const EncodedInterpretation& encodedInterp,
-            const Tagset& tagset);
-    static MorphInterpretation createIgn(int startNode, const std::string& orth, const Tagset& tagset);
+            const Tagset& tagset,
+            const CharsetConverter& charsetConverter);
+    static MorphInterpretation createIgn(int startNode, const std::string& orth, const Tagset& tagset, const CharsetConverter& charsetConverter);
 //    virtual ~MorphInterpretation();
     int getStartNode() const;
     int getEndNode() const;
@@ -37,7 +39,8 @@ private:
     MorphInterpretation(
             int startNode,
             const std::string& orth,
-            const Tagset& tagset);
+            const Tagset& tagset,
+            const CharsetConverter& charsetConverter);
     int startNode;
     int endNode;
     std::string orth;

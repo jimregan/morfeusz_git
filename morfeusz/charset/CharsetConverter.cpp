@@ -128,3 +128,15 @@ ISO8859_2_CharsetConverter::ISO8859_2_CharsetConverter()
 Windows_1250_CharsetConverter::Windows_1250_CharsetConverter()
 : OneByteCharsetConverter(WINDOWS_1250_TO_CODEPOINT) {
 }
+
+string CharsetConverter::fromUTF8(const string& input) const {
+    string res;
+    const char* currInput = input.c_str();
+    const char* inputEnd = input.c_str() + input.length();
+    cerr << input << endl;
+    while (currInput != inputEnd) {
+        uint32_t cp = utf8::next(currInput, inputEnd);
+        this->append(cp, res);
+    }
+    return res;
+}

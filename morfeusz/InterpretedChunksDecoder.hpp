@@ -42,8 +42,10 @@ public:
             *out = MorphInterpretation(
                     startNode, endNode,
                     orth, lemma,
-                    ei.tag, ei.nameClassifier,
-                    tagset);
+                    ei.tag,
+                    ei.nameClassifier,
+                    tagset,
+                    charsetConverter);
             ++out;
         }
         return out;

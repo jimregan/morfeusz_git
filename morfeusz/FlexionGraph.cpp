@@ -8,14 +8,14 @@
 
 using namespace std;
 
-static inline void debugPath(const std::vector<InterpretedChunk>& path) {
-    DEBUG("PATH:");
-    for (const InterpretedChunk& chunk : path) {
-        std::string text(chunk.chunkStartPtr);
-        DEBUG(text);
-        DEBUG(to_string(chunk.lowercaseCodepoints.size()));
-    }
-}
+//static inline void debugPath(const std::vector<InterpretedChunk>& path) {
+//    DEBUG("PATH:");
+//    for (const InterpretedChunk& chunk : path) {
+//        std::string text(chunk.chunkStartPtr);
+//        DEBUG(text);
+//        DEBUG(to_string(chunk.lowercaseCodepoints.size()));
+//    }
+//}
 
 static void debugGraph(const vector< vector<FlexionGraph::Edge> >& graph) {
     DEBUG("GRAPH:");
@@ -123,7 +123,6 @@ void FlexionGraph::redirectEdges(unsigned int fromNode, unsigned int toNode) {
 }
 
 void FlexionGraph::doRemoveNode(unsigned int node) {
-    DEBUG("REMOVE "+to_string(node));
     for (unsigned int i = node + 1; i < this->graph.size(); i++) {
         redirectEdges(i, i - 1);
         this->graph[i - 1] = this->graph[i];

@@ -39,10 +39,10 @@ Tagset::Tagset(const unsigned char* fsaData) {
     readTags(currPtr, this->names);
 }
 
-const string& Tagset::getTag(const int tagNum) const {
-    return this->tags.at(tagNum);
+const string Tagset::getTag(const int tagNum, const CharsetConverter& charsetConverter) const {
+    return charsetConverter.fromUTF8(this->tags.at(tagNum));
 }
 
-const string& Tagset::getName(const int nameNum) const {
-    return this->names.at(nameNum);
+const string Tagset::getName(const int nameNum, const CharsetConverter& charsetConverter) const {
+    return charsetConverter.fromUTF8(this->names.at(nameNum));
 }
