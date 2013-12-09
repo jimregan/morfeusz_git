@@ -149,15 +149,11 @@ void Morfeusz::doProcessOneWord(
 
     while (!isEndOfWord(codepoint)) {
         uint32_t lowerCP = this->caseConverter->toLower(codepoint);
-        cerr << "CP " << codepoint << " --> " << lowerCP << endl;
         originalCodepoints.push_back(codepoint);
         lowercaseCodepoints.push_back(lowerCP);
         this->feedState(state, lowerCP);
         if (state.isAccepting()) {
             for (InterpsGroup& ig : state.getValue()) {
-                //                for (EncodedInterpretation& ei: ig.interps) {
-                //                    cerr << "CUT: " << ei.lemma.suffixToCut << "; ADD: " << ei.lemma.suffixToAdd << endl;
-                //                }
                 InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
                 accum.push_back(ic);
                 const char* newCurrInput = currInput;

@@ -416,11 +416,11 @@ class PolimorfConverter(object):
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
-        lines = list(inputLines)
-        lines.sort(key=lambda line: self.encoder.word2SortKey(line.split(' ')[0].decode(self.inputEncoding)))
-        while lines:
-            return lines.pop()
-    #     return sorted(inputLines, key=lambda line: encoder.word2SortKey(line.split(' ')[0].decode('utf8')))
+#         lines = list(inputLines)
+#         lines.sort(key=lambda line: self.encoder.word2SortKey(line.split(' ')[0].decode(self.inputEncoding)))
+#         while lines:
+#             yield lines.pop()
+        return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split(' ')[0].decode('utf8')))
     
     def _reallyParseLines(self, inputLines):
         for line in inputLines:

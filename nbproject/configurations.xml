@@ -19,16 +19,13 @@
       </df>
       <in>FlexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
-      <in>MorfeuszOptions.hpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
       <in>const.cpp</in>
       <in>main.cpp</in>
-      <in>test_morfeusz.cpp</in>
-      <in>test_morph.cpp</in>
+      <in>test_recognize_dict.cpp</in>
       <in>test_result_equals.cpp</in>
-      <in>test_simple.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -140,8 +137,6 @@
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
-      </item>
-      <item path="morfeusz/MorfeuszOptions.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="morfeusz/MorphDeserializer.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
@@ -309,7 +304,7 @@
           </undefinedList>
         </ccTool>
       </item>
-      <item path="morfeusz/test_morfeusz.cpp" ex="false" tool="1" flavor2="8">
+      <item path="morfeusz/test_recognize_dict.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
           <incDir>
             <pElem>build</pElem>
@@ -323,14 +318,6 @@
           <undefinedList>
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
-        </ccTool>
-      </item>
-      <item path="morfeusz/test_morph.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool>
-          <incDir>
-            <pElem>fsa</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/test_result_equals.cpp" ex="false" tool="1" flavor2="8">
@@ -347,14 +334,6 @@
           <undefinedList>
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
-        </ccTool>
-      </item>
-      <item path="morfeusz/test_simple.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool>
-          <incDir>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
         </ccTool>
       </item>
     </conf>
