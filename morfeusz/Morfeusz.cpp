@@ -36,14 +36,17 @@ static FSA<vector<InterpsGroup >> *initializeFSA(const string& filename) {
 static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
     cerr << "initialize charset converter for " << charset << endl;
     static CharsetConverter* utf8Converter = new UTF8CharsetConverter();
-    static CharsetConverter* utf16Converter = new UTF16CharsetConverter();
+    static CharsetConverter* utf16LEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::UTF16CharsetConverter::LE);
+    static CharsetConverter* utf16BEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::Endianness::BE);
     static CharsetConverter* iso8859_2Converter = new ISO8859_2_CharsetConverter();
     static CharsetConverter* windows1250Converter = new Windows_1250_CharsetConverter();
     switch (charset) {
         case UTF8:
             return utf8Converter;
         case UTF16LE:
-            return utf16Converter;
+            return utf16LEConverter;
+        case UTF16BE:
+            return utf16BEConverter;
         case ISO8859_2:
             return iso8859_2Converter;
         case CP1250:

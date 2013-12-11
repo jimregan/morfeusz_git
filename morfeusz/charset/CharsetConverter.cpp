@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <iostream>
+#include "../endianness.hpp"
 #include "utf8.h"
 #include "CharsetConverter.hpp"
 #include "conversion_tables.hpp"
@@ -32,15 +33,34 @@ void UTF8CharsetConverter::append(uint32_t cp, string& result) const {
     utf8::append(cp, back_inserter(result));
 }
 
+UTF16CharsetConverter::UTF16CharsetConverter(UTF16CharsetConverter::Endianness endianness)
+: endianness(endianness) {
+    
+}
+
+static inline uint16_t swapBytes(uint16_t n) {
+    return (((n & 0xff)<<8) | ((n & 0xff00)>>8));
+}
+
+uint16_t UTF16CharsetConverter::convertEndianness(uint16_t cp) const {
+    return cp;
+    if (this->endianness == BE) {
+        return ntohs(cp);
+    }
+    else {
+        return swapBytes(ntohs(cp));
+    }
+}
+
 uint32_t UTF16CharsetConverter::peek(const char*& it, const char* end) const {
     /*
      * Borrowed from utfcpp
      */
 
-    uint32_t cp = utf8::internal::mask16(*it);
+    uint32_t cp = this->convertEndianness(utf8::internal::mask16(*it));
     // Take care of surrogate pairs first
     if (utf8::internal::is_lead_surrogate(cp)) {
-        uint32_t trail_surrogate = utf8::internal::mask16(*(it + 1));
+        uint32_t trail_surrogate = this->convertEndianness(utf8::internal::mask16(*it));
         cp = (cp << 10) + trail_surrogate + utf8::internal::SURROGATE_OFFSET;
     }
     return cp;
@@ -52,10 +72,10 @@ uint32_t UTF16CharsetConverter::next(const char*& it, const char* end) const {
      * Borrowed from utfcpp
      */
 
-    uint32_t cp = utf8::internal::mask16(*it++);
+    uint32_t cp = this->convertEndianness(utf8::internal::mask16(*it++));
     // Take care of surrogate pairs first
     if (utf8::internal::is_lead_surrogate(cp)) {
-        uint32_t trail_surrogate = utf8::internal::mask16(*it++);
+        uint32_t trail_surrogate = this->convertEndianness(utf8::internal::mask16(*it++));
         cp = (cp << 10) + trail_surrogate + utf8::internal::SURROGATE_OFFSET;
     }
     return cp;
