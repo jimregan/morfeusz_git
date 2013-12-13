@@ -63,7 +63,8 @@ int main(int argc, char** argv) {
     string fsaFilename = argv[1];
     string dictFilename = argv[2];
     Morfeusz morfeusz(fsaFilename);
-    ifstream in(dictFilename);
+    ifstream in;
+    in.open(dictFilename.c_str());
     string line;
     while (getline(in, line)) {
         cerr << "TEST " << line << endl;
@@ -77,7 +78,8 @@ int main(int argc, char** argv) {
         morfeusz.analyze(orth, res);
         bool found = false;
 
-        for (MorphInterpretation& mi : res) {
+        for (unsigned int i = 0; i < res.size(); i++) {
+            MorphInterpretation& mi = res[i];
             DEBUG("FOUND: " + mi.getLemma() + ":" + mi.getTag());
             if (lemma == mi.getLemma() && tag == mi.getTag() && name == mi.getName()) {
                 DEBUG("RECOGNIZED " + orth + " " + lemma + ":" + tag + ":" + name);

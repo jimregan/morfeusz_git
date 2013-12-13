@@ -1,5 +1,5 @@
 
-#include <cstdint>
+#include <inttypes.h>
 #include "caseconv.hpp"
 
 const unsigned int TO_LOWERCASE_TABLE_SIZE = 16384;

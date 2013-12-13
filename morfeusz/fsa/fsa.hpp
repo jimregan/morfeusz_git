@@ -15,7 +15,7 @@
 #include <exception>
 #include <string>
 #include <vector>
-#include <cstdint>
+#include <inttypes.h>
 
 template <class T> class State;
 template <class T> class FSA;
@@ -50,18 +50,18 @@ public:
     }
 };
 
-class Counter {
-public:
-
-    Counter() : count(0) {
-
-    }
-
-    void increment(const int n) {
-        count += n;
-    }
-    long long count;
-};
+//class Counter {
+//public:
+//
+//    Counter() : count(0) {
+//
+//    }
+//
+//    void increment(const int n) {
+//        count += n;
+//    }
+//    long long count;
+//};
 
 /**
  * Finite state automaton.
@@ -112,14 +112,9 @@ class SimpleFSA : public FSA<T> {
 public:
     SimpleFSA(const unsigned char* ptr, const Deserializer<T>& deserializer);
     virtual ~SimpleFSA();
-
-    long long transitionsCount() {
-        return counter.count;
-    }
 protected:
     void proceedToNext(const char c, State<T>& state) const;
 private:
-    Counter counter;
 };
 
 template <class T>
@@ -127,14 +122,9 @@ class CompressedFSA1 : public FSA<T> {
 public:
     CompressedFSA1(const unsigned char* ptr, const Deserializer<T>& deserializer);
     virtual ~CompressedFSA1();
-
-    long long transitionsCount() {
-        return counter.count;
-    }
 protected:
     void proceedToNext(const char c, State<T>& state) const;
 private:
-    Counter counter;
     const std::vector<unsigned char> label2ShortLabel;
     
     static std::vector<unsigned char> initializeChar2PopularCharIdx(const unsigned char* ptr);
@@ -160,14 +150,11 @@ class CompressedFSA2 : public FSA<T> {
 public:
     CompressedFSA2(const unsigned char* ptr, const Deserializer<T>& deserializer);
     virtual ~CompressedFSA2();
-
-    long long transitionsCount() {
-        return counter.count;
-    }
+    
 protected:
     void proceedToNext(const char c, State<T>& state) const;
+    
 private:
-    Counter counter;
     
     static std::vector<unsigned char> initializeChar2PopularCharIdx(const unsigned char* ptr);
     

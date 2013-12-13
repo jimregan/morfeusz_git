@@ -22,31 +22,31 @@
 
 using namespace std;
 
-static Deserializer<vector<InterpsGroup>>* initializeDeserializer() {
-    static Deserializer < vector < InterpsGroup >> *deserializer
+static Deserializer<vector<InterpsGroup> >* initializeDeserializer() {
+    static Deserializer < vector < InterpsGroup > > *deserializer
             = new MorphDeserializer();
     return deserializer;
 }
 
-static FSA<vector<InterpsGroup >> *initializeFSA(const string& filename) {
+static FSA<vector<InterpsGroup > > *initializeFSA(const string& filename) {
     cerr << "initialize FSA" << endl;
-    return FSA < vector < InterpsGroup >> ::getFSA(filename, *initializeDeserializer());
+    return FSA < vector < InterpsGroup > > ::getFSA(filename, *initializeDeserializer());
 }
 
 static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
     cerr << "initialize charset converter for " << charset << endl;
     static CharsetConverter* utf8Converter = new UTF8CharsetConverter();
-    static CharsetConverter* utf16LEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::UTF16CharsetConverter::LE);
-    static CharsetConverter* utf16BEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::Endianness::BE);
+//    static CharsetConverter* utf16LEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::UTF16CharsetConverter::LE);
+//    static CharsetConverter* utf16BEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::Endianness::BE);
     static CharsetConverter* iso8859_2Converter = new ISO8859_2_CharsetConverter();
     static CharsetConverter* windows1250Converter = new Windows_1250_CharsetConverter();
     switch (charset) {
         case UTF8:
             return utf8Converter;
-        case UTF16LE:
-            return utf16LEConverter;
-        case UTF16BE:
-            return utf16BEConverter;
+//        case UTF16LE:
+//            return utf16LEConverter;
+//        case UTF16BE:
+//            return utf16BEConverter;
         case ISO8859_2:
             return iso8859_2Converter;
         case CP1250:
@@ -122,8 +122,10 @@ void Morfeusz::processOneWord(
     if (!graph.empty()) {
         InterpretedChunksDecoder interpretedChunksDecoder(*tagset, *charsetConverter, *caseConverter);
         int srcNode = startNodeNum;
-        for (vector<FlexionGraph::Edge>& edges : graph.getTheGraph()) {
-            for (FlexionGraph::Edge& e : edges) {
+        for (unsigned int i = 0; i < graph.getTheGraph().size(); i++) {
+            vector<FlexionGraph::Edge>& edges = graph.getTheGraph()[i];
+            for (unsigned int j = 0; j < edges.size(); j++) {
+                FlexionGraph::Edge& e = edges[j];
                 int targetNode = startNodeNum + e.nextNode;
                 interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, back_inserter(results));
             }
@@ -156,7 +158,9 @@ void Morfeusz::doProcessOneWord(
         lowercaseCodepoints.push_back(lowerCP);
         this->feedState(state, lowerCP);
         if (state.isAccepting()) {
-            for (InterpsGroup& ig : state.getValue()) {
+            vector< InterpsGroup > val(state.getValue());
+            for (unsigned int i = 0; i < val.size(); i++) {
+                InterpsGroup& ig = val[i];
                 InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
                 accum.push_back(ic);
                 const char* newCurrInput = currInput;
@@ -170,7 +174,9 @@ void Morfeusz::doProcessOneWord(
         }
     }
     if (state.isAccepting()) {
-        for (InterpsGroup& ig : state.getValue()) {
+        vector<InterpsGroup > val(state.getValue());
+        for (unsigned int i = 0; i < val.size(); i++) {
+            InterpsGroup& ig = val[i];
             InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
             accum.push_back(ic);
             graph.addPath(accum);
@@ -185,8 +191,8 @@ void Morfeusz::feedState(
         int codepoint) const {
     string chars;
     this->utf8CharsetConverter.append(codepoint, chars);
-    for (char c : chars) {
-        state.proceedToNext(c);
+    for (unsigned int i = 0; i < chars.length(); i++) {
+        state.proceedToNext(chars[i]);
     }
 }
 

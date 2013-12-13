@@ -10,8 +10,16 @@
 
 #include <set>
 
+static inline std::set<int> initializeWhitespaces() {
+    std::set<int> res;
+    res.insert(0x00);
+    res.insert(0x0A);
+    res.insert(0x20);
+    return res;
+}
+
 bool isEndOfWord(int codepoint) {
-    static std::set<int> whitespaces = { 0x00, 0x0A, 0x20 };
+    static std::set<int> whitespaces(initializeWhitespaces());
     return whitespaces.count(codepoint);
 }
 

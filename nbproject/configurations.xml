@@ -26,6 +26,7 @@
       <in>main.cpp</in>
       <in>test_recognize_dict.cpp</in>
       <in>test_result_equals.cpp</in>
+      <in>test_result_equals_utf16.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -335,6 +336,11 @@
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
+      </item>
+      <item path="morfeusz/test_result_equals_utf16.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
     </conf>
   </confs>

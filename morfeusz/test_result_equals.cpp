@@ -23,10 +23,10 @@ static MorfeuszCharset getEncoding(const string& encodingStr) {
         return ISO8859_2;
     else if (encodingStr == "CP1250")
         return CP1250;
-    else if (encodingStr == "UTF16_LE")
-        return UTF16LE;
+//    else if (encodingStr == "UTF16_LE")
+//        return UTF16LE;
     else {
-        cerr << "Invalid encoding: " << encodingStr << " must be one of: UTF8, ISO8859_2, WINDOWS1250, UTF16_LE" << endl;
+        cerr << "Invalid encoding: " << encodingStr << " must be one of: UTF8, ISO8859_2, WINDOWS1250" << endl;
         assert(false);
     }
 }
@@ -37,12 +37,12 @@ int main(int argc, char** argv) {
     ifstream in;
 //    in.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     cerr << "OPEN " << inputFilename << endl;
-    in.open(inputFilename);
+    in.open(inputFilename.c_str());
     string requiredOutputFilename = argv[2];
     ifstream requiredIn;
 //    requiredIn.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     cerr << "OPEN " << requiredOutputFilename << endl;
-    requiredIn.open(requiredOutputFilename);
+    requiredIn.open(requiredOutputFilename.c_str());
     //    string requiredOutput = readFile<char>(requiredOutputFilename);
     cerr << "TEST START" << endl;
     Morfeusz morfeusz;

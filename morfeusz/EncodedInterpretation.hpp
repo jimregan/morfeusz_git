@@ -10,7 +10,7 @@
 
 #include <string>
 #include <vector>
-#include <cstdint>
+#include <inttypes.h>
 #include "Tagset.hpp"
 
 /*

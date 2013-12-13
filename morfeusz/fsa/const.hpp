@@ -8,7 +8,7 @@
 #ifndef CONST_HPP
 #define	CONST_HPP
 
-#include <cstdint>
+#include <inttypes.h>
 
 extern const uint32_t MAGIC_NUMBER;
 extern const uint8_t VERSION_NUM;

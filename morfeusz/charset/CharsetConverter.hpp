@@ -8,7 +8,7 @@
 #ifndef ENCODINGCONVERTER_HPP
 #define	ENCODINGCONVERTER_HPP
 
-#include <cstdint>
+#include <inttypes.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -33,25 +33,25 @@ public:
 private:
 };
 
-class UTF16CharsetConverter : public CharsetConverter {
-public:
-    enum Endianness { LE, BE };
-    explicit UTF16CharsetConverter(UTF16CharsetConverter::Endianness endianness);
-    uint32_t peek(const char*& it, const char* end) const;
-    uint32_t next(const char*& it, const char* end) const;
-    void append(uint32_t cp, std::string& result) const;
-private:
-    uint16_t convertEndianness(uint16_t cp) const;
-    UTF16CharsetConverter::Endianness endianness;
-};
-
-class UTF32CharsetConverter : public CharsetConverter {
-public:
-    uint32_t peek(const char*& it, const char* end) const;
-    uint32_t next(const char*& it, const char* end) const;
-    void append(uint32_t cp, std::string& result) const;
-private:
-};
+//class UTF16CharsetConverter : public CharsetConverter {
+//public:
+//    enum Endianness { LE, BE };
+//    explicit UTF16CharsetConverter(UTF16CharsetConverter::Endianness endianness);
+//    uint32_t peek(const char*& it, const char* end) const;
+//    uint32_t next(const char*& it, const char* end) const;
+//    void append(uint32_t cp, std::string& result) const;
+//private:
+//    uint16_t convertEndianness(uint16_t cp) const;
+//    UTF16CharsetConverter::Endianness endianness;
+//};
+//
+//class UTF32CharsetConverter : public CharsetConverter {
+//public:
+//    uint32_t peek(const char*& it, const char* end) const;
+//    uint32_t next(const char*& it, const char* end) const;
+//    void append(uint32_t cp, std::string& result) const;
+//private:
+//};
 
 /*
  * Converter that uses a simple conversion table

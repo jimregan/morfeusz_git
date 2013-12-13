@@ -35,7 +35,8 @@ public:
             const InterpretedChunk& interpretedChunk,
             OutputIterator out) {
         string orth = charsetConverter.toString(interpretedChunk.originalCodepoints);
-        for (const EncodedInterpretation& ei : interpretedChunk.interpsGroup.interps) {
+        for (unsigned int i = 0; i < interpretedChunk.interpsGroup.interps.size(); i++) {
+            const EncodedInterpretation& ei = interpretedChunk.interpsGroup.interps[i];
             string lemma = convertLemma(
                     interpretedChunk.lowercaseCodepoints,
                     ei.lemma);

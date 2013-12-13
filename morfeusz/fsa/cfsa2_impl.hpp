@@ -18,8 +18,8 @@
 static const unsigned char HAS_REMAINING_FLAG = 128;
 static const unsigned char ACCEPTING_FLAG = 64;
 static const unsigned char LAST_FLAG = 32;
-static const unsigned char OFFSET_MASK = 0b01111111;
-static const unsigned char FIRST_BYTE_OFFSET_MASK = 0b00011111;
+static const unsigned char OFFSET_MASK = 0x7F; // 0b01111111;
+static const unsigned char FIRST_BYTE_OFFSET_MASK = 0x1F; // 0b00011111;
 
 using namespace std;
 

@@ -7,7 +7,7 @@
 
 #include <map>
 #include <algorithm>
-#include <cstdint>
+//#include <cstdint>
 #include "MorphDeserializer.hpp"
 #include "EncodedInterpretation.hpp"
 #include "InterpsGroup.hpp"
@@ -89,8 +89,9 @@ long MorphDeserializer::deserialize(const unsigned char* ptr, vector<InterpsGrou
         results[interp.type].addInterpretation(interp);
 //        interps.push_back(interp);
     }
-    for (auto& kv: results) {
-        interps.push_back(kv.second);
+    map<int, InterpsGroup>::iterator it;
+    for (it = results.begin(); it != results.end(); ++it) {
+        interps.push_back((*it).second);
     }
     return currPtr - ptr;
 }

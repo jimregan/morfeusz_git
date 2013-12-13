@@ -31,7 +31,8 @@ int main(int argc, char** argv) {
         int prevStart = -1;
         int prevEnd = -1;
         printf("[");
-        for (MorphInterpretation& mi : res) {
+        for (unsigned int i = 0; i < res.size(); i++) {
+            MorphInterpretation& mi = res[i];
             if (prevStart != -1 
                     && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
                 printf("]\n[");

@@ -76,7 +76,8 @@ void appendMorfeuszResults(const std::vector<MorphInterpretation>& res, OutputSt
     int prevStart = -1;
     int prevEnd = -1;
     out << "[";
-    for (const MorphInterpretation& mi : res) {
+    for (unsigned int i = 0; i < res.size(); i++) {
+        const MorphInterpretation& mi = res[i];
         if (prevStart != -1
                 && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
             out << "]\n[";

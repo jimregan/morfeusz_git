@@ -38,8 +38,8 @@ class Morfeusz;
 //class AnalyzeResult;
 class ResultsIterator;
 
-typedef FSA<std::vector<InterpsGroup >> FSAType;
-typedef State<std::vector<InterpsGroup >> StateType;
+typedef FSA<std::vector<InterpsGroup > > FSAType;
+typedef State<std::vector<InterpsGroup > > StateType;
 
 class Morfeusz {
 public:

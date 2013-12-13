@@ -8,7 +8,7 @@
 #ifndef CASECONVERTER_HPP
 #define	CASECONVERTER_HPP
 
-#include <cstdint>
+#include <inttypes.h>
 #include <map>
 
 class CaseConverter {

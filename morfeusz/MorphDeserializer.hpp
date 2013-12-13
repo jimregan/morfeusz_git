@@ -12,7 +12,7 @@
 #include "fsa/fsa.hpp"
 #include "InterpsGroup.hpp"
 
-class MorphDeserializer: public Deserializer<std::vector<InterpsGroup>> {
+class MorphDeserializer: public Deserializer< std::vector<InterpsGroup> > {
 public:
     MorphDeserializer();
     MorphDeserializer(const MorphDeserializer& orig);

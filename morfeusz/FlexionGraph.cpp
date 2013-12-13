@@ -8,24 +8,6 @@
 
 using namespace std;
 
-//static inline void debugPath(const std::vector<InterpretedChunk>& path) {
-//    DEBUG("PATH:");
-//    for (const InterpretedChunk& chunk : path) {
-//        std::string text(chunk.chunkStartPtr);
-//        DEBUG(text);
-//        DEBUG(to_string(chunk.lowercaseCodepoints.size()));
-//    }
-//}
-
-static void debugGraph(const vector< vector<FlexionGraph::Edge> >& graph) {
-    DEBUG("GRAPH:");
-    for (unsigned int i = 0; i < graph.size(); i++) {
-        for (const FlexionGraph::Edge& e : graph[i]) {
-            cerr << i << " -> " << e.nextNode << " type=" << e.chunk.interpsGroup.type << endl;
-        }
-    }
-}
-
 void FlexionGraph::addStartEdge(const Edge& e) {
     if (this->graph.empty()) {
         assert(this->node2ChunkStartPtr.empty());
@@ -47,9 +29,10 @@ void FlexionGraph::addMiddleEdge(unsigned int startNode, const Edge& e) {
 }
 
 void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
-//    debugPath(path);
-//    debugGraph(this->graph);
-    for (const InterpretedChunk& chunk : path) {
+    //    debugPath(path);
+    //    debugGraph(this->graph);
+    for (unsigned int i = 0; i < path.size(); i++) {
+        const InterpretedChunk& chunk = path[i];
         if (&chunk == &(path.front())
                 && &chunk == &(path.back())) {
             Edge e = {chunk, UINT_MAX};
@@ -77,22 +60,27 @@ set<FlexionGraph::Path> FlexionGraph::getPossiblePaths(unsigned int node) {
         return set<FlexionGraph::Path>();
     } else {
         set<FlexionGraph::Path> res;
-        for (Edge& e : this->graph.at(node)) {
+        vector<Edge>& edges = this->graph.at(node);
+        for (unsigned int i = 0; i < edges.size(); i++) {
+            Edge& e = edges[i];
             FlexionGraph::PathElement pathElem(e.chunk.chunkStartPtr, e.chunk.interpsGroup.type);
-            set<Path> nextPaths = e.nextNode == this->graph.size()
-                    ? set<Path>()
-                    : this->getPossiblePaths(e.nextNode);
-            for (Path path : nextPaths) {
-                path.insert(pathElem);
+            if (e.nextNode != this->graph.size()) {
+                set<Path> possiblePaths = this->getPossiblePaths(e.nextNode);
+                vector<Path> nextPaths(possiblePaths.begin(), possiblePaths.end());
+                vector<Path>::iterator it;
+                for (it = nextPaths.begin(); it != nextPaths.end(); ++it) {
+                    (*it).insert(pathElem);
+                }
+                res.insert(nextPaths.begin(), nextPaths.end());
             }
-            res.insert(nextPaths.begin(), nextPaths.end());
         }
         return res;
     }
 }
 
 static bool containsEqualEdge(const vector<FlexionGraph::Edge>& edges, const FlexionGraph::Edge& e) {
-    for (FlexionGraph::Edge e1 : edges) {
+    for (unsigned int i = 0; i < edges.size(); i++) {
+        const FlexionGraph::Edge& e1 = edges[i];
         if (e1.chunk.chunkStartPtr == e.chunk.chunkStartPtr
                 && e1.chunk.lowercaseCodepoints == e.chunk.lowercaseCodepoints
                 && e1.chunk.interpsGroup.type == e.chunk.interpsGroup.type
@@ -104,8 +92,9 @@ static bool containsEqualEdge(const vector<FlexionGraph::Edge>& edges, const Fle
 }
 
 void FlexionGraph::redirectEdges(unsigned int fromNode, unsigned int toNode) {
-    for (vector<Edge>& edges : this->graph) {
-        auto edgesIt = edges.begin();
+    for (unsigned int i = 0; i < this->graph.size(); i++) {
+        vector<Edge>& edges = this->graph[i];
+        vector<Edge>::iterator edgesIt = edges.begin();
         while (edgesIt != edges.end()) {
             Edge& e = *edgesIt;
             if (e.nextNode == fromNode) {
@@ -114,8 +103,7 @@ void FlexionGraph::redirectEdges(unsigned int fromNode, unsigned int toNode) {
                     e.nextNode = toNode;
                 }
                 edges.erase(edgesIt);
-            }
-            else {
+            } else {
                 ++edgesIt;
             }
         }
@@ -131,24 +119,25 @@ void FlexionGraph::doRemoveNode(unsigned int node) {
 }
 
 void FlexionGraph::doMergeNodes(unsigned int node1, unsigned int node2) {
-//    DEBUG("MERGE "+to_string(node1) + " " + to_string(node2));
+    //    DEBUG("MERGE "+to_string(node1) + " " + to_string(node2));
     if (node1 > node2) {
         doMergeNodes(node2, node1);
     } else {
         // node1 < node2
-        for (Edge& e : this->graph[node2]) {
+        for (unsigned int i = 0; i < this->graph[node2].size(); i++) {
+            Edge& e = this->graph[node2][i];
             if (!containsEqualEdge(graph[node1], e)) {
                 this->graph[node1].push_back(e);
             }
         }
-//        DEBUG("1");
-//        debugGraph(this->graph);
+        //        DEBUG("1");
+        //        debugGraph(this->graph);
         this->redirectEdges(node2, node1);
-//        DEBUG("2");
-//        debugGraph(this->graph);
+        //        DEBUG("2");
+        //        debugGraph(this->graph);
         this->doRemoveNode(node2);
-//        DEBUG("3");
-//        debugGraph(this->graph);
+        //        DEBUG("3");
+        //        debugGraph(this->graph);
     }
 }
 
@@ -166,9 +155,9 @@ bool FlexionGraph::tryToMergeTwoNodes() {
 
 void FlexionGraph::minimizeGraph() {
     if (this->graph.size() > 2) {
-//        debugGraph(this->graph);
+        //        debugGraph(this->graph);
         while (this->tryToMergeTwoNodes()) {
-//            debugGraph(this->graph);
+            //            debugGraph(this->graph);
         }
     }
 }
@@ -178,8 +167,10 @@ bool FlexionGraph::empty() const {
 }
 
 void FlexionGraph::repairLastNodeNumbers() {
-    for (vector<Edge>& edges : this->graph) {
-        for (Edge& e : edges) {
+    for (unsigned int i = 0; i < this->graph.size(); i++) {
+        vector<Edge>& edges = this->graph[i];
+        for (unsigned int j = 0; j < edges.size(); j++) {
+            Edge& e = edges[j];
             if (e.nextNode == UINT_MAX) {
                 e.nextNode = this->graph.size();
             }
