@@ -92,17 +92,22 @@ static bool containsEqualEdge(const vector<FlexionGraph::Edge>& edges, const Fle
 }
 
 void FlexionGraph::redirectEdges(unsigned int fromNode, unsigned int toNode) {
-    for (unsigned int i = 0; i < this->graph.size(); i++) {
-        vector<Edge>& edges = this->graph[i];
+    for (unsigned int node = 0; node < fromNode; node++) {
+        vector<Edge>& edges = this->graph[node];
         vector<Edge>::iterator edgesIt = edges.begin();
         while (edgesIt != edges.end()) {
-            Edge& e = *edgesIt;
-            if (e.nextNode == fromNode) {
-                Edge newEdge = {e.chunk, toNode};
+            Edge& oldEdge = *edgesIt;
+            if (oldEdge.nextNode == fromNode) {
+                Edge newEdge = {oldEdge.chunk, toNode};
                 if (!containsEqualEdge(edges, newEdge)) {
-                    e.nextNode = toNode;
+                    // if newEdge is not in edges, redirect edgeEdge
+                    // so it becomes newEdge
+                    oldEdge.nextNode = toNode;
                 }
-                edges.erase(edgesIt);
+                else {
+                    // if newEdge is already there, just remove old edge
+                    edges.erase(edgesIt);
+                }
             } else {
                 ++edgesIt;
             }
@@ -114,12 +119,13 @@ void FlexionGraph::doRemoveNode(unsigned int node) {
     for (unsigned int i = node + 1; i < this->graph.size(); i++) {
         redirectEdges(i, i - 1);
         this->graph[i - 1] = this->graph[i];
+        this->node2ChunkStartPtr[i - 1] = this->node2ChunkStartPtr[i];
     }
     this->graph.pop_back();
+    this->node2ChunkStartPtr.pop_back();
 }
 
 void FlexionGraph::doMergeNodes(unsigned int node1, unsigned int node2) {
-    //    DEBUG("MERGE "+to_string(node1) + " " + to_string(node2));
     if (node1 > node2) {
         doMergeNodes(node2, node1);
     } else {
@@ -143,7 +149,7 @@ void FlexionGraph::doMergeNodes(unsigned int node1, unsigned int node2) {
 
 bool FlexionGraph::tryToMergeTwoNodes() {
     for (unsigned int node1 = 0; node1 < this->graph.size(); node1++) {
-        for (unsigned int node2 = 0; node2 < node1; node2++) {
+        for (unsigned int node2 = this->graph.size() - 1; node2 > node1; node2--) {
             if (this->canMergeNodes(node1, node2)) {
                 this->doMergeNodes(node1, node2);
                 return true;
