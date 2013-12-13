@@ -44,10 +44,6 @@ static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
     switch (charset) {
         case UTF8:
             return utf8Converter;
-//        case UTF16LE:
-//            return utf16LEConverter;
-//        case UTF16BE:
-//            return utf16BEConverter;
         case ISO8859_2:
             return iso8859_2Converter;
         case CP1250:
@@ -117,7 +113,6 @@ void Morfeusz::processOneWord(
         this->charsetConverter->next(inputData, inputEnd);
     }
     const char* wordStart = inputData;
-    DEBUG(wordStart);
     vector<InterpretedChunk> accum;
     FlexionGraph graph;
     const char* currInput = inputData;

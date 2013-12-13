@@ -32,9 +32,6 @@ static void readTags(const unsigned char*& currPtr, vector<string>& tags) {
 
 Tagset::Tagset(const unsigned char* fsaData) {
     const unsigned char* currPtr = fsaData + ADDITIONAL_DATA_OFFSET;
-//    uint32_t tagsNum = ntohl(*reinterpret_cast<const uint32_t*>(currPtr));
-//    uint32_t namesNum = ntohl(*reinterpret_cast<const uint32_t*>(fsaData + ADDITIONAL_DATA_OFFSET + 4));
-//    const unsigned char* currPtr = fsaData + 8;
     readTags(currPtr, this->tags);
     readTags(currPtr, this->names);
 }
