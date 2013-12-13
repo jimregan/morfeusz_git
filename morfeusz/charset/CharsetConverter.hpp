@@ -79,5 +79,11 @@ public:
 private:
 };
 
+class CP852_CharsetConverter : public OneByteCharsetConverter {
+public:
+    CP852_CharsetConverter();
+private:
+};
+
 #endif	/* ENCODINGCONVERTER_HPP */
 

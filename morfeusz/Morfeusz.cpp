@@ -40,6 +40,7 @@ static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
 //    static CharsetConverter* utf16BEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::Endianness::BE);
     static CharsetConverter* iso8859_2Converter = new ISO8859_2_CharsetConverter();
     static CharsetConverter* windows1250Converter = new Windows_1250_CharsetConverter();
+    static CharsetConverter* cp852Converter = new CP852_CharsetConverter();
     switch (charset) {
         case UTF8:
             return utf8Converter;
@@ -51,6 +52,8 @@ static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
             return iso8859_2Converter;
         case CP1250:
             return windows1250Converter;
+        case CP852:
+            return cp852Converter;
         default:
             throw MorfeuszException("invalid charset");
     }

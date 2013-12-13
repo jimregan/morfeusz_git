@@ -18,10 +18,10 @@ using namespace std;
 int main(int argc, char** argv) {
     Morfeusz morfeusz;
 #ifdef _WIN32
-    morfeusz.setEncoding(CP1250);
+    morfeusz.setEncoding(CP852);
 #endif
 #ifdef _WIN64
-    morfeusz.setEncoding(CP1250);
+    morfeusz.setEncoding(CP852);
 #endif
     string line;
     while (getline(cin, line)) {

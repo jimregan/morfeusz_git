@@ -9,6 +9,7 @@
 #define	_STATE_IMPL_HPP
 
 #include <typeinfo>
+#include <cstdio>
 #include "fsa.hpp"
 
 using namespace std;
@@ -30,6 +31,8 @@ bool State<T>::isAccepting() const {
 
 template <class T>
 void State<T>::proceedToNext(const char c) {
+    printf("%d %c\n", static_cast<unsigned char>(c), c);
+//    std::cerr << "NEXT " << std::hex << std::setw(2) << std::setfill('0') << int(c) << std::endl;
     if (this->sink) {
         return;
     }

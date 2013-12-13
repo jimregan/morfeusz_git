@@ -150,6 +150,10 @@ Windows_1250_CharsetConverter::Windows_1250_CharsetConverter()
 : OneByteCharsetConverter(WINDOWS_1250_TO_CODEPOINT) {
 }
 
+CP852_CharsetConverter::CP852_CharsetConverter()
+: OneByteCharsetConverter(CP852_TO_CODEPOINT) {
+}
+
 string CharsetConverter::fromUTF8(const string& input) const {
     string res;
     const char* currInput = input.c_str();

@@ -21,6 +21,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   # here is the magic - must statically link libstdc++ and libgcc
   # but exclude libgcc_eh.a as it causes "multiple definition of (...)" errors
 
-  set (CMAKE_SHARED_LINKER_FLAGS "-static-libstdc++ -static-libgcc -Wl,--exclude-libs,libgcc_eh.a")
-  set (CMAKE_EXE_LINKER_FLAGS "-static-libstdc++ -static-libgcc")
+  set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc -Wl,--exclude-libs,libgcc_eh.a")
+  set (CMAKE_EXE_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
+  set (CMAKE_CXX_FLAGS "-std=c++0x -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wcast-qual -Wcast-align")
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")

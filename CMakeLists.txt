@@ -5,7 +5,7 @@ set (Morfeusz_VERSION_MAJOR 0)
 set (Morfeusz_VERSION_MINOR 1)
 set (CMAKE_BUILD_TYPE "Release")
 
-set (CMAKE_CXX_FLAGS "-std=c++98 -Wall -g -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
+set (CMAKE_CXX_FLAGS "-std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
 
 enable_testing()
 
