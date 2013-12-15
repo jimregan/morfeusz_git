@@ -2,9 +2,23 @@
 # Make sure the linker can find the Hello library once it is built. 
 #link_directories (${Morfeusz_BINARY_DIR}/Hello)
 
-include_directories (.)
+#include_directories (swig)
 
-add_library (libmorfeusz SHARED const.cpp data/default_fsa.cpp MorphDeserializer.cpp Tagset.cpp fsa/const.cpp MorphInterpretation.cpp Morfeusz.cpp charset/CharsetConverter.cpp charset/CaseConverter.cpp charset/caseconv.cpp charset/conversion_tables.cpp FlexionGraph.cpp)
+set(SRC_FILES 
+    const.cpp 
+    data/default_fsa.cpp
+    MorphDeserializer.cpp 
+    Tagset.cpp 
+    fsa/const.cpp 
+    MorphInterpretation.cpp 
+    Morfeusz.cpp
+    FlexionGraph.cpp
+    charset/CharsetConverter.cpp
+    charset/CaseConverter.cpp
+    charset/caseconv.cpp
+    charset/conversion_tables.cpp)
+
+add_library (libmorfeusz SHARED ${SRC_FILES})
 set_target_properties(libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz")
 
 add_executable (morfeusz main.cpp)
@@ -25,3 +39,6 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set (CMAKE_EXE_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
   set (CMAKE_CXX_FLAGS "-std=c++0x -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wcast-qual -Wcast-align")
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
+add_subdirectory (java)
+add_subdirectory (python)

@@ -14,7 +14,7 @@ configure_file (
   "${PROJECT_BINARY_DIR}/morfeusz/MorfeuszConfig.hpp"
 )
 
-include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_BINARY_DIR}" )
 
 add_subdirectory (morfeusz)
 
