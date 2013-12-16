@@ -17,3 +17,7 @@ SET_SOURCE_FILES_PROPERTIES(../morfeusz.i PROPERTIES CPLUSPLUS ON)
 SWIG_ADD_MODULE(morfeusz-java java ../morfeusz.i)
 SWIG_LINK_LIBRARIES(morfeusz-java ${JAVA_LIBRARIES})
 SWIG_LINK_LIBRARIES(morfeusz-java libmorfeusz)
+
+set (CMAKE_SHARED_LINKER_FLAGS "")
+set (CMAKE_EXE_LINKER_FLAGS "")
+set (CMAKE_CXX_FLAGS "-std=c++0x")
