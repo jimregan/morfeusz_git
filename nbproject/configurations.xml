@@ -31,6 +31,7 @@
                    displayName="morfeusz"
                    projectFiles="true"
                    root="build/morfeusz">
+      <itemPath>build/morfeusz/morfeuszJAVA_wrap.cxx</itemPath>
       <itemPath>build/morfeusz/morfeuszPYTHON_wrap.cxx</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -43,8 +44,8 @@
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
+    <Elem>fsa</Elem>
     <Elem>morfeusz</Elem>
-    <Elem>swig</Elem>
   </sourceRootList>
   <projectmakefile>build/Makefile</projectmakefile>
   <confs>
@@ -64,19 +65,40 @@
           <executablePath>build/morfeusz/test_result_equals</executablePath>
         </makeTool>
       </makefileType>
+      <item path="build/morfeusz/morfeuszJAVA_wrap.cxx"
+            ex="false"
+            tool="1"
+            flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/lib/jvm/default-java/include</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz/java</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>morfeusz_java_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="build/morfeusz/morfeuszPYTHON_wrap.cxx"
             ex="false"
             tool="1"
             flavor2="4">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/python2.7</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz/python</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_morfeusz_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <folder path="0/charset">
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -84,7 +106,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -96,8 +118,6 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -105,7 +125,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -117,15 +137,12 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
           </incDir>
           <preprocessorList>
             <Elem>NDEBUG</Elem>
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -137,8 +154,6 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -146,7 +161,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -158,8 +173,6 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -167,7 +180,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -179,8 +192,6 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -188,7 +199,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -200,8 +211,6 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -209,7 +218,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -221,8 +230,6 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -230,7 +237,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -264,8 +271,6 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -273,7 +278,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
@@ -289,8 +294,6 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
-            <pElem>/usr/include/python2.7</pElem>
-            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
@@ -298,7 +301,7 @@
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
-            <Elem>_python_morfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>

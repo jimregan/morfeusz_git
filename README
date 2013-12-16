@@ -1,3 +1,7 @@
 For cross compiling:
 
 sudo apt-get install g++-multilib g++-mingw-w64
+
+For Java and Python bindings:
+
+sudo apt-get install swig default-jdk
