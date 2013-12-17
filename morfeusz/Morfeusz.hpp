@@ -22,24 +22,27 @@
 #include "MorfeuszOptions.hpp"
 #include "const.hpp"
 
+class Morfeusz;
+class ResultsIterator;
+
+typedef FSA<std::vector<InterpsGroup > > FSAType;
+typedef State<std::vector<InterpsGroup > > StateType;
+
 class MorfeuszException : public std::exception {
 public:
-    MorfeuszException(const char* what): msg(what) {}
-    MorfeuszException(const std::string& what): msg(what.c_str()) {}
-    virtual ~MorfeuszException() throw() {}
+
+    MorfeuszException(const std::string& what) : msg(what.c_str()) {
+    }
+
+    virtual ~MorfeuszException() throw () {
+    }
+
     virtual const char* what() const throw () {
         return this->msg.c_str();
     }
 private:
     const std::string msg;
 };
-
-class Morfeusz;
-//class AnalyzeResult;
-class ResultsIterator;
-
-typedef FSA<std::vector<InterpsGroup > > FSAType;
-typedef State<std::vector<InterpsGroup > > StateType;
 
 class Morfeusz {
 public:
@@ -50,17 +53,17 @@ public:
     ResultsIterator analyze(const std::string& text) const;
     void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const;
 
+    void setEncoding(MorfeuszCharset encoding);
+
+    //    Morfeusz();
+    friend class ResultsIterator;
+private:
+
     void processOneWord(
             const char*& inputData,
             const char* inputEnd,
             int startNodeNum,
             std::vector<MorphInterpretation>& result) const;
-    
-    void setEncoding(MorfeuszCharset encoding);
-    
-    //    Morfeusz();
-    friend class ResultsIterator;
-private:
 
     void doProcessOneWord(
             const char*& inputData,
@@ -81,48 +84,24 @@ private:
     CharsetConverter* charsetConverter;
     Tagset* tagset;
     CaseConverter* caseConverter;
-    
+
     UTF8CharsetConverter utf8CharsetConverter;
-    
+
     MorfeuszOptions options;
 };
 
 class ResultsIterator {
 public:
-    ResultsIterator(const std::string& text, const Morfeusz& morfeusz);
     MorphInterpretation getNext();
     bool hasNext();
+    friend class Morfeusz;
 private:
+    ResultsIterator(const std::string& text, const Morfeusz& morfeusz);
     const char* rawInput;
     const Morfeusz& morfeusz;
     std::list<MorphInterpretation> resultsBuffer;
     int startNode;
 };
-
-//class ResultsIterator {
-//public:
-//    ResultsIterator(
-//                const char* startOfInput,
-//                const char* endOfInput,
-//                const Morfeusz& morfeusz);
-//    virtual ~ResultsIterator();
-//    ResultsIterator(const ResultsIterator& mit);
-//    ResultsIterator& operator++();
-//    ResultsIterator operator++(int);
-//    bool operator==(const ResultsIterator& rhs);
-//    bool operator!=(const ResultsIterator& rhs);
-//    MorphInterpretation& operator*();
-//private:
-//    const char* rawInput;
-//    const char* endOfInput;
-//    const Morfeusz& morfeusz;
-//    vector<MorphInterpretation> resultsBuffer;
-//};
-
-//struct AnalyzeResult {
-//    ResultsIterator iterator;
-//    const ResultsIterator end;
-//};
 
 #endif	/* MORFEUSZ_HPP */
 

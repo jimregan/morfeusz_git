@@ -22,7 +22,6 @@ public:
             const std::string& lemma,
             int tagnum,
             int namenum,
-//            const EncodedInterpretation& encodedInterp,
             const Tagset& tagset,
             const CharsetConverter& charsetConverter);
     static MorphInterpretation createIgn(int startNode, const std::string& orth, const Tagset& tagset, const CharsetConverter& charsetConverter);

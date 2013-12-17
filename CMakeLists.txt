@@ -16,9 +16,22 @@ configure_file (
 
 include_directories("${PROJECT_BINARY_DIR}" )
 
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 add_subdirectory (morfeusz)
 
-file(COPY fsabuilder testfiles DESTINATION .)
+# copy jmorfeusz to java source tree
+file(GLOB files "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/*jmorfeusz*")
+foreach(file ${files})
+  file (COPY ${file} DESTINATION ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native)
+endforeach()
+
+# build jmorfeusz
+add_custom_command(TARGET all POST_BUILD mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz/target WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
+
+
+# TESTS
+
+file (COPY fsabuilder testfiles DESTINATION .)
 
 macro (test_build_and_recognize fname method)
     add_test (TestBuild-${method}-${fname} python fsabuilder/fsa/buildfsa.py -i testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=${method})

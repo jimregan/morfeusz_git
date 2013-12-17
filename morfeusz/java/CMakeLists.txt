@@ -8,15 +8,15 @@ include(UseJava)
 
 # SWIG Java
 INCLUDE_DIRECTORIES(${JAVA_INCLUDE_PATH})
-#INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(..)
 
-SET(CMAKE_SWIG_FLAGS "")
+set (CMAKE_SWIG_FLAGS -package pl.waw.ipipan.morfeusz)
+set (CMAKE_SWIG_OUTDIR ${CMAKE_SOURCE_DIR}/jmorfeusz/src/main/java/pl/waw/ipipan/morfeusz) 
 
 SET_SOURCE_FILES_PROPERTIES(../morfeusz.i PROPERTIES CPLUSPLUS ON)
-SWIG_ADD_MODULE(morfeusz-java java ../morfeusz.i)
-SWIG_LINK_LIBRARIES(morfeusz-java ${JAVA_LIBRARIES})
-SWIG_LINK_LIBRARIES(morfeusz-java libmorfeusz)
+SWIG_ADD_MODULE(jmorfeusz java ../morfeusz.i)
+SWIG_LINK_LIBRARIES(jmorfeusz ${JAVA_LIBRARIES})
+SWIG_LINK_LIBRARIES(jmorfeusz libmorfeusz)
 
 set (CMAKE_SHARED_LINKER_FLAGS "")
 set (CMAKE_EXE_LINKER_FLAGS "")

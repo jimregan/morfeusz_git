@@ -226,18 +226,17 @@ void Morfeusz::setEncoding(MorfeuszCharset encoding) {
 ResultsIterator::ResultsIterator(const string& text, const Morfeusz& morfeusz)
 : rawInput(text.c_str()),
 morfeusz(morfeusz) {
+    vector<MorphInterpretation> res;
+    morfeusz.analyze(text, res);
+    resultsBuffer.insert(resultsBuffer.begin(), res.begin(), res.end());
 }
 
 MorphInterpretation ResultsIterator::getNext() {
-    //    if (resultsBuffer.empty()) {
-    //        morfeusz.processOneWord(rawInput, startNode, back_inserter(resultsBuffer));
-    //    }
-    //    startNode = resultsBuffer.back().getEndNode();
-    //    MorphInterpretation res = resultsBuffer.front();
-    //    resultsBuffer.pop_front();
-    //    return res;
+    MorphInterpretation res = this->resultsBuffer.front();
+    this->resultsBuffer.pop_front();
+    return res;
 }
 
 bool ResultsIterator::hasNext() {
-    return rawInput[0] != '\0' && resultsBuffer.empty();
+    return !resultsBuffer.empty();
 }
