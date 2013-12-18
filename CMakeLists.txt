@@ -6,8 +6,11 @@ set (Morfeusz_VERSION_MINOR 1)
 set (CMAKE_BUILD_TYPE "Release")
 
 set (CMAKE_CXX_FLAGS "-std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 
 enable_testing()
+
+file (COPY fsabuilder testfiles pymorfeusz DESTINATION .)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/morfeusz/MorfeuszConfig.hpp.in"
@@ -16,26 +19,43 @@ configure_file (
 
 include_directories("${PROJECT_BINARY_DIR}" )
 
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 add_subdirectory (morfeusz)
 
+set (PYMORFEUSZ _morfeusz)
+set (JMORFEUSZ jmorfeusz)
+
+###### add some dependencies for SWIG modules ######
+add_dependencies (${PYMORFEUSZ} morfeusz)
+add_dependencies (${JMORFEUSZ} morfeusz)
+
+########## JAVA ##########
+
 # copy jmorfeusz to java source tree
-file(GLOB files "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/*jmorfeusz*")
-foreach(file ${files})
-  file (COPY ${file} DESTINATION ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native)
-endforeach()
+add_custom_target (copy-jmorfeusz-libs ALL
+          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}jmorfeusz${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
+          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}morfeusz${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
+          DEPENDS ${JMORFEUSZ})
 
 # build jmorfeusz
 # add_custom_command(TARGET all POST_BUILD mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz/target WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
-add_custom_target ( jmorfeusz-maven ALL
+add_custom_target ( jmorfeusz-maven-package ALL
     COMMAND mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz
-    DEPENDS jmorfeusz
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz
-    COMMENT invoke maven on jmorfeusz)
+    DEPENDS copy-jmorfeusz-libs
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
 
-# TESTS
+########## PYTHON ##########
 
-file (COPY fsabuilder testfiles DESTINATION .)
+# copy python->c++ bindings
+add_custom_target (copy-pymorfeusz-libs ALL
+          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PYMORFEUSZ}${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/pymorfeusz
+          DEPENDS ${PYMORFEUSZ})
+add_custom_target (copy-pymorfeusz-wrapper ALL
+          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/morfeusz.py ${PROJECT_BINARY_DIR}/pymorfeusz
+          DEPENDS ${PYMORFEUSZ})
+
+add_test (TestPyMorfeusz python pymorfeusz/test.py)
+
+########## tests ##########
 
 macro (test_build_and_recognize fname method)
     add_test (TestBuild-${method}-${fname} python fsabuilder/fsa/buildfsa.py -i testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=${method})

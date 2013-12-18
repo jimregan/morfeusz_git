@@ -1,5 +1,5 @@
 
-%module MorfeuszWrapper
+%module morfeusz
 %feature("autodoc", "2");
 %{
 #include "Morfeusz.hpp"
@@ -48,5 +48,34 @@ namespace std {
    %ignore vector<MorphInterpretation>::vector(size_type); 
    %ignore vector<MorphInterpretation>::resize;
    
-   %template(InterpsVector) vector<MorphInterpretation>; 
+   %template(InterpsVector) vector<MorphInterpretation>;
 }
+
+#ifdef SWIGPYTHON
+%pythoncode %{
+
+def analyze(self, text):
+  res = InterpsVector()
+  _morfeusz.Morfeusz_analyze(self, text, res)
+  return list(res)
+
+Morfeusz.analyze = analyze
+
+def getOrth(self):
+  return _morfeusz.MorphInterpretation_getOrth(self).decode('utf8')
+
+def getLemma(self):
+  return _morfeusz.MorphInterpretation_getLemma(self).decode('utf8')
+
+def getTag(self):
+  return _morfeusz.MorphInterpretation_getTag(self).decode('utf8')
+
+def getName(self):
+  return _morfeusz.MorphInterpretation_getName(self).decode('utf8')
+
+MorphInterpretation.getOrth = getOrth
+MorphInterpretation.getLemma = getLemma
+MorphInterpretation.getTag = getTag
+MorphInterpretation.getName = getName
+%}
+#endif
