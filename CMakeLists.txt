@@ -26,8 +26,12 @@ foreach(file ${files})
 endforeach()
 
 # build jmorfeusz
-add_custom_command(TARGET all POST_BUILD mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz/target WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
-
+# add_custom_command(TARGET all POST_BUILD mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz/target WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
+add_custom_target ( jmorfeusz-maven ALL
+    COMMAND mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz
+    DEPENDS jmorfeusz
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz
+    COMMENT invoke maven on jmorfeusz)
 
 # TESTS
 

@@ -1,0 +1,6 @@
+
+Once you download Morfeusz's libraries and make them available
+to your system, the following command should work 
+(it will display analysis results for short sample text):
+
+java -jar MorfeuszJavaBridge.jar
