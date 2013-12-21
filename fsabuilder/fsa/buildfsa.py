@@ -13,7 +13,6 @@ import convertinput
 import common
 from fsa import FSA
 from serializer import VLengthSerializer1, VLengthSerializer2, SimpleSerializer
-from visualizer import Visualizer
 from optparse import OptionParser
 
 class OutputFormat():
@@ -224,6 +223,7 @@ def main(opts):
     logging.info('size: '+str(fsa.initialState.reverseOffset))
     
     if opts.visualize:
+        from visualizer import Visualizer
         Visualizer().visualize(fsa)
 
 if __name__ == '__main__':
