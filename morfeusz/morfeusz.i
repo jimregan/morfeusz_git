@@ -1,5 +1,5 @@
 
-%module morfeusz
+%module (jniclassname="MorfeuszWrapper") morfeusz
 %feature("autodoc", "2");
 %{
 #include "Morfeusz.hpp"
