@@ -6,12 +6,12 @@
             <name>morfeusz</name>
             <c-extensions>i</c-extensions>
             <cpp-extensions>cpp,cxx</cpp-extensions>
-            <header-extensions>h,hpp</header-extensions>
+            <header-extensions>h,hpp,in</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>fsa</sourceRootElem>
                 <sourceRootElem>morfeusz</sourceRootElem>
+                <sourceRootElem>swig</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

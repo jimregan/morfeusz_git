@@ -44,8 +44,8 @@
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
-    <Elem>fsa</Elem>
     <Elem>morfeusz</Elem>
+    <Elem>swig</Elem>
   </sourceRootList>
   <projectmakefile>build/Makefile</projectmakefile>
   <confs>
@@ -71,7 +71,7 @@
             flavor2="8">
         <ccTool>
           <incDir>
-            <pElem>/usr/lib/jvm/default-java/include</pElem>
+            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz/java</pElem>
           </incDir>

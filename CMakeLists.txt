@@ -30,9 +30,16 @@ add_dependencies (${JMORFEUSZ} morfeusz)
 
 ########## JAVA ##########
 
+# find out library suffix (CMAKE_JAVA_LIBRARY_SUFFIX)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (CMAKE_JAVA_LIBRARY_SUFFIX ".jnilib")
+else (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (CMAKE_JAVA_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
+endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
 # copy jmorfeusz to java source tree
 add_custom_target (copy-jmorfeusz-libs ALL
-          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}jmorfeusz${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
+          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}jmorfeusz${CMAKE_JAVA_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
           COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}morfeusz${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
           DEPENDS ${JMORFEUSZ})
 

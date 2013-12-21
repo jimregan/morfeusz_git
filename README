@@ -5,3 +5,27 @@ sudo apt-get install g++-multilib g++-mingw-w64
 For Java and Python bindings:
 
 sudo apt-get install swig default-jdk
+
+Mac OS X
+
+## install xcode (using apple store)
+
+# install brew
+ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
+
+# install svn
+brew install svn
+brew install swig
+brew install make
+
+# If you have Xcode 4.3 or newer the command line tools, such as make, are not installed by default. In Xcode preferences go to the "Downloads" tab and under "Components" push the "Install" button next to "Command Line Tools". After you have successfully downloaded and installed the command line tools you should also type the following command in the Terminal to make sure all your Xcode command line tools are switched to use the 4.3 versions:
+#
+#  sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+#
+# Once everything is successfully installed you should see make and other command line developer tools in /usr/bin.
+#
+# torrey.lyons http://stackoverflow.com/questions/11494522/installing-make-on-mac
+
+# Must say everything is okay ("your system is ready to brew"):
+brew doctor
+

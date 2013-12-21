@@ -1,9 +1,4 @@
 
-# Make sure the linker can find the Hello library once it is built. 
-#link_directories (${Morfeusz_BINARY_DIR}/Hello)
-
-#include_directories (swig)
-
 set(SRC_FILES 
     const.cpp 
     data/default_fsa.cpp
@@ -19,7 +14,7 @@ set(SRC_FILES
     charset/conversion_tables.cpp)
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
-set_target_properties(libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz")
+set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz")
 
 add_executable (morfeusz main.cpp)
 add_executable (test_result_equals test_result_equals.cpp)
@@ -37,7 +32,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
   set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc -Wl,--exclude-libs,libgcc_eh.a")
   set (CMAKE_EXE_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
-  set (CMAKE_CXX_FLAGS "-std=c++0x -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wcast-qual -Wcast-align")
+  set (CMAKE_CXX_FLAGS "-std=c++0x -Wall -pedantic")
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 add_subdirectory (java)
