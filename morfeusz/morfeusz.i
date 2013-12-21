@@ -1,5 +1,13 @@
 
-%module (jniclassname="MorfeuszWrapper") morfeusz
+// XXX
+// set module name with preprocessor
+// because Mac OS X doesn't seem to recognize jniclassname option
+#ifdef SWIGJAVA
+%module MorfeuszWrapper
+#else
+%module morfeusz
+#endif 
+
 %feature("autodoc", "2");
 %{
 #include "Morfeusz.hpp"
