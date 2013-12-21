@@ -52,9 +52,16 @@ add_custom_target ( jmorfeusz-maven-package ALL
 
 ########## PYTHON ##########
 
+# find out library suffix (CMAKE_JAVA_LIBRARY_SUFFIX)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (CMAKE_PYTHON_LIBRARY_SUFFIX ".so")
+else (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (CMAKE_PYTHON_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
+endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
 # copy python->c++ bindings
 add_custom_target (copy-pymorfeusz-libs ALL
-          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PYMORFEUSZ}${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/pymorfeusz
+          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PYMORFEUSZ}${CMAKE_PYTHON_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/pymorfeusz
           DEPENDS ${PYMORFEUSZ})
 add_custom_target (copy-pymorfeusz-wrapper ALL
           COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/morfeusz.py ${PROJECT_BINARY_DIR}/pymorfeusz
