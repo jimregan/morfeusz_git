@@ -25,12 +25,14 @@ CaseConverter::CaseConverter()
 extToTitlecaseMap(initializeExtCaseMap(EXT_TO_TITLECASE_TABLE, EXT_TO_TITLECASE_TABLE_SIZE)) {
 }
 
-static uint32_t getFromTables(const uint32_t* table, unsigned int tableSize, const map<uint32_t, uint32_t>& extMap, uint32_t codepoint) {
+static uint32_t getFromTables(const uint32_t* table, unsigned int tableSize, const map<uint32_t, uint32_t>& extMap, const uint32_t codepoint) {
     if (codepoint < tableSize) {
         return table[codepoint];
     }
     else if (extMap.count(codepoint) != 0) {
-        return extMap.at(codepoint);
+        map<uint32_t, uint32_t>::const_iterator it;
+        it = extMap.find(codepoint);
+        return it->second;
     }
     else {
         return codepoint;

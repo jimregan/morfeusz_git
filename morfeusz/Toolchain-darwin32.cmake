@@ -1,12 +1,11 @@
 
 SET(CMAKE_SYSTEM_NAME Darwin)
-SET(CMAKE_SYSTEM_VERSION 1)
-SET(CMAKE_C_COMPILER   /home/mlenart/usr/i686-apple-darwin11/bin/i686-apple-darwin11-gcc-4.6)
-SET(CMAKE_CXX_COMPILER   /home/mlenart/usr/i686-apple-darwin11/bin/i686-apple-darwin11-g++-4.6)
-#SET(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
+SET(CMAKE_SYSTEM_VERSION 9)
+SET(CMAKE_C_COMPILER   /mnt/storage/usr/i686-apple-darwin9/i686-apple-darwin9-gcc)
+SET(CMAKE_CXX_COMPILER   /mnt/storage/usr/i686-apple-darwin9/i686-apple-darwin9-g++)
 
 # here is the target environment located
-SET(CMAKE_FIND_ROOT_PATH  /home/mlenart/usr/i686-apple-darwin11:/home/mlenart/usr/i686-apple-darwin11/lib/gcc/i686-apple-darwin11/4.6.4 )
+SET(CMAKE_FIND_ROOT_PATH  /mnt/storage/usr/i686-apple-darwin9)
 
 # adjust the default behaviour of the FIND_XXX() commands:
 # search headers and libraries in the target environment, search 

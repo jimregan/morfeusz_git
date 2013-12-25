@@ -20,4 +20,4 @@ SWIG_LINK_LIBRARIES(jmorfeusz libmorfeusz)
 
 set (CMAKE_SHARED_LINKER_FLAGS "")
 set (CMAKE_EXE_LINKER_FLAGS "")
-set (CMAKE_CXX_FLAGS "-std=c++0x")
+set (CMAKE_CXX_FLAGS "-O2")

@@ -4,9 +4,11 @@ sudo apt-get install g++-multilib g++-mingw-w64
 
 For Java and Python bindings:
 
-sudo apt-get install swig default-jdk
+sudo apt-get install swig default-jdk python
 
+*************
 Mac OS X
+*************
 
 ## install xcode (using apple store)
 
@@ -29,3 +31,23 @@ brew install make
 # Must say everything is okay ("your system is ready to brew"):
 brew doctor
 
+*************
+Windows
+*************
+
+Install MinGW and make sure it is included in Path system variable (when installed at C:\MinGW then C:\MinGW\bin must be in the Path variable).
+Install CMake.
+Download SWIG. Unpack the .zip contents somewhere (for example C:\swigwin-VERSION)
+Add the unpacked SWIG directory to the Path variable.
+Install latest Java JDK.
+Go to morfeusz sources root.
+mkdir build
+cd build
+cmake 
+
+CROSS COMPILE
+-------------
+
+Make your own CMake from sources using this patch: http://cmake.org/gitweb?p=cmake.git;a=commitdiff;h=19b7a54d
+(or use version > 3.0)
+Add Java and Python libraries to the Toolchain file. Copy python27.dll from C:\Windows\System32 to some shared libs directory.

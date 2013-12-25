@@ -6,7 +6,7 @@ set (Morfeusz_VERSION_MINOR 1)
 set (CMAKE_BUILD_TYPE "Release")
 
 set (CMAKE_CXX_FLAGS "-std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
+# set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 
 enable_testing()
 
@@ -39,29 +39,31 @@ endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # copy jmorfeusz to java source tree
 add_custom_target (copy-jmorfeusz-libs ALL
-          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}jmorfeusz${CMAKE_JAVA_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
-          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}morfeusz${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
+          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/java/${CMAKE_SHARED_LIBRARY_PREFIX}jmorfeusz${CMAKE_JAVA_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
+          # COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/${CMAKE_SHARED_LIBRARY_PREFIX}morfeusz${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
           DEPENDS ${JMORFEUSZ})
 
 # build jmorfeusz
 # add_custom_command(TARGET all POST_BUILD mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz/target WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
 add_custom_target ( jmorfeusz-maven-package ALL
-    COMMAND mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz
+    COMMAND mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz -DskipTests=true
     DEPENDS copy-jmorfeusz-libs
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
 
 ########## PYTHON ##########
 
-# find out library suffix (CMAKE_JAVA_LIBRARY_SUFFIX)
+# find out library suffix
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set (CMAKE_PYTHON_LIBRARY_SUFFIX ".so")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set (CMAKE_PYTHON_LIBRARY_SUFFIX ".pyd")
 else (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set (CMAKE_PYTHON_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # copy python->c++ bindings
 add_custom_target (copy-pymorfeusz-libs ALL
-          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PYMORFEUSZ}${CMAKE_PYTHON_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/pymorfeusz
+          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/${PYMORFEUSZ}${CMAKE_PYTHON_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/pymorfeusz
           DEPENDS ${PYMORFEUSZ})
 add_custom_target (copy-pymorfeusz-wrapper ALL
           COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/morfeusz.py ${PROJECT_BINARY_DIR}/pymorfeusz
