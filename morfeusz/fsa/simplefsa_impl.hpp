@@ -8,8 +8,7 @@
 #ifndef SIMPLEFSA_IMPL_HPP
 #define	SIMPLEFSA_IMPL_HPP
 
-#pragma pack(push)  /* push current alignment to stack */
-#pragma pack(1)     /* set alignment to 1 byte boundary */
+#pragma pack(push, 1)  /* push current alignment to stack */
 
 struct StateData {
     unsigned transitionsNum : 7;
@@ -44,7 +43,7 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
     StateData stateData = *reinterpret_cast<const StateData*>(fromPointer);
     const unsigned char* foundTransition = fromPointer + transitionsTableOffset;
     bool found = false;
-    for (int i = 0; i < stateData.transitionsNum; i++, foundTransition += 4) {
+    for (unsigned int i = 0; i < stateData.transitionsNum; i++, foundTransition += 4) {
         if ((char) *foundTransition == c) {
             found = true;
             break;

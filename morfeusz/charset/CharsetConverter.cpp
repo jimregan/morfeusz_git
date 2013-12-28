@@ -21,6 +21,10 @@ string CharsetConverter::toString(const vector<uint32_t>& codepoints) const {
     return res;
 }
 
+CharsetConverter::~CharsetConverter() {
+    
+}
+
 uint32_t UTF8CharsetConverter::peek(const char*& it, const char* end) const {
     return utf8::peek_next(it, end);
 }

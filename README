@@ -1,10 +1,62 @@
+
+***************
+Compilation - prerequisites
+***************
+
+This tutorial assumes that build process is performed on Linux 64bit machine (preferably from Debian/Ubuntu family).
+
+sudo apt-get install build-essential autotools
+
 For cross compiling:
+--------------------
 
 sudo apt-get install g++-multilib g++-mingw-w64
 
 For Java and Python bindings:
+-----------------------------
+sudo apt-get install default-jdk python swig
 
-sudo apt-get install swig default-jdk python
+Java and Python bindings with cross-compilation support:
+--------------------------------------------------------
+Download CMake 2.8.x (tested on 2.8.12.1).
+Apply cmake-2.8.12..1-patch.diff on the sources.
+Build and install CMake from patched sources.
+
+Java and Python bindings without cross-compilation support:
+-----------------------------------------------------------
+sudo apt-get install cmake
+
+***************
+Compilation
+***************
+Create separate build directory in morfeusz root, run cmake and make in it:
+
+mkdir build
+cd build
+cmake ..
+make
+
+**************************
+Notes on cross-compilation
+**************************
+
+Create separate build directory, for example build-darwin.
+
+Run:
+cmake -DCMAKE_TOOLCHAIN_FILE=../morfeusz/Toolchain-xxx.cmake ..
+make
+
+
+Copy Java JDK and Python libraries from target platform. Set JAVA_ROOT and PYTHON_ROOT in Toolchain files to match directories copied from target platform.
+
+[Mac OS X 64bit] Libraries are at /System/Library/Frameworks/JavaVM.framework and /System/Library/Frameworks/Python.framework
+
+[Windows 32 and 64 bit] usually at C:\Program Files\Java\jdk* and C:\Python27. You must also copy python27.dll from C:\Windows\System32 to Python27/libs directory.
+
+[Linux 32bit] Java is usually at /usr/lib/jvm/default-java (alternatively you can download a package from Oracle website). The preferred way of obtaining Python is to compile it:
+- compile latest version using ./configure --prefix=/some/directory/python
+- copy contents of /some/directory/python to the build machine and set it as PYTHON_ROOT in Toolchain file
+
 
 *************
 Mac OS X
@@ -15,7 +67,7 @@ Mac OS X
 # install brew
 ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
 
-# install svn
+# install some other stuff
 brew install svn
 brew install swig
 brew install make
@@ -35,19 +87,4 @@ brew doctor
 Windows
 *************
 
-Install MinGW and make sure it is included in Path system variable (when installed at C:\MinGW then C:\MinGW\bin must be in the Path variable).
-Install CMake.
-Download SWIG. Unpack the .zip contents somewhere (for example C:\swigwin-VERSION)
-Add the unpacked SWIG directory to the Path variable.
-Install latest Java JDK.
-Go to morfeusz sources root.
-mkdir build
-cd build
-cmake 
-
-CROSS COMPILE
--------------
-
-Make your own CMake from sources using this patch: http://cmake.org/gitweb?p=cmake.git;a=commitdiff;h=19b7a54d
-(or use version > 3.0)
-Add Java and Python libraries to the Toolchain file. Copy python27.dll from C:\Windows\System32 to some shared libs directory.
+Better cross-compile on Linux...

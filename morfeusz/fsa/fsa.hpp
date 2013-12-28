@@ -31,6 +31,7 @@ public:
      * Returns number of bytes read or -1 on error.
      */
     virtual long deserialize(const unsigned char* ptr, T& object) const = 0;
+    virtual ~Deserializer() {}
 };
 
 class StringDeserializer : public Deserializer<char*> {
@@ -48,6 +49,8 @@ public:
         return strlen(text) + 1;
 //        return 1;
     }
+    
+    virtual ~StringDeserializer() {}
 };
 
 //class Counter {

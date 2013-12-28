@@ -27,7 +27,7 @@ static MorfeuszCharset getEncoding(const string& encodingStr) {
         return CP852;
     else {
         cerr << "Invalid encoding: " << encodingStr << " must be one of: UTF8, ISO8859_2, WINDOWS1250" << endl;
-        assert(false);
+        throw "Invalid encoding";
     }
 }
 

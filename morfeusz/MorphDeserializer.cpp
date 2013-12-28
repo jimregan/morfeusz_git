@@ -20,9 +20,6 @@ const unsigned int MAX_WORD_SIZE = 256;
 MorphDeserializer::MorphDeserializer() {
 }
 
-MorphDeserializer::MorphDeserializer(const MorphDeserializer& orig) {
-}
-
 MorphDeserializer::~MorphDeserializer() {
 }
 

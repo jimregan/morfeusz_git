@@ -15,7 +15,6 @@
 class MorphDeserializer: public Deserializer< std::vector<InterpsGroup> > {
 public:
     MorphDeserializer();
-    MorphDeserializer(const MorphDeserializer& orig);
     virtual ~MorphDeserializer();
     long deserialize(
         const unsigned char* ptr, 

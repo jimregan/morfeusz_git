@@ -14,8 +14,7 @@
 
 using namespace std;
 
-#pragma pack(push)  /* push current alignment to stack */
-#pragma pack(1)     /* set alignment to 1 byte boundary */
+#pragma pack(push, 1)  /* push current alignment to stack */
 
 struct StateData2 {
     unsigned transitionsNum: 6;
