@@ -17,6 +17,9 @@
         <in>test_recognize.cpp</in>
         <in>test_speed.cpp</in>
       </df>
+      <df name="java">
+        <in>dupa</in>
+      </df>
       <in>FlexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
@@ -335,6 +338,8 @@
             <pElem>build/fsa</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="morfeusz/java/dupa" ex="false" tool="3" flavor2="0">
       </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>

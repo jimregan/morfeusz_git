@@ -8,14 +8,16 @@
 #ifndef SIMPLEFSA_IMPL_HPP
 #define	SIMPLEFSA_IMPL_HPP
 
-#pragma pack(push, 1)  /* push current alignment to stack */
+#include <iostream>
+
+//#pragma pack(push, 1)  /* push current alignment to stack */
 
 struct StateData {
-    unsigned transitionsNum : 7;
-    unsigned accepting : 1;
+    unsigned char transitionsNum;
+    bool accepting;
 };
 
-#pragma pack(pop)   /* restore original alignment from stack */
+//#pragma pack(pop)   /* restore original alignment from stack */
 
 template <class T>
 SimpleFSA<T>::SimpleFSA(const unsigned char* ptr, const Deserializer<T>& deserializer)
@@ -27,20 +29,29 @@ SimpleFSA<T>::~SimpleFSA() {
 
 }
 
-static unsigned int decodeOffset(const unsigned char* ptr) {
+static inline unsigned int decodeOffset(const unsigned char* ptr) {
     unsigned int res = 0;
     res = ptr[0] << 16 | ptr[1] << 8 | ptr[2];
+    return res;
+}
+
+static inline StateData decodeStateData(const unsigned char* ptr) {
+    static const unsigned char acceptingFlag = 128;
+    static const unsigned char transitionsNumMask = 127;
+    StateData res;
+    res.transitionsNum = (*ptr) & transitionsNumMask;
+    res.accepting = (*ptr) & acceptingFlag;
     return res;
 }
 
 template <class T>
 void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
     const unsigned char* fromPointer = this->initialStatePtr + state.getOffset();
-    long transitionsTableOffset = sizeof (StateData);
+    long transitionsTableOffset = 1;
     if (state.isAccepting()) {
         transitionsTableOffset += state.getValueSize();
     }
-    StateData stateData = *reinterpret_cast<const StateData*>(fromPointer);
+    StateData stateData = decodeStateData(fromPointer);
     const unsigned char* foundTransition = fromPointer + transitionsTableOffset;
     bool found = false;
     for (unsigned int i = 0; i < stateData.transitionsNum; i++, foundTransition += 4) {
@@ -52,14 +63,13 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
     //    const_cast<Counter*>(&counter)->increment(foundTransition - transitionsStart + 1);
     if (!found) {
         state.setNextAsSink();
-    }
-    else {
+    } else {
         unsigned int offset = decodeOffset(foundTransition + 1);
         const unsigned char* nextStatePointer = this->initialStatePtr + offset;
-        const StateData* nextStateData = reinterpret_cast<const StateData*>(nextStatePointer);
-        if (nextStateData->accepting) {
+        StateData nextStateData = decodeStateData(nextStatePointer);
+        if (nextStateData.accepting) {
             T object;
-            long size = this->deserializer.deserialize(nextStatePointer + sizeof (StateData), object);
+            long size = this->deserializer.deserialize(nextStatePointer + 1, object);
             state.setNext(offset, object, size);
         } else {
             state.setNext(offset);
