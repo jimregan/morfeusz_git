@@ -26,14 +26,7 @@ target_link_libraries (test_recognize_dict libmorfeusz)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   target_link_libraries (libmorfeusz ws2_32)
-
-  # here is the magic - must statically link libstdc++ and libgcc
-  # but exclude libgcc_eh.a as it causes "multiple definition of (...)" errors
-
-  set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc -Wl,--exclude-libs,libgcc_eh.a")
-  set (CMAKE_EXE_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
-  set (CMAKE_CXX_FLAGS "-std=c++0x -Wall -pedantic")
-endif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+endif ()
 
 add_subdirectory (java)
 add_subdirectory (python)

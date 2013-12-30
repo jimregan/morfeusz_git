@@ -56,29 +56,6 @@
                     </archive>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>create-my-bundle</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>JMorfeusz-${os.name}-${os.arch}</finalName>
-                            <descriptor>src/main/assembly/bin.xml</descriptor>
-                            <archive>
-                                <manifest>
-                                    <mainClass>pl.waw.ipipan.morfeusz.App</mainClass>
-                                </manifest>
-                            </archive>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -95,7 +72,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>          
                                 <resource>
-                                    <directory>src/main/native</directory>
+                                    <directory>src/main/resources</directory>
                                     <!--<filtering>true</filtering>-->
                                 </resource>
                             </resources>              

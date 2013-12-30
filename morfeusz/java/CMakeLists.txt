@@ -1,23 +1,39 @@
-
 # SWIG
 #set(CMAKE_SWIG_OUTDIR swig)
-FIND_PACKAGE(SWIG REQUIRED)
+#FIND_PACKAGE(SWIG REQUIRED)
 FIND_PACKAGE(JNI REQUIRED)
-INCLUDE(${SWIG_USE_FILE})
+#INCLUDE(${SWIG_USE_FILE})
 include(UseJava)
 
 # SWIG Java
-INCLUDE_DIRECTORIES(${JAVA_INCLUDE_PATH})
-INCLUDE_DIRECTORIES(..)
+include_directories (${JAVA_INCLUDE_PATH})
+include_directories (${JAVA_INCLUDE_PATH2})
+include_directories (..)
 
-set (CMAKE_SWIG_FLAGS -package pl.waw.ipipan.morfeusz)
-set (CMAKE_SWIG_OUTDIR ${CMAKE_SOURCE_DIR}/jmorfeusz/src/main/java/pl/waw/ipipan/morfeusz) 
+set (SWIG_JAVA_OUTFILE swigJAVA.cpp)
+# set (JAVA_WRAPPER_FILE ${CMAKE_SHARED_LIBRARY_PREFIX}morfeusz${CMAKE_SHARED_LIBRARY_SUFFIX})
+add_custom_command ( 
+    OUTPUT ${SWIG_JAVA_OUTFILE}
+    COMMAND swig -java -c++ -package pl.waw.ipipan.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${CMAKE_SOURCE_DIR}/jmorfeusz/src/main/java/pl/waw/ipipan/morfeusz ${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i
+    DEPENDS libmorfeusz
+)
+#set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
+add_library (jmorfeusz SHARED ${SWIG_JAVA_OUTFILE})
+target_link_libraries (jmorfeusz ${JAVA_LIBRARIES} libmorfeusz)
+add_dependencies (jmorfeusz ${SWIG_JAVA_OUTFILE})
 
-set_source_files_properties (../morfeusz.i PROPERTIES CPLUSPLUS ON)
-SWIG_ADD_MODULE(jmorfeusz java ../morfeusz.i)
-SWIG_LINK_LIBRARIES(jmorfeusz ${JAVA_LIBRARIES})
-SWIG_LINK_LIBRARIES(jmorfeusz libmorfeusz)
+#set (CMAKE_SWIG_FLAGS -package pl.waw.ipipan.morfeusz)
+#set (CMAKE_SWIG_OUTDIR ${CMAKE_SOURCE_DIR}/jmorfeusz/src/main/java/pl/waw/ipipan/morfeusz) 
 
-set (CMAKE_SHARED_LINKER_FLAGS "")
-set (CMAKE_EXE_LINKER_FLAGS "")
-set (CMAKE_CXX_FLAGS "-O2")
+#set_source_files_properties (../morfeusz.i PROPERTIES CPLUSPLUS ON)
+#SWIG_ADD_MODULE(jmorfeusz java ../morfeusz.i)
+#SWIG_LINK_LIBRARIES(jmorfeusz ${JAVA_LIBRARIES})
+#SWIG_LINK_LIBRARIES(jmorfeusz libmorfeusz)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc -D_JNI_IMPLEMENTATION_ -Wl,--kill-at")
+endif ()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (CMAKE_SHARED_LIBRARY_SUFFIX ".jnilib")
+endif ()
