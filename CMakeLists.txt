@@ -5,7 +5,22 @@ set (Morfeusz_VERSION_MAJOR 0)
 set (Morfeusz_VERSION_MINOR 1)
 set (CMAKE_BUILD_TYPE "Release")
 
-if (NOT CMAKE_CROSSCOMPILING)
+##### initialize some vars #####
+set (INPUT_DICTIONARY_CPP "${CMAKE_CURRENT_BINARY_DIR}/default_fsa.cpp")
+if ("${INPUT_DICTIONARY}" STREQUAL "")
+   if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
+    set (INPUT_DICTIONARY ${PROJECT_SOURCE_DIR}/input/empty.txt)
+   else ()
+    set (INPUT_DICTIONARY ${PROJECT_SOURCE_DIR}/input/polimorf.txt)
+   endif ()
+endif ()
+if ("${INPUT_TAGSET}" STREQUAL "")
+   set (INPUT_TAGSET ${PROJECT_SOURCE_DIR}/input/polimorf.tagset)
+endif ()
+
+message ("Will use ${INPUT_DICTIONARY} as default input dictionary")
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
 endif ()
 # set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
@@ -20,12 +35,14 @@ endif ()
 
 enable_testing()
 
-file (COPY fsabuilder testfiles pymorfeusz DESTINATION .)
+file (COPY fsabuilder testfiles input DESTINATION .)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/morfeusz/MorfeuszConfig.hpp.in"
   "${PROJECT_BINARY_DIR}/morfeusz/MorfeuszConfig.hpp"
 )
+
+###### add main sources ########
 
 include_directories("${PROJECT_BINARY_DIR}" )
 
@@ -49,36 +66,30 @@ endif ()
 
 # build jmorfeusz
 add_custom_target ( jmorfeusz-maven-package ALL
-    COMMAND mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/jmorfeusz -DskipTests=true
+    COMMAND mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/morfeusz/java -DskipTests=true
     DEPENDS ${JMORFEUSZ}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
-
-# copy jmorfeusz to java source tree
-add_custom_target (copy-jmorfeusz-libs ALL
-          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/java/${CMAKE_SHARED_LIBRARY_PREFIX}jmorfeusz${CMAKE_JAVA_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/jmorfeusz/
-          # COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/${CMAKE_SHARED_LIBRARY_PREFIX}morfeusz${CMAKE_SHARED_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/jmorfeusz/src/main/native
-          DEPENDS jmorfeusz-maven-package)
 
 ########## PYTHON ##########
 
 # find out library suffix
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set (CMAKE_PYTHON_LIBRARY_SUFFIX ".so")
-elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set (CMAKE_PYTHON_LIBRARY_SUFFIX ".pyd")
-else ()
-    set (CMAKE_PYTHON_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
-endif ()
+#~ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    #~ set (CMAKE_PYTHON_LIBRARY_SUFFIX ".so")
+#~ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    #~ set (CMAKE_PYTHON_LIBRARY_SUFFIX ".pyd")
+#~ else ()
+    #~ set (CMAKE_PYTHON_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
+#~ endif ()
 
 # copy python->c++ bindings
-add_custom_target (copy-pymorfeusz-libs ALL
-          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/_morfeusz${CMAKE_PYTHON_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/pymorfeusz
-          DEPENDS ${PYMORFEUSZ})
-add_custom_target (copy-pymorfeusz-wrapper ALL
-          COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/morfeusz.py ${PROJECT_BINARY_DIR}/pymorfeusz
-          DEPENDS ${PYMORFEUSZ})
-
-add_test (TestPyMorfeusz python pymorfeusz/test.py)
+#~ add_custom_target (copy-pymorfeusz-libs ALL
+          #~ COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/pymorfeusz${CMAKE_PYTHON_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/pymorfeusz
+          #~ DEPENDS ${PYMORFEUSZ})
+#~ add_custom_target (copy-pymorfeusz-wrapper ALL
+          #~ COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/morfeusz.py ${PROJECT_BINARY_DIR}/pymorfeusz
+          #~ DEPENDS ${PYMORFEUSZ})
+#~ 
+#~ add_test (TestPyMorfeusz python pymorfeusz/test.py)
 
 ########## tests ##########
 

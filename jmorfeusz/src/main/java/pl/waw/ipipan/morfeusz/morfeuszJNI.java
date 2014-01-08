@@ -8,7 +8,7 @@
 
 package pl.waw.ipipan.morfeusz;
 
-public class MorfeuszWrapperJNI {
+public class morfeuszJNI {
 
   static {
     System.loadLibrary("jmorfeusz");

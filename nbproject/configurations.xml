@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f1" displayName="input" projectFiles="true" kind="ROOT">
+    </logicalFolder>
     <df root="morfeusz" name="0">
       <df name="charset">
         <in>CaseConverter.cpp</in>
@@ -17,15 +19,11 @@
         <in>test_recognize.cpp</in>
         <in>test_speed.cpp</in>
       </df>
-      <df name="java">
-        <in>dupa</in>
-      </df>
       <in>FlexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
-      <in>Toolchain-darwin64.cmake</in>
       <in>const.cpp</in>
       <in>main.cpp</in>
       <in>test_recognize_dict.cpp</in>
@@ -35,6 +33,12 @@
                    displayName="morfeusz"
                    projectFiles="true"
                    root="build/morfeusz">
+      <logicalFolder name="java" displayName="java" projectFiles="true">
+        <itemPath>build/morfeusz/java/swigJAVA.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="python" displayName="python" projectFiles="true">
+        <itemPath>build/morfeusz/python/swigPYTHON.cpp</itemPath>
+      </logicalFolder>
       <itemPath>build/morfeusz/morfeuszJAVA_wrap.cxx</itemPath>
       <itemPath>build/morfeusz/morfeuszPYTHON_wrap.cxx</itemPath>
     </logicalFolder>
@@ -48,8 +52,8 @@
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
+    <Elem>fsa</Elem>
     <Elem>morfeusz</Elem>
-    <Elem>swig</Elem>
   </sourceRootList>
   <projectmakefile>build/Makefile</projectmakefile>
   <confs>
@@ -69,13 +73,17 @@
           <executablePath>build/morfeusz/test_result_equals</executablePath>
         </makeTool>
       </makefileType>
+      <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
       <item path="build/morfeusz/morfeuszJAVA_wrap.cxx"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
           <incDir>
-            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
+            <pElem>/usr/lib/jvm/default-java/include</pElem>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz/java</pElem>
           </incDir>
@@ -97,6 +105,13 @@
           <preprocessorList>
             <Elem>_morfeusz_EXPORTS</Elem>
           </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="build/morfeusz/python/swigPYTHON.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+        <ccTool>
         </ccTool>
       </item>
       <folder path="0/charset">
@@ -152,6 +167,28 @@
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
+        </ccTool>
+      </folder>
+      <folder path="morfeusz/java">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/lib/jvm/default-java/include</pElem>
+            <pElem>morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>jmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="morfeusz/python">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/python2.7</pElem>
+            <pElem>morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>pymorfeusz_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <item path="morfeusz/FlexionGraph.cpp" ex="false" tool="1" flavor2="4">
@@ -249,8 +286,6 @@
           </undefinedList>
         </ccTool>
       </item>
-      <item path="morfeusz/Toolchain-darwin64.cmake" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="morfeusz/charset/CaseConverter.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
         </ccTool>
@@ -338,8 +373,6 @@
             <pElem>build/fsa</pElem>
           </incDir>
         </ccTool>
-      </item>
-      <item path="morfeusz/java/dupa" ex="false" tool="3" flavor2="0">
       </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>

@@ -227,6 +227,8 @@ def main(opts):
         Visualizer().visualize(fsa)
 
 if __name__ == '__main__':
+    import os
+    print os.getcwd()
     opts = _parseOptions()
     if opts.profile:
         from pycallgraph import PyCallGraph

@@ -8,9 +8,9 @@
 
 package pl.waw.ipipan.morfeusz;
 
-public class MorfeuszWrapper {
+public class morfeusz {
   public static MorfeuszCharset getDEFAULT_MORFEUSZ_CHARSET() {
-    return MorfeuszCharset.swigToEnum(MorfeuszWrapperJNI.DEFAULT_MORFEUSZ_CHARSET_get());
+    return MorfeuszCharset.swigToEnum(morfeuszJNI.DEFAULT_MORFEUSZ_CHARSET_get());
   }
 
 }

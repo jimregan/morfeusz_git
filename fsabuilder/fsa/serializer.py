@@ -11,7 +11,7 @@ class Serializer(object):
     
     MAGIC_NUMBER = 0x8fc2bc1b
 
-    def __init__(self, fsa, headerFilename="default_fsa.hpp"):
+    def __init__(self, fsa, headerFilename="data/default_fsa.hpp"):
         self._fsa = fsa
         self.headerFilename = headerFilename
     
