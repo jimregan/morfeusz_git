@@ -4,7 +4,7 @@
 
     <groupId>pl.waw.ipipan.morfeusz</groupId>
     <artifactId>jmorfeusz</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>jmorfeusz</name>
@@ -80,14 +80,35 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptor>src/main/assembly/bin.xml</descriptor>
+                    <outputDirectory>${packageDir}</outputDirectory>
+<!--
+                    <finalName>apache-maven-cookbook-${pom.version}</finalName>
+-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
+
     <profiles>
         <profile>
             <id>otherOutputDir</id>
             <build>
-                <directory>${outputDir}</directory>
+                <directory>${buildDir}</directory>
             </build>
         </profile>
     </profiles>

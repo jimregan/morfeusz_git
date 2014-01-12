@@ -49,4 +49,7 @@ add_custom_command(OUTPUT ${OUTPUT}
 
 add_custom_target(pymorfeusz ALL DEPENDS ${OUTPUT})
 
-install(CODE "execute_process(COMMAND python ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX})")
+set (CPACK_PACKAGE_NAME "dupa")
+install (FILES setup.py.in DESTINATION bin)
+include (CPack)
+#install(CODE "execute_process(COMMAND python ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX})")

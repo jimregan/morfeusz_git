@@ -37,3 +37,24 @@ endif ()
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set (CMAKE_SHARED_LIBRARY_SUFFIX ".jnilib")
 endif ()
+
+# build jmorfeusz
+add_custom_target ( jmorfeusz-maven-package package
+    COMMAND mvn package -PotherOutputDir -DbuildDir=${CMAKE_CURRENT_BINARY_DIR} -DpackageDir=${PROJECT_BINARY_DIR} -DskipTests=true
+    DEPENDS ${JMORFEUSZ}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
+
+#~ file(GLOB JMORFEUSZ_PACKAGE_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.tar.gz")
+#~ 
+#~ add_custom_target(jmorfeusz-maven-package-copy ALL
+    #~ DEPENDS jmorfeusz-maven-package)
+#~ 
+#~ foreach (f ${JMORFEUSZ_PACKAGE_FILES})
+    #~ MESSAGE ("COPY ${f} TO ${PROJECT_BINARY_DIR}")
+    #~ add_custom_command (
+        #~ TARGET jmorfeusz-maven-package-copy
+        #~ COMMAND ${CMAKE_COMMAND} -E copy ${f} ${PROJECT_BINARY_DIR}
+        #~ 
+    #~ )
+#~ endforeach ()
+

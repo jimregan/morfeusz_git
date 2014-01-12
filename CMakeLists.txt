@@ -25,15 +25,16 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif ()
 # set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align -O2")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -O2")
     set (CMAKE_SHARED_LIBRARY_PREFIX "")
     # here is some magic - must statically link libstdc++ and libgcc
     # but exclude libgcc_eh.a as it causes "multiple definition of (...)" errors
     set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc -Wl,--exclude-libs,libgcc_eh.a")
     set (CMAKE_EXE_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
 endif ()
-
-enable_testing()
 
 file (COPY fsabuilder testfiles input DESTINATION .)
 
@@ -54,21 +55,6 @@ set (JMORFEUSZ jmorfeusz)
 ###### add some dependencies for SWIG modules ######
 add_dependencies (${PYMORFEUSZ} morfeusz)
 add_dependencies (${JMORFEUSZ} morfeusz)
-
-########## JAVA ##########
-
-# find out library suffix (CMAKE_JAVA_LIBRARY_SUFFIX)
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set (CMAKE_JAVA_LIBRARY_SUFFIX ".jnilib")
-else ()
-    set (CMAKE_JAVA_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
-endif ()
-
-# build jmorfeusz
-add_custom_target ( jmorfeusz-maven-package ALL
-    COMMAND mvn package -PotherOutputDir -DoutputDir=${PROJECT_BINARY_DIR}/morfeusz/java -DskipTests=true
-    DEPENDS ${JMORFEUSZ}
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/jmorfeusz)
 
 ########## PYTHON ##########
 
@@ -113,3 +99,8 @@ test_result_equals (testfiles/test1.txt             testfiles/test1.txt.out     
 test_result_equals (testfiles/test1.txt.ISO8859-2   testfiles/test1.txt.out.ISO8859-2   ISO8859_2)
 test_result_equals (testfiles/test1.txt.CP1250      testfiles/test1.txt.out.CP1250      CP1250)
 test_result_equals (testfiles/test1.txt.CP852     testfiles/test1.txt.out.CP852     CP852)
+
+set (CPACK_GENERATOR "DEB" "TGZ" "NSIS")
+set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Michał Lenart") #required
+
+include (CPack)

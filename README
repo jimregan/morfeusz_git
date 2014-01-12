@@ -5,16 +5,17 @@ Compilation - prerequisites
 
 This tutorial assumes that build process is performed on Linux 64bit machine (preferably from Debian/Ubuntu family).
 
-sudo apt-get install build-essential autotools
+sudo apt-get install build-essential autotools python setuptools python-stdeb
+sudo pip install pyinstaller
 
 For cross compiling:
 --------------------
 
-sudo apt-get install g++-multilib g++-mingw-w64
+sudo apt-get install g++-multilib g++-mingw-w64 nsis
 
 For Java and Python bindings:
 -----------------------------
-sudo apt-get install default-jdk python swig
+sudo apt-get install default-jdk swig
 
 Java and Python bindings with cross-compilation support:
 --------------------------------------------------------
