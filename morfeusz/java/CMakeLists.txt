@@ -48,7 +48,6 @@ set (CMAKE_JAVA_TARGET_OUTPUT_NAME jmorfeusz)
 add_jar (jmorfeusz-jar 
     SOURCES ${JAVA_SRC_DIR}/*.java ${JAVA_SRC_DIR}/app/*.java )
 
-file (GLOB FILES_TO_TAR "*.jar *.so *.dylib *.jnilib *.dll README*")
 add_custom_target(package-java
-    COMMAND ${CMAKE_COMMAND} -E tar "cfvz" "${PROJECT_BINARY_DIR}/jmorfeusz-${JMORFEUSZ_VERSION}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}.tgz" "${FILES_TO_TAR}"
+    COMMAND ${CMAKE_COMMAND} -E tar "cfvz" "${PROJECT_BINARY_DIR}/jmorfeusz-${JMORFEUSZ_VERSION}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}.tgz" "${CMAKE_CURRENT_BINARY_DIR}/*.jar" "${CMAKE_CURRENT_BINARY_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_CURRENT_BINARY_DIR}/README*"
     DEPENDS jmorfeusz-jar jmorfeusz)
