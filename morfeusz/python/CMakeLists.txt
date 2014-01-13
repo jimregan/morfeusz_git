@@ -75,6 +75,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (PYMORFEUSZ_SRC_PACKAGE "${PROJECT_BINARY_DIR}/pymorfeusz-${PYMORFEUSZ_VERSION}.tar.gz")
     add_custom_target (package-python-deb-src
         COMMAND py2dsc ${PYMORFEUSZ_SRC_PACKAGE}
+        DEPENDS package-python-src
     )
 endif ()
 #~ install (install-python 
