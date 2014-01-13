@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <logicalFolder name="f1" displayName="input" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f1" displayName="input" projectFiles="true">
     </logicalFolder>
     <df root="morfeusz" name="0">
       <df name="charset">

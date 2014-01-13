@@ -7,8 +7,8 @@ morfeusz = Extension('pymorfeusz',
                     sources=['${CMAKE_CURRENT_BINARY_DIR}/${SWIG_PYTHON_OUTFILE}'])
 
 if __name__ == '__main__':
-    setup(name='morfeusz',
-          version='${PACKAGE_VERSION}',
+    setup(name='pymorfeusz',
+          version='${PYMORFEUSZ_VERSION}',
           package_dir={ '': '${CMAKE_CURRENT_BINARY_DIR}'},
           py_modules = ['morfeusz'],
           ext_modules = [morfeusz])

@@ -1,6 +1,7 @@
 
 cmake_minimum_required (VERSION 2.8) 
-project (Morfeusz) 
+project (Morfeusz)
+
 set (Morfeusz_VERSION_MAJOR 0)
 set (Morfeusz_VERSION_MINOR 1)
 set (CMAKE_BUILD_TYPE "Release")
@@ -53,29 +54,8 @@ set (PYMORFEUSZ pymorfeusz)
 set (JMORFEUSZ jmorfeusz)
 
 ###### add some dependencies for SWIG modules ######
-add_dependencies (${PYMORFEUSZ} morfeusz)
+#~ add_dependencies (${PYMORFEUSZ} morfeusz)
 add_dependencies (${JMORFEUSZ} morfeusz)
-
-########## PYTHON ##########
-
-# find out library suffix
-#~ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    #~ set (CMAKE_PYTHON_LIBRARY_SUFFIX ".so")
-#~ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    #~ set (CMAKE_PYTHON_LIBRARY_SUFFIX ".pyd")
-#~ else ()
-    #~ set (CMAKE_PYTHON_LIBRARY_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
-#~ endif ()
-
-# copy python->c++ bindings
-#~ add_custom_target (copy-pymorfeusz-libs ALL
-          #~ COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/pymorfeusz${CMAKE_PYTHON_LIBRARY_SUFFIX} ${PROJECT_BINARY_DIR}/pymorfeusz
-          #~ DEPENDS ${PYMORFEUSZ})
-#~ add_custom_target (copy-pymorfeusz-wrapper ALL
-          #~ COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/morfeusz/python/morfeusz.py ${PROJECT_BINARY_DIR}/pymorfeusz
-          #~ DEPENDS ${PYMORFEUSZ})
-#~ 
-#~ add_test (TestPyMorfeusz python pymorfeusz/test.py)
 
 ########## tests ##########
 
@@ -104,3 +84,4 @@ set (CPACK_GENERATOR "DEB" "TGZ" "NSIS")
 set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Michał Lenart") #required
 
 include (CPack)
+set (CPACK_PROJECT_CONFIG_FILE PackConfig.txt)
