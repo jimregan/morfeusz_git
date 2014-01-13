@@ -73,9 +73,19 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         DEPENDS package-python-bin package-python-src)
     
     set (PYMORFEUSZ_SRC_PACKAGE "${PROJECT_BINARY_DIR}/pymorfeusz-${PYMORFEUSZ_VERSION}.tar.gz")
-    add_custom_target (package-python-deb-src
-        COMMAND py2dsc ${PYMORFEUSZ_SRC_PACKAGE}
+    add_custom_target (package-python-deb-sdist
+        COMMAND python ${SETUP_PY} --command-packages=stdeb.command sdist_dsc
         DEPENDS package-python-src
+    )
+    add_custom_target (package-python-debuild
+        COMMAND debuild -sa -S
+        WORKING_DIRECTORY deb_dist/pymorfeusz-${PYMORFEUSZ_VERSION}
+        DEPENDS package-python-deb-sdist
+    )
+    add_custom_target (package-python-deb-ppa
+        COMMAND dput ppa:lennyn/morfeusz pymorfeusz*_source.changes
+        WORKING_DIRECTORY deb_dist
+        DEPENDS package-python-debuild
     )
 endif ()
 #~ install (install-python 
