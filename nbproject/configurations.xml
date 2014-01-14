@@ -24,6 +24,7 @@
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
+      <in>Toolchain-Linux-amd64.cmake</in>
       <in>const.cpp</in>
       <in>main.cpp</in>
       <in>test_recognize_dict.cpp</in>
@@ -285,6 +286,11 @@
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
+      </item>
+      <item path="morfeusz/Toolchain-Linux-amd64.cmake"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="morfeusz/charset/CaseConverter.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>

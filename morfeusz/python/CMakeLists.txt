@@ -18,24 +18,6 @@ add_custom_command (
     COMMAND swig -python -c++ -o ${SWIG_PYTHON_OUTFILE} ${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i
     DEPENDS libmorfeusz
 )
-#set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
-#add_library (pymorfeusz SHARED ${SWIG_PYTHON_OUTFILE})
-#target_link_libraries (pymorfeusz ${PYTHON_LIBRARIES} libmorfeusz)
-#add_dependencies (pymorfeusz ${SWIG_PYTHON_OUTFILE})
-#set (CMAKE_SHARED_LIBRARY_PREFIX "")
-#set_target_properties (pymorfeusz PROPERTIES OUTPUT_NAME "_morfeusz")
-
-#~ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-#~ 
-    #~ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D MS_WIN64")
-    #~ set (CMAKE_SHARED_LIBRARY_SUFFIX ".pyd")
-    #~ set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc -lpython27")
-    #~ 
-#~ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-#~ 
-    #~ set (CMAKE_SHARED_LIBRARY_SUFFIX ".so")
-    #~ 
-#~ endif ()
 
 set (SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
 set (SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
@@ -62,36 +44,34 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         DEPENDS ${pymorfeusz}
     )
     add_custom_target (package-python-bin
-        COMMAND python ${SETUP_PY} bdist -d ${PROJECT_BINARY_DIR}
+        COMMAND python ${SETUP_PY} bdist_egg -d "${TARGET_DIR}/python" --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
         DEPENDS pymorfeusz
     )
-    add_custom_target (package-python-src
-        COMMAND python ${SETUP_PY} sdist -d ${PROJECT_BINARY_DIR}
-        DEPENDS pymorfeusz
-    )
-    add_custom_target (package-python
-        DEPENDS package-python-bin package-python-src)
+    set (PACKAGE_DEPENDS "package-python-bin")
     
-    set (PYMORFEUSZ_SRC_PACKAGE "${PROJECT_BINARY_DIR}/pymorfeusz-${PYMORFEUSZ_VERSION}.tar.gz")
-    add_custom_target (package-python-deb-sdist
-        COMMAND python ${SETUP_PY} --command-packages=stdeb.command sdist_dsc
-        DEPENDS package-python-src
-    )
-    add_custom_target (package-python-debuild
-        COMMAND debuild -sa -S
-        WORKING_DIRECTORY deb_dist/pymorfeusz-${PYMORFEUSZ_VERSION}
-        DEPENDS package-python-deb-sdist
-    )
-    add_custom_target (package-python-deb-ppa
-        COMMAND dput ppa:lennyn/morfeusz pymorfeusz*_source.changes
-        WORKING_DIRECTORY deb_dist
-        DEPENDS package-python-debuild
-    )
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+        add_custom_target (package-python-deb-sdist
+            COMMAND python ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}"
+            DEPENDS pymorfeusz
+        )
+        add_custom_target (package-python-deb-build
+            COMMAND debuild -us -uc
+            WORKING_DIRECTORY deb_dist/pymorfeusz-${PYMORFEUSZ_VERSION}
+            DEPENDS package-python-deb-sdist
+        )
+        add_custom_target(package-python-deb
+            COMMAND mkdir -p "${TARGET_DIR}/python" && cp ${CMAKE_CURRENT_BINARY_DIR}/deb_dist/python-pymorfeusz*.deb "${TARGET_DIR}/python"
+            DEPENDS package-python-deb-build
+        )
+        list (APPEND PACKAGE_DEPENDS package-python-deb)
+    elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+        add_custom_target (package-python-win-installer
+            COMMAND python ${SETUP_PY} bdist_wininst -d ${TARGET_DIR} --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
+            DEPENDS pymorfeusz
+        )
+        list (APPEND PACKAGE_DEPENDS package-python-win-installer)
+    endif ()
+    message ("PACKAGE_DEPENDS=${PACKAGE_DEPENDS}")
+    add_custom_target (package-python
+        DEPENDS pymorfeusz ${PACKAGE_DEPENDS})
 endif ()
-#~ install (install-python 
-    #~ COMMAND python ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX} 
-    #~ DEPENDS pymorfeusz)
-
-#~ install (CODE
-    #~ COMMAND python ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX} 
-    #~ DEPENDS pymorfeusz)

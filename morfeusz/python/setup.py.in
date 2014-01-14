@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup, Extension
 
-morfeusz = Extension('pymorfeusz',
+morfeusz = Extension('_morfeusz',
                     libraries=['morfeusz'],
                     library_dirs=['${CMAKE_CURRENT_BINARY_DIR}/..'],
                     include_dirs = ['${CMAKE_CURRENT_SOURCE_DIR}/..'],
@@ -8,6 +9,8 @@ morfeusz = Extension('pymorfeusz',
 
 if __name__ == '__main__':
     setup(name='pymorfeusz',
+          author='${CPACK_PACKAGE_VENDOR}',
+          author_email='${CPACK_PACKAGE_CONTACT}',
           version='${PYMORFEUSZ_VERSION}',
           package_dir={ '': '${CMAKE_CURRENT_BINARY_DIR}'},
           py_modules = ['morfeusz'],

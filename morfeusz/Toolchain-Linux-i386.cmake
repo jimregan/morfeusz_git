@@ -4,6 +4,8 @@ set (CMAKE_SYSTEM_VERSION 1)
 set (CMAKE_C_COMPILER   gcc -m32)
 set (CMAKE_CXX_COMPILER g++ -m32)
 
+set (CMAKE_SYSTEM_PROCESSOR "x86")
+
 set (JAVA_ROOT /mnt/storage/crossmorfeusz/linux32/jdk1.7.0_45)
 set (PYTHON_ROOT /mnt/storage/crossmorfeusz/linux32/python)
 

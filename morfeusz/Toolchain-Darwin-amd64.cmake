@@ -6,6 +6,8 @@ set (CMAKE_SYSTEM_VERSION 1)
 set (CMAKE_C_COMPILER   ${DARWIN64_ROOT}/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-gcc)
 set (CMAKE_CXX_COMPILER   ${DARWIN64_ROOT}/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-g++)
 
+set (CMAKE_SYSTEM_PROCESSOR "x86_64")
+
 set (JAVA_ROOT ${DARWIN64_ROOT}/JavaVM.framework)
 set (PYTHON_ROOT ${DARWIN64_ROOT}/Python.framework/Versions/2.7)
 

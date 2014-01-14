@@ -38,12 +38,41 @@ cmake ..
 make
 
 ***************
-Customizing compilation process
+Packaging
+***************
+
+Create packages for target platform:
+
+make package
+
+Create packages with Java bindings for target platform:
+
+make package-java
+
+Create packages with Python bindings for target platform:
+
+make package-python
+
+***************
+Installation
+***************
+
+Install Morfeusz main program, C and C++ headers and libs:
+
+make install
+
+Install Python bindings:
+
+make install-python
+
+***************
+Customizing build process
 ***************
 
 Available custom CMake variables:
 INPUT_TAGSET - tagset file
 INPUT_DICTIONARY - dictionary file (can use empty one from input/empty.txt)
+TARGET_DIR - a dir where packages built by CMake are put
 
 Execute like following:
 cmake -D INPUT_TAGSET=<file1> -D INPUT_DICTIONARY=<file2> ..
@@ -57,7 +86,7 @@ Create separate build directory, for example build-darwin.
 Run:
 cmake -DCMAKE_TOOLCHAIN_FILE=../morfeusz/Toolchain-xxx.cmake ..
 make
-
+make package package-java package-python
 
 Copy Java JDK and Python libraries from target platform. Set JAVA_ROOT and PYTHON_ROOT in Toolchain files to match directories copied from target platform.
 
