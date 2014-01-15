@@ -1,9 +1,8 @@
 
 ########## generate default dictionary data #################
-
 add_custom_command (
         OUTPUT "${INPUT_DICTIONARY_CPP}"
-        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/fsa/buildfsa.py -i "${INPUT_DICTIONARY}" -o "${INPUT_DICTIONARY_CPP}" "--tagset-file=${INPUT_TAGSET}" --output-format=CPP --serialization-method=SIMPLE
+        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/buildfsa.py -i "${INPUT_DICTIONARY}" -o "${INPUT_DICTIONARY_CPP}" "--tagset-file=${INPUT_TAGSET}" --output-format=CPP --serialization-method=SIMPLE
         DEPENDS "${INPUT_DICTIONARY}"
         COMMENT "Building default dictionary C++ file"
 )

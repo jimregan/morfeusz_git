@@ -8,11 +8,11 @@ Created on 21 paź 2013
 import sys
 import logging
 import codecs
-import encode
-import convertinput
-import common
-from fsa import FSA
-from serializer import VLengthSerializer1, VLengthSerializer2, SimpleSerializer
+from morfeuszbuilder.fsa import encode
+from morfeuszbuilder.fsa import convertinput
+from morfeuszbuilder.fsa import common
+from morfeuszbuilder.fsa.fsa import FSA
+from morfeuszbuilder.fsa.serializer import VLengthSerializer1, VLengthSerializer2, SimpleSerializer
 from optparse import OptionParser
 
 class OutputFormat():
@@ -70,11 +70,11 @@ def _parseOptions():
                         SIMPLE - fixed-length transitions, fastest and weakest compression \
                         V1 - variable-length transitions, compressed labels - strongest compression \
                         V2 - format similar to the default in Jan Daciuk's fsa package - variable-length transitions, non-compressed labels - good compression, good speed")
-    parser.add_option('--visualize',
-                        dest='visualize',
-                        action='store_true', 
-                        default=False,
-                        help='visualize result')
+    #~ parser.add_option('--visualize',
+                        #~ dest='visualize',
+                        #~ action='store_true', 
+                        #~ default=False,
+                        #~ help='visualize result')
     parser.add_option('--train-file',
                         dest='trainFile',
                         help='A text file used for training. Should contain words from some large corpus - one word in each line')
@@ -83,11 +83,11 @@ def _parseOptions():
                         action='store_true',
                         default=False,
                         help='output some debugging info')
-    parser.add_option('--profile',
-                        dest='profile',
-                        action='store_true',
-                        default=False,
-                        help='show profiling graph (required pycallgraph and graphviz')
+    #~ parser.add_option('--profile',
+                        #~ dest='profile',
+                        #~ action='store_true',
+                        #~ default=False,
+                        #~ help='show profiling graph (required pycallgraph and graphviz')
     
     opts, args = parser.parse_args()
     
@@ -221,20 +221,10 @@ def main(opts):
      OutputFormat.BINARY: serializer.serialize2BinaryFile
      }[opts.outputFormat](opts.outputFile)
     logging.info('size: '+str(fsa.initialState.reverseOffset))
-    
-    if opts.visualize:
-        from visualizer import Visualizer
-        Visualizer().visualize(fsa)
 
 if __name__ == '__main__':
     import os
     print os.getcwd()
     opts = _parseOptions()
-    if opts.profile:
-        from pycallgraph import PyCallGraph
-        from pycallgraph.output import GraphvizOutput
-        with PyCallGraph(output=GraphvizOutput()):
-            main(opts)
-    else:
-        main(opts)
+    main(opts)
 

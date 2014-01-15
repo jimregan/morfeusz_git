@@ -80,9 +80,13 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT}")
     set (CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6 (>= 4.6)")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set (CPACK_GENERATOR "NSIS" "TGZ")
+    if (${ARCHITECTURE} MATCHES "amd64")
+        set (CPACK_GENERATOR "NSIS64" "TGZ")
+    else ()
+        set (CPACK_GENERATOR "NSIS" "TGZ")
+    endif ()
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set (CPACK_GENERATOR "BUNDLE" "TGZ")
+    set (CPACK_GENERATOR "STGZ" "TGZ")
 endif ()
 
 include (CPack)
@@ -100,6 +104,7 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}" )
 
 add_subdirectory (morfeusz)
+add_subdirectory (fsabuilder)
 
 ########## add tests ##########
 
