@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+from setuptools import setup, find_packages
+
+if __name__ == '__main__':
+    setup(name='${MORFEUSZBUILDER}',
+          author='${CPACK_PACKAGE_VENDOR}',
+          author_email='${CPACK_PACKAGE_CONTACT}',
+          version='${MORFEUSZBUILDER_VERSION}',
+          packages=['morfeuszbuilder', 'morfeuszbuilder.fsa'],
+          scripts = ['buildfsa.py'])
