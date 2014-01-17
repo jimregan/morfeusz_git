@@ -17,7 +17,7 @@ add_custom_command (OUTPUT ${SETUP_PY}
 add_custom_target (builder-setup DEPENDS ${SETUP_PY})
 
 #~ add_custom_target (buildfsa-exec ALL
-    #~ COMMAND pyinstaller --noconfirm --onefile --console --strip --distpath="${DIST_PATH}" --noupx --clean fsa/buildfsa.py
+    #~ COMMAND pyinstaller --noconfirm --onefile --console --strip --distpath="${DIST_PATH}" --clean fsa/buildfsa.py
 #~ )
 #~ 
 #~ add_executable (buildfsa IMPORTED)
@@ -55,14 +55,13 @@ if (${UNIX})
             DEPENDS package-builder-deb-build
         )
         list (APPEND PACKAGE_DEPENDS package-builder-deb)
-    #~ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-        #~ add_custom_target (package-python-win-installer
-            #~ COMMAND python ${SETUP_PY} bdist_wininst -d ${TARGET_DIR} --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
-            #~ DEPENDS pymorfeusz
-        #~ )
-        #~ list (APPEND PACKAGE_DEPENDS package-python-win-installer)
-    endif ()
-    #~ message ("PACKAGE_DEPENDS=${PACKAGE_DEPENDS}")
-    add_custom_target (package-builder
-        DEPENDS ${PACKAGE_DEPENDS})
+    endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    add_custom_target (package-python-win-installer
+        COMMAND python ${SETUP_PY} bdist_wininst -d ${TARGET_DIR} --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
+        DEPENDS builder-setup
+    )
+    list (APPEND PACKAGE_DEPENDS package-python-win-installer)
 endif ()
+
+add_custom_target(package-builder DEPENDS ${PACKAGE_DEPENDS})

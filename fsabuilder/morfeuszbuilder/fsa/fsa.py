@@ -14,39 +14,66 @@ class FSA(object):
     '''
 
 
-    def __init__(self, encoder, tagset=None):
+    def __init__(self, encoder, tagset=None, encodeData=True):
         self.encodeWord = encoder.encodeWord
-        self.encodeData = encoder.encodeData
-        self.decodeData = encoder.decodeData
+        self.encodeData = encoder.encodeData if encodeData else lambda x: x
+        self.decodeData = encoder.decodeData if encodeData else lambda x: x
         self.encodedPrevWord = None
         self.tagset = tagset
         self.initialState = state.State()
         self.register = register.Register()
         self.label2Freq = {}
+        self.n = 0
+        self.closed = False
     
     def tryToRecognize(self, word, addFreq=False):
         return self.decodeData(self.initialState.tryToRecognize(self.encodeWord(word), addFreq))
     
-    def feed(self, input):
+    def addEntry(self, word, data):
+        assert not self.closed
+        assert data is not None
+        encodedWord = self.encodeWord(word)
+        assert encodedWord > self.encodedPrevWord
+        self._addSorted(encodedWord, self.encodeData(data))
+        self.encodedPrevWord = encodedWord
         
-#         allWords = []
-        for n, (word, data) in enumerate(input, start=1):
-            assert data is not None
-            encodedWord = self.encodeWord(word)
-            assert encodedWord > self.encodedPrevWord
-            if encodedWord > self.encodedPrevWord:
-                self._addSorted(encodedWord, self.encodeData(data))
-                self.encodedPrevWord = encodedWord
-#                 assert self.tryToRecognize(word) == data
-                if n % 10000 == 0:
-                    logging.info(word)
-                    logging.info(str(self.register.getStatesNum()))
+        self.n += 1
+        
+        # debug
+        if self.n % 100000 == 0:
+            logging.info(word)
+            logging.info(str(self.register.getStatesNum()))
     #             allWords.append(word)
-                for label in encodedWord:
-                    self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
-        
-        self.initialState = self._replaceOrRegister(self.initialState, self.encodeWord(word))
+        for label in encodedWord:
+            self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
+    
+    def close(self):
+        assert self.n > 0
+        assert not self.closed
+        self.initialState = self._replaceOrRegister(self.initialState, self.encodedPrevWord)
         self.encodedPrevWord = None
+        self.closed = True
+    
+#     def feed(self, input):
+#         
+# #         allWords = []
+#         for n, (word, data) in enumerate(input, start=1):
+#             assert data is not None
+#             encodedWord = self.encodeWord(word)
+#             assert encodedWord > self.encodedPrevWord
+#             if encodedWord > self.encodedPrevWord:
+#                 self._addSorted(encodedWord, self.encodeData(data))
+#                 self.encodedPrevWord = encodedWord
+# #                 assert self.tryToRecognize(word) == data
+#                 if n % 10000 == 0:
+#                     logging.info(word)
+#                     logging.info(str(self.register.getStatesNum()))
+#     #             allWords.append(word)
+#                 for label in encodedWord:
+#                     self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
+#         
+#         self.initialState = self._replaceOrRegister(self.initialState, self.encodeWord(word))
+#         self.encodedPrevWord = None
         
 #         for w in allWords:
 #             self.tryToRecognize(w, True)

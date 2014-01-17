@@ -129,7 +129,7 @@ def _parseOptions():
 
 def _readPolimorfInput(inputFile, tagset, encoder):
     with open(inputFile, 'r') as f:
-        for entry in convertinput.PolimorfConverter(tagset, encoder, 'utf8').convert(f):
+        for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8').convert(f):
             yield entry
 
 def _readPlainInput(inputFile, encoder):
@@ -165,9 +165,9 @@ def buildFromPoliMorf(inputFile, tagsetFile):
     tagset = common.Tagset(tagsetFile)
     fsa = FSA(encoder, tagset)
     inputData = _readPolimorfInput(inputFile, tagset, encoder)
-    
-    fsa.feed(inputData)
-    
+    for word, data in inputData:
+        fsa.addEntry(word, data)
+    fsa.close()
     _printStats(fsa)
     return fsa
 

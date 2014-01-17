@@ -38,52 +38,18 @@ class Encoder(object):
     
     def word2SortKey(self, word):
         return word.lower().encode(self.encoding)
-
-class SimpleEncoder(Encoder):
-    
-    def __init__(self, encoding='utf8'):
-        super(SimpleEncoder, self).__init__(encoding)
-    
-    def encodeData(self, data):
-        return bytearray(data, encoding=self.encoding) + bytearray([0])
-    
-    def decodeData(self, rawData):
-        return unicode(str(rawData)[:-1], self.encoding)
-
-class MorphEncoder(Encoder):
-    
-    def __init__(self, encoding='utf8'):
-        super(MorphEncoder, self).__init__(encoding)
-        self.LEMMA_ONLY_LOWER = 0
-        self.LEMMA_UPPER_PREFIX = 1
-        self.LEMMA_MIXED_CASE = 2
-    
-    def encodeData(self, interpsList):
-        res = bytearray()
-#         print interpsList
-        firstByte = len(interpsList)
-        assert firstByte < 256
-        assert firstByte > 0
-        res.append(firstByte)
-        assert type(interpsList) == frozenset
-        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-            res.extend(self._encodeTypeNum(interp.typenum))
-            res.extend(self._encodeLemma(interp.lemma))
-            res.extend(self._encodeTagNum(interp.tagnum))
-            res.extend(self._encodeNameNum(interp.namenum))
-        return res
     
     def _encodeTypeNum(self, typenum):
         assert typenum >= 0 and typenum < 256
         return bytearray([typenum])
     
-    def _encodeLemma(self, lemma):
+    def _encodeEncodedForm(self, form):
         res = bytearray()
-        assert lemma.cutLength < 256 and lemma.cutLength >= 0
-        res.append(lemma.cutLength)
-        res.extend(self.encodeWord(lemma.suffixToAdd, lowercase=False))
+        assert form.cutLength < 256 and form.cutLength >= 0
+        res.append(form.cutLength)
+        res.extend(self.encodeWord(form.suffixToAdd, lowercase=False))
         res.append(0)
-        res.extend(self._encodeCasePattern(lemma.casePattern))
+        res.extend(self._encodeCasePattern(form.casePattern))
         return res
     
     def _encodeCasePattern(self, casePattern):
@@ -129,4 +95,72 @@ class MorphEncoder(Encoder):
     def _encodeNameNum(self, namenum):
         assert namenum < 256 and namenum >= 0
         return bytearray([namenum])
+
+# class SimpleEncoder(Encoder):
+#     
+#     def __init__(self, encoding='utf8'):
+#         super(SimpleEncoder, self).__init__(encoding)
+#     
+#     def encodeData(self, data):
+#         return bytearray(data, encoding=self.encoding) + bytearray([0])
+#     
+#     def decodeData(self, rawData):
+#         return unicode(str(rawData)[:-1], self.encoding)
+
+class MorphEncoder(Encoder):
     
+    def __init__(self, encoding='utf8'):
+        super(MorphEncoder, self).__init__(encoding)
+        self.LEMMA_ONLY_LOWER = 0
+        self.LEMMA_UPPER_PREFIX = 1
+        self.LEMMA_MIXED_CASE = 2
+    
+    def encodeData(self, interpsList):
+        res = bytearray()
+#         print interpsList
+        firstByte = len(interpsList)
+        assert firstByte < 256
+        assert firstByte > 0
+        res.append(firstByte)
+        assert type(interpsList) == frozenset
+        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+            res.extend(self._encodeTypeNum(interp.typenum))
+            res.extend(self._encodeEncodedForm(interp.lemma))
+            res.extend(self._encodeTagNum(interp.tagnum))
+            res.extend(self._encodeNameNum(interp.namenum))
+        return res
+
+class Encoder4Generator(Encoder):
+    
+    def __init__(self, encoding='utf8'):
+        super(MorphEncoder, self).__init__(encoding)
+        self.LEMMA_ONLY_LOWER = 0
+        self.LEMMA_UPPER_PREFIX = 1
+        self.LEMMA_MIXED_CASE = 2
+    
+    def encodeData(self, interpsList):
+        res = bytearray()
+#         print interpsList
+        firstByte = len(interpsList)
+        assert firstByte < 256
+        assert firstByte > 0
+        res.append(firstByte)
+        assert type(interpsList) == frozenset
+        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+            res.extend(self._encodeEncodedForm(interp.orth))
+            res.extend(self._encodeTagNum(interp.tagnum))
+            res.extend(self._encodeNameNum(interp.namenum))
+        return res
+    
+    def _encodeTypeNum(self, typenum):
+        assert typenum >= 0 and typenum < 256
+        return bytearray([typenum])
+    
+    def _encodeLemma(self, lemma):
+        res = bytearray()
+        assert lemma.cutLength < 256 and lemma.cutLength >= 0
+        res.append(lemma.cutLength)
+        res.extend(self.encodeWord(lemma.suffixToAdd, lowercase=False))
+        res.append(0)
+        res.extend(self._encodeCasePattern(lemma.casePattern))
+        return res

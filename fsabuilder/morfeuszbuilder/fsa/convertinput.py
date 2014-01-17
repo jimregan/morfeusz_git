@@ -5,6 +5,7 @@ Created on Oct 23, 2013
 '''
 import logging
 from common import Interpretation
+from morfeuszbuilder.fsa.common import Interpretation4Generator
 
 tag2typenum = {
     'aglt:sg:pri:imperf:nwok': 12,
@@ -398,13 +399,29 @@ tag2typenum = {
     'burk': 9,
 }
 
-class PolimorfConverter(object):
+def _mergeEntries(inputLines):
+    prevKey = None
+    prevInterps = None
+    for key, interp in inputLines:
+        key = key.lower()
+        assert key
+        if prevKey and prevKey == key:
+            prevInterps.append(interp)
+        else:
+            if prevKey:
+                yield (prevKey, frozenset(prevInterps))
+            prevKey = key
+            prevInterps = [interp]
+    yield (prevKey, frozenset(prevInterps))
+
+class PolimorfConverter4Analyzer(object):
     
     def __init__(self, tagset, encoder, inputEncoding='utf8'):
         self.tagset = tagset
         self.encoder = encoder
         self.inputEncoding = inputEncoding
 
+    # we do it the ugly way (parse to plain text) because it is way more memory-efficient
     def _partiallyParseLines(self, inputLines):
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip('\n')
@@ -412,14 +429,13 @@ class PolimorfConverter(object):
             tagnum = self.tagset.tag2tagnum[tag]
             namenum = self.tagset.name2namenum[name]
             typenum = tag2typenum.get(tag, 0)
-            yield '%s %s %d %d %d' % (orth.encode(self.inputEncoding), base.encode(self.inputEncoding), tagnum, namenum, typenum)
+            yield '%s %s %d %d %d' % (
+                                      orth.encode(self.inputEncoding), 
+                                      base.encode(self.inputEncoding), 
+                                      tagnum, namenum, typenum)
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
-#         lines = list(inputLines)
-#         lines.sort(key=lambda line: self.encoder.word2SortKey(line.split(' ')[0].decode(self.inputEncoding)))
-#         while lines:
-#             yield lines.pop()
         return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split(' ')[0].decode('utf8')))
     
     def _reallyParseLines(self, inputLines):
@@ -433,24 +449,42 @@ class PolimorfConverter(object):
                 typenum = int(typenum)
                 yield (orth, Interpretation(orth, base, tagnum, namenum, typenum))
     
-    def _mergeEntries(self, inputLines):
-        prevOrth = None
-        prevInterps = None
-        for orth, interp in inputLines:
-            orth = orth.lower()
-            assert orth
-            if prevOrth and prevOrth == orth:
-                prevInterps.append(interp)
-            else:
-                if prevOrth:
-                    yield (prevOrth, frozenset(prevInterps))
-                prevOrth = orth
-                prevInterps = [interp]
-        yield (prevOrth, frozenset(prevInterps))
+    def convert(self, inputLines):
+        return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))))
+
+class PolimorfConverter4Generator(object):
+    
+    def __init__(self, tagset, encoder, inputEncoding='utf8'):
+        self.tagset = tagset
+        self.encoder = encoder
+        self.inputEncoding = inputEncoding
+    
+    # we do it the ugly way (parse to plain text) because it is way more memory-efficient
+    def _partiallyParseLines(self, inputLines):
+        for line in inputLines:
+            line = line.decode(self.inputEncoding).strip('\n')
+            orth, base, tag, name = line.split(u'\t')
+            tagnum = self.tagset.tag2tagnum[tag]
+            namenum = self.tagset.name2namenum[name]
+            yield '%s %s %d %d' % (
+                                   orth.encode(self.inputEncoding), 
+                                   base.encode(self.inputEncoding), 
+                                   tagnum, namenum)
+    
+    # input lines are encoded and partially parsed
+    def _sortLines(self, inputLines):
+        return sorted(inputLines, key=lambda line: (self.encoder.word2SortKey(line.split(' ')[1].decode('utf8')), line))
+    
+    def _reallyParseLines(self, inputLines):
+        for line in inputLines:
+            line = line.decode(self.inputEncoding).strip(u'\n')
+            if line:
+    #             print line
+                orth, base, tagnum, namenum, typenum = line.split(u' ')
+                tagnum = int(tagnum)
+                namenum = int(namenum)
+                typenum = int(typenum)
+                yield (base, Interpretation4Generator(orth, base, tagnum, namenum))
     
     def convert(self, inputLines):
-        return self._mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))))
-
-# def convertPolimorf(inputLines, tagset, encoder):
-#     for orth, interps in _mergeEntries(_parseLines(_sortLines(inputLines, encoder), tagset, encoder)):
-#         yield orth, interps
+        return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))))

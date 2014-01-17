@@ -7,32 +7,53 @@ Created on Nov 7, 2013
 import codecs
 import logging
 
-class Lemma(object):
+class EncodedForm(object):
     
-    def __init__(self, cutLength, suffixToAdd, casePattern):
-        self.cutLength = cutLength
-        self.suffixToAdd = suffixToAdd
-        self.casePattern = casePattern
-
-class Interpretation(object):
-    
-    def __init__(self, orth, base, tagnum, namenum, typenum):
-        assert type(orth) == unicode
-        assert type(base) == unicode
+    def __init__(self, fromWord, targetWord):
+        assert type(fromWord) == unicode
+        assert type(targetWord) == unicode
         root = u''
-        for o, b in zip(orth, base):
+        for o, b in zip(fromWord, targetWord):
             if o.lower() == b.lower():
                 root += b
             else:
                 break
-        cutLength = len(orth) - len(root)
-        self.lemma = Lemma(
-                           cutLength=cutLength,
-                           suffixToAdd=base[len(root):],
-                           casePattern = [c == c.upper() for c in root])
+        self.cutLength = len(fromWord) - len(root)
+        self.suffixToAdd = targetWord[len(root):]
+        self.casePattern = [c == c.upper() for c in root]
+
+class Interpretation(object):
+    
+    def __init__(self, orth, base, tagnum, namenum, typenum):
+        self.lemma = EncodedForm(orth, base)
         self.tagnum = tagnum
         self.namenum = namenum
         self.typenum = typenum
+    
+    def getSortKey(self):
+        return (
+                self.lemma.cutLength, 
+                tuple(self.lemma.suffixToAdd), 
+                tuple(self.lemma.casePattern), 
+                self.tagnum, 
+                self.namenum)
+    
+    def __eq__(self, other):
+        if isinstance(other, Interpretation):
+            return self.getSortKey() == other.getSortKey()
+        else:
+            return False
+    
+    def __hash__(self):
+        return hash(self.getSortKey())
+
+class Interpretation4Generator(object):
+    
+    def __init__(self, orth, base, tagnum, namenum):
+        self.lemma = base
+        self.orth = EncodedForm(base, orth)
+        self.tagnum = tagnum
+        self.namenum = namenum
     
     def getSortKey(self):
         return (
