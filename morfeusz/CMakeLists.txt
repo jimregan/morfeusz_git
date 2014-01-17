@@ -55,12 +55,15 @@ target_link_libraries (test_result_equals libmorfeusz)
 target_link_libraries (test_recognize_dict libmorfeusz)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries (libmorfeusz ws2_32)
+    target_link_libraries (libmorfeusz ws2_32)
+    set (TARGET_LIB_DIR bin)
+else ()
+    set (TARGET_LIB_DIR lib)
 endif ()
 
 add_subdirectory (java)
 add_subdirectory (python)
 
 install (FILES ${INCLUDE_FILES} DESTINATION include/morfeusz)
-install (TARGETS libmorfeusz DESTINATION lib)
+install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
 install (TARGETS morfeusz DESTINATION bin)

@@ -5,7 +5,9 @@ project (Morfeusz)
 set (Morfeusz_VERSION_MAJOR 2)
 set (Morfeusz_VERSION_MINOR 0)
 set (Morfeusz_VERSION_PATCH 0)
-set (CMAKE_BUILD_TYPE "Release")
+set (CMAKE_BUILD_TYPE "Debug")
+
+enable_testing()
 
 ##### initialize some vars #####
 
@@ -48,10 +50,6 @@ if ("${TARGET_DIR}" STREQUAL "")
 endif ()
 
 ### Compilation and linking flags
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
-endif ()
-# set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align -O2")
@@ -109,7 +107,7 @@ add_subdirectory (fsabuilder)
 ########## add tests ##########
 
 macro (test_build_and_recognize fname method)
-    add_test (TestBuild-${method}-${fname} python fsabuilder/fsa/buildfsa.py -i testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=${method})
+    add_test (TestBuild-${method}-${fname} python fsabuilder/buildfsa.py -i testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=${method})
     add_test (TestRecognize-${method}-${fname} morfeusz/test_recognize_dict /tmp/test-${method}-${fname}.fsa testfiles/${fname})
     # add_test (TestNOTRecognize-${method}-${fname} fsa/test_not_recognize /tmp/test-${method}-${fname}.fsa testfiles/out_of_dict)
     # add_test (TestSpeed-${method}-${fname} fsa/test_speed /tmp/test-${method}-${fname}.fsa testfiles/speed_test_data)
