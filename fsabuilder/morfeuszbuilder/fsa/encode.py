@@ -43,7 +43,7 @@ class Encoder(object):
         assert typenum >= 0 and typenum < 256
         return bytearray([typenum])
     
-    def _encodeEncodedForm(self, form):
+    def _encodeEncodedForm(self, form, withCasePattern):
         res = bytearray()
         assert form.cutLength < 256 and form.cutLength >= 0
         res.append(form.cutLength)
@@ -125,7 +125,7 @@ class MorphEncoder(Encoder):
         assert type(interpsList) == frozenset
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
             res.extend(self._encodeTypeNum(interp.typenum))
-            res.extend(self._encodeEncodedForm(interp.lemma))
+            res.extend(self._encodeEncodedForm(interp.lemma, withCasePattern=True))
             res.extend(self._encodeTagNum(interp.tagnum))
             res.extend(self._encodeNameNum(interp.namenum))
         return res
@@ -134,9 +134,6 @@ class Encoder4Generator(Encoder):
     
     def __init__(self, encoding='utf8'):
         super(MorphEncoder, self).__init__(encoding)
-        self.LEMMA_ONLY_LOWER = 0
-        self.LEMMA_UPPER_PREFIX = 1
-        self.LEMMA_MIXED_CASE = 2
     
     def encodeData(self, interpsList):
         res = bytearray()
@@ -147,20 +144,7 @@ class Encoder4Generator(Encoder):
         res.append(firstByte)
         assert type(interpsList) == frozenset
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-            res.extend(self._encodeEncodedForm(interp.orth))
+            res.extend(self._encodeEncodedForm(interp.orth, withCasePattern=False))
             res.extend(self._encodeTagNum(interp.tagnum))
             res.extend(self._encodeNameNum(interp.namenum))
-        return res
-    
-    def _encodeTypeNum(self, typenum):
-        assert typenum >= 0 and typenum < 256
-        return bytearray([typenum])
-    
-    def _encodeLemma(self, lemma):
-        res = bytearray()
-        assert lemma.cutLength < 256 and lemma.cutLength >= 0
-        res.append(lemma.cutLength)
-        res.extend(self.encodeWord(lemma.suffixToAdd, lowercase=False))
-        res.append(0)
-        res.extend(self._encodeCasePattern(lemma.casePattern))
         return res

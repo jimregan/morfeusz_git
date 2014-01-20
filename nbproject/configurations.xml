@@ -19,6 +19,11 @@
         <in>test_recognize.cpp</in>
         <in>test_speed.cpp</in>
       </df>
+      <df name="generator">
+        <in>EncodedGeneratorInterpretation.hpp</in>
+        <in>GeneratorDeserializer.cpp</in>
+        <in>GeneratorDeserializer.hpp</in>
+      </df>
       <in>FlexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
@@ -379,6 +384,21 @@
             <pElem>build/fsa</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="morfeusz/generator/EncodedGeneratorInterpretation.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="morfeusz/generator/GeneratorDeserializer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="morfeusz/generator/GeneratorDeserializer.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>

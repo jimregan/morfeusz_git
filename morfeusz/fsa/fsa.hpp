@@ -34,38 +34,6 @@ public:
     virtual ~Deserializer() {}
 };
 
-class StringDeserializer : public Deserializer<char*> {
-public:
-
-    StringDeserializer() {
-    }
-
-    /**
-     * Deserialize object from ptr.
-     * Returns number of bytes read or -1 on error.
-     */
-    long deserialize(const unsigned char* ptr, char*& text) const {
-        text = const_cast<char*> (reinterpret_cast<const char*> (ptr));
-        return strlen(text) + 1;
-//        return 1;
-    }
-    
-    virtual ~StringDeserializer() {}
-};
-
-//class Counter {
-//public:
-//
-//    Counter() : count(0) {
-//
-//    }
-//
-//    void increment(const int n) {
-//        count += n;
-//    }
-//    long long count;
-//};
-
 /**
  * Finite state automaton.
  */

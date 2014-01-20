@@ -54,23 +54,27 @@ class Interpretation4Generator(object):
         self.orth = EncodedForm(base, orth)
         self.tagnum = tagnum
         self.namenum = namenum
+        logging.warn(self)
     
     def getSortKey(self):
         return (
-                self.lemma.cutLength, 
-                tuple(self.lemma.suffixToAdd), 
-                tuple(self.lemma.casePattern), 
-                self.tagnum, 
+                self.tagnum,
+                self.orth.cutLength, 
+                tuple(self.orth.suffixToAdd), 
+#                 tuple(self.lemma.casePattern), 
                 self.namenum)
     
     def __eq__(self, other):
-        if isinstance(other, Interpretation):
+        if isinstance(other, Interpretation4Generator):
             return self.getSortKey() == other.getSortKey()
         else:
             return False
     
     def __hash__(self):
         return hash(self.getSortKey())
+    
+    def __unicode__(self):
+        return u'%s %d %s %d %d' % (self.lemma, self.orth.cutLength, self.orth.suffixToAdd, self.tagnum, self.namenum)
 
 class Tagset(object):
     

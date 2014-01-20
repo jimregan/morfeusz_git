@@ -15,23 +15,27 @@ from morfeuszbuilder.fsa.fsa import FSA
 from morfeuszbuilder.fsa.serializer import VLengthSerializer1, VLengthSerializer2, SimpleSerializer
 from optparse import OptionParser
 
-class OutputFormat():
-    BINARY = 'BINARY'
-    CPP = 'CPP'
-
 # class InputFormat():
 #     ENCODED = 'ENCODED'
 #     POLIMORF = 'POLIMORF'
 #     PLAIN = 'PLAIN'
 
-class FSAType():
-    MORPH = 'MORPH'
-    SPELL = 'SPELL'
-
 class SerializationMethod():
     SIMPLE = 'SIMPLE'
     V1 = 'V1'
     V2 = 'V2'
+
+def _checkOption(opt, parser, msg):
+    if opt is None:
+        print >> sys.stderr, msg
+        parser.print_help()
+        exit(1)
+
+def _checkExactlyOneOptionSet(optsList, parser, msg):
+    if optsList.count(True) != 1:
+        print >> sys.stderr, msg
+        parser.print_help()
+        exit(1)
 
 def _parseOptions():
     """
@@ -50,15 +54,21 @@ def _parseOptions():
                         dest='outputFile',
                         metavar='FILE',
                         help='path to output file')
-#     parser.add_option('-t', '--fsa-type',
-#                         dest='fsaType',
-#                         help='result FSA type - MORPH (for morphological analysis) or SPELL (for simple spell checker)')
-#     parser.add_option('--input-format',
-#                         dest='inputFormat',
-#                         help='input format - ENCODED, POLIMORF or PLAIN')
-    parser.add_option('--output-format',
-                        dest='outputFormat',
-                        help='output format - BINARY or CPP')
+    parser.add_option('-a', '--analyzer',
+                        dest='analyzer',
+                        action='store_true',
+                        default=False,
+                        help='Generate FSA for morphological analysis')
+    parser.add_option('-g', '--generator',
+                        dest='generator',
+                        action='store_true',
+                        default=False,
+                        help='Generate FSA for morphological synthesis')
+    parser.add_option('--cpp',
+                        dest='cpp',
+                        action='store_true',
+                        default=False,
+                        help='Encode binary data in c++ file')
     parser.add_option('--use-arrays',
                         dest='useArrays',
                         action='store_true',
@@ -91,52 +101,29 @@ def _parseOptions():
     
     opts, args = parser.parse_args()
     
-    if None in [opts.inputFile, opts.outputFile, opts.outputFormat, opts.tagsetFile, opts.serializationMethod]:
-        parser.print_help()
-        exit(1)
-    if not opts.outputFormat.upper() in [OutputFormat.BINARY, OutputFormat.CPP]:
-        logging.error('--output-format must be one of ('+str([OutputFormat.BINARY, OutputFormat.CPP])+')')
-        parser.print_help()
-        exit(1)
-#     if not opts.inputFormat.upper() in [InputFormat.ENCODED, InputFormat.POLIMORF, InputFormat.PLAIN]:
-#         logging.error('input format must be one of ('+str([InputFormat.ENCODED, InputFormat.POLIMORF, InputFormat.PLAIN])+')')
-#         parser.print_help()
-#         exit(1)
-#     if not opts.fsaType.upper() in [FSAType.MORPH, FSAType.SPELL]:
-#         logging.error('--fsa-type must be one of ('+str([FSAType.MORPH, FSAType.SPELL])+')')
-#         parser.print_help()
-#         exit(1)
-#     if opts.fsaType == FSAType.MORPH and opts.tagsetFile is None:
-#         logging.error('must provide tagset file')
-#         parser.print_help()
-#         exit(1)
+    _checkOption(opts.inputFile, parser, "Input file is missing")
+    _checkOption(opts.outputFile, parser, "Output file is missing")
+    _checkOption(opts.tagsetFile, parser, "Tagset file is missing")
+    _checkOption(opts.serializationMethod, parser, "Serialization method file is missing")
+    _checkExactlyOneOptionSet([opts.analyzer, opts.generator], 
+                              parser, 'Must set exactly one FSA type: --analyzer or --generator')
     
     if not opts.serializationMethod.upper() in [SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2]:
-        logging.error('--serialization-method must be one of ('+str([SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2])+')')
+        print >> sys.stderr, '--serialization-method must be one of ('+str([SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2])+')'
         parser.print_help()
         exit(1)
-#     if opts.inputFormat.upper() == FSAType.MORPH \
-#         and not opts.inputFormat.upper() in [InputFormat.ENCODED, InputFormat.POLIMORF]:
-#         logging.error('input format for morph analysis FSA must be one of ('+str([InputFormat.ENCODED, InputFormat.POLIMORF])+')')
-#         parser.print_help()
-#         exit(1)
-#     if opts.inputFormat.upper() == FSAType.SPELL \
-#         and not opts.inputFormat.upper() in [InputFormat.PLAIN]:
-#         logging.error('input format for simple spelling FSA must be '+InputFormat.PLAIN)
-#         parser.print_help()
-#         exit(1)
+    
     return opts
 
-def _readPolimorfInput(inputFile, tagset, encoder):
+def _readPolimorfInput4Analyzer(inputFile, tagset, encoder):
     with open(inputFile, 'r') as f:
         for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8').convert(f):
             yield entry
 
-def _readPlainInput(inputFile, encoder):
-    with codecs.open(inputFile, 'r', 'utf8') as f:
-        for line in sorted(f, key=encoder.word2SortKey):
-            word = line.strip()
-            yield word, ''
+def _readPolimorfInput4Generator(inputFile, tagset, encoder):
+    with open(inputFile, 'r') as f:
+        for entry in convertinput.PolimorfConverter4Generator(tagset, encoder, 'utf8').convert(f):
+            yield entry
 
 def _readTrainData(trainFile):
     with codecs.open(trainFile, 'r', 'utf8') as f:
@@ -160,19 +147,27 @@ def _printStats(fsa):
     logging.info('sink states num: '+str(sinkNum))
     logging.info('array states num: '+str(arrayNum))
 
-def buildFromPoliMorf(inputFile, tagsetFile):
+def buildAnalyzerFromPoliMorf(inputFile, tagsetFile):
     encoder = encode.MorphEncoder()
     tagset = common.Tagset(tagsetFile)
     fsa = FSA(encoder, tagset)
-    inputData = _readPolimorfInput(inputFile, tagset, encoder)
+    inputData = _readPolimorfInput4Analyzer(inputFile, tagset, encoder)
     for word, data in inputData:
         fsa.addEntry(word, data)
     fsa.close()
     _printStats(fsa)
     return fsa
 
-def buildFromPlain(inputFile, tagsetFile):
-    pass
+def buildGeneratorFromPoliMorf(inputFile, tagsetFile):
+    encoder = encode.Encoder4Generator()
+    tagset = common.Tagset(tagsetFile)
+    fsa = FSA(encoder, tagset)
+    inputData = _readPolimorfInput4Analyzer(inputFile, tagset, encoder)
+    for word, data in inputData:
+        fsa.addEntry(word, data)
+    fsa.close()
+    _printStats(fsa)
+    return fsa
 
 def main(opts):
     if opts.debug:
@@ -180,46 +175,30 @@ def main(opts):
     else:
         logging.basicConfig(level=logging.INFO)
     
-    fsa = buildFromPoliMorf(opts.inputFile, opts.tagsetFile)
-#     {
-#            FSAType.SPELL: buildFromPlain(opts.inputFile),
-#            FSAType.MORPH: buildFromPoliMorf(opts.inputFile, opts.tagsetFile)
-#            }[opts.fsaType]
+    if opts.analyzer:
+        fsa = buildAnalyzerFromPoliMorf(opts.inputFile, opts.tagsetFile)
+    else:
+        fsa = buildGeneratorFromPoliMorf(opts.inputFile, opts.tagsetFile)
     
     if opts.trainFile:
         logging.info('training with '+opts.trainFile+' ...')
         fsa.train(_readTrainData(opts.trainFile))
         logging.info('done training')
-    
-#     encoder = {
-#                FSAType.SPELL: encode.SimpleEncoder(),
-#                FSAType.MORPH: encode.MorphEncoder()
-#                }[opts.fsaType]
-#     
-#     fsa = FSA(encoder)
-#     
-#     inputData = {
-#                  FSAType.MORPH: _readPolimorfInput(opts.inputFile, opts.tagsetFile, encoder),
-#                  FSAType.SPELL: _readPlainInput(opts.inputFile, encoder)
-#                  }[opts.fsaType]
-    
-#     logging.info('feeding FSA with data ...')
-#     fsa.feed(inputData)
-#     if opts.trainFile:
-#         logging.info('training with '+opts.trainFile+' ...')
-#         fsa.train(readTrainData(opts.trainFile))
-#         logging.info('done training')
         
     serializer = {
                   SerializationMethod.SIMPLE: SimpleSerializer,
                   SerializationMethod.V1: VLengthSerializer1,
                   SerializationMethod.V2: VLengthSerializer2,
                   }[opts.serializationMethod](fsa)
-
-    {
-     OutputFormat.CPP: serializer.serialize2CppFile,
-     OutputFormat.BINARY: serializer.serialize2BinaryFile
-     }[opts.outputFormat](opts.outputFile)
+    
+    if opts.cpp:
+        serializer.serialize2CppFile(opts.outputFile)
+    else:
+        serializer.serialize2BinaryFile(opts.outputFile)
+#     {
+#      OutputFormat.CPP: serializer.serialize2CppFile,
+#      OutputFormat.BINARY: serializer.serialize2BinaryFile
+#      }[opts.outputFormat](opts.outputFile)
     logging.info('size: '+str(fsa.initialState.reverseOffset))
 
 if __name__ == '__main__':
