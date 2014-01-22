@@ -81,7 +81,8 @@ void appendMorfeuszResults(const std::vector<MorphInterpretation>& res, OutputSt
         if (prevStart != -1
                 && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
             out << "]\n[";
-        } else if (prevStart != -1) {
+        }
+        else if (prevStart != -1) {
             out << "; ";
         }
         out << mi.getStartNode() << ","

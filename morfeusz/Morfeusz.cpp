@@ -12,6 +12,7 @@
 #include "data/default_fsa.hpp"
 #include "Morfeusz.hpp"
 #include "MorphDeserializer.hpp"
+#include "GeneratorDeserializer.hpp"
 #include "InterpretedChunksDecoder.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
@@ -22,56 +23,61 @@
 
 using namespace std;
 
-static Deserializer<vector<InterpsGroup> >* initializeDeserializer() {
+static Deserializer<vector<InterpsGroup> >* initializeAnalyzerDeserializer() {
     static Deserializer < vector < InterpsGroup > > *deserializer
             = new MorphDeserializer();
     return deserializer;
 }
 
-static FSA<vector<InterpsGroup > > *initializeFSA(const string& filename) {
+static FSA<vector<InterpsGroup > > *initializeAnalyzerFSA(const string& filename) {
     cerr << "initialize FSA" << endl;
-    return FSA < vector < InterpsGroup > > ::getFSA(filename, *initializeDeserializer());
+    return FSA < vector < InterpsGroup > > ::getFSA(filename, *initializeAnalyzerDeserializer());
 }
 
-static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
-    cerr << "initialize charset converter for " << charset << endl;
-    static CharsetConverter* utf8Converter = new UTF8CharsetConverter();
-//    static CharsetConverter* utf16LEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::UTF16CharsetConverter::LE);
-//    static CharsetConverter* utf16BEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::Endianness::BE);
-    static CharsetConverter* iso8859_2Converter = new ISO8859_2_CharsetConverter();
-    static CharsetConverter* windows1250Converter = new Windows_1250_CharsetConverter();
-    static CharsetConverter* cp852Converter = new CP852_CharsetConverter();
-    switch (charset) {
-        case UTF8:
-            return utf8Converter;
-        case ISO8859_2:
-            return iso8859_2Converter;
-        case CP1250:
-            return windows1250Converter;
-        case CP852:
-            return cp852Converter;
-        default:
-            throw MorfeuszException("invalid charset");
-    }
-}
-
-static Tagset* initializeTagset(const string& filename) {
-    cerr << "initialize tagset" << endl;
-    static Tagset* tagset = new Tagset(readFile<unsigned char>(filename.c_str()));
-    return tagset;
-}
-
-static Tagset* initializeTagset(const unsigned char* data) {
-    cerr << "initialize tagset" << endl;
-    static Tagset* tagset = new Tagset(data);
-    return tagset;
-}
-
-static CaseConverter* initializeCaseConverter() {
-    cerr << "initialize case converter" << endl;
-    static CaseConverter* cc = new CaseConverter();
-    return cc;
-}
+//static FSA<vector<MorphInterpretation > > *initializeSynthFSA(const string& filename, const SynthDeserializer& deserializer) {
+//    cerr << "initialize synth FSA" << endl;
+//    return FSA < vector < EncodedGeneratorInterpretation > > ::getFSA(filename, deserializer);
+//}
+//
+//static CharsetConverter* getCharsetConverter(MorfeuszCharset charset) {
+//    cerr << "initialize charset converter for " << charset << endl;
+//    static CharsetConverter* utf8Converter = new UTF8CharsetConverter();
+////    static CharsetConverter* utf16LEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::UTF16CharsetConverter::LE);
+////    static CharsetConverter* utf16BEConverter = new UTF16CharsetConverter(UTF16CharsetConverter::Endianness::BE);
+//    static CharsetConverter* iso8859_2Converter = new ISO8859_2_CharsetConverter();
+//    static CharsetConverter* windows1250Converter = new Windows_1250_CharsetConverter();
+//    static CharsetConverter* cp852Converter = new CP852_CharsetConverter();
+//    switch (charset) {
+//        case UTF8:
+//            return utf8Converter;
+//        case ISO8859_2:
+//            return iso8859_2Converter;
+//        case CP1250:
+//            return windows1250Converter;
+//        case CP852:
+//            return cp852Converter;
+//        default:
+//            throw MorfeuszException("invalid charset");
+//    }
+//}
+//
+//static Tagset* initializeTagset(const string& filename) {
+//    cerr << "initialize tagset" << endl;
+//    static Tagset* tagset = new Tagset(readFile<unsigned char>(filename.c_str()));
+//    return tagset;
+//}
+//
+//static Tagset* initializeTagset(const unsigned char* data) {
+//    cerr << "initialize tagset" << endl;
+//    static Tagset* tagset = new Tagset(data);
+//    return tagset;
+//}
+//
+//static CaseConverter* initializeCaseConverter() {
+//    cerr << "initialize case converter" << endl;
+//    static CaseConverter* cc = new CaseConverter();
+//    return cc;
+//}
 
 static MorfeuszOptions createDefaultOptions() {
     MorfeuszOptions res;
@@ -81,44 +87,44 @@ static MorfeuszOptions createDefaultOptions() {
 }
 
 Morfeusz::Morfeusz()
-: fsa(FSAType::getFSA(DEFAULT_FSA, *initializeDeserializer())),
-charsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
-tagset(initializeTagset(DEFAULT_FSA)),
-caseConverter(initializeCaseConverter()),
+: env(Tagset(DEFAULT_FSA), Tagset(DEFAULT_SYNTH_FSA), DEFAULT_MORFEUSZ_CHARSET),
+analyzerFSA(FSAType::getFSA(DEFAULT_FSA, *initializeAnalyzerDeserializer())),
+isAnalyzerFSAFromFile(false),
+generator(DEFAULT_SYNTH_FSA, env),
 options(createDefaultOptions()) {
 
 }
 
-Morfeusz::Morfeusz(const string& filename)
-: fsa(initializeFSA(filename)),
-charsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
-tagset(initializeTagset(filename)),
-caseConverter(initializeCaseConverter()),
-options(createDefaultOptions()) {
-
+void Morfeusz::setAnalyzerFile(const string& filename) {
+    if (this->isAnalyzerFSAFromFile) {
+        delete this->analyzerFSA;
+    }
+    this->analyzerFSA = initializeAnalyzerFSA(filename);
+    this->isAnalyzerFSAFromFile = true;
 }
 
 Morfeusz::~Morfeusz() {
-    //    delete &this->fsa;
-    //    delete &this->charsetConverter;
+    if (this->isAnalyzerFSAFromFile) {
+        delete this->analyzerFSA;
+    }
 }
 
-void Morfeusz::processOneWord(
+void Morfeusz::analyzeOneWord(
         const char*& inputData,
         const char* inputEnd,
         int startNodeNum,
         std::vector<MorphInterpretation>& results) const {
     while (inputData != inputEnd
-            && isEndOfWord(this->charsetConverter->peek(inputData, inputEnd))) {
-        this->charsetConverter->next(inputData, inputEnd);
+            && isEndOfWord(this->env.getCharsetConverter().peek(inputData, inputEnd))) {
+        this->env.getCharsetConverter().next(inputData, inputEnd);
     }
     const char* wordStart = inputData;
     vector<InterpretedChunk> accum;
     FlexionGraph graph;
     const char* currInput = inputData;
-    doProcessOneWord(currInput, inputEnd, accum, graph);
+    doAnalyzeOneWord(currInput, inputEnd, accum, graph);
     if (!graph.empty()) {
-        InterpretedChunksDecoder interpretedChunksDecoder(*tagset, *charsetConverter, *caseConverter);
+        InterpretedChunksDecoder interpretedChunksDecoder(env);
         int srcNode = startNodeNum;
         for (unsigned int i = 0; i < graph.getTheGraph().size(); i++) {
             vector<FlexionGraph::Edge>& edges = graph.getTheGraph()[i];
@@ -136,25 +142,25 @@ void Morfeusz::processOneWord(
     inputData = currInput;
 }
 
-void Morfeusz::doProcessOneWord(
+void Morfeusz::doAnalyzeOneWord(
         const char*& inputData,
         const char* inputEnd,
         vector<InterpretedChunk>& accum,
         FlexionGraph& graph) const {
     bool endOfWord = inputData == inputEnd;
     const char* currInput = inputData;
-    uint32_t codepoint = endOfWord ? 0 : this->charsetConverter->next(currInput, inputEnd);
+    uint32_t codepoint = endOfWord ? 0 : this->env.getCharsetConverter().next(currInput, inputEnd);
     //    UnicodeChunk uchunk(*(this->charsetConverter), *(this->caseConverter));
     vector<uint32_t> originalCodepoints;
     vector<uint32_t> lowercaseCodepoints;
 
-    StateType state = this->fsa->getInitialState();
+    StateType state = this->analyzerFSA->getInitialState();
 
     while (!isEndOfWord(codepoint)) {
-        uint32_t lowerCP = this->caseConverter->toLower(codepoint);
+        uint32_t lowerCP = this->env.getCaseConverter().toLower(codepoint);
         originalCodepoints.push_back(codepoint);
         lowercaseCodepoints.push_back(lowerCP);
-        this->feedState(state, lowerCP);
+        feedState(state, lowerCP, UTF8CharsetConverter());
         if (state.isAccepting()) {
             vector< InterpsGroup > val(state.getValue());
             for (unsigned int i = 0; i < val.size(); i++) {
@@ -162,13 +168,13 @@ void Morfeusz::doProcessOneWord(
                 InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
                 accum.push_back(ic);
                 const char* newCurrInput = currInput;
-                doProcessOneWord(newCurrInput, inputEnd, accum, graph);
+                doAnalyzeOneWord(newCurrInput, inputEnd, accum, graph);
                 accum.pop_back();
             }
         }
-        codepoint = currInput == inputEnd ? 0 : this->charsetConverter->peek(currInput, inputEnd);
+        codepoint = currInput == inputEnd ? 0 : this->env.getCharsetConverter().peek(currInput, inputEnd);
         if (!isEndOfWord(codepoint)) {
-            this->charsetConverter->next(currInput, inputEnd);
+            this->env.getCharsetConverter().next(currInput, inputEnd);
         }
     }
     if (state.isAccepting()) {
@@ -184,28 +190,20 @@ void Morfeusz::doProcessOneWord(
     inputData = currInput;
 }
 
-void Morfeusz::feedState(
-        StateType& state,
-        int codepoint) const {
-    string chars;
-    this->utf8CharsetConverter.append(codepoint, chars);
-    for (unsigned int i = 0; i < chars.length(); i++) {
-        state.proceedToNext(chars[i]);
-    }
-}
-
 void Morfeusz::appendIgnotiumToResults(
         const string& word,
         int startNodeNum,
         std::vector<MorphInterpretation>& results) const {
-    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, *this->tagset, *this->charsetConverter);
+    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, env.getAnalyzerTagset(), env.getCharsetConverter());
     results.push_back(interp);
 }
 
 ResultsIterator Morfeusz::analyze(const string& text) const {
     //    const char* textStart = text.c_str();
     //    const char* textEnd = text.c_str() + text.length();
-    return ResultsIterator(text, *this);
+    vector<MorphInterpretation> res;
+    this->analyze(text, res);
+    return ResultsIterator(res);
 }
 
 void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results) const {
@@ -213,21 +211,28 @@ void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results)
     const char* inputEnd = input + text.length();
     while (input != inputEnd) {
         int startNode = results.empty() ? 0 : results.back().getEndNode();
-        DEBUG("process " + string(input, inputEnd));
-        this->processOneWord(input, inputEnd, startNode, results);
+        this->analyzeOneWord(input, inputEnd, startNode, results);
     }
 }
 
-void Morfeusz::setEncoding(MorfeuszCharset encoding) {
-    this->options.encoding = encoding;
-    this->charsetConverter = getCharsetConverter(encoding);
+ResultsIterator Morfeusz::generate(const string& text) const {
+    //    const char* textStart = text.c_str();
+    //    const char* textEnd = text.c_str() + text.length();
+    vector<MorphInterpretation> res;
+    this->generate(text, res);
+    return ResultsIterator(res);
 }
 
-ResultsIterator::ResultsIterator(const string& text, const Morfeusz& morfeusz)
-: rawInput(text.c_str()),
-morfeusz(morfeusz) {
-    vector<MorphInterpretation> res;
-    morfeusz.analyze(text, res);
+void Morfeusz::generate(const string& text, vector<MorphInterpretation>& results) const {
+    this->generator.generate(text, results);
+}
+
+void Morfeusz::setCharset(MorfeuszCharset charset) {
+    this->options.encoding = charset;
+    this->env.setCharset(charset);
+}
+
+ResultsIterator::ResultsIterator(vector<MorphInterpretation>& res) {
     resultsBuffer.insert(resultsBuffer.begin(), res.begin(), res.end());
 }
 

@@ -29,9 +29,6 @@ class Encoder(object):
     
     def decodeData(self, rawData):
         return NotImplementedError()
-#         print unicode(str(rawData), self.encoding)[:-1]
-#         print unicode(str(rawData), self.encoding)[:-1].split(u'|')
-#         return unicode(str(rawData), self.encoding)[:-1].split(u'|')
 
     def decodeWord(self, rawWord):
         return unicode(str(rawWord).strip('\x00'), self.encoding)
@@ -49,7 +46,8 @@ class Encoder(object):
         res.append(form.cutLength)
         res.extend(self.encodeWord(form.suffixToAdd, lowercase=False))
         res.append(0)
-        res.extend(self._encodeCasePattern(form.casePattern))
+        if withCasePattern:
+            res.extend(self._encodeCasePattern(form.casePattern))
         return res
     
     def _encodeCasePattern(self, casePattern):
@@ -96,17 +94,6 @@ class Encoder(object):
         assert namenum < 256 and namenum >= 0
         return bytearray([namenum])
 
-# class SimpleEncoder(Encoder):
-#     
-#     def __init__(self, encoding='utf8'):
-#         super(SimpleEncoder, self).__init__(encoding)
-#     
-#     def encodeData(self, data):
-#         return bytearray(data, encoding=self.encoding) + bytearray([0])
-#     
-#     def decodeData(self, rawData):
-#         return unicode(str(rawData)[:-1], self.encoding)
-
 class MorphEncoder(Encoder):
     
     def __init__(self, encoding='utf8'):
@@ -133,11 +120,10 @@ class MorphEncoder(Encoder):
 class Encoder4Generator(Encoder):
     
     def __init__(self, encoding='utf8'):
-        super(MorphEncoder, self).__init__(encoding)
+        super(Encoder4Generator, self).__init__(encoding)
     
     def encodeData(self, interpsList):
         res = bytearray()
-#         print interpsList
         firstByte = len(interpsList)
         assert firstByte < 256
         assert firstByte > 0
@@ -148,3 +134,6 @@ class Encoder4Generator(Encoder):
             res.extend(self._encodeTagNum(interp.tagnum))
             res.extend(self._encodeNameNum(interp.namenum))
         return res
+#     
+#     def decodeData(self, data):
+#         

@@ -480,10 +480,9 @@ class PolimorfConverter4Generator(object):
             line = line.decode(self.inputEncoding).strip(u'\n')
             if line:
     #             print line
-                orth, base, tagnum, namenum, typenum = line.split(u' ')
+                orth, base, tagnum, namenum = line.split(u' ')
                 tagnum = int(tagnum)
                 namenum = int(namenum)
-                typenum = int(typenum)
                 yield (base, Interpretation4Generator(orth, base, tagnum, namenum))
     
     def convert(self, inputLines):

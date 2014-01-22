@@ -15,6 +15,7 @@
 class Tagset {
 public:
     explicit Tagset(const unsigned char* fsaData);
+//    Tagset(const Tagset& tagset);
     const std::string getTag(const int tagNum, const CharsetConverter& charsetConverter) const;
     const std::string getName(const int nameNum, const CharsetConverter& charsetConverter) const;
 private:

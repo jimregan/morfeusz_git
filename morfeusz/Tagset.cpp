@@ -36,6 +36,11 @@ Tagset::Tagset(const unsigned char* fsaData) {
     readTags(currPtr, this->names);
 }
 
+//Tagset::Tagset(const Tagset& tagset)
+//: tags(tagset.tags), names(tagset.names) {
+//    
+//}
+
 const string Tagset::getTag(const int tagNum, const CharsetConverter& charsetConverter) const {
     return charsetConverter.fromUTF8(this->tags.at(tagNum));
 }

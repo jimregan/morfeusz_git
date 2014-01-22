@@ -13,18 +13,13 @@
 #include "InterpretedChunk.hpp"
 #include "EncodedInterpretation.hpp"
 #include "charset/CaseConverter.hpp"
+#include "Environment.hpp"
 
 class InterpretedChunksDecoder {
 public:
 
-    InterpretedChunksDecoder(
-            const Tagset& tagset,
-            const CharsetConverter& charsetConverter,
-            const CaseConverter& caseConverter)
-    : tagset(tagset),
-    charsetConverter(charsetConverter),
-    utf8CharsetConverter(),
-    caseConverter(caseConverter) {
+    InterpretedChunksDecoder(const Environment& env)
+    : env(env) {
 
     }
 
@@ -34,7 +29,7 @@ public:
             unsigned int endNode,
             const InterpretedChunk& interpretedChunk,
             OutputIterator out) {
-        string orth = charsetConverter.toString(interpretedChunk.originalCodepoints);
+        string orth = env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
         for (unsigned int i = 0; i < interpretedChunk.interpsGroup.interps.size(); i++) {
             const EncodedInterpretation& ei = interpretedChunk.interpsGroup.interps[i];
             string lemma = convertLemma(
@@ -45,8 +40,8 @@ public:
                     orth, lemma,
                     ei.tag,
                     ei.nameClassifier,
-                    tagset,
-                    charsetConverter);
+                    env.getAnalyzerTagset(),
+                    env.getCharsetConverter());
             ++out;
         }
         return out;
@@ -61,28 +56,20 @@ private:
         for (unsigned int i = 0; i < orth.size() - lemma.suffixToCut; i++) {
             uint32_t cp = 
                     (i < lemma.casePattern.size() && lemma.casePattern[i])
-                    ? this->caseConverter.toTitle(orth[i])
+                    ? env.getCaseConverter().toTitle(orth[i])
                     : orth[i];
-            charsetConverter.append(cp, res);
+            env.getCharsetConverter().append(cp, res);
         }
         const char* suffixPtr = lemma.suffixToAdd.c_str();
         const char* suffixEnd = suffixPtr + lemma.suffixToAdd.length();
         while (suffixPtr != suffixEnd) {
-            uint32_t cp = utf8CharsetConverter.next(suffixPtr, suffixEnd);
-            charsetConverter.append(cp, res);
+            uint32_t cp = UTF8CharsetConverter().next(suffixPtr, suffixEnd);
+            env.getCharsetConverter().append(cp, res);
         }
-        //        string res(orth);
-        //        res.erase(
-        //                res.end() - lemma.suffixToCut,
-        //                res.end());
-        //        res.append(lemma.suffixToAdd);
         return res;
     }
 
-    const Tagset& tagset;
-    const CharsetConverter& charsetConverter;
-    const UTF8CharsetConverter utf8CharsetConverter;
-    const CaseConverter& caseConverter;
+    const Environment& env;
 };
 
 #endif	/* INTERPSGROUPDECODER_HPP */

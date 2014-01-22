@@ -22,14 +22,17 @@ class Serializer(object):
     def getVersion(self):
         return 9
     
-    def serialize2CppFile(self, fname):
+    def serialize2CppFile(self, fname, generator):
         res = []
 #         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
         res.append('\n')
         res.append('#include "%s"' % self.headerFilename)
         res.append('\n')
         res.append('\n')
-        res.append('extern const unsigned char DEFAULT_FSA[] = {')
+        if generator:
+            res.append('extern const unsigned char DEFAULT_SYNTH_FSA[] = {')
+        else:
+            res.append('extern const unsigned char DEFAULT_FSA[] = {')
         res.append('\n')
         for byte in self.fsa2bytearray():
             res.append(hex(byte));

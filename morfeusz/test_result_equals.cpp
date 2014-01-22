@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     Morfeusz morfeusz;
     if (argc == 4) {
         MorfeuszCharset encoding = getEncoding(argv[3]);
-        morfeusz.setEncoding(encoding);
+        morfeusz.setCharset(encoding);
     }
     string line;
     while (getline(in, line)) {

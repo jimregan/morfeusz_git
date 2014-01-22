@@ -5,25 +5,29 @@
  * Created on 20 styczeń 2014, 17:14
  */
 
-#ifndef GENERATORDESERIALIZER_HPP
-#define	GENERATORDESERIALIZER_HPP
+#ifndef SYNTHDESERIALIZER_HPP
+#define	SYNTHDESERIALIZER_HPP
 
 #include <string>
 #include <vector>
 #include "fsa/fsa.hpp"
-#include "MorphInterpretation.hpp"
+#include "Tagset.hpp"
+#include "EncodedGeneratorInterpretation.hpp"
+#include "Environment.hpp"
 
-class GeneratorDeserializer: public Deserializer< std::vector<MorphInterpretation> > {
+class GeneratorDeserializer: public Deserializer< std::vector<EncodedGeneratorInterpretation> > {
 public:
-    GeneratorDeserializer(const std::string& lemma);
-    void setCurrentLemma(const std::string& lemma);
+    explicit GeneratorDeserializer(const Environment& env);
     long deserialize(
         const unsigned char* ptr, 
-        std::vector<MorphInterpretation>& interps) const;
+        std::vector<EncodedGeneratorInterpretation>& interps) const;
     virtual ~GeneratorDeserializer();
 private:
-    const std::string* lemma;
+    const Environment& env;
+    
+    void deserializeInterp(const unsigned char*& ptr, EncodedGeneratorInterpretation& interp) const;
+    void deserializeOrth(const unsigned char*& ptr, EncodedOrth& orth) const;
 };
 
-#endif	/* GENERATORDESERIALIZER_HPP */
+#endif	/* SYNTHDESERIALIZER_HPP */
 

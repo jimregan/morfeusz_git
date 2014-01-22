@@ -118,10 +118,10 @@ void CompressedFSA1<T>::doProceedToNextByList(
                 currPtr += *currPtr + 1;
                 break;
             case 2:
-                currPtr += ntohs(*((uint16_t*) currPtr)) + 2;
+                currPtr += ntohs(*((const uint16_t*) currPtr)) + 2;
                 break;
             case 3:
-                currPtr += (((unsigned int) ntohs(*((uint16_t*) currPtr))) << 8) + currPtr[2] + 3;
+                currPtr += (((const unsigned int) ntohs(*((const uint16_t*) currPtr))) << 8) + currPtr[2] + 3;
                 break;
         }
 //                                cerr << "FOUND " << c << " " << currPtr - this->startPtr << endl;

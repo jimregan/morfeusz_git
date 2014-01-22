@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="build"
+                   displayName="build"
+                   projectFiles="true"
+                   root="build">
+      <itemPath>build/default_fsa.cpp</itemPath>
+      <itemPath>build/default_synth_fsa.cpp</itemPath>
+    </logicalFolder>
     <logicalFolder name="f1" displayName="input" projectFiles="true">
     </logicalFolder>
     <df root="morfeusz" name="0">
@@ -19,21 +26,21 @@
         <in>test_recognize.cpp</in>
         <in>test_speed.cpp</in>
       </df>
-      <df name="generator">
-        <in>EncodedGeneratorInterpretation.hpp</in>
-        <in>GeneratorDeserializer.cpp</in>
-        <in>GeneratorDeserializer.hpp</in>
-      </df>
+      <in>Environment.cpp</in>
       <in>FlexionGraph.cpp</in>
+      <in>Generator.cpp</in>
+      <in>GeneratorDeserializer.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
-      <in>Toolchain-Linux-amd64.cmake</in>
       <in>const.cpp</in>
-      <in>main.cpp</in>
+      <in>exceptions.hpp</in>
+      <in>morfeusz_analyzer.cpp</in>
+      <in>morfeusz_generator.cpp</in>
       <in>test_recognize_dict.cpp</in>
       <in>test_result_equals.cpp</in>
+      <in>test_synth_dict.cpp</in>
     </df>
     <logicalFolder name="morfeusz"
                    displayName="morfeusz"
@@ -76,9 +83,17 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/morfeusz/test_result_equals</executablePath>
+          <executablePath>build/morfeusz/morfeusz_generator</executablePath>
         </makeTool>
       </makefileType>
+      <item path="build/default_fsa.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="build/default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
       <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
         </ccTool>
@@ -94,8 +109,13 @@
             <pElem>build/morfeusz/java</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
+            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>jmorfeusz_EXPORTS</Elem>
           </preprocessorList>
+          <undefinedList>
+            <Elem>__NO_INLINE__</Elem>
+          </undefinedList>
         </ccTool>
       </item>
       <item path="build/morfeusz/morfeuszPYTHON_wrap.cxx"
@@ -109,8 +129,13 @@
             <pElem>build/morfeusz/python</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
+            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>_morfeusz_EXPORTS</Elem>
           </preprocessorList>
+          <undefinedList>
+            <Elem>__NO_INLINE__</Elem>
+          </undefinedList>
         </ccTool>
       </item>
       <item path="build/morfeusz/python/swigPYTHON.cpp"
@@ -124,18 +149,16 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </folder>
@@ -158,28 +181,42 @@
           </undefinedList>
         </ccTool>
       </folder>
+      <folder path="build">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>__PIC__=2</Elem>
+            <Elem>__pic__=2</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+          <undefinedList>
+            <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
+          </undefinedList>
+        </ccTool>
+      </folder>
       <folder path="morfeusz">
         <ccTool>
           <incDir>
             <pElem>build</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </folder>
       <folder path="morfeusz/java">
         <ccTool>
           <incDir>
-            <pElem>/usr/lib/jvm/default-java/include</pElem>
             <pElem>morfeusz</pElem>
+            <pElem>/usr/lib/jvm/default-java/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>jmorfeusz_EXPORTS</Elem>
@@ -193,26 +230,80 @@
             <pElem>morfeusz</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
+            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>pymorfeusz_EXPORTS</Elem>
           </preprocessorList>
+          <undefinedList>
+            <Elem>__NO_INLINE__</Elem>
+          </undefinedList>
         </ccTool>
       </folder>
-      <item path="morfeusz/FlexionGraph.cpp" ex="false" tool="1" flavor2="4">
+      <item path="morfeusz/Environment.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
+          </undefinedList>
+        </ccTool>
+      </item>
+      <item path="morfeusz/FlexionGraph.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>__PIC__=2</Elem>
+            <Elem>__pic__=2</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+          <undefinedList>
+            <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
+          </undefinedList>
+        </ccTool>
+      </item>
+      <item path="morfeusz/Generator.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>__PIC__=2</Elem>
+            <Elem>__pic__=2</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+          <undefinedList>
+            <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
+          </undefinedList>
+        </ccTool>
+      </item>
+      <item path="morfeusz/GeneratorDeserializer.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>__PIC__=2</Elem>
+            <Elem>__pic__=2</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+          <undefinedList>
+            <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -220,18 +311,16 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -239,18 +328,16 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -258,18 +345,16 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -277,25 +362,18 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
-      </item>
-      <item path="morfeusz/Toolchain-Linux-amd64.cmake"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="morfeusz/charset/CaseConverter.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
@@ -323,18 +401,16 @@
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -342,22 +418,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="morfeusz/exceptions.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="morfeusz/fsa/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -385,64 +461,44 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="morfeusz/generator/EncodedGeneratorInterpretation.hpp"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="morfeusz/generator/GeneratorDeserializer.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="morfeusz/generator/GeneratorDeserializer.hpp"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="4">
+      <item path="morfeusz/morfeusz_analyzer.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
-          </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
+        </ccTool>
+      </item>
+      <item path="morfeusz/morfeusz_generator.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="morfeusz/test_recognize_dict.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
-          </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
         </ccTool>
       </item>
       <item path="morfeusz/test_result_equals.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
             <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>_OPTIMIZE__=1</Elem>
-          </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
+        </ccTool>
+      </item>
+      <item path="morfeusz/test_synth_dict.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
         </ccTool>
       </item>
     </conf>

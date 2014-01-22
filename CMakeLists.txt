@@ -29,6 +29,7 @@ set (PROJECT_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morf
 
 # INPUT_DICTIONARY_CPP
 set (INPUT_DICTIONARY_CPP "${CMAKE_CURRENT_BINARY_DIR}/default_fsa.cpp")
+set (INPUT_SYNTH_DICTIONARY_CPP "${CMAKE_CURRENT_BINARY_DIR}/default_synth_fsa.cpp")
 if ("${INPUT_DICTIONARY}" STREQUAL "")
    if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
     set (INPUT_DICTIONARY ${PROJECT_SOURCE_DIR}/input/empty.txt)
@@ -52,7 +53,10 @@ endif ()
 ### Compilation and linking flags
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align -O2")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
+    if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+    endif ()
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -O2")
     set (CMAKE_SHARED_LIBRARY_PREFIX "")
@@ -107,7 +111,8 @@ add_subdirectory (fsabuilder)
 ########## add tests ##########
 
 macro (test_build_and_recognize fname method)
-    add_test (TestBuild-${method}-${fname} python fsabuilder/buildfsa.py --analyzer -i testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=${method})
+    add_test (TestBuild-${method}-${fname} python fsabuilder/buildfsa.py --analyzer -i testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --serialization-method=${method})
+    add_test (TestBuild4Synth-${method}-${fname} python fsabuilder/buildfsa.py --generator -i testfiles/${fname} -o /tmp/test-synth-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --serialization-method=${method})
     add_test (TestRecognize-${method}-${fname} morfeusz/test_recognize_dict /tmp/test-${method}-${fname}.fsa testfiles/${fname})
     # add_test (TestNOTRecognize-${method}-${fname} fsa/test_not_recognize /tmp/test-${method}-${fname}.fsa testfiles/out_of_dict)
     # add_test (TestSpeed-${method}-${fname} fsa/test_speed /tmp/test-${method}-${fname}.fsa testfiles/speed_test_data)

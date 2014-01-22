@@ -64,7 +64,7 @@ FSA<T>* FSA<T>::getFSA(const std::string& filename, const Deserializer<T>& deser
 template <class T>
 FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserializer) {
     
-    uint32_t magicNumber = ntohl(*((uint32_t*) ptr));
+    uint32_t magicNumber = ntohl(*((const uint32_t*) ptr));
     if (magicNumber != MAGIC_NUMBER) {
         throw FSAException("Invalid magic number");
     }

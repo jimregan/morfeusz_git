@@ -162,7 +162,7 @@ def buildGeneratorFromPoliMorf(inputFile, tagsetFile):
     encoder = encode.Encoder4Generator()
     tagset = common.Tagset(tagsetFile)
     fsa = FSA(encoder, tagset)
-    inputData = _readPolimorfInput4Analyzer(inputFile, tagset, encoder)
+    inputData = _readPolimorfInput4Generator(inputFile, tagset, encoder)
     for word, data in inputData:
         fsa.addEntry(word, data)
     fsa.close()
@@ -192,7 +192,7 @@ def main(opts):
                   }[opts.serializationMethod](fsa)
     
     if opts.cpp:
-        serializer.serialize2CppFile(opts.outputFile)
+        serializer.serialize2CppFile(opts.outputFile, generator=opts.generator)
     else:
         serializer.serialize2BinaryFile(opts.outputFile)
 #     {

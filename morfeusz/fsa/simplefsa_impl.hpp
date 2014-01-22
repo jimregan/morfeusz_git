@@ -10,6 +10,8 @@
 
 #include <iostream>
 
+#include "fsa.hpp"
+
 //#pragma pack(push, 1)  /* push current alignment to stack */
 
 struct StateData {

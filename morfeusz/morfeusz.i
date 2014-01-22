@@ -12,6 +12,7 @@
 %{
 #include "Morfeusz.hpp"
 #include "MorphInterpretation.hpp"
+#include "exceptions.hpp"
 #include "const.hpp"
 %}
 
@@ -49,6 +50,7 @@
 %include "Morfeusz.hpp"
 %include "MorphInterpretation.hpp"
 %include "const.hpp"
+%include "exceptions.hpp"
 
 // instantiate vector of interpretations
 namespace std {

@@ -54,7 +54,6 @@ class Interpretation4Generator(object):
         self.orth = EncodedForm(base, orth)
         self.tagnum = tagnum
         self.namenum = namenum
-        logging.warn(self)
     
     def getSortKey(self):
         return (
@@ -74,7 +73,10 @@ class Interpretation4Generator(object):
         return hash(self.getSortKey())
     
     def __unicode__(self):
-        return u'%s %d %s %d %d' % (self.lemma, self.orth.cutLength, self.orth.suffixToAdd, self.tagnum, self.namenum)
+        return u'%s,(%d %s),%d,%d' % (self.lemma, self.orth.cutLength, self.orth.suffixToAdd, self.tagnum, self.namenum)
+    
+    def __repr__(self):
+        return unicode(self)
 
 class Tagset(object):
     
@@ -86,8 +88,8 @@ class Tagset(object):
         self.tag2tagnum = {}
         self.name2namenum = {}
         self._doInit(filename, encoding)
-        print self.tag2tagnum
-        print self.name2namenum
+#         print self.tag2tagnum
+#         print self.name2namenum
     
     def _doInit(self, filename, encoding):
         addingTo = None
