@@ -14,7 +14,7 @@ class SegmentsFSAState(object):
 
 class SegmentsFSA(object):
     
-    def __init__(self):
+    def __init__(self, key2Def={}):
         self.initialState = SegmentsFSAState()
     
     def addSegmentRule(self, segmentRule):
@@ -23,3 +23,5 @@ class SegmentsFSA(object):
     def serialize(self):
         res = bytearray()
         return res
+    
+    

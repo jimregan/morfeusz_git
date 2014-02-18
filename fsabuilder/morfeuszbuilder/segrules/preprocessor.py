@@ -7,6 +7,7 @@ import re
 from pyparsing import *
 
 identifier = Word(alphas, bodyChars=alphanums+'_')
+token = Word(alphas, bodyChars=alphanums+'_+>')
 define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + identifier + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
 ifdef = Keyword('#ifdef').suppress() + identifier + LineEnd() + StringEnd()
 endif = Keyword('#endif').suppress() + LineEnd() + StringEnd()
@@ -64,7 +65,7 @@ def _processLine(line, defines):
         defineInstance = Forward()
         localId = identifier.copy()
         
-        rule << OneOrMore(localId ^ defineInstance ^ Word('*|+?'))
+        rule << OneOrMore(defineInstance ^ localId ^ Word('*|+?>') ^ (Literal('(') + rule + Literal(')')))
         defineInstance << localId + Suppress('(') + rule + Suppress(')')
         
         rule.setParseAction(lambda s, l, t: ' '.join(t))
@@ -77,25 +78,25 @@ def _processLine(line, defines):
 def preprocess(inputLines, defs):
     defines = {}
     ifdefsStack = []
-    for lineNum, line in enumerate(inputLines, start=1):
+    for lineNum, line in inputLines:
         if line.startswith('#define'):
-            try:
-                parsedDefine = list(define.parseString(line))
-                if len(parsedDefine) == 2:
-                    name, val = parsedDefine
-                    defines[name] = NonArgDefine(name, val)
-                else:
-                    name, arg, val = parsedDefine
-                    localDefines = defines.copy()
-                    localDefines[arg] = NonArgDefine(arg, arg)
-                    val = _processLine(val, localDefines)
-                    defines[name] = ArgDefine(name, arg, val)
-            except:
-                pass
+            parsedDefine = list(define.parseString(line))
+            if len(parsedDefine) == 2:
+                name, val = parsedDefine
+                defines[name] = NonArgDefine(name, val)
+            else:
+                name, arg, val = parsedDefine
+                localDefines = defines.copy()
+                localDefines[arg] = NonArgDefine(arg, arg)
+                val = _processLine(val, localDefines)
+                defines[name] = ArgDefine(name, arg, val)
         elif line.startswith('#ifdef'):
             name = ifdef.parseString(line)[0]
             ifdefsStack.append(name)
         elif line.startswith('#endif'):
             ifdefsStack.pop()
+        elif line.startswith('#'):
+            yield lineNum, line
         elif len(ifdefsStack) == 0 or all(map(lambda name: name in defs, ifdefsStack)):
-            yield _processLine(line, defines)
+            yield lineNum, _processLine(line, defines)
+        
