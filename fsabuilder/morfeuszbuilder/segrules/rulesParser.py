@@ -1,22 +1,15 @@
 
 from pyparsing import *
+ParserElement.enablePackrat()
 from morfeuszbuilder.tagset import segtypes
-from morfeuszbuilder.utils import configFile
-from morfeuszbuilder.segrules import preprocessor
+from morfeuszbuilder.utils import configFile, exceptions
+from morfeuszbuilder.segrules import preprocessor, rules
 import codecs
 import re
 
 import itertools
 import logging
-import segsfsa
-
-# header = Suppress('[') + Word(alphas, bodyChars=alphanums+'_') + Suppress(']')
-# define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + identifier + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
-# ifdef = Keyword('#ifdef').suppress() + identifier + LineEnd() + StringEnd()
-# endif = Keyword('#endif').suppress() + LineEnd() + StringEnd()
-
-def doprint(toks):
-    print toks
+from morfeuszbuilder.segrules import rulesNFA
 
 class RulesParser(object):
     
@@ -31,7 +24,7 @@ class RulesParser(object):
                 key, defs = lineToParse.parseString(line)
                 res[key] = tuple(defs)
             except Exception as ex:
-                raise configFile.ConfigFileException(segtypesConfigFile.filename, lineNum, u'Error in [options] section: %s' % str(ex))
+                raise exceptions.ConfigFileException(segtypesConfigFile.filename, lineNum, u'Error in [options] section: %s' % str(ex))
         return res
     
     def parse(self, filename):
@@ -48,18 +41,24 @@ class RulesParser(object):
         
         for defs in itertools.product(*key2Defs.values()):
             key2Def = dict([(def2Key[define], define) for define in defs])
-            fsa = segsfsa.SegmentsFSA(key2Def)
+            nfa = rulesNFA.RulesNFA(key2Def)
             combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection('combinations')
             combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs))
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper):
-                fsa.addSegmentRule(rule)
-            res.append(fsa)
+                rule.addToNFA(nfa)
+            res.append(nfa)
         return res
     
     def _doParse(self, combinationEnumeratedLines, segtypesHelper):
         for lineNum, line in combinationEnumeratedLines:
             if not line.startswith('#'):
                 yield self._doParseOneLine(lineNum, line, segtypesHelper)
+    
+    def _createNewTagRule(self, segtype, lineNum, line, segtypesHelper):
+        if not segtypesHelper.hasSegtype(segtype):
+            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid segment type: %s' % (line, segtype))
+        else:
+            return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype))
     
     def _doParseOneLine(self, lineNum, line, segtypesHelper):
         rule = Forward()
@@ -74,9 +73,21 @@ class RulesParser(object):
         complexRule = unaryRule ^ oneOfRule
         concatRule = OneOrMore(complexRule)
         rule << concatRule
+        
+        tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], lineNum, line, segtypesHelper))
+        ignoreOrthRule.setParseAction(lambda string, loc, toks: rules.IgnoreOrthRule(toks[0]))
+#         parenRule.setParseAction(lambda string, loc, toks: toks[0])
+        zeroOrMoreRule.setParseAction(lambda string, loc, toks: rules.ZeroOrMoreRule(toks[0]))
+        oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0])]))
+        oneOfRule.setParseAction(lambda string, loc, toks: rules.OrRule(toks))
+        concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(toks))
+        
+        
 #         rule << tagRule ^ ignoreOrthRule ^ zeroOrMoreRule ^ oneOrMoreRule ^ orRule ^ concatRule ^ parenRule
         
 #         tagRule.setParseAction(lambda s,l,toks: doprint(toks))
 #         print lineNum, line
-        parsedLine = rule.parseString(line, parseAll=True)
+        parsedRule = rule.parseString(line, parseAll=True)[0]
+        print parsedRule
+        return parsedRule
 #         print parsedLine

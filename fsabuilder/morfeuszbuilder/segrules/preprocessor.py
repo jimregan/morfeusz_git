@@ -34,11 +34,6 @@ class ArgDefine(object):
     def __str__(self):
         return '%s(%s) %s' % (self.name, self.arg, self.val)
 
-class PreprocessorException(Exception):
-    
-    def __init__(self, msg, line):
-        pass
-
 def _tryToSubstituteArgDefine(s, t, defines):
     defineName = t[0]
     substituteValue = t[1]

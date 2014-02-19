@@ -6,6 +6,7 @@ Created on 18 lut 2014
 
 import re
 import codecs
+import exceptions
 
 def getHeaderValue(line, lineNum):
     m = re.match(ur'\s*\[(.*?)\]\s*(\#.*)?', line)
@@ -25,9 +26,9 @@ class ConfigFile(object):
     
     def _addSectionStart(self, sectionName, lineNum):
         if not sectionName in self.sectionNames:
-            raise ConfigFileException(self.filename, lineNum, 'Invalid section: %s' % sectionName)
+            raise exceptions.ConfigFileException(self.filename, lineNum, 'Invalid section: %s' % sectionName)
         if sectionName in self.section2Lines:
-            raise ConfigFileException(self.filename, lineNum, 'Duplicate section: %s' % sectionName)
+            raise exceptions.ConfigFileException(self.filename, lineNum, 'Duplicate section: %s' % sectionName)
         self.section2Lines[sectionName] = []
         self.currSection = sectionName
     
@@ -35,7 +36,7 @@ class ConfigFile(object):
         line = line.strip()
         if line:
             if self.currSection is None and not line.startswith('#'):
-                raise ConfigFileException(self.filename, lineNum, 'Text outside of any section')
+                raise exceptions.ConfigFileException(self.filename, lineNum, 'Text outside of any section')
             self.section2Lines[self.currSection].append((lineNum, line))
     
     def _getHeaderValue(self, line, lineNum):
@@ -56,13 +57,3 @@ class ConfigFile(object):
                     self._addSectionStart(header, lineNum)
                 else:
                     self._addLine(line, lineNum)
-
-class ConfigFileException(Exception):
-    
-    def __init__(self, filename, lineNum, msg):
-        self.filename = filename
-        self.lineNum = lineNum
-        self.msg = msg
-    
-    def __str__(self):
-        return u'%s:%d - %s' % (self.filename, self.lineNum, self.msg)

@@ -9,7 +9,7 @@ class State(object):
     A state in an automaton
     '''
 
-    def __init__(self):
+    def __init__(self, additionalData=None):
         self.transitionsMap = {}
         self.freq = 0
         self.encodedData = None
@@ -17,6 +17,7 @@ class State(object):
         self.offset = None
         self.label2Freq = {}
         self.serializeAsArray = False
+        self.additionalData = additionalData
     
     @property
     def transitionsNum(self):

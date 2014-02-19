@@ -3,7 +3,6 @@ aggl=permissive strict isolated
 praet=split composite
 
 [combinations]
-(dupa|dupa)
 #define wsz_interp (interp|kropka|dywiz)*
 
 #define moze_interp(segmenty) wsz_interp segmenty wsz_interp

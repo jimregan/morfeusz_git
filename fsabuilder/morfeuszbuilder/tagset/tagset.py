@@ -12,10 +12,11 @@ class Tagset(object):
     NAMES = 2
     SEP = '\t'
     
-    def __init__(self, filename, encoding='utf8'):
+    def __init__(self, filename=None, encoding='utf8'):
         self.tag2tagnum = {}
         self.name2namenum = {}
-        self._doInit(filename, encoding)
+        if filename:
+            self._doInit(filename, encoding)
         self.tagnum2tag = dict(map(lambda (k, v): (v, k), self.tag2tagnum.iteritems()))
     
     def _doInit(self, filename, encoding):
