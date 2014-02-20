@@ -8,6 +8,8 @@ class State(object):
     '''
     A state in an automaton
     '''
+    
+    statesCounter = 0
 
     def __init__(self, additionalData=None):
         self.transitionsMap = {}
@@ -18,6 +20,9 @@ class State(object):
         self.label2Freq = {}
         self.serializeAsArray = False
         self.additionalData = additionalData
+        
+        self.idx = State.statesCounter
+        State.statesCounter += 1
     
     @property
     def transitionsNum(self):
@@ -51,10 +56,16 @@ class State(object):
         else:
             return self.encodedData
     
-    def dfs(self, alreadyVisited=set(), sortKey=lambda (_, state): -state.freq):
+    def dfs(self, alreadyVisited, sortKey=lambda (_, state): -state.freq):
         if not self in alreadyVisited:
+            alreadyVisited.add(self)
             for _, state in sorted(self.transitionsMap.iteritems(), key=sortKey):
                 for state1 in state.dfs(alreadyVisited):
                     yield state1
-            alreadyVisited.add(self)
             yield self
+    
+    def debug(self):
+        print '----------------'
+        print 'STATE:', self.idx
+        for label, s in self.transitionsMap.iteritems():
+            print label, '-->', s.idx

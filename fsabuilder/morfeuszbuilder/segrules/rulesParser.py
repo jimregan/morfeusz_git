@@ -3,7 +3,7 @@ from pyparsing import *
 ParserElement.enablePackrat()
 from morfeuszbuilder.tagset import segtypes
 from morfeuszbuilder.utils import configFile, exceptions
-from morfeuszbuilder.segrules import preprocessor, rules
+from morfeuszbuilder.segrules import preprocessor, rules, rulesManager
 import codecs
 import re
 
@@ -28,9 +28,9 @@ class RulesParser(object):
         return res
     
     def parse(self, filename):
-        res = []
+        res = rulesManager.RulesManager()
         
-        segtypesConfigFile = configFile.ConfigFile(filename, ['options', 'combinations', 'tags', 'lexemes'])
+        segtypesConfigFile = configFile.ConfigFile(filename, ['options', 'combinations', 'tags', 'lexemes', 'segment types'])
         key2Defs = self._getKey2Defs(segtypesConfigFile)
         segtypesHelper = segtypes.Segtypes(self.tagset, segtypesConfigFile)
         
@@ -39,14 +39,18 @@ class RulesParser(object):
             for define in defs:
                 def2Key[define] = key
         
+        firstNFA = None
         for defs in itertools.product(*key2Defs.values()):
             key2Def = dict([(def2Key[define], define) for define in defs])
-            nfa = rulesNFA.RulesNFA(key2Def)
+            nfa = rulesNFA.RulesNFA()
+            if not firstNFA:
+                firstNFA = nfa
             combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection('combinations')
             combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs))
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper):
                 rule.addToNFA(nfa)
-            res.append(nfa)
+            dfa = nfa.convertToDFA()
+            res.addDFA4Options(key2Def, dfa)
         return res
     
     def _doParse(self, combinationEnumeratedLines, segtypesHelper):
@@ -58,14 +62,14 @@ class RulesParser(object):
         if not segtypesHelper.hasSegtype(segtype):
             raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid segment type: %s' % (line, segtype))
         else:
+#             return rules.TagRule(segtype)
             return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype))
     
     def _doParseOneLine(self, lineNum, line, segtypesHelper):
         rule = Forward()
-        tagRule = Word(alphanums+'_')
-        ignoreOrthRule = tagRule + Suppress('>')
+        tagRule = Word(alphanums+'_>')
         parenRule = Suppress('(') + rule + Suppress(')')
-        atomicRule = tagRule ^ ignoreOrthRule ^ parenRule
+        atomicRule = tagRule ^ parenRule
         zeroOrMoreRule = atomicRule + Suppress('*')
         oneOrMoreRule = atomicRule + Suppress('+')
         unaryRule = atomicRule ^ zeroOrMoreRule ^ oneOrMoreRule
@@ -75,19 +79,10 @@ class RulesParser(object):
         rule << concatRule
         
         tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], lineNum, line, segtypesHelper))
-        ignoreOrthRule.setParseAction(lambda string, loc, toks: rules.IgnoreOrthRule(toks[0]))
 #         parenRule.setParseAction(lambda string, loc, toks: toks[0])
         zeroOrMoreRule.setParseAction(lambda string, loc, toks: rules.ZeroOrMoreRule(toks[0]))
         oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0])]))
         oneOfRule.setParseAction(lambda string, loc, toks: rules.OrRule(toks))
         concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(toks))
-        
-        
-#         rule << tagRule ^ ignoreOrthRule ^ zeroOrMoreRule ^ oneOrMoreRule ^ orRule ^ concatRule ^ parenRule
-        
-#         tagRule.setParseAction(lambda s,l,toks: doprint(toks))
-#         print lineNum, line
         parsedRule = rule.parseString(line, parseAll=True)[0]
-        print parsedRule
         return parsedRule
-#         print parsedLine

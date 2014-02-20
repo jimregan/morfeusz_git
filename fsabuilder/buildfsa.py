@@ -10,9 +10,10 @@ import logging
 import codecs
 from morfeuszbuilder.fsa import encode
 from morfeuszbuilder.fsa import convertinput
-from morfeuszbuilder.fsa import common
 from morfeuszbuilder.fsa.fsa import FSA
 from morfeuszbuilder.fsa.serializer import VLengthSerializer1, VLengthSerializer2, SimpleSerializer
+from morfeuszbuilder.tagset.tagset import Tagset
+from morfeuszbuilder.segrules import rulesParser
 from optparse import OptionParser
 
 # class InputFormat():
@@ -50,6 +51,10 @@ def _parseOptions():
                         dest='tagsetFile',
                         metavar='FILE',
                         help='path to the file with tagset')
+    parser.add_option('--segments-file',
+                        dest='segmentsFile',
+                        metavar='FILE',
+                        help='path to the file with segment rules')
     parser.add_option('-o', '--output-file',
                         dest='outputFile',
                         metavar='FILE',
@@ -107,6 +112,8 @@ def _parseOptions():
     _checkOption(opts.serializationMethod, parser, "Serialization method file is missing")
     _checkExactlyOneOptionSet([opts.analyzer, opts.generator], 
                               parser, 'Must set exactly one FSA type: --analyzer or --generator')
+    if opts.analyzer:
+        _checkOption(opts.segmentsFile, parser, "Segment rules file is missing")
     
     if not opts.serializationMethod.upper() in [SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2]:
         print >> sys.stderr, '--serialization-method must be one of ('+str([SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2])+')'
@@ -147,9 +154,8 @@ def _printStats(fsa):
     logging.info('sink states num: '+str(sinkNum))
     logging.info('array states num: '+str(arrayNum))
 
-def buildAnalyzerFromPoliMorf(inputFile, tagsetFile):
+def buildAnalyzerFromPoliMorf(inputFile, tagset):
     encoder = encode.MorphEncoder()
-    tagset = common.Tagset(tagsetFile)
     fsa = FSA(encoder, tagset)
     inputData = _readPolimorfInput4Analyzer(inputFile, tagset, encoder)
     for word, data in inputData:
@@ -160,7 +166,7 @@ def buildAnalyzerFromPoliMorf(inputFile, tagsetFile):
 
 def buildGeneratorFromPoliMorf(inputFile, tagsetFile):
     encoder = encode.Encoder4Generator()
-    tagset = common.Tagset(tagsetFile)
+    tagset = Tagset(tagsetFile)
     fsa = FSA(encoder, tagset)
     inputData = _readPolimorfInput4Generator(inputFile, tagset, encoder)
     for word, data in inputData:
@@ -175,10 +181,15 @@ def main(opts):
     else:
         logging.basicConfig(level=logging.INFO)
     
+    tagset = Tagset(opts.tagsetFile)
+    
     if opts.analyzer:
-        fsa = buildAnalyzerFromPoliMorf(opts.inputFile, opts.tagsetFile)
+        fsa = buildAnalyzerFromPoliMorf(opts.inputFile, tagset)
+        segmentRulesManager = rulesParser.RulesParser(tagset).parse(opts.segmentsFile)
+        additionalData = segmentRulesManager.serialize()
     else:
-        fsa = buildGeneratorFromPoliMorf(opts.inputFile, opts.tagsetFile)
+        fsa = buildGeneratorFromPoliMorf(opts.inputFile, tagset)
+        additionalData = bytearray()
     
     if opts.trainFile:
         logging.info('training with '+opts.trainFile+' ...')

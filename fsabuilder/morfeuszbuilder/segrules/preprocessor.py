@@ -6,8 +6,7 @@ Created on 23 sty 2014
 import re
 from pyparsing import *
 
-identifier = Word(alphas, bodyChars=alphanums+'_')
-token = Word(alphas, bodyChars=alphanums+'_+>')
+identifier = Word(alphas, bodyChars=alphanums+'_>*+')
 define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + identifier + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
 ifdef = Keyword('#ifdef').suppress() + identifier + LineEnd() + StringEnd()
 endif = Keyword('#endif').suppress() + LineEnd() + StringEnd()

@@ -45,16 +45,15 @@ class Serializer(object):
     
     def serialize2BinaryFile(self, fname):
         with open(fname, 'wb') as f:
-            f.write(self.fsa2bytearray())
+            f.write(self.fsa2bytearray(self.serializeTagset(self.fsa.tagset)))
     
     def getStateSize(self, state):
         raise NotImplementedError('Not implemented')
     
-    def fsa2bytearray(self):
+    def fsa2bytearray(self, additionalData=bytearray()):
         res = bytearray()
-        res.extend(self.serializePrologue(self.serializeTagset(self.fsa.tagset)))
+        res.extend(self.serializePrologue(additionalData))
         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
-        logging.debug('SERIALIZE')
         for state in sorted(self.fsa.dfs(), key=lambda s: s.offset):
             res.extend(self.state2bytearray(state))
         return res

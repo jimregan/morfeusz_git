@@ -34,6 +34,9 @@ class TagRule(SegmentRule):
     
     def _doAddToNFA(self, startState, endState):
         startState.addTransition(self.segnum, endState)
+    
+    def __str__(self):
+        return u''+self.segnum
 
 class UnaryRule(SegmentRule):
     
@@ -95,12 +98,3 @@ class ZeroOrMoreRule(UnaryRule):
         self.child._doAddToNFA(intermStartState, intermEndState)
         intermEndState.addTransition(None, endState)
         endState.addTransition(None, intermStartState)
-    
-class IgnoreOrthRule(UnaryRule):
-    
-    def __init__(self, child):
-        super(IgnoreOrthRule, self).__init__(child)
-    
-    def _doAddToNFA(self, startState, endState):
-        startState.addTransition(self.child.segnum, endState, ignoreOrth=True)
-

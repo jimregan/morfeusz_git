@@ -103,7 +103,7 @@ moze_interp( naj> adj_sup )
 
 # Formy „zanegowane” gerundiów i imiesłowów:
 # np. „nie·czytanie”, „nie·przeczytany”, „nie·czytający”:
-moze_interp( nie > negat )
+moze_interp( nie> negat )
 
 # Przyimki akceptujące krótką formę „-ń”
 moze_interp(z_on_agl)
@@ -111,7 +111,7 @@ moze_interp(z_on_agl)
 moze_interp(z_on_agl on_agl)
 
 # Liczba zapisana jako ciąg cyfr:
-moze_interp( dig>* dig )
+#moze_interp( dig>* dig )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
@@ -132,13 +132,35 @@ adj dywiz samodz
 # ?
 samodz dywiz adj
 
+[segment types]
+naj>
+nie>
+prefs
+prefv
+dig>
+adja
+adj
+adj_sup
+negat
+on_agl
+z_on_agl
+samotny
+interp
+aglsg
+aglpl
+praetcond
+praet_sg_agl
+praet_sg_na
+praet_sg
+praet_pl
+samodz
 
 [tags]
-naj	naj
-nie	nie
+naj>	naj
+nie>	nie
 prefs	prefs
 prefv	prefv
-dig	dig
+dig>	dig
 adja	adja
 adj	adj:%:pos
 adj_sup	adj:%:sup

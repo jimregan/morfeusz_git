@@ -12,7 +12,7 @@ class Visualizer(object):
     def __init__(self):
         pass
     
-    def visualize(self, fsa):
+    def visualize(self, fsa, charLabels=True):
         G = nx.DiGraph()
         allStates = list(reversed(list(fsa.initialState.dfs(set()))))
         edgeLabelsMap = {}
@@ -21,10 +21,12 @@ class Visualizer(object):
             G.add_node(idx, offset=state.offset)
             for c, targetState in state.transitionsMap.iteritems():
                 G.add_edge(idx, allStates.index(targetState))
-                label = chr(c) if c <= 127 else '%'
+                label = (chr(c) if c <= 127 else '%') if charLabels \
+                    else c
                 edgeLabelsMap[(idx, allStates.index(targetState))] = label
             nodeLabelsMap[idx] = state.offset if not state.isAccepting() else state.encodedData + '(' + str(state.offset) + ')'
         pos=nx.shell_layout(G)
+#         pos=nx.random_layout(G)
         nx.draw_networkx_nodes(G,
                                pos, 
                                nodelist=list([allStates.index(s) for s in allStates if not s.isAccepting()]),
