@@ -13,6 +13,7 @@ class State(object):
 
     def __init__(self, additionalData=None):
         self.transitionsMap = {}
+        self.transitionsDataMap = {}
         self.freq = 0
         self.encodedData = None
         self.reverseOffset = None
@@ -30,6 +31,9 @@ class State(object):
     
     def setTransition(self, byte, nextState):
         self.transitionsMap[byte] = nextState
+    
+    def setTransitionData(self, byte, data):
+        self.transitionsDataMap[byte] = data
     
     def hasNext(self, byte):
         return byte in self.transitionsMap

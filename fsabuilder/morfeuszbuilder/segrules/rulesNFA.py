@@ -12,6 +12,7 @@ class RulesNFAState(object):
     
     def __init__(self, initial=False, final=False, weak=False):
         self.transitionsMap = {}
+        self.transitionsDataMap = {}
         self.initial = initial
         self.final = final
         self.weak = weak
@@ -21,6 +22,11 @@ class RulesNFAState(object):
     def addTransition(self, label, targetState):
         self.transitionsMap.setdefault(label, set())
         self.transitionsMap[label].add(targetState)
+        self.transitionsDataMap[label] = 0
+    
+    def setTransitionData(self, label, byte):
+        assert len(self.transitionsMap[label]) == 1
+        self.transitionsDataMap[label] = byte
     
     def getClosure(self, visited):
         if self in visited:
@@ -61,9 +67,10 @@ class RulesNFA(object):
         for nfaState in nfaStates:
             for label, nextStates in nfaState.transitionsMap.iteritems():
                 if label is not None:
-                    res.setdefault(label, set())
+                    transitionData = nfaState.transitionsDataMap[label]
+                    res.setdefault((label, transitionData), set())
                     for nextNFAState in nextStates:
-                        res[label] |= nextNFAState.getClosure(set())
+                        res[(label, transitionData)] |= nextNFAState.getClosure(set())
 #                         print 'closure of', nextNFAState.idx, 'is', [s.idx for s in sorted(nextNFAState.getClosure(), key=lambda s: s.idx)]
         return res
     
@@ -77,7 +84,7 @@ class RulesNFA(object):
             # dfaState should be final
             # and contain info about weakness
             dfaState.encodedData = bytearray([1 if weak else 0])
-        for label, nextNFAStates in self._groupOutputByLabels(nfaStates).iteritems():
+        for (label, transitionData), nextNFAStates in self._groupOutputByLabels(nfaStates).iteritems():
 #             print '============'
 #             print 'states:', [s.idx for s in sorted(nfaStates, key=lambda s: s.idx)]
 #             print 'label:', label
@@ -90,6 +97,7 @@ class RulesNFA(object):
                 nfaSubset2DFAState[key] = nextDFAState
                 self._doConvertState(nextDFAState, nextNFAStates, nfaSubset2DFAState)
             dfaState.setTransition(label, nextDFAState)
+            dfaState.setTransitionData(label, transitionData)
     
     def convertToDFA(self):
         dfa = fsa.FSA(encoder=None, encodeData=False, encodeWords=False)

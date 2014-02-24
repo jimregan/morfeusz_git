@@ -164,9 +164,8 @@ def buildAnalyzerFromPoliMorf(inputFile, tagset):
     _printStats(fsa)
     return fsa
 
-def buildGeneratorFromPoliMorf(inputFile, tagsetFile):
+def buildGeneratorFromPoliMorf(inputFile, tagset):
     encoder = encode.Encoder4Generator()
-    tagset = Tagset(tagsetFile)
     fsa = FSA(encoder, tagset)
     inputData = _readPolimorfInput4Generator(inputFile, tagset, encoder)
     for word, data in inputData:

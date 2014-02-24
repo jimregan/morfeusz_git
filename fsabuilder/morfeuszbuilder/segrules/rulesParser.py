@@ -50,7 +50,7 @@ class RulesParser(object):
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper):
                 rule.addToNFA(nfa)
             dfa = nfa.convertToDFA()
-            res.addDFA4Options(key2Def, dfa)
+            res.addDFA(key2Def, dfa)
         return res
     
     def _doParse(self, combinationEnumeratedLines, segtypesHelper):
@@ -67,9 +67,10 @@ class RulesParser(object):
     
     def _doParseOneLine(self, lineNum, line, segtypesHelper):
         rule = Forward()
-        tagRule = Word(alphanums+'_>')
+        tagRule = Word(alphanums+'_')
+        shiftOrthRule = tagRule + '>'
         parenRule = Suppress('(') + rule + Suppress(')')
-        atomicRule = tagRule ^ parenRule
+        atomicRule = tagRule ^ shiftOrthRule ^ parenRule
         zeroOrMoreRule = atomicRule + Suppress('*')
         oneOrMoreRule = atomicRule + Suppress('+')
         unaryRule = atomicRule ^ zeroOrMoreRule ^ oneOrMoreRule
@@ -79,6 +80,7 @@ class RulesParser(object):
         rule << concatRule
         
         tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], lineNum, line, segtypesHelper))
+        shiftOrthRule.setParseAction(lambda string, loc, toks: rules.ShiftOrthRule(toks[0]))
 #         parenRule.setParseAction(lambda string, loc, toks: toks[0])
         zeroOrMoreRule.setParseAction(lambda string, loc, toks: rules.ZeroOrMoreRule(toks[0]))
         oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0])]))

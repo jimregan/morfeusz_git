@@ -111,7 +111,7 @@ moze_interp(z_on_agl)
 moze_interp(z_on_agl on_agl)
 
 # Liczba zapisana jako ciąg cyfr:
-#moze_interp( dig>* dig )
+moze_interp( dig>* dig )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
@@ -133,11 +133,11 @@ adj dywiz samodz
 samodz dywiz adj
 
 [segment types]
-naj>
-nie>
+naj
+nie
 prefs
 prefv
-dig>
+dig
 adja
 adj
 adj_sup
@@ -156,11 +156,11 @@ praet_pl
 samodz
 
 [tags]
-naj>	naj
-nie>	nie
+naj	naj
+nie	nie
 prefs	prefs
 prefv	prefv
-dig>	dig
+dig	dig
 adja	adja
 adj	adj:%:pos
 adj_sup	adj:%:sup

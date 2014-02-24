@@ -98,3 +98,15 @@ class ZeroOrMoreRule(UnaryRule):
         self.child._doAddToNFA(intermStartState, intermEndState)
         intermEndState.addTransition(None, endState)
         endState.addTransition(None, intermStartState)
+
+class ShiftOrthRule(UnaryRule):
+    
+    def __init__(self, child):
+        super(ShiftOrthRule, self).__init__(child)
+    
+    def addToNFA(self, fsa):
+        raise ValueError()
+    
+    def _doAddToNFA(self, startState, endState):
+        self.child._doAddToNFA(startState, endState)
+        startState.setTransitionData(self.child.segnum, 1)

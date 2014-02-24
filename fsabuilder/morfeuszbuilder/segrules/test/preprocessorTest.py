@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
 
     def testPreprocess(self):
         filename = os.path.join(os.path.dirname(__file__), 'segmenty.dat')
-        parsedFile = configFile.ConfigFile(filename, ['options', 'combinations', 'tags', 'lexemes'])
+        parsedFile = configFile.ConfigFile(filename, ['options', 'combinations', 'tags', 'lexemes', 'segment types'])
         linesEnum = parsedFile.enumerateLinesInSection('combinations')
         for lineNum, line in preprocessor.preprocess(linesEnum, ['extra', 'superextra']):
             print (lineNum, line)

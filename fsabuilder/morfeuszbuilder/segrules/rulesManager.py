@@ -12,7 +12,10 @@ class RulesManager(object):
     def _options2Key(self, optionsMap):
         return frozenset(optionsMap.items())
     
-    def addDFA4Options(self, optionsMap, dfa):
+    def getDFA(self, optionsMap):
+        return self.options2DFA[self._options2Key(optionsMap)]
+    
+    def addDFA(self, optionsMap, dfa):
         self.options2DFA[self._options2Key(optionsMap)] = dfa
     
     def serialize(self):
