@@ -202,9 +202,9 @@ def main(opts):
                   }[opts.serializationMethod](fsa)
     
     if opts.cpp:
-        serializer.serialize2CppFile(opts.outputFile, generator=opts.generator)
+        serializer.serialize2CppFile(opts.outputFile, generator=opts.generator, additionalData=additionalData)
     else:
-        serializer.serialize2BinaryFile(opts.outputFile)
+        serializer.serialize2BinaryFile(opts.outputFile, additionalData=additionalData)
 #     {
 #      OutputFormat.CPP: serializer.serialize2CppFile,
 #      OutputFormat.BINARY: serializer.serialize2BinaryFile
