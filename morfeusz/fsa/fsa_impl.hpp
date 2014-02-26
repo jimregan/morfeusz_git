@@ -78,9 +78,9 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
     
     uint8_t implementationNum = *(ptr + IMPLEMENTATION_NUM_OFFSET);
     
-    uint32_t additionalDataSize = ntohl(*(reinterpret_cast<const uint32_t*>(ptr + ADDITIONAL_DATA_SIZE_OFFSET)));
+//    uint32_t additionalDataSize = ntohl(*(reinterpret_cast<const uint32_t*>(ptr + ADDITIONAL_DATA_SIZE_OFFSET)));
     
-    const unsigned char* startPtr = ptr + ADDITIONAL_DATA_OFFSET + additionalDataSize;
+    const unsigned char* startPtr = ptr + FSA_DATA_OFFSET;
     switch (implementationNum) {
         case 0:
             return new SimpleFSA<T>(startPtr, deserializer);
@@ -88,6 +88,8 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
             return new CompressedFSA1<T>(startPtr, deserializer);
         case 2:
             return new CompressedFSA2<T>(startPtr, deserializer);
+        case 128:
+            return new SimpleFSA<T>(startPtr, deserializer, true);
         default:
             std::ostringstream oss;
             oss << "Invalid implementation number: " << versionNum << ", should be: " << VERSION_NUM;

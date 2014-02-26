@@ -68,7 +68,9 @@ private:
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const;
     Environment env;
+    const unsigned char* analyzerPtr;
     FSAType* analyzerFSA;
+    FSA<unsigned char>* segrulesFSA;
     bool isAnalyzerFSAFromFile;
     Generator generator;
 //    const CharsetConverter* charsetConverter;

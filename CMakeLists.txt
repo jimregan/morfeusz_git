@@ -43,6 +43,11 @@ if ("${INPUT_TAGSET}" STREQUAL "")
    set (INPUT_TAGSET ${PROJECT_SOURCE_DIR}/input/polimorf.tagset)
 endif ()
 
+# SEGMENT_RULES_FILE
+if ("${SEGMENT_RULES_FILE}" STREQUAL "")
+   set (SEGMENT_RULES_FILE ${PROJECT_SOURCE_DIR}/input/segmenty.dat)
+endif ()
+
 message ("Will use ${INPUT_DICTIONARY} as default input dictionary and ${INPUT_TAGSET} as tagset")
 
 # TARGET_DIR

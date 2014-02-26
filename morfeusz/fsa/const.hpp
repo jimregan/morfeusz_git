@@ -15,8 +15,8 @@ extern const uint8_t VERSION_NUM;
 
 extern const unsigned int VERSION_NUM_OFFSET;
 extern const unsigned int IMPLEMENTATION_NUM_OFFSET;
-extern const unsigned int ADDITIONAL_DATA_SIZE_OFFSET;
-extern const unsigned int ADDITIONAL_DATA_OFFSET;
+extern const unsigned int FSA_DATA_SIZE_OFFSET;
+extern const unsigned int FSA_DATA_OFFSET;
 
 #endif	/* CONST_HPP */
 

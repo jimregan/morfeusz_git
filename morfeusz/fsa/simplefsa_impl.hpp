@@ -22,8 +22,8 @@ struct StateData {
 //#pragma pack(pop)   /* restore original alignment from stack */
 
 template <class T>
-SimpleFSA<T>::SimpleFSA(const unsigned char* ptr, const Deserializer<T>& deserializer)
-: FSA<T>(ptr, deserializer) {
+SimpleFSA<T>::SimpleFSA(const unsigned char* ptr, const Deserializer<T>& deserializer, bool isTransducer)
+: FSA<T>(ptr, deserializer), isTransducer(isTransducer) {
 }
 
 template <class T>
@@ -56,7 +56,8 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
     StateData stateData = decodeStateData(fromPointer);
     const unsigned char* foundTransition = fromPointer + transitionsTableOffset;
     bool found = false;
-    for (unsigned int i = 0; i < stateData.transitionsNum; i++, foundTransition += 4) {
+    unsigned int increment = this->isTransducer ? 5 : 4;
+    for (unsigned int i = 0; i < stateData.transitionsNum; i++, foundTransition += increment) {
         if ((char) *foundTransition == c) {
             found = true;
             break;
@@ -75,6 +76,9 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
             state.setNext(offset, object, size);
         } else {
             state.setNext(offset);
+        }
+        if (isTransducer) {
+            state.setLastTransitionValue(*(foundTransition + 4));
         }
     }
 }

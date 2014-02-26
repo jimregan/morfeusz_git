@@ -81,11 +81,12 @@ private:
 template <class T>
 class SimpleFSA : public FSA<T> {
 public:
-    SimpleFSA(const unsigned char* ptr, const Deserializer<T>& deserializer);
+    SimpleFSA(const unsigned char* ptr, const Deserializer<T>& deserializer, bool isTransducer=false);
     virtual ~SimpleFSA();
 protected:
     void proceedToNext(const char c, State<T>& state) const;
 private:
+    bool isTransducer;
 };
 
 template <class T>
@@ -167,6 +168,10 @@ public:
      * For non-accepting states is throws an exception.
      */
     T getValue() const;
+    
+    unsigned char getLastTransitionValue() const;
+    
+    void setLastTransitionValue(unsigned char val);
 
     /**
      * Get the size (in bytes) of this state's value.
@@ -191,6 +196,7 @@ private:
     bool sink;
     T value;
     long valueSize;
+    unsigned char lastTransitionValue;
 };
 
 class FSAException : public std::exception {

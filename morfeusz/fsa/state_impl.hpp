@@ -58,6 +58,16 @@ unsigned long State<T>::getValueSize() const {
 }
 
 template <class T>
+unsigned char State<T>::getLastTransitionValue() const {
+    return this->lastTransitionValue;
+}
+
+template <class T>
+void State<T>::setLastTransitionValue(unsigned char val) {
+    this->lastTransitionValue = val;
+}
+
+template <class T>
 State<T>::~State() {
 
 }

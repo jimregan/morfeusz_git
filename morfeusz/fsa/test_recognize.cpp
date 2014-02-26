@@ -24,8 +24,7 @@ void doTest(const FSA<char*>& fsa, const char* fname) {
         vector<string> splitVector(split(line, '\t'));
         string key = splitVector[0];
 
-        //        cerr << "test " << key << endl;
-
+        cerr << "test " << key << endl;
         char* value2;
         validate(fsa.tryToRecognize(key.c_str(), value2), "Failed to recognize " + key);
     }

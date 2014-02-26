@@ -2,7 +2,7 @@
 ########## generate default dictionary data #################
 add_custom_command (
         OUTPUT "${INPUT_DICTIONARY_CPP}"
-        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/buildfsa.py --analyzer -i "${INPUT_DICTIONARY}" -o "${INPUT_DICTIONARY_CPP}" "--tagset-file=${INPUT_TAGSET}" --cpp --serialization-method=SIMPLE
+        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/buildfsa.py --analyzer -i "${INPUT_DICTIONARY}" -o "${INPUT_DICTIONARY_CPP}" "--tagset-file=${INPUT_TAGSET}" "--segments-file=${SEGMENT_RULES_FILE}" --cpp --serialization-method=SIMPLE
         DEPENDS "${INPUT_DICTIONARY}"
         COMMENT "Building default dictionary C++ file"
 )
@@ -35,7 +35,9 @@ set(SRC_FILES
     charset/CharsetConverter.cpp
     charset/CaseConverter.cpp
     charset/caseconv.cpp
-    charset/conversion_tables.cpp)
+    charset/conversion_tables.cpp
+    segrules/segrules.cpp
+    segrules/SegrulesDeserializer.cpp)
 
 set(INCLUDE_FILES 
     const.hpp 
