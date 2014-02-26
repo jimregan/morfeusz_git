@@ -54,6 +54,16 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
         transitionsTableOffset += state.getValueSize();
     }
     StateData stateData = decodeStateData(fromPointer);
+    if (this->isTransducer) {
+        cerr << "stateOffset=" << state.getOffset() << ", accepting=" << state.isAccepting() << " " << stateData.accepting << ", transitionsNum=" << (int) stateData.transitionsNum << endl;
+        cerr << (int) *(this->initialStatePtr + state.getOffset()) << endl;
+        cerr << (int) *(this->initialStatePtr + state.getOffset() + 1) << endl;
+        cerr << (int) *(this->initialStatePtr + state.getOffset() + 2) << endl;
+        cerr << (int) *(this->initialStatePtr + state.getOffset() + 3) << endl;
+        cerr << (int) *(this->initialStatePtr + state.getOffset() + 4) << endl;
+        cerr << (int) *(this->initialStatePtr + state.getOffset() + 5) << endl;
+        
+    }
     const unsigned char* foundTransition = fromPointer + transitionsTableOffset;
     bool found = false;
     unsigned int increment = this->isTransducer ? 5 : 4;
@@ -66,7 +76,8 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
     //    const_cast<Counter*>(&counter)->increment(foundTransition - transitionsStart + 1);
     if (!found) {
         state.setNextAsSink();
-    } else {
+    }
+    else {
         unsigned int offset = decodeOffset(foundTransition + 1);
         const unsigned char* nextStatePointer = this->initialStatePtr + offset;
         StateData nextStateData = decodeStateData(nextStatePointer);
@@ -74,7 +85,8 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
             T object;
             long size = this->deserializer.deserialize(nextStatePointer + 1, object);
             state.setNext(offset, object, size);
-        } else {
+        }
+        else {
             state.setNext(offset);
         }
         if (isTransducer) {

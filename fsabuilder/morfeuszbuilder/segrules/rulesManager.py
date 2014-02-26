@@ -37,7 +37,6 @@ class RulesManager(object):
         assert dfasNum > 0 and dfasNum < 256
         res.append(dfasNum)
         for key, dfa in self.options2DFA.iteritems():
-            print key
             optionsMap = self._key2Options(key)
             res.extend(self._serializeOptionsMap(optionsMap))
             res.extend(self._serializeDFA(dfa))
@@ -46,8 +45,8 @@ class RulesManager(object):
     def _serializeOptionsMap(self, optionsMap):
         assert len(optionsMap) < 256
         res = bytearray()
-        self._serializeString(optionsMap['aggl'])
-        self._serializeString(optionsMap['praet'])
+        res.extend(self._serializeString(optionsMap['aggl']))
+        res.extend(self._serializeString(optionsMap['praet']))
         return res
     
     def _serializeDFA(self, dfa):
@@ -60,6 +59,7 @@ class RulesManager(object):
     
     def _serializeString(self, string):
         res = bytearray()
-        res.append(len(string))
+#         res.append(len(string))
         res.extend(string.encode('utf8'))
-    
+        res.append(0)
+        return res

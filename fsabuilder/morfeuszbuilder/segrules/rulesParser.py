@@ -51,6 +51,7 @@ class RulesParser(object):
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper):
                 rule.addToNFA(nfa)
             dfa = nfa.convertToDFA()
+#             print dfa.tryToRecognize(bytearray([14]))
             res.addDFA(key2Def, dfa)
         return res
     

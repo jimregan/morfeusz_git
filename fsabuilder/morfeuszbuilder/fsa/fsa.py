@@ -96,7 +96,6 @@ class FSA(object):
             i += 1
         
         assert q.encodedData is None
-#         print q, encodedData
         q.encodedData = data
     
     def _replaceOrRegister(self, q, encodedWord):

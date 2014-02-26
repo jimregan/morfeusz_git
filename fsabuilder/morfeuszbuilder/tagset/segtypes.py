@@ -26,7 +26,6 @@ class Segtypes(object):
     
     def _readTags(self, segrulesConfigFile):
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('tags'):
-            print lineNum, line
             splitLine = re.split(r'\s+', line.strip())
             self._validate(
                            u'Line in [tags] section must contain exactly two fields - segment type and tag pattern', 

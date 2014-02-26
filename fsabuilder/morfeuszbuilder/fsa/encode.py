@@ -104,7 +104,6 @@ class MorphEncoder(Encoder):
     
     def encodeData(self, interpsList):
         res = bytearray()
-#         print interpsList
         firstByte = len(interpsList)
         assert firstByte < 256
         assert firstByte > 0

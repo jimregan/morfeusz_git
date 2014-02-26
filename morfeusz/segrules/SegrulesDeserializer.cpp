@@ -12,6 +12,7 @@ SegrulesDeserializer::SegrulesDeserializer() {
 
 long SegrulesDeserializer::deserialize(const unsigned char* ptr, unsigned char& object) const {
     object = *ptr;
+    return 1;
 }
 
 SegrulesDeserializer::~SegrulesDeserializer() {

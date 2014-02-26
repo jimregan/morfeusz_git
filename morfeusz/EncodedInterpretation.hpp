@@ -27,7 +27,7 @@ struct EncodedLemma {
  */
 struct EncodedInterpretation {
     EncodedLemma lemma;
-    int type;
+    unsigned char type;
     int tag;
     int nameClassifier;
 };

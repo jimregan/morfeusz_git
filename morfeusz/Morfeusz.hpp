@@ -11,6 +11,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <map>
 #include "EncodedInterpretation.hpp"
 #include "fsa/fsa.hpp"
 #include "MorphInterpretation.hpp"
@@ -24,6 +25,8 @@
 #include "exceptions.hpp"
 #include "Generator.hpp"
 #include "Environment.hpp"
+
+#include "segrules/segrules.hpp"
 
 class Morfeusz;
 class ResultsIterator;
@@ -61,7 +64,8 @@ private:
             const char*& inputData,
             const char* inputEnd,
             std::vector<InterpretedChunk>& accum,
-            FlexionGraph& graph) const;
+            FlexionGraph& graph,
+            SegrulesStateType segrulesState) const;
 
     void appendIgnotiumToResults(
             const std::string& word,
@@ -70,7 +74,7 @@ private:
     Environment env;
     const unsigned char* analyzerPtr;
     FSAType* analyzerFSA;
-    FSA<unsigned char>* segrulesFSA;
+    std::map<SegrulesOptions, SegrulesFSAType*> segrulesFSAsMap;
     bool isAnalyzerFSAFromFile;
     Generator generator;
 //    const CharsetConverter* charsetConverter;

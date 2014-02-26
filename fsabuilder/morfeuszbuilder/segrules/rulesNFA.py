@@ -36,9 +36,6 @@ class RulesNFAState(object):
             res = set()
             res.add(self)
             for nextState in self.transitionsMap.get(None, []):
-                if self.idx in [6,8,4]:
-                    print nextState.idx
-                    print self.transitionsMap
                 res |= nextState.getClosure(visited)
             return res
     
@@ -71,13 +68,12 @@ class RulesNFA(object):
                     res.setdefault((label, transitionData), set())
                     for nextNFAState in nextStates:
                         res[(label, transitionData)] |= nextNFAState.getClosure(set())
-#                         print 'closure of', nextNFAState.idx, 'is', [s.idx for s in sorted(nextNFAState.getClosure(), key=lambda s: s.idx)]
         return res
     
     def _doConvertState(self, dfaState, nfaStates, nfaSubset2DFAState):
         assert all(map(lambda state: state.weak, nfaStates)) \
             or not any(map(lambda state: state.weak, nfaStates))
-        weak = all(map(lambda state: state.weak, nfaStates))
+        weak = all(map(lambda state: state.weak or not state.final, nfaStates))
         final = any(map(lambda state: state.final, nfaStates))
         assert not weak or not final
         if final:
@@ -85,10 +81,6 @@ class RulesNFA(object):
             # and contain info about weakness
             dfaState.encodedData = bytearray([1 if weak else 0])
         for (label, transitionData), nextNFAStates in self._groupOutputByLabels(nfaStates).iteritems():
-#             print '============'
-#             print 'states:', [s.idx for s in sorted(nfaStates, key=lambda s: s.idx)]
-#             print 'label:', label
-#             print 'nextStates:', [s.idx for s in sorted(nextNFAStates, key=lambda s: s.idx)]
             key = frozenset(nextNFAStates)
             if key in nfaSubset2DFAState:
                 nextDFAState = nfaSubset2DFAState[key]

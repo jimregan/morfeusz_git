@@ -41,29 +41,39 @@ Morfeusz::Morfeusz()
 : env(Tagset(DEFAULT_FSA), Tagset(DEFAULT_SYNTH_FSA), DEFAULT_MORFEUSZ_CHARSET),
 analyzerPtr(DEFAULT_FSA),
 analyzerFSA(FSAType::getFSA(analyzerPtr, *initializeAnalyzerDeserializer())),
-segrulesFSA(createSegrulesFSA(analyzerPtr)),
+segrulesFSAsMap(createSegrulesFSAsMap(analyzerPtr)),
 isAnalyzerFSAFromFile(false),
 generator(DEFAULT_SYNTH_FSA, env),
 options(createDefaultOptions()) {
 
 }
 
+static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSAType*>& fsasMap) {
+    for (
+            std::map<SegrulesOptions, SegrulesFSAType*>::iterator it = fsasMap.begin();
+            it != fsasMap.end();
+            ++it) {
+        delete it->second;
+    }
+    fsasMap.clear();
+}
+
 void Morfeusz::setAnalyzerFile(const string& filename) {
     if (this->isAnalyzerFSAFromFile) {
         delete this->analyzerFSA;
-        delete this->segrulesFSA;
+        deleteSegrulesFSAs(this->segrulesFSAsMap);
         delete this->analyzerPtr;
     }
     this->analyzerPtr = readFile<unsigned char>(filename.c_str());
     this->analyzerFSA = FSA< vector<InterpsGroup> > ::getFSA(analyzerPtr, *initializeAnalyzerDeserializer());
-    this->segrulesFSA = createSegrulesFSA(analyzerPtr);
+    this->segrulesFSAsMap = createSegrulesFSAsMap(analyzerPtr);
     this->isAnalyzerFSAFromFile = true;
 }
 
 Morfeusz::~Morfeusz() {
     if (this->isAnalyzerFSAFromFile) {
         delete this->analyzerFSA;
-        delete this->segrulesFSA;
+        deleteSegrulesFSAs(this->segrulesFSAsMap);
         delete this->analyzerPtr;
     }
 }
@@ -80,7 +90,11 @@ void Morfeusz::analyzeOneWord(
     vector<InterpretedChunk> accum;
     FlexionGraph graph;
     const char* currInput = inputStart;
-    doAnalyzeOneWord(currInput, inputEnd, accum, graph);
+    SegrulesOptions opts;
+    opts["aggl"] = "isolated";
+    opts["praet"] = "split";
+    SegrulesFSAType* segrulesFSA = this->segrulesFSAsMap.at(opts);
+    doAnalyzeOneWord(currInput, inputEnd, accum, graph, segrulesFSA->getInitialState());
     if (!graph.empty()) {
         InterpretedChunksDecoder interpretedChunksDecoder(env);
         int srcNode = startNodeNum;
@@ -105,7 +119,8 @@ void Morfeusz::doAnalyzeOneWord(
         const char*& inputData,
         const char* inputEnd,
         vector<InterpretedChunk>& accum,
-        FlexionGraph& graph) const {
+        FlexionGraph& graph,
+        SegrulesStateType segrulesState) const {
     bool endOfWord = inputData == inputEnd;
     const char* currInput = inputData;
     uint32_t codepoint = endOfWord ? 0 : this->env.getCharsetConverter().next(currInput, inputEnd);
@@ -120,30 +135,46 @@ void Morfeusz::doAnalyzeOneWord(
         originalCodepoints.push_back(codepoint);
         lowercaseCodepoints.push_back(lowerCP);
         feedState(state, lowerCP, UTF8CharsetConverter());
-        if (state.isAccepting()) {
-            vector< InterpsGroup > val(state.getValue());
-            for (unsigned int i = 0; i < val.size(); i++) {
-                InterpsGroup& ig = val[i];
-                InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
-                accum.push_back(ic);
-                const char* newCurrInput = currInput;
-                doAnalyzeOneWord(newCurrInput, inputEnd, accum, graph);
-                accum.pop_back();
-            }
-        }
         codepoint = currInput == inputEnd ? 0 : this->env.getCharsetConverter().peek(currInput, inputEnd);
         if (!isEndOfWord(codepoint)) {
+            if (state.isAccepting()) {
+                vector<InterpsGroup> val(state.getValue());
+                for (unsigned int i = 0; i < val.size(); i++) {
+                    InterpsGroup& ig = val[i];
+                    SegrulesStateType newSegrulesState = segrulesState;
+                    newSegrulesState.proceedToNext(ig.type);
+                    if (!newSegrulesState.isSink()) {
+                        InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
+                        accum.push_back(ic);
+                        const char* newCurrInput = currInput;
+                        doAnalyzeOneWord(newCurrInput, inputEnd, accum, graph, newSegrulesState);
+                        accum.pop_back();
+                    }
+                    else {
+                    }
+                }
+            }
+
             this->env.getCharsetConverter().next(currInput, inputEnd);
         }
     }
+    // we are at the end of word
     if (state.isAccepting()) {
         vector<InterpsGroup > val(state.getValue());
         for (unsigned int i = 0; i < val.size(); i++) {
             InterpsGroup& ig = val[i];
-            InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
-            accum.push_back(ic);
-            graph.addPath(accum);
-            accum.pop_back();
+            SegrulesStateType newSegrulesState = segrulesState;
+            newSegrulesState.proceedToNext(ig.type);
+            if (newSegrulesState.isAccepting()) {
+                InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
+                accum.push_back(ic);
+                graph.addPath(accum);
+                accum.pop_back();
+            }
+            else if (!newSegrulesState.isSink()) {
+            }
+            else {
+            }
         }
     }
     inputData = currInput;

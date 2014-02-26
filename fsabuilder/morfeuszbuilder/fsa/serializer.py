@@ -178,7 +178,6 @@ class SimpleSerializer(Serializer):
             return 1 + 4 * len(state.transitionsMap.keys()) + self.getDataSize(state)
     
     def getDataSize(self, state):
-        assert type(state.encodedData) == bytearray or not state.isAccepting()
         return len(state.encodedData) if state.isAccepting() else 0
     
     def stateData2bytearray(self, state):
@@ -189,6 +188,8 @@ class SimpleSerializer(Serializer):
         firstByte |= state.transitionsNum
         assert firstByte < 256 and firstByte > 0
         res.append(firstByte)
+        if self.serializeTransitionsData:
+            print firstByte
         if state.isAccepting():
             res.extend(state.encodedData)
         return res

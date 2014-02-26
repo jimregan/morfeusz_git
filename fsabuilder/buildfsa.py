@@ -213,7 +213,6 @@ def main(opts):
 
 if __name__ == '__main__':
     import os
-    print os.getcwd()
     opts = _parseOptions()
     main(opts)
 

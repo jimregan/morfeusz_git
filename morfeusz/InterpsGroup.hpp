@@ -21,7 +21,7 @@ public:
         
     }
     
-    explicit InterpsGroup(const int type)
+    explicit InterpsGroup(const unsigned char type)
     : type(type) {
         
     }
@@ -30,7 +30,7 @@ public:
         interps.push_back(interp);
     }
     
-    int type;
+    unsigned char type;
     std::vector<EncodedInterpretation> interps;
 };
 
