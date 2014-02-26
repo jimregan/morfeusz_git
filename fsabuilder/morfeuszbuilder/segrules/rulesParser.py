@@ -28,11 +28,12 @@ class RulesParser(object):
         return res
     
     def parse(self, filename):
-        res = rulesManager.RulesManager()
         
         segtypesConfigFile = configFile.ConfigFile(filename, ['options', 'combinations', 'tags', 'lexemes', 'segment types'])
         key2Defs = self._getKey2Defs(segtypesConfigFile)
         segtypesHelper = segtypes.Segtypes(self.tagset, segtypesConfigFile)
+        
+        res = rulesManager.RulesManager(segtypesHelper)
         
         def2Key = {}
         for key, defs in key2Defs.iteritems():

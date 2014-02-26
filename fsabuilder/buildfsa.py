@@ -122,9 +122,9 @@ def _parseOptions():
     
     return opts
 
-def _readPolimorfInput4Analyzer(inputFile, tagset, encoder):
+def _readPolimorfInput4Analyzer(inputFile, tagset, encoder, segmentRulesManager):
     with open(inputFile, 'r') as f:
-        for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8').convert(f):
+        for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8', segmentRulesManager).convert(f):
             yield entry
 
 def _readPolimorfInput4Generator(inputFile, tagset, encoder):
@@ -154,10 +154,10 @@ def _printStats(fsa):
     logging.info('sink states num: '+str(sinkNum))
     logging.info('array states num: '+str(arrayNum))
 
-def buildAnalyzerFromPoliMorf(inputFile, tagset):
+def buildAnalyzerFromPoliMorf(inputFile, tagset, segmentRulesManager):
     encoder = encode.MorphEncoder()
     fsa = FSA(encoder, tagset)
-    inputData = _readPolimorfInput4Analyzer(inputFile, tagset, encoder)
+    inputData = _readPolimorfInput4Analyzer(inputFile, tagset, encoder, segmentRulesManager)
     for word, data in inputData:
         fsa.addEntry(word, data)
     fsa.close()
@@ -183,9 +183,9 @@ def main(opts):
     tagset = Tagset(opts.tagsetFile)
     
     if opts.analyzer:
-        fsa = buildAnalyzerFromPoliMorf(opts.inputFile, tagset)
         segmentRulesManager = rulesParser.RulesParser(tagset).parse(opts.segmentsFile)
         additionalData = segmentRulesManager.serialize()
+        fsa = buildAnalyzerFromPoliMorf(opts.inputFile, tagset, segmentRulesManager)
     else:
         fsa = buildGeneratorFromPoliMorf(opts.inputFile, tagset)
         additionalData = bytearray()

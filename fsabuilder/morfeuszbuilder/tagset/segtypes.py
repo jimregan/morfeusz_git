@@ -15,6 +15,7 @@ class Segtypes(object):
         self.filename = segrulesConfigFile.filename
         
         self.segtype2Segnum = {}
+        self.segnum2Segtype = {}
         self.patternsList = []
         self._readLexemes(segrulesConfigFile)
         self._readTags(segrulesConfigFile)
@@ -48,6 +49,8 @@ class Segtypes(object):
                 self.segtype2Segnum[segtype] = segnum
             
             self.patternsList.append(SegtypePattern(None, pattern, segnum))
+        
+        self.segnum2Segtype = dict([(v, k) for (k, v) in self.segtype2Segnum.iteritems()])
     
     def _readLexemes(self, segrulesConfigFile):
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('lexemes'):

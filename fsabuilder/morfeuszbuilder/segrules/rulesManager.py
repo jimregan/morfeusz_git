@@ -8,8 +8,9 @@ from morfeuszbuilder.fsa.serializer import SimpleSerializer
 
 class RulesManager(object):
     
-    def __init__(self):
+    def __init__(self, segtypes):
         self.options2DFA = {}
+        self.segtypes = segtypes
     
     def _options2Key(self, optionsMap):
         return frozenset(optionsMap.items())
@@ -22,6 +23,13 @@ class RulesManager(object):
     
     def addDFA(self, optionsMap, dfa):
         self.options2DFA[self._options2Key(optionsMap)] = dfa
+    
+    def lexeme2SegmentTypeNum(self, lemma, tag):
+        res = self.segtypes.lexeme2Segnum(lemma, tag)
+        if res is None:
+            raise ValueError()
+        else:
+            return res
     
     def serialize(self):
         res = bytearray()
@@ -38,7 +46,6 @@ class RulesManager(object):
     def _serializeOptionsMap(self, optionsMap):
         assert len(optionsMap) < 256
         res = bytearray()
-        res.append(len(optionsMap))
         self._serializeString(optionsMap['aggl'])
         self._serializeString(optionsMap['praet'])
         return res

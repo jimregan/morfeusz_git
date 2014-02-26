@@ -20,7 +20,7 @@ class Serializer(object):
         return self._fsa
     
     def getVersion(self):
-        return 9
+        return 10
     
     def serialize2CppFile(self, fname, generator, additionalData):
         res = []
@@ -56,10 +56,15 @@ class Serializer(object):
     
     def fsa2bytearray(self, additionalData=bytearray(), moreAdditionalData=bytearray()):
         res = bytearray()
-        res.extend(self.serializePrologue(additionalData, moreAdditionalData))
+        res.extend(self.serializePrologue())
+        fsaData = bytearray()
+        fsaData.extend(self.serializeFSAPrologue())
         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
         for state in sorted(self.fsa.dfs(), key=lambda s: s.offset):
-            res.extend(self.state2bytearray(state))
+            fsaData.extend(self.state2bytearray(state))
+        res.extend(self.htonl(len(fsaData)))
+        res.extend(fsaData)
+        res.extend(self.serializeEpilogue(additionalData, moreAdditionalData))
         return res
     
     def serializeTags(self, tagsMap):
@@ -96,7 +101,7 @@ class Serializer(object):
         res.append(n & 0x000000FF)
         return res
     
-    def serializePrologue(self, additionalData=None, moreAdditionalData=None):
+    def serializePrologue(self):
         res = bytearray()
         
         # serialize magic number in big-endian order
@@ -111,10 +116,16 @@ class Serializer(object):
         # serialize implementation code 
         res.append(self.getImplementationCode())
         
-        # serialize additional data size in 2-byte big-endian
+        return res
+    
+#     def serializeFSAPrologue(self):
+#         raise NotImplementedError('Not implemented')
+    
+    def serializeEpilogue(self, additionalData, moreAdditionalData):
+        res = bytearray()
         additionalDataSize = len(additionalData) if additionalData else 0
         moreAdditionalDataSize = len(moreAdditionalData) if moreAdditionalData else 0
-        res.extend(self.htonl(additionalDataSize + moreAdditionalDataSize))
+        res.extend(self.htonl(additionalDataSize))
         
         # add additional data itself
         if additionalDataSize:
@@ -124,7 +135,6 @@ class Serializer(object):
         if moreAdditionalDataSize:
             assert type(moreAdditionalData) == bytearray
             res.extend(moreAdditionalData)
-        
         return res
     
     def state2bytearray(self, state):
@@ -156,7 +166,10 @@ class SimpleSerializer(Serializer):
         self.serializeTransitionsData = serializeTransitionsData
     
     def getImplementationCode(self):
-        return 0
+        return 0 if not self.serializeTransitionsData else 128
+    
+    def serializeFSAPrologue(self):
+        return bytearray()
     
     def getStateSize(self, state):
         if self.serializeTransitionsData:
@@ -204,6 +217,7 @@ class VLengthSerializer1(Serializer):
         self.state2Index = dict([(state, idx) for (idx, state) in enumerate(self.statesTable)])
         self._chooseArrayStates()
         self.useArrays = useArrays
+        self.label2ShortLabel = None
         
         self.ACCEPTING_FLAG =   0b10000000
         self.ARRAY_FLAG =       0b01000000
@@ -211,8 +225,8 @@ class VLengthSerializer1(Serializer):
     def getImplementationCode(self):
         return 1
     
-    def serializePrologue(self, additionalData, moreAdditionalData):
-        res = super(VLengthSerializer1, self).serializePrologue(additionalData, moreAdditionalData)
+    def serializeFSAPrologue(self):
+        res = bytearray()
         
         # labels sorted by popularity
         sortedLabels = [label for (label, freq) in sorted(self.fsa.label2Freq.iteritems(), key=lambda (label, freq): (-freq, label))]
@@ -365,6 +379,9 @@ class VLengthSerializer2(Serializer):
         self.HAS_REMAINING_FLAG = 128
         self.ACCEPTING_FLAG =    64
         self.LAST_FLAG = 32
+    
+    def serializeFSAPrologue(self):
+        return bytearray()
     
     def getImplementationCode(self):
         return 2
