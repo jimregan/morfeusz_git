@@ -52,10 +52,8 @@ template <class T>
 void CompressedFSA1<T>::reallyDoProceed(
         const unsigned char* statePtr,
         State<T>& state) const {
-//    const unsigned char stateByte = *statePtr;
     const StateData2* sd = reinterpret_cast<const StateData2*>(statePtr);
     if (sd->accepting) {
-//                                            cerr << "ACCEPTING" << endl;
         T object;
         long size = this->deserializer.deserialize(statePtr + 1, object);
         state.setNext(statePtr - this->initialStatePtr, object, size);
@@ -102,15 +100,11 @@ void CompressedFSA1<T>::doProceedToNextByList(
             currPtr += td.offsetSize + 1;
         }
     }
-    //        const_cast<Counter*>(&counter)->increment(foundTransition - transitionsStart + 1);
     if (!found) {
-//                                cerr << "SINK for " << c << endl;
         state.setNextAsSink();
     } 
     else {
         currPtr++;
-//                                        cerr << "offset size " << td.offsetSize << endl;
-//                            cerr << "offset " << offset << endl;
         switch (td.offsetSize) {
             case 0:
                 break;
@@ -124,7 +118,6 @@ void CompressedFSA1<T>::doProceedToNextByList(
                 currPtr += (((const unsigned int) ntohs(*((const uint16_t*) currPtr))) << 8) + currPtr[2] + 3;
                 break;
         }
-//                                cerr << "FOUND " << c << " " << currPtr - this->startPtr << endl;
         reallyDoProceed(currPtr, state);
     }
 }
@@ -146,19 +139,13 @@ void CompressedFSA1<T>::doProceedToNextByArray(
 
 template <class T>
 void CompressedFSA1<T>::proceedToNext(const char c, State<T>& state) const {
-//                    if (c <= 'z' && 'a' <= c)
-//                        cerr << "NEXT " << c << " from " << state.getOffset() << endl;
-//                    else
-//                        cerr << "NEXT " << (short) c << " from " << state.getOffset() << endl;
     const unsigned char* fromPointer = this->initialStatePtr + state.getOffset();
     unsigned char shortLabel = this->label2ShortLabel[(const unsigned char) c];
     unsigned long transitionsTableOffset = 1;
     if (state.isAccepting()) {
         transitionsTableOffset += state.getValueSize();
-//                                cerr << "transitionsTableOffset " << transitionsTableOffset + state.getOffset() << " because value is " << state.getValue() << endl;
     }
     const StateData2* sd = reinterpret_cast<const StateData2*>(fromPointer);
-//                cerr << "transitions num=" << sd->transitionsNum << endl;
     if (sd->array) {
         if (shortLabel > 0) {
             this->doProceedToNextByArray(

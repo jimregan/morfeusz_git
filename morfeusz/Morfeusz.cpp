@@ -141,10 +141,13 @@ void Morfeusz::doAnalyzeOneWord(
                 vector<InterpsGroup> val(state.getValue());
                 for (unsigned int i = 0; i < val.size(); i++) {
                     InterpsGroup& ig = val[i];
+                    
                     SegrulesStateType newSegrulesState = segrulesState;
                     newSegrulesState.proceedToNext(ig.type);
+                    
                     if (!newSegrulesState.isSink()) {
-                        InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
+                        bool shiftOrth = newSegrulesState.getLastTransitionValue();
+                        InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig, shiftOrth};
                         accum.push_back(ic);
                         const char* newCurrInput = currInput;
                         doAnalyzeOneWord(newCurrInput, inputEnd, accum, graph, newSegrulesState);
@@ -163,10 +166,13 @@ void Morfeusz::doAnalyzeOneWord(
         vector<InterpsGroup > val(state.getValue());
         for (unsigned int i = 0; i < val.size(); i++) {
             InterpsGroup& ig = val[i];
+            
             SegrulesStateType newSegrulesState = segrulesState;
             newSegrulesState.proceedToNext(ig.type);
+            
             if (newSegrulesState.isAccepting()) {
-                InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig};
+                bool shiftOrth = newSegrulesState.getLastTransitionValue();
+                InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig, shiftOrth};
                 accum.push_back(ic);
                 graph.addPath(accum);
                 accum.pop_back();

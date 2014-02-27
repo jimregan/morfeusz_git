@@ -38,15 +38,21 @@ def _checkExactlyOneOptionSet(optsList, parser, msg):
         parser.print_help()
         exit(1)
 
+def _parseListCallback(option, opt, value, parser):
+    setattr(parser.values, option.dest, value.split(','))
+
 def _parseOptions():
     """
     Parses commandline args
     """
     parser = OptionParser()
-    parser.add_option('-i', '--input-file',
-                        dest='inputFile',
-                        metavar='FILE',
-                        help='path to input file')
+    parser.add_option('-i', '--input-files',
+                        type='string',
+                        dest='inputFiles',
+                        action='callback',
+                        callback=_parseListCallback,
+                        metavar='FILES',
+                        help='comma separated list of files')
     parser.add_option('--tagset-file',
                         dest='tagsetFile',
                         metavar='FILE',
@@ -55,6 +61,11 @@ def _parseOptions():
                         dest='segmentsFile',
                         metavar='FILE',
                         help='path to the file with segment rules')
+    parser.add_option('--trim-supneg',
+                        dest='trimSupneg',
+                        default=False,
+                        action='store_true',
+                        help='trim "naj" and "nie" prefixes from words tagged as "%:sup" and "%:neg" respectively. Valid only for analysis.')
     parser.add_option('-o', '--output-file',
                         dest='outputFile',
                         metavar='FILE',
@@ -106,7 +117,7 @@ def _parseOptions():
     
     opts, args = parser.parse_args()
     
-    _checkOption(opts.inputFile, parser, "Input file is missing")
+    _checkOption(opts.inputFiles, parser, "Input file is missing")
     _checkOption(opts.outputFile, parser, "Output file is missing")
     _checkOption(opts.tagsetFile, parser, "Tagset file is missing")
     _checkOption(opts.serializationMethod, parser, "Serialization method file is missing")
@@ -122,15 +133,22 @@ def _parseOptions():
     
     return opts
 
-def _readPolimorfInput4Analyzer(inputFile, tagset, encoder, segmentRulesManager):
-    with open(inputFile, 'r') as f:
-        for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8', segmentRulesManager).convert(f):
-            yield entry
+def _concatFiles(inputFiles):
+    for inputFile in inputFiles:
+        if inputFile:
+            with open(inputFile, 'r') as f:
+                for line in f:
+                    yield line
 
-def _readPolimorfInput4Generator(inputFile, tagset, encoder):
-    with open(inputFile, 'r') as f:
-        for entry in convertinput.PolimorfConverter4Generator(tagset, encoder, 'utf8').convert(f):
-            yield entry
+def _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager, trimSupneg):
+    logging.info('reading analyzer data from %s', str(inputFiles))
+    for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8', segmentRulesManager, trimSupneg).convert(_concatFiles(inputFiles)):
+        yield entry
+
+def _readPolimorfInput4Generator(inputFiles, tagset, encoder):
+    logging.info('reading generator data from %s', str(inputFiles))
+    for entry in convertinput.PolimorfConverter4Generator(tagset, encoder, 'utf8').convert(_concatFiles(inputFiles)):
+        yield entry
 
 def _readTrainData(trainFile):
     with codecs.open(trainFile, 'r', 'utf8') as f:
@@ -154,23 +172,29 @@ def _printStats(fsa):
     logging.info('sink states num: '+str(sinkNum))
     logging.info('array states num: '+str(arrayNum))
 
-def buildAnalyzerFromPoliMorf(inputFile, tagset, segmentRulesManager):
+def buildAnalyzerFromPoliMorf(inputFiles, tagset, segmentRulesManager, trimSupneg):
     encoder = encode.MorphEncoder()
     fsa = FSA(encoder, tagset)
-    inputData = _readPolimorfInput4Analyzer(inputFile, tagset, encoder, segmentRulesManager)
+    inputData = _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager, trimSupneg)
     for word, data in inputData:
         fsa.addEntry(word, data)
     fsa.close()
+    logging.info('------')
+    logging.info('Analyzer FSA stats:')
+    logging.info('------')
     _printStats(fsa)
     return fsa
 
-def buildGeneratorFromPoliMorf(inputFile, tagset):
+def buildGeneratorFromPoliMorf(inputFiles, tagset):
     encoder = encode.Encoder4Generator()
     fsa = FSA(encoder, tagset)
-    inputData = _readPolimorfInput4Generator(inputFile, tagset, encoder)
+    inputData = _readPolimorfInput4Generator(inputFiles, tagset, encoder)
     for word, data in inputData:
         fsa.addEntry(word, data)
     fsa.close()
+    logging.info('------')
+    logging.info('Generator FSA stats:')
+    logging.info('------')
     _printStats(fsa)
     return fsa
 
@@ -180,14 +204,20 @@ def main(opts):
     else:
         logging.basicConfig(level=logging.INFO)
     
+    if opts.analyzer:
+        logging.info('*** building analyzer ***')
+    else:
+        logging.info('*** building generator ***')
+    
+    logging.info('reading tagset from %s', opts.tagsetFile)
     tagset = Tagset(opts.tagsetFile)
     
     if opts.analyzer:
         segmentRulesManager = rulesParser.RulesParser(tagset).parse(opts.segmentsFile)
         additionalData = segmentRulesManager.serialize()
-        fsa = buildAnalyzerFromPoliMorf(opts.inputFile, tagset, segmentRulesManager)
+        fsa = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager, opts.trimSupneg)
     else:
-        fsa = buildGeneratorFromPoliMorf(opts.inputFile, tagset)
+        fsa = buildGeneratorFromPoliMorf(opts.inputFiles, tagset)
         additionalData = bytearray()
     
     if opts.trainFile:
@@ -205,11 +235,12 @@ def main(opts):
         serializer.serialize2CppFile(opts.outputFile, generator=opts.generator, additionalData=additionalData)
     else:
         serializer.serialize2BinaryFile(opts.outputFile, additionalData=additionalData)
+    
+    logging.info('total FSA size (in bytes): '+str(fsa.initialState.reverseOffset))
 #     {
 #      OutputFormat.CPP: serializer.serialize2CppFile,
 #      OutputFormat.BINARY: serializer.serialize2BinaryFile
 #      }[opts.outputFormat](opts.outputFile)
-    logging.info('size: '+str(fsa.initialState.reverseOffset))
 
 if __name__ == '__main__':
     import os

@@ -19,6 +19,7 @@ class Serializer(object):
     def fsa(self):
         return self._fsa
     
+    # get the Morfeusz file format version that is being encoded
     def getVersion(self):
         return 10
     
@@ -67,7 +68,7 @@ class Serializer(object):
         res.extend(self.serializeEpilogue(additionalData, moreAdditionalData))
         return res
     
-    def serializeTags(self, tagsMap):
+    def _serializeTags(self, tagsMap):
         res = bytearray()
         numOfTags = len(tagsMap)
         res.extend(self.htons(numOfTags))
@@ -77,13 +78,15 @@ class Serializer(object):
             res.append(0)
         return res
     
+    # serialize tagset data
     def serializeTagset(self, tagset):
         res = bytearray()
         if tagset:
-            res.extend(self.serializeTags(tagset.tag2tagnum))
-            res.extend(self.serializeTags(tagset.name2namenum))
+            res.extend(self._serializeTags(tagset._tag2tagnum))
+            res.extend(self._serializeTags(tagset._name2namenum))
         return res
     
+    # serialize uint16 as big endian
     def htons(self, n):
         assert n < 65536
         assert n >= 0
@@ -92,6 +95,7 @@ class Serializer(object):
         res.append(n & 0x0000FF)
         return res
     
+    # serialize uint32 as big endian
     def htonl(self, n):
         assert n >= 0
         res = bytearray()
@@ -117,9 +121,6 @@ class Serializer(object):
         res.append(self.getImplementationCode())
         
         return res
-    
-#     def serializeFSAPrologue(self):
-#         raise NotImplementedError('Not implemented')
     
     def serializeEpilogue(self, additionalData, moreAdditionalData):
         res = bytearray()
@@ -188,8 +189,6 @@ class SimpleSerializer(Serializer):
         firstByte |= state.transitionsNum
         assert firstByte < 256 and firstByte > 0
         res.append(firstByte)
-        if self.serializeTransitionsData:
-            print firstByte
         if state.isAccepting():
             res.extend(state.encodedData)
         return res

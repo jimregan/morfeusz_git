@@ -13,7 +13,7 @@ class FSABuilderException(Exception):
         self.msg = msg
     
     def __str__(self):
-        return 'Failed to create FSA files: ' + self.msg
+        return 'Failed to create Morfeusz files: ' + self.msg
 
 class SegtypesException(FSABuilderException):
     

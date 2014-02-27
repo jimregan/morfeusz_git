@@ -20,5 +20,7 @@ enum MorfeuszCharset {
 
 extern const MorfeuszCharset DEFAULT_MORFEUSZ_CHARSET;
 
+extern const unsigned char SHIFT_ORTH_NODE;
+
 #endif	/* CONST_HPP */
 

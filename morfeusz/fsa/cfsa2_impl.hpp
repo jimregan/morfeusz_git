@@ -106,26 +106,6 @@ void CompressedFSA2<T>::doProceedToNextByList(
     }
 }
 
-//template <class T>
-//void FSAImpl<T>::doProceedToNextByArray(
-//        const unsigned char shortLabel,
-//        const uint32_t* ptr,
-//        State<T>& state) const {
-//#ifdef DEBUG_BUILD
-//    cerr << "next by array " << (unsigned int) shortLabel << endl;
-//#endif
-//    uint32_t offset = ntohl(ptr[shortLabel]);
-//#ifdef DEBUG_BUILD
-//    cerr << "still alive " << endl;
-//#endif
-//    if (offset != 0) {
-//        const unsigned char* currPtr = this->startPtr + offset;
-//        reallyDoProceed(currPtr, state);
-//    } else {
-//        state.setNextAsSink();
-//    }
-//}
-
 template <class T>
 void CompressedFSA2<T>::proceedToNext(const char c, State<T>& state) const {
 #ifdef DEBUG_BUILD

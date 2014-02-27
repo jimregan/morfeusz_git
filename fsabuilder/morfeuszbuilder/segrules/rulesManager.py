@@ -3,7 +3,7 @@ Created on 20 lut 2014
 
 @author: mlenart
 '''
-
+import logging
 from morfeuszbuilder.fsa.serializer import SimpleSerializer
 
 class RulesManager(object):
@@ -40,6 +40,7 @@ class RulesManager(object):
             optionsMap = self._key2Options(key)
             res.extend(self._serializeOptionsMap(optionsMap))
             res.extend(self._serializeDFA(dfa))
+        logging.info('segmentation rules size: %s bytes', len(res))
         return res
     
     def _serializeOptionsMap(self, optionsMap):

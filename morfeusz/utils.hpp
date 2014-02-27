@@ -65,10 +65,6 @@ inline T* readFile(const char* fname) {
     ifs.read(reinterpret_cast<char*> (memblock), size);
     ifs.close();
     return memblock;
-    //    } 
-    //    else {
-    //        cerr << "Unable to open file " << fname << endl;
-    //    }
 }
 
 template <class OutputStream>

@@ -34,9 +34,11 @@ if ("${INPUT_DICTIONARY}" STREQUAL "")
    if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
     set (INPUT_DICTIONARY ${PROJECT_SOURCE_DIR}/input/empty.txt)
    else ()
-    set (INPUT_DICTIONARY ${PROJECT_SOURCE_DIR}/input/polimorf.txt)
+    set (INPUT_DICTIONARY ${PROJECT_SOURCE_DIR}/input/PoliMorfSmall.tab)
    endif ()
 endif ()
+# ADDITIONAL_INPUT_DICTIONARY
+set (ADDITIONAL_INPUT_DICTIONARY ${PROJECT_SOURCE_DIR}/input/dodatki.tab)
 
 # INPUT_TAGSET
 if ("${INPUT_TAGSET}" STREQUAL "")

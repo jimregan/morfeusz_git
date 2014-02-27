@@ -16,6 +16,7 @@ struct InterpretedChunk {
     std::vector<uint32_t> originalCodepoints;
     std::vector<uint32_t> lowercaseCodepoints;
     InterpsGroup interpsGroup;
+    bool shiftOrth;
 };
 
 #endif	/* INTERPRETEDCHUNK_HPP */

@@ -47,11 +47,8 @@ map<SegrulesOptions, SegrulesFSAType*> createSegrulesFSAsMap(const unsigned char
     const unsigned char* currPtr = fsasMapPtr;
     unsigned char fsasNum = *currPtr;
     currPtr++;
-    cerr << "FSAs number " << (int) fsasNum << endl;
     for (unsigned char i = 0; i < fsasNum; i++) {
-        cerr << "FSA " << (int) i << endl;
         SegrulesOptions options = deserializeOptions(currPtr);
-        cerr << options.at("aggl") << " '" << options.at("praet") << "'" << endl;
         SegrulesFSAType* fsa = deserializeFSA(currPtr);
         res[options] = fsa;
     }

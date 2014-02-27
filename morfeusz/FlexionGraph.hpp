@@ -59,6 +59,8 @@ private:
     void doRemoveNode(unsigned int node);
     
     void repairLastNodeNumbers();
+    
+    void repairOrthShifts();
 
     std::vector< std::vector<Edge> > graph;
     std::vector< const char* > node2ChunkStartPtr;
