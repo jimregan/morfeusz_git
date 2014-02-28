@@ -74,7 +74,6 @@ class PolimorfConverter4Analyzer(object):
                 tagnum = int(tagnum)
                 namenum = int(namenum)
                 typenum = int(typenum)
-                print orth, base
                 yield (orth, Interpretation(orth, base, tagnum, namenum, typenum))
     
     def convert(self, inputLines):
