@@ -39,11 +39,11 @@
       <in>MorphInterpretation.cpp</in>
       <in>Tagset.cpp</in>
       <in>const.cpp</in>
+      <in>main.cpp</in>
       <in>morfeusz_analyzer.cpp</in>
       <in>morfeusz_generator.cpp</in>
       <in>test_recognize_dict.cpp</in>
       <in>test_result_equals.cpp</in>
-      <in>test_synth_dict.cpp</in>
     </df>
     <logicalFolder name="morfeusz"
                    displayName="morfeusz"
@@ -86,7 +86,7 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/morfeusz/morfeusz_generator</executablePath>
+          <executablePath>build/morfeusz/test_result_equals</executablePath>
         </makeTool>
       </makefileType>
       <item path="build/default_fsa.cpp" ex="false" tool="1" flavor2="4">
@@ -236,7 +236,7 @@
         <ccTool>
           <incDir>
             <pElem>morfeusz</pElem>
-            <pElem>/usr/lib/jvm/default-java/include</pElem>
+            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>jmorfeusz_EXPORTS</Elem>
@@ -479,6 +479,21 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+            <Elem>_OPTIMIZE__=1</Elem>
+          </preprocessorList>
+          <undefinedList>
+            <Elem>__NO_INLINE__</Elem>
+          </undefinedList>
+        </ccTool>
+      </item>
       <item path="morfeusz/morfeusz_analyzer.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
@@ -524,10 +539,6 @@
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
-        </ccTool>
-      </item>
-      <item path="morfeusz/test_synth_dict.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool>
         </ccTool>
       </item>
     </conf>

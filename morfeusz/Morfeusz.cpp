@@ -108,8 +108,7 @@ void Morfeusz::analyzeOneWord(
             srcNode++;
         }
         //        graph.getResults(*this->tagset, results);
-    }
-    else if (inputStart != inputEnd) {
+    } else if (inputStart != inputEnd) {
         this->appendIgnotiumToResults(string(inputStart, currInput), startNodeNum, results);
     }
     inputStart = currInput;
@@ -141,19 +140,23 @@ void Morfeusz::doAnalyzeOneWord(
                 vector<InterpsGroup> val(state.getValue());
                 for (unsigned int i = 0; i < val.size(); i++) {
                     InterpsGroup& ig = val[i];
-                    
+
                     SegrulesStateType newSegrulesState = segrulesState;
                     newSegrulesState.proceedToNext(ig.type);
-                    
+
                     if (!newSegrulesState.isSink()) {
                         bool shiftOrth = newSegrulesState.getLastTransitionValue();
                         InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig, shiftOrth};
+                        if (!accum.empty() && accum.back().shiftOrth) {
+                            ic.originalCodepoints.insert(
+                                    ic.originalCodepoints.begin(),
+                                    accum.back().originalCodepoints.begin(),
+                                    accum.back().originalCodepoints.end());
+                        }
                         accum.push_back(ic);
                         const char* newCurrInput = currInput;
                         doAnalyzeOneWord(newCurrInput, inputEnd, accum, graph, newSegrulesState);
                         accum.pop_back();
-                    }
-                    else {
                     }
                 }
             }
@@ -166,20 +169,24 @@ void Morfeusz::doAnalyzeOneWord(
         vector<InterpsGroup > val(state.getValue());
         for (unsigned int i = 0; i < val.size(); i++) {
             InterpsGroup& ig = val[i];
-            
+
             SegrulesStateType newSegrulesState = segrulesState;
             newSegrulesState.proceedToNext(ig.type);
-            
+
             if (newSegrulesState.isAccepting()) {
                 bool shiftOrth = newSegrulesState.getLastTransitionValue();
                 InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig, shiftOrth};
+                if (!accum.empty() && accum.back().shiftOrth) {
+                    ic.originalCodepoints.insert(
+                            ic.originalCodepoints.begin(),
+                            accum.back().originalCodepoints.begin(),
+                            accum.back().originalCodepoints.end());
+                }
                 accum.push_back(ic);
                 graph.addPath(accum);
                 accum.pop_back();
-            }
-            else if (!newSegrulesState.isSink()) {
-            }
-            else {
+            } else if (!newSegrulesState.isSink()) {
+            } else {
             }
         }
     }
