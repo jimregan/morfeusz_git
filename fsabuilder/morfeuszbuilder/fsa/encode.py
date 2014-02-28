@@ -114,6 +114,7 @@ class MorphEncoder(Encoder):
             res.extend(self._encodeEncodedForm(interp.lemma, withCasePattern=True))
             res.extend(self._encodeTagNum(interp.tagnum))
             res.extend(self._encodeNameNum(interp.namenum))
+        del interpsList
         return res
 
 class Encoder4Generator(Encoder):

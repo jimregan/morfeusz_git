@@ -41,7 +41,7 @@ class FSA(object):
         self.n += 1
         
         # debug
-        if self.n % 100000 == 0:
+        if self.n % 10000 == 0:
             logging.info(word)
             logging.info(str(self.register.getStatesNum()))
     #             allWords.append(word)
@@ -79,6 +79,7 @@ class FSA(object):
         
     def _addSorted(self, encodedWord, data):
         assert self.encodedPrevWord < encodedWord
+        assert type(data) == bytearray
         q = self.initialState
         i = 0
         while i <= len(encodedWord) and q.hasNext(encodedWord[i]):

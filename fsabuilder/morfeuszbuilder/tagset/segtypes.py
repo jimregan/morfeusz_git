@@ -4,6 +4,7 @@ Created on 17 lut 2014
 @author: mlenart
 '''
 import re
+import logging
 from morfeuszbuilder.utils import exceptions
 
 class Segtypes(object):
@@ -17,8 +18,13 @@ class Segtypes(object):
         self.segtype2Segnum = {}
         self.segnum2Segtype = {}
         self.patternsList = []
+        
+        self._tagnum2Segnum = {}
+        self._lemmaTagnum2Segnum = {}
+        
         self._readLexemes(segrulesConfigFile)
         self._readTags(segrulesConfigFile)
+        self._indexSegnums()
         
     def _validate(self, msg, lineNum, cond):
         if not cond:
@@ -73,18 +79,51 @@ class Segtypes(object):
             
             self.patternsList.append(SegtypePattern(lemma, pos + ':%', segnum))
     
+    def _debugSegnums(self):
+        for tagnum, segnum in self._tagnum2Segnum.items():
+            print self.tagset.getTag4Tagnum(tagnum), '-->', self.segnum2Segtype[segnum]
+        
+        for (base, tagnum), segnum in self._lemmaTagnum2Segnum.items():
+            print base, self.tagset.getTag4Tagnum(tagnum), '-->', self.segnum2Segtype[segnum]
+    
+    def _indexSegnums(self):
+#         logging.info('indexing segment type numbers...')
+        # index tags
+        for tag in self.tagset.getAllTags():
+            tagnum = self.tagset.getTagnum4Tag(tag)
+            for p in self.patternsList:
+                segnum = p.tryToMatch(None, tag)
+                if segnum >= 0 and tagnum not in self._tagnum2Segnum:
+                    self._tagnum2Segnum[tagnum] = segnum
+        
+        # index lexemes
+        for p in self.patternsList:
+            if p.lemma:
+                for tag in self.tagset.getAllTags():
+                    tagnum = self.tagset.getTagnum4Tag(tag)
+                    if not (p.lemma, tagnum) in self._lemmaTagnum2Segnum:
+                        segnum = p.tryToMatch(p.lemma, tag)
+                        if segnum != -1:
+                            self._lemmaTagnum2Segnum[(p.lemma, tagnum)] = segnum
+#         logging.info('indexing segment type numbers - done')
+#         self._debugSegnums()
+    
     def hasSegtype(self, segTypeString):
         return segTypeString in self.segtype2Segnum
     
     def getSegnum4Segtype(self, segTypeString):
         return self.segtype2Segnum[segTypeString]
     
-    def lexeme2Segnum(self, lemma, tag):
-        for p in self.patternsList:
-            res = p.tryToMatch(lemma, tag)
-            if res >= 0:
-                return res
-        return None
+    def lexeme2Segnum(self, lemma, tagnum):
+        res = self._lemmaTagnum2Segnum.get((lemma, tagnum), None)
+        if not res:
+            res = self._tagnum2Segnum.get(tagnum, None)
+        return res
+#         for p in self.patternsList:
+#             res = p.tryToMatch(lemma, tag)
+#             if res >= 0:
+#                 return res
+#         return None
     
 class SegtypePattern(object):
     

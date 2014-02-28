@@ -38,6 +38,9 @@ class Tagset(object):
                     assert tag not in res
                     res[tag] = int(tagNum)
     
+    def getAllTags(self):
+        return self._tag2tagnum.keys()
+    
     def getTagnum4Tag(self, tag):
         if tag in self._tag2tagnum:
             return self._tag2tagnum[tag]

@@ -46,7 +46,7 @@ def _parseOptions():
     Parses commandline args
     """
     parser = OptionParser()
-    parser.add_option('-i', '--input-files',
+    parser.add_option('--input-files',
                         type='string',
                         dest='inputFiles',
                         action='callback',
@@ -134,6 +134,7 @@ def _parseOptions():
     return opts
 
 def _concatFiles(inputFiles):
+#     return open(inputFiles[0], 'r')
     for inputFile in inputFiles:
         if inputFile:
             with open(inputFile, 'r') as f:
@@ -175,8 +176,8 @@ def _printStats(fsa):
 def buildAnalyzerFromPoliMorf(inputFiles, tagset, segmentRulesManager, trimSupneg):
     encoder = encode.MorphEncoder()
     fsa = FSA(encoder, tagset)
-    inputData = _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager, trimSupneg)
-    for word, data in inputData:
+    for word, data in _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager, trimSupneg):
+#         print word, data
         fsa.addEntry(word, data)
     fsa.close()
     logging.info('------')

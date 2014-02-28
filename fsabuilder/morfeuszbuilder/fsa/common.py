@@ -73,7 +73,7 @@ class Interpretation4Generator(object):
         return hash(self.getSortKey())
     
     def __unicode__(self):
-        return u'%s,(%d %s),%d,%d' % (self.lemma, self.orth.cutLength, self.orth.suffixToAdd, self.tagnum, self.namenum)
+        return u'<%s,(%d %s),%d,%d>' % (self.lemma.decode('utf8'), self.orth.cutLength, self.orth.suffixToAdd.decode('utf8'), self.tagnum, self.namenum)
     
     def __repr__(self):
         return unicode(self)

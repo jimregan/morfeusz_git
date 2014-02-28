@@ -12,6 +12,7 @@ def _mergeEntries(inputLines):
     prevInterps = None
     for key, interp in inputLines:
         key = key.lower()
+#         print key
         assert key
         if prevKey and prevKey == key:
             prevInterps.append(interp)
@@ -56,9 +57,8 @@ class PolimorfConverter4Analyzer(object):
             tagnum = self.tagset.getTagnum4Tag(tag)
             namenum = self.tagset.getNamenum4Name(name)
 #             typenum = tag2typenum.get(tag, 0)
-            typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tag)
-            yield '%s %s %d %d %d' % (
-                                      orth.encode(self.inputEncoding), 
+            typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
+            yield '%s %s %d %d %d' % (orth.encode(self.inputEncoding), 
                                       base.encode(self.inputEncoding), 
                                       tagnum, namenum, typenum)
     
@@ -91,12 +91,15 @@ class PolimorfConverter4Generator(object):
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip('\n')
             orth, base, tag, name = _parseLine(line)
-            tagnum = self.tagset.getTagnum4Tag(tag)
-            namenum = self.tagset.getNamenum4Name(name)
-            yield '%s %s %d %d' % (
+            if base:
+                tagnum = self.tagset.getTagnum4Tag(tag)
+                namenum = self.tagset.getNamenum4Name(name)
+                yield '%s %s %d %d' % (
                                    orth.encode(self.inputEncoding), 
                                    base.encode(self.inputEncoding), 
                                    tagnum, namenum)
+            else:
+                logging.warn('Ignoring line: %s', line.strip())
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
