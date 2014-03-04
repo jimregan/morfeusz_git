@@ -42,7 +42,7 @@ class PolimorfConverter4Analyzer(object):
         self.inputEncoding = inputEncoding
         self.segmentRulesManager = segmentRulesManager
         self.trimSupneg = trimSupneg
-
+    
     # we do it the ugly way (parse to plain text) because it is way more memory-efficient
     def _partiallyParseLines(self, inputLines):
         for line in inputLines:

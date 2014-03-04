@@ -17,6 +17,10 @@ using namespace std;
 
 int main(int argc, char** argv) {
     Morfeusz morfeusz;
+    if (argc > 1) {
+//        morfeusz.setSynthesizerFile(argv[1]);
+        printf("Using dictionary from %s\n", argv[1]);
+    }
 #ifdef _WIN32
     morfeusz.setCharset(CP852);
 #endif

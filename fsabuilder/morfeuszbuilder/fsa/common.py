@@ -22,6 +22,24 @@ class EncodedForm(object):
         self.suffixToAdd = targetWord[len(root):]
         self.casePattern = [c == c.upper() for c in root]
 
+class EncodedFormWithPrefix(object):
+    
+    def __init__(self, fromWord, targetWord):
+        assert type(fromWord) == unicode
+        assert type(targetWord) == unicode
+        bestEncodedForm = None
+        bestPrefixLength = -1
+        for prefixLength in range(min(len(targetWord), 5)):
+            encodedForm = EncodedForm(fromWord, targetWord[prefixLength:])
+            if not bestEncodedForm \
+            or len(encodedForm.suffixToAdd) + prefixLength < len(bestEncodedForm.suffixToAdd) + bestPrefixLength:
+                bestEncodedForm = encodedForm
+                bestPrefixLength = prefixLength
+        assert bestPrefixLength >= 0
+        self.cutLength = bestEncodedForm.cutLength
+        self.suffixToAdd = bestEncodedForm.suffixToAdd
+        self.prefixToAdd = targetWord[:bestPrefixLength]
+
 class Interpretation(object):
     
     def __init__(self, orth, base, tagnum, namenum, typenum):
@@ -51,7 +69,7 @@ class Interpretation4Generator(object):
     
     def __init__(self, orth, base, tagnum, namenum):
         self.lemma = base
-        self.orth = EncodedForm(base, orth)
+        self.orth = EncodedFormWithPrefix(base, orth)
         self.tagnum = tagnum
         self.namenum = namenum
     

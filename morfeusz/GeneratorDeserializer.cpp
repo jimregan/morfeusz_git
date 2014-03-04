@@ -16,9 +16,12 @@ GeneratorDeserializer::GeneratorDeserializer(const Environment& env)
 }
 
 void GeneratorDeserializer::deserializeOrth(const unsigned char*& ptr, EncodedOrth& orth) const {
-       // XXX uważać na poprawność danych
+    orth.prefixToAdd = (const char*) ptr;
+    ptr += strlen((const char*) ptr) + 1;
+    
     orth.suffixToCut = *ptr;
     ptr++;
+    
     orth.suffixToAdd = (const char*) ptr;
     ptr += strlen((const char*) ptr) + 1;
 }

@@ -14,6 +14,7 @@
 struct EncodedOrth {
     int suffixToCut;
     std::string suffixToAdd;
+    std::string prefixToAdd;
 };
 
 /*

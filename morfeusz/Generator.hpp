@@ -40,6 +40,8 @@ private:
         const std::string& lemma, 
         const std::vector<uint32_t>& lemmaCodepoints,
         std::vector<MorphInterpretation>& result) const;
+    
+    void appendString(const string& str, string& res) const;
 };
 
 #endif	/* GENERATOR_HPP */

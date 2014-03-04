@@ -40,9 +40,12 @@ class Encoder(object):
         assert typenum >= 0 and typenum < 256
         return bytearray([typenum])
     
-    def _encodeEncodedForm(self, form, withCasePattern):
+    def _encodeEncodedForm(self, form, withCasePattern, withPrefix=False):
         res = bytearray()
         assert form.cutLength < 256 and form.cutLength >= 0
+        if withPrefix:
+            res.extend(self.encodeWord(form.prefixToAdd, lowercase=False))
+            res.append(0)
         res.append(form.cutLength)
         res.extend(self.encodeWord(form.suffixToAdd, lowercase=False))
         res.append(0)
@@ -130,7 +133,7 @@ class Encoder4Generator(Encoder):
         res.append(firstByte)
         assert type(interpsList) == frozenset
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-            res.extend(self._encodeEncodedForm(interp.orth, withCasePattern=False))
+            res.extend(self._encodeEncodedForm(interp.orth, withCasePattern=False, withPrefix=True))
             res.extend(self._encodeTagNum(interp.tagnum))
             res.extend(self._encodeNameNum(interp.namenum))
         return res

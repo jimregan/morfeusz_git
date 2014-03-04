@@ -26,20 +26,31 @@ env(env) {
 Generator::~Generator() {
 }
 
-std::string Generator::decodeOrth(
-        const EncodedOrth& orth,
-        const std::vector<uint32_t>& lemma) const {
-    string res;
-    for (unsigned int i = 0; i < lemma.size() - orth.suffixToCut; i++) {
-        uint32_t cp = lemma[i];
-        env.getCharsetConverter().append(cp, res);
-    }
-    const char* suffixPtr = orth.suffixToAdd.c_str();
-    const char* suffixEnd = suffixPtr + orth.suffixToAdd.length();
+void Generator::appendString(const string& str, string& res) const {
+    const char* suffixPtr = str.c_str();
+    const char* suffixEnd = suffixPtr + str.length();
     while (suffixPtr != suffixEnd) {
         uint32_t cp = UTF8CharsetConverter().next(suffixPtr, suffixEnd);
         env.getCharsetConverter().append(cp, res);
     }
+}
+
+std::string Generator::decodeOrth(
+        const EncodedOrth& orth,
+        const std::vector<uint32_t>& lemma) const {
+    string res;
+    this->appendString(orth.prefixToAdd, res);
+    for (unsigned int i = 0; i < lemma.size() - orth.suffixToCut; i++) {
+        uint32_t cp = lemma[i];
+        env.getCharsetConverter().append(cp, res);
+    }
+    this->appendString(orth.suffixToAdd, res);
+//    const char* suffixPtr = orth.suffixToAdd.c_str();
+//    const char* suffixEnd = suffixPtr + orth.suffixToAdd.length();
+//    while (suffixPtr != suffixEnd) {
+//        uint32_t cp = UTF8CharsetConverter().next(suffixPtr, suffixEnd);
+//        env.getCharsetConverter().append(cp, res);
+//    }
     return res;
 }
 
