@@ -39,7 +39,7 @@ public:
     Morfeusz();
     //    explicit Morfeusz(const std::string& filename);
     void setAnalyzerFile(const std::string& filename);
-    void setSynthesizerFile(const std::string& filename);
+    void setGeneratorFile(const std::string& filename);
     virtual ~Morfeusz();
     //    Morfeusz(const Morfeusz& orig);
     ResultsIterator analyze(const std::string& text) const;
@@ -76,6 +76,9 @@ private:
     FSAType* analyzerFSA;
     std::map<SegrulesOptions, SegrulesFSAType*> segrulesFSAsMap;
     bool isAnalyzerFSAFromFile;
+    
+    const unsigned char* generatorPtr;
+    bool isGeneratorFSAFromFile;
     Generator generator;
 //    const CharsetConverter* charsetConverter;
 //    const Tagset* tagset;

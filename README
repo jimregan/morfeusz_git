@@ -71,11 +71,11 @@ Customizing build process
 
 Available custom CMake variables:
 INPUT_TAGSET - tagset file
-INPUT_DICTIONARY - dictionary file (can use empty one from input/empty.txt)
+INPUT_DICTIONARIES - comma-separated list of dictionary files (can use empty one from input/empty.txt)
 TARGET_DIR - a dir where packages built by CMake are put
 
 Execute like following:
-cmake -D INPUT_TAGSET=<file1> -D INPUT_DICTIONARY=<file2> ..
+cmake -D INPUT_TAGSET=<file1> -D INPUT_DICTIONARIES="<dict_file1>,<dict_file2>" ..
 
 **************************
 Notes on cross-compilation

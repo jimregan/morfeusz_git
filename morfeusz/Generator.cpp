@@ -20,10 +20,17 @@ Generator::Generator(
         const Environment& env)
 : deserializer(env),
 fsa(SynthFSAType::getFSA(ptr, deserializer)),
-env(env) {
+env(env),
+generatorPtr(ptr) {
 }
 
 Generator::~Generator() {
+}
+
+void Generator::setGeneratorPtr(const unsigned char* ptr) {
+    delete this->fsa;
+    this->generatorPtr = ptr;
+    this->fsa = SynthFSAType::getFSA(ptr, deserializer);
 }
 
 void Generator::appendString(const string& str, string& res) const {

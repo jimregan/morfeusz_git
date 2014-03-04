@@ -43,7 +43,9 @@ analyzerPtr(DEFAULT_FSA),
 analyzerFSA(FSAType::getFSA(analyzerPtr, *initializeAnalyzerDeserializer())),
 segrulesFSAsMap(createSegrulesFSAsMap(analyzerPtr)),
 isAnalyzerFSAFromFile(false),
-generator(DEFAULT_SYNTH_FSA, env),
+generatorPtr(DEFAULT_SYNTH_FSA),
+isGeneratorFSAFromFile(false),
+generator(generatorPtr, env),
 options(createDefaultOptions()) {
 
 }
@@ -68,6 +70,14 @@ void Morfeusz::setAnalyzerFile(const string& filename) {
     this->analyzerFSA = FSA< vector<InterpsGroup> > ::getFSA(analyzerPtr, *initializeAnalyzerDeserializer());
     this->segrulesFSAsMap = createSegrulesFSAsMap(analyzerPtr);
     this->isAnalyzerFSAFromFile = true;
+}
+
+void Morfeusz::setGeneratorFile(const string& filename) {
+    if (this->isGeneratorFSAFromFile) {
+        delete this->generatorPtr;
+    }
+    this->generatorPtr = readFile<unsigned char>(filename.c_str());
+    this->generator.setGeneratorPtr(generatorPtr);
 }
 
 Morfeusz::~Morfeusz() {

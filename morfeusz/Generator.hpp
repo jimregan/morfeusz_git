@@ -24,12 +24,14 @@ public:
             const unsigned char* ptr, 
             const Environment& env);
     void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const;
+    void setGeneratorPtr(const unsigned char* ptr);
     virtual ~Generator();
 private:
 //    Generator(const SynthDeserializer& deserializer);
     GeneratorDeserializer deserializer;
     const SynthFSAType* fsa;
     const Environment& env;
+    const unsigned char* generatorPtr;
     
     std::string decodeOrth(
         const EncodedOrth& orth, 
