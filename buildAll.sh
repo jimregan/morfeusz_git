@@ -33,8 +33,8 @@ function build {
     cd "$srcDir"
 }
 
-build Linux amd64 package package-java package-python package-builder
+#~ build Linux amd64 package package-java package-python package-builder
 build Linux i386 package package-java package-builder
-build Windows amd64 package package-java
-build Windows i386 package package-java
-build Darwin amd64 package package-java package-builder
+#~ build Windows amd64 package package-java
+#~ build Windows i386 package package-java
+#~ build Darwin amd64 package package-java package-builder

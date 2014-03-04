@@ -36,21 +36,67 @@ typedef State< std::vector<InterpsGroup > > StateType;
 
 class Morfeusz {
 public:
+    
+    /**
+     * Create new instance of Morfeusz class.
+     */
     Morfeusz();
-    //    explicit Morfeusz(const std::string& filename);
+    
+    /**
+     * Set a file used for morphological analysis.
+     * 
+     * @param filename
+     */
     void setAnalyzerFile(const std::string& filename);
+    
+    /**
+     * Set a file used for morphological synthesis.
+     * 
+     * @param filename
+     */
     void setGeneratorFile(const std::string& filename);
+    
     virtual ~Morfeusz();
-    //    Morfeusz(const Morfeusz& orig);
+    
+    /**
+     * Analyze given text and return the results as iterator.
+     * 
+     * @param text - text for morphological analysis
+     * @return - iterator over morphological analysis results
+     */
     ResultsIterator analyze(const std::string& text) const;
+    
+    /**
+     * Perform morphological analysis on a given text and put results in a vector.
+     * 
+     * @param text - text to be analyzed
+     * @param result - results vector
+     */
     void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const;
-
-    void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const;
+    
+    /**
+     * Perform morphological synthesis on a given lemma and return the results as iterator.
+     * 
+     * @param text - text for morphological analysis
+     * @return - iterator over morphological analysis results
+     */
     ResultsIterator generate(const std::string& lemma) const;
 
+    /**
+     * Perform morphological synthesis on a given lemma and put results in a vector.
+     * 
+     * @param lemma - lemma to be analyzed
+     * @param result - results vector
+     */
+    void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const;
+
+    /**
+     * Set encoding for input and output string objects.
+     * 
+     * @param encoding
+     */
     void setCharset(MorfeuszCharset encoding);
 
-    //    Morfeusz();
     friend class ResultsIterator;
 private:
 
