@@ -2,13 +2,13 @@
 ########## generate default dictionary data #################
 add_custom_command (
         OUTPUT "${INPUT_DICTIONARY_CPP}"
-        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/buildfsa.py --analyzer --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_DICTIONARY_CPP}" "--tagset-file=${INPUT_TAGSET}" "--segments-file=${SEGMENT_RULES_FILE}" --cpp --serialization-method=SIMPLE --trim-supneg
+        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/buildfsa.py --analyzer --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_DICTIONARY_CPP}" "--tagset-file=${INPUT_TAGSET}" "--segments-file=${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1 --trim-supneg
         DEPENDS "${INPUT_DICTIONARY}"
         COMMENT "Building default dictionary C++ file"
 )
 add_custom_command (
         OUTPUT "${INPUT_SYNTH_DICTIONARY_CPP}"
-        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/buildfsa.py --generator --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_SYNTH_DICTIONARY_CPP}" "--tagset-file=${INPUT_TAGSET}" --cpp --serialization-method=SIMPLE
+        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/buildfsa.py --generator --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_SYNTH_DICTIONARY_CPP}" "--tagset-file=${INPUT_TAGSET}" --cpp --serialization-method=V1
         DEPENDS "${INPUT_DICTIONARY}"
         COMMENT "Building default dictionary C++ file"
 )
