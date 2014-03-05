@@ -5,7 +5,7 @@ Created on 21 paź 2013
 
 @author: mlenart
 '''
-
+import os
 import sys
 import logging
 import codecs
@@ -41,6 +41,14 @@ def _checkExactlyOneOptionSet(optsList, parser, msg):
 
 def _parseListCallback(option, opt, value, parser):
     setattr(parser.values, option.dest, value.split(','))
+
+def _checkOpen(filename, mode):
+    try:
+        with open(filename, mode) as _:
+            pass
+    except IOError as ex:
+        print >> sys.stderr, str(ex)
+        exit(1)
 
 def _parseOptions():
     """
@@ -124,6 +132,9 @@ def _parseOptions():
     _checkOption(opts.serializationMethod, parser, "Serialization method file is missing")
     _checkExactlyOneOptionSet([opts.analyzer, opts.generator], 
                               parser, 'Must set exactly one FSA type: --analyzer or --generator')
+    for filename in opts.inputFiles:
+        _checkOpen(filename, 'r')
+    _checkOpen(opts.outputFile, 'w')
     if opts.analyzer:
         _checkOption(opts.segmentsFile, parser, "Segment rules file is missing")
     
