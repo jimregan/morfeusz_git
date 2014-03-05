@@ -132,11 +132,14 @@ def _parseOptions():
     _checkOption(opts.serializationMethod, parser, "Serialization method file is missing")
     _checkExactlyOneOptionSet([opts.analyzer, opts.generator], 
                               parser, 'Must set exactly one FSA type: --analyzer or --generator')
+    
+    _checkOpen(opts.tagsetFile, 'r')
     for filename in opts.inputFiles:
         _checkOpen(filename, 'r')
     _checkOpen(opts.outputFile, 'w')
     if opts.analyzer:
         _checkOption(opts.segmentsFile, parser, "Segment rules file is missing")
+        _checkOpen(opts.segmentsFile, 'r')
     
     if not opts.serializationMethod.upper() in [SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2]:
         print >> sys.stderr, '--serialization-method must be one of ('+str([SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2])+')'
