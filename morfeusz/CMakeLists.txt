@@ -57,7 +57,6 @@ set(INCLUDE_FILES
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
 set_source_files_properties ( SOURCE "${INPUT_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
-# add_dependencies (libmorfeusz dupa)
 set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz")
 
 add_executable (morfeusz_analyzer morfeusz_analyzer.cpp)

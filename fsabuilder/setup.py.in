@@ -5,6 +5,8 @@ if __name__ == '__main__':
     setup(name='${MORFEUSZBUILDER}',
           author='${CPACK_PACKAGE_VENDOR}',
           author_email='${CPACK_PACKAGE_CONTACT}',
+          description='Finite state automata builder for Morfeusz.',
           version='${MORFEUSZBUILDER_VERSION}',
-          packages=['morfeuszbuilder', 'morfeuszbuilder.fsa'],
-          scripts = ['buildfsa.py'])
+          packages=['morfeuszbuilder', 'morfeuszbuilder.fsa', 'morfeuszbuilder.tagset', 'morfeuszbuilder.segrules', 'morfeuszbuilder.utils'],
+          scripts = ['buildfsa.py'],
+          requires=['pyparsing'])

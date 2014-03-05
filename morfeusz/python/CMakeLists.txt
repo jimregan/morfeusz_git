@@ -31,7 +31,7 @@ add_custom_command (OUTPUT ${SETUP_PY}
                        ARGS setup.py build
                        DEPENDS ${DEPS})
 
-add_custom_target (pymorfeusz DEPENDS ${SETUP_PY} morfeusz)
+add_custom_target (pymorfeusz DEPENDS ${SETUP_PY} libmorfeusz)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_custom_target (install-python

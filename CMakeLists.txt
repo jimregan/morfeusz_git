@@ -13,13 +13,13 @@ enable_testing()
 
 # ARCHITECTURE
 if ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
-    set(ARCHITECTURE "amd64")
+    set (ARCHITECTURE "amd64")
 elseif ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86")
-    set(ARCHITECTURE "i386")
+    set (ARCHITECTURE "i386")
 elseif ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "")
     message (FATAL_ERROR "CMAKE_SYSTEM_PROCESSOR is not set (should be x86 or x86_64)")
 else ()
-    message (FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_PROCESSOR}")
+    set (ARCHITECTURE "${CMAKE_SYSTEM_PROCESSOR}")
 endif ()
 
 # PROJECT_VERSION
@@ -28,8 +28,8 @@ set (PROJECT_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morf
 ### USER DEFINED VARIABLES
 
 # INPUT_DICTIONARY_CPP
-set (INPUT_DICTIONARY_CPP "${CMAKE_CURRENT_BINARY_DIR}/default_fsa.cpp")
-set (INPUT_SYNTH_DICTIONARY_CPP "${CMAKE_CURRENT_BINARY_DIR}/default_synth_fsa.cpp")
+set (INPUT_DICTIONARY_CPP "${PROJECT_SOURCE_DIR}/default_fsa.cpp")
+set (INPUT_SYNTH_DICTIONARY_CPP "${PROJECT_SOURCE_DIR}/default_synth_fsa.cpp")
 if ("${INPUT_DICTIONARIES}" STREQUAL "")
    if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
     set (INPUT_DICTIONARIES ${PROJECT_SOURCE_DIR}/input/empty.txt)
@@ -69,6 +69,30 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # but exclude libgcc_eh.a as it causes "multiple definition of (...)" errors
     set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc -Wl,--exclude-libs,libgcc_eh.a")
     set (CMAKE_EXE_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (MACOSX_RPATH TRUE)
+endif ()
+
+########## Setup RPATH ##########
+
+# use, i.e. don't skip the full RPATH for the build tree
+set (CMAKE_SKIP_BUILD_RPATH  FALSE)
+
+# when building, don't use the install RPATH already
+# (but later on when installing)
+set (CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+
+set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+
+# add the automatically determined parts of the RPATH
+# which point to directories outside the build tree to the install RPATH
+set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+# the RPATH to be used when installing, but only if it's not a system directory
+list (FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+if ("${isSystemDir}" STREQUAL "-1")
+   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif ()
 
 ########## Configure CPack ##########
@@ -81,11 +105,12 @@ set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Morphological analyzer for Polish langua
 set (CPACK_OUTPUT_FILE_PREFIX "${TARGET_DIR}")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set (CPACK_GENERATOR "DEB" "STGZ" "TGZ")
+    set (CPACK_GENERATOR "DEB" "TGZ")
     #debian
     set (CPACK_DEBIAN_PACKAGE_NAME "morfeusz")
     set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT}")
     set (CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6 (>= 4.6)")
+    set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "${ARCHITECTURE}")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if (${ARCHITECTURE} MATCHES "amd64")
         set (CPACK_GENERATOR "NSIS64" "TGZ")
@@ -93,7 +118,7 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         set (CPACK_GENERATOR "NSIS" "TGZ")
     endif ()
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set (CPACK_GENERATOR "STGZ" "TGZ")
+    set (CPACK_GENERATOR "TGZ")
 endif ()
 
 include (CPack)

@@ -1,5 +1,5 @@
 
-set (MORFEUSZBUILDER "morfeuszbuilder")
+set (MORFEUSZBUILDER "morfeusz-builder")
 set (MORFEUSZBUILDER_VERSION "0.1.0")
 set (DIST_PATH "${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -42,7 +42,7 @@ if (${UNIX})
     
     if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         add_custom_target (package-builder-deb-sdist
-            COMMAND python ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}"
+            COMMAND python ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --package "${MORFEUSZBUILDER}" --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --depends python-pyparsing
             DEPENDS builder-setup
         )
         add_custom_target (package-builder-deb-build
@@ -51,7 +51,7 @@ if (${UNIX})
             DEPENDS package-builder-deb-sdist
         )
         add_custom_target(package-builder-deb
-            COMMAND mkdir -p "${TARGET_DIR}" && cp ${CMAKE_CURRENT_BINARY_DIR}/deb_dist/python-${MORFEUSZBUILDER}*.deb "${TARGET_DIR}"
+            COMMAND mkdir -p "${TARGET_DIR}" && cp ${CMAKE_CURRENT_BINARY_DIR}/deb_dist/${MORFEUSZBUILDER}*.deb "${TARGET_DIR}"
             DEPENDS package-builder-deb-build
         )
         list (APPEND PACKAGE_DEPENDS package-builder-deb)

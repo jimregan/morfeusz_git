@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding:utf-8 -*-
 '''
 Created on 21 paź 2013

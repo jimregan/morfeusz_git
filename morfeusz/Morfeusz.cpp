@@ -103,7 +103,7 @@ void Morfeusz::analyzeOneWord(
     SegrulesOptions opts;
     opts["aggl"] = "isolated";
     opts["praet"] = "split";
-    SegrulesFSAType* segrulesFSA = this->segrulesFSAsMap.at(opts);
+    SegrulesFSAType* segrulesFSA = (*(this->segrulesFSAsMap.find(opts))).second;
     doAnalyzeOneWord(currInput, inputEnd, accum, graph, segrulesFSA->getInitialState());
     if (!graph.empty()) {
         InterpretedChunksDecoder interpretedChunksDecoder(env);

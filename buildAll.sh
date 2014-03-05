@@ -34,7 +34,7 @@ function build {
 }
 
 #~ build Linux amd64 package package-java package-python package-builder
-build Linux i386 package package-java package-builder
+#~ LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 package package-java package-builder
 #~ build Windows amd64 package package-java
 #~ build Windows i386 package package-java
-#~ build Darwin amd64 package package-java package-builder
+build Darwin amd64 package package-java package-builder
