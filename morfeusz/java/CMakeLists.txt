@@ -39,7 +39,8 @@ set (CMAKE_JAVA_TARGET_OUTPUT_NAME jmorfeusz)
 # build jmorfeusz
 file(GLOB_RECURSE JAVA_SOURCES ${JAVA_SRC_DIR} "*.java")
 add_jar (jmorfeusz
-    SOURCES "${JAVA_SOURCES}" )
+    SOURCES "${JAVA_SOURCES}"
+    DEPENDS libjmorfeusz)
 
 add_custom_target(jmorfeusz-copy-readme
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/README" "${CMAKE_CURRENT_BINARY_DIR}/README")

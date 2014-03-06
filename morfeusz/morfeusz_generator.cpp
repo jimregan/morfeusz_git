@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     morfeusz.setCharset(CP852);
 #endif
 #ifdef _WIN64
-    morfeusz.ssetCharsetCP852);
+    morfeusz.setCharset(CP852);
 #endif
     string line;
     while (getline(cin, line)) {

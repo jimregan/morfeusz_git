@@ -18,8 +18,10 @@ elseif ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86")
     set (ARCHITECTURE "i386")
 elseif ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "")
     message (FATAL_ERROR "CMAKE_SYSTEM_PROCESSOR is not set (should be x86 or x86_64)")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (ARCHITECTURE "amd64")
 else ()
-    set (ARCHITECTURE "${CMAKE_SYSTEM_PROCESSOR}")
+    message (FATAL_ERROR "Invalid architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif ()
 
 # PROJECT_VERSION
