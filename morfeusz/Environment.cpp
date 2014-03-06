@@ -13,8 +13,13 @@ Environment::Environment(
         const Tagset& generatorTagset,
         MorfeuszCharset charset)
 : currentCharsetConverter(getCharsetConverter(charset)),
+        utf8CharsetConverter(),
+        isoCharsetConverter(),
+        cp1250CharsetConverter(),
+        cp852CharsetConverter(),
         analyzerTagset(analyzerTagset),
-generatorTagset(generatorTagset) {
+        generatorTagset(generatorTagset),
+        caseConverter() {
 
 }
 
