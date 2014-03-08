@@ -70,6 +70,6 @@ class State(object):
     
     def debug(self):
         print '----------------'
-        print 'STATE:', self.idx
+        print 'STATE:', self.idx, 'accepting', self.isAccepting()
         for label, s in self.transitionsMap.iteritems():
             print label, '-->', s.idx

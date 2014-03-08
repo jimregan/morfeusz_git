@@ -29,10 +29,19 @@ public:
             unsigned int endNode,
             const InterpretedChunk& interpretedChunk,
             OutputIterator out) {
-        string orth = env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
+        string orth;
+        string lemmaPrefix;
+        for (unsigned int i = 0; i < interpretedChunk.prefixChunks.size(); i++) {
+            const InterpretedChunk& prefixChunk = interpretedChunk.prefixChunks[i];
+            orth += env.getCharsetConverter().toString(prefixChunk.originalCodepoints);
+            lemmaPrefix += convertLemma(
+                    prefixChunk.lowercaseCodepoints,
+                    prefixChunk.interpsGroup.interps[0].lemma);
+        }
+        orth += env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
         for (unsigned int i = 0; i < interpretedChunk.interpsGroup.interps.size(); i++) {
             const EncodedInterpretation& ei = interpretedChunk.interpsGroup.interps[i];
-            string lemma = convertLemma(
+            string lemma = lemmaPrefix + convertLemma(
                     interpretedChunk.lowercaseCodepoints,
                     ei.lemma);
             *out = MorphInterpretation(

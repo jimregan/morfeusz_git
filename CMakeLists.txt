@@ -30,13 +30,13 @@ set (PROJECT_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morf
 ### USER DEFINED VARIABLES
 
 # INPUT_DICTIONARY_CPP
-set (INPUT_DICTIONARY_CPP "${PROJECT_SOURCE_DIR}/default_fsa.cpp")
-set (INPUT_SYNTH_DICTIONARY_CPP "${PROJECT_SOURCE_DIR}/default_synth_fsa.cpp")
+set (INPUT_DICTIONARY_CPP "${PROJECT_SOURCE_DIR}/../default_fsa.cpp")
+set (INPUT_SYNTH_DICTIONARY_CPP "${PROJECT_SOURCE_DIR}/../default_synth_fsa.cpp")
 if ("${INPUT_DICTIONARIES}" STREQUAL "")
    if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
     set (INPUT_DICTIONARIES ${PROJECT_SOURCE_DIR}/input/empty.txt)
    else ()
-    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/PoliMorf-0.6.7.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
+    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/PoliMorfSmall.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
    endif ()
 endif ()
 

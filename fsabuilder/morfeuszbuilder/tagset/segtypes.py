@@ -26,6 +26,8 @@ class Segtypes(object):
         self._readTags(segrulesConfigFile)
         self._indexSegnums()
         
+        print self.segnum2Segtype
+        
     def _validate(self, msg, lineNum, cond):
         if not cond:
             raise exceptions.ConfigFileException(self.filename, lineNum, msg)
@@ -77,7 +79,7 @@ class Segtypes(object):
             
             lemma, pos = pattern.split(':')
             
-            self.patternsList.append(SegtypePattern(lemma, pos + ':%', segnum))
+            self.patternsList.append(SegtypePattern(lemma, '%s|%s:%%' % (pos, pos), segnum))
     
     def _debugSegnums(self):
         for tagnum, segnum in self._tagnum2Segnum.items():

@@ -35,18 +35,21 @@ void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
     //    debugGraph(this->graph);
     for (unsigned int i = 0; i < path.size(); i++) {
         const InterpretedChunk& chunk = path[i];
-        if (!chunk.shiftOrth) {
+        if (!chunk.orthWasShifted) {
             if (&chunk == &(path.front())
                     && &chunk == &(path.back())) {
                 Edge e = {chunk, UINT_MAX};
                 this->addStartEdge(e);
-            } else if (&chunk == &(path.front())) {
+            }
+            else if (&chunk == &(path.front())) {
                 Edge e = {chunk, this->graph.empty() ? 1 : (unsigned int) this->graph.size()};
                 this->addStartEdge(e);
-            } else if (&chunk == &(path.back())) {
+            }
+            else if (&chunk == &(path.back())) {
                 Edge e = {chunk, UINT_MAX};
                 this->addMiddleEdge((unsigned int) this->graph.size(), e);
-            } else {
+            }
+            else {
                 Edge e = {chunk, (int) this->graph.size() + 1};
                 this->addMiddleEdge((unsigned int) this->graph.size(), e);
             }

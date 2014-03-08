@@ -10,6 +10,12 @@
     </logicalFolder>
     <logicalFolder name="f1" displayName="input" projectFiles="true">
     </logicalFolder>
+    <logicalFolder name="java"
+                   displayName="java"
+                   projectFiles="true"
+                   root="build1/morfeusz/java">
+      <itemPath>build1/morfeusz/java/swigJAVA.cpp</itemPath>
+    </logicalFolder>
     <df root="morfeusz" name="0">
       <df name="charset">
         <in>CaseConverter.cpp</in>
@@ -60,6 +66,10 @@
       <itemPath>build/morfeusz/morfeuszJAVA_wrap.cxx</itemPath>
       <itemPath>build/morfeusz/morfeuszPYTHON_wrap.cxx</itemPath>
     </logicalFolder>
+    <logicalFolder name="xxx" displayName="xxx" projectFiles="true" root="..">
+      <itemPath>../default_fsa.cpp</itemPath>
+      <itemPath>../default_synth_fsa.cpp</itemPath>
+    </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false"
@@ -95,6 +105,10 @@
           <executablePath>build/morfeusz/morfeusz_analyzer</executablePath>
         </makeTool>
       </makefileType>
+      <item path="../default_fsa.cpp" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="../default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
+      </item>
       <item path="build/default_fsa.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="build/default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
@@ -107,6 +121,7 @@
             flavor2="8">
         <ccTool>
           <incDir>
+            <pElem>build</pElem>
             <pElem>/usr/lib/jvm/default-java/include</pElem>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz/java</pElem>
@@ -130,6 +145,7 @@
             flavor2="8">
         <ccTool>
           <incDir>
+            <pElem>build</pElem>
             <pElem>/usr/include/python2.7</pElem>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz/python</pElem>
@@ -152,11 +168,14 @@
             tool="1"
             flavor2="4">
       </item>
+      <item path="build1/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
+      </item>
       <item path="default_fsa.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
           <incDir>
+            <pElem>build1</pElem>
             <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
+            <pElem>build1/morfeusz</pElem>
           </incDir>
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
@@ -166,8 +185,9 @@
       <item path="default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
           <incDir>
+            <pElem>build1</pElem>
             <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
+            <pElem>build1/morfeusz</pElem>
           </incDir>
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
@@ -234,18 +254,24 @@
           </undefinedList>
         </ccTool>
       </folder>
-      <folder path="morfeusz">
+      <folder path="java">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
+            <pElem>build1</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>libjmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="morfeusz/java">
         <ccTool>
           <incDir>
+            <pElem>build</pElem>
             <pElem>morfeusz</pElem>
-            <pElem>/usr/lib/jvm/default-java/include</pElem>
+            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>libjmorfeusz_EXPORTS</Elem>
@@ -255,6 +281,7 @@
       <folder path="morfeusz/python">
         <ccTool>
           <incDir>
+            <pElem>build</pElem>
             <pElem>/usr/include/python2.7</pElem>
             <pElem>morfeusz</pElem>
           </incDir>
@@ -269,6 +296,18 @@
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
+        </ccTool>
+      </folder>
+      <folder path="xxx">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <item path="morfeusz/Environment.cpp" ex="false" tool="1" flavor2="4">
@@ -368,26 +407,18 @@
         </ccTool>
       </item>
       <item path="morfeusz/charset/CaseConverter.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/charset/CharsetConverter.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/charset/caseconv.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/charset/conversion_tables.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
@@ -476,12 +507,8 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/test_recognize_dict.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="0">

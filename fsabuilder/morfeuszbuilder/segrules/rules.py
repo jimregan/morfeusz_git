@@ -123,3 +123,18 @@ class ShiftOrthRule(UnaryRule):
     
     def __str__(self):
         return u'(' + str(self.child) + ')>'
+
+class ShiftOrthSameTypeRule(UnaryRule):
+    
+    def __init__(self, child):
+        super(ShiftOrthSameTypeRule, self).__init__(child)
+    
+    def addToNFA(self, fsa):
+        raise ValueError()
+    
+    def _doAddToNFA(self, startState, endState):
+        self.child._doAddToNFA(startState, endState)
+        startState.setTransitionData(self.child.segnum, 2)
+    
+    def __str__(self):
+        return u'(' + str(self.child) + ')!>'

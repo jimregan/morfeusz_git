@@ -112,7 +112,7 @@ moze_interp(z_on_agl)
 moze_interp(z_on_agl on_agl)
 
 # Liczba zapisana jako ciąg cyfr:
-moze_interp( dig>* dig )
+moze_interp( dig!>+ )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
