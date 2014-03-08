@@ -7,11 +7,7 @@ praet=split composite
 
 #define moze_interp(segmenty) wsz_interp segmenty wsz_interp
 
-# Segmenty występujące samodzielnie:
-#
-# domyślny typ segmentu samodzielnego:
-samodz
-z_on_agl
+dig>* dig
 
 [segment types]
 naj

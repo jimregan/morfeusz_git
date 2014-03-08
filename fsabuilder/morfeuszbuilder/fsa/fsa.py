@@ -119,3 +119,7 @@ class FSA(object):
             state.reverseOffset = currReverseOffset
         for state in self.initialState.dfs(set()):
             state.offset = currReverseOffset - state.reverseOffset
+    
+    def debug(self):
+        for state in self.initialState.dfs(set()):
+            state.debug()

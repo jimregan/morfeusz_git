@@ -3,6 +3,7 @@
 #include <cassert>
 #include <climits>
 #include <vector>
+#include <iostream>
 #include "utils.hpp"
 #include "FlexionGraph.hpp"
 
@@ -14,6 +15,7 @@ void FlexionGraph::addStartEdge(const Edge& e) {
         this->graph.push_back(vector<Edge>());
         this->node2ChunkStartPtr.push_back(e.chunk.chunkStartPtr);
     }
+//    cerr << string(e.chunk.chunkStartPtr) << endl;
     assert(this->node2ChunkStartPtr[0] == e.chunk.chunkStartPtr);
     this->graph[0].push_back(e);
 }

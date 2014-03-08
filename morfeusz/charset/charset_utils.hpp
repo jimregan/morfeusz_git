@@ -17,6 +17,7 @@ static inline std::set<int> initializeWhitespaces() {
     res.insert(0x00);
     res.insert(0x0A);
     res.insert(0x20);
+    res.insert('\t');
     return res;
 }
 

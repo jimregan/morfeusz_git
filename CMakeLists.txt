@@ -47,7 +47,7 @@ endif ()
 
 # SEGMENT_RULES_FILE
 if ("${SEGMENT_RULES_FILE}" STREQUAL "")
-   set (SEGMENT_RULES_FILE ${PROJECT_SOURCE_DIR}/input/segmenty.dat)
+   set (SEGMENT_RULES_FILE "${PROJECT_SOURCE_DIR}/input/segmenty.dat")
 endif ()
 
 message ("Will use ${INPUT_DICTIONARIES} as default dictionary input, ${INPUT_TAGSET} as tagset and ${SEGMENT_RULES_FILE} as segmentation rules")
@@ -61,9 +61,9 @@ endif ()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
-    if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
-    endif ()
+    #~ if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+        #~ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+    #~ endif ()
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -O2")
     set (CMAKE_SHARED_LIBRARY_PREFIX "")

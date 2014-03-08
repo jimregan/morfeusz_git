@@ -45,7 +45,7 @@ class RulesNFAState(object):
             yield self
             for _, nextStates in self.transitionsMap.iteritems():
                 for state in nextStates:
-                    for state1 in state.dfs():
+                    for state1 in state.dfs(visitedStates):
                         yield state1
     
     def debug(self):

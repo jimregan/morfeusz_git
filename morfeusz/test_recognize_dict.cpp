@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
         string name = splitVector[3];
 
         vector<MorphInterpretation> res;
+        cerr << "ANALYZE '" << orth << "'" << endl;
         morfeusz.analyze(orth, res);
         bool found = false;
 

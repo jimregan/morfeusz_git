@@ -30,7 +30,7 @@ static void deserializeLemma(const unsigned char*& ptr, EncodedLemma& lemma) {
     lemma.suffixToAdd = (const char*) ptr;
     ptr += strlen((const char*) ptr) + 1;
     assert(lemma.casePattern.size() == 0);
-    lemma.casePattern.resize(MAX_WORD_SIZE, false);
+//    lemma.casePattern.resize(MAX_WORD_SIZE, false);
     uint8_t casePatternType = *ptr;
     ptr++;
     uint8_t prefixLength;
@@ -42,7 +42,8 @@ static void deserializeLemma(const unsigned char*& ptr, EncodedLemma& lemma) {
             prefixLength = *ptr;
             ptr++;
             for (unsigned int i = 0; i < prefixLength; i++) {
-                lemma.casePattern[i] = true;
+//                lemma.casePattern[i] = true;
+                lemma.casePattern.push_back(true);
             }
 //            lemma.casePattern.resize(prefixLength, true);
             break;
@@ -52,7 +53,8 @@ static void deserializeLemma(const unsigned char*& ptr, EncodedLemma& lemma) {
             for (unsigned int i = 0; i < patternLength; i++) {
                 uint8_t idx = *ptr;
                 ptr++;
-//                lemma.casePattern.resize(max(lemma.casePattern.size(), (unsigned long) idx + 1), false);
+//                lemma.casePattern[idx] = true;
+                lemma.casePattern.resize(idx + 1, false);
                 lemma.casePattern[idx] = true;
             }
             break;

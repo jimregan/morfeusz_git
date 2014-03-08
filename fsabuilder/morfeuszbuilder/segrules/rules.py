@@ -25,8 +25,9 @@ class SegmentRule(object):
 
 class TagRule(SegmentRule):
     
-    def __init__(self, segnum):
+    def __init__(self, segnum, segtype):
         self.segnum = segnum
+        self.segtype = segtype
     
     def addToNFA(self, fsa):
         endState = RulesNFAState(final=True)
@@ -36,7 +37,7 @@ class TagRule(SegmentRule):
         startState.addTransition(self.segnum, endState)
     
     def __str__(self):
-        return u''+self.segnum
+        return u'%s(%d)' % (self.segtype, self.segnum)
 
 class UnaryRule(SegmentRule):
     
@@ -68,6 +69,9 @@ class ConcatRule(ComplexRule):
         lastChild = self.children[-1]
         lastChild._doAddToNFA(currStartState, endState)
     
+    def __str__(self):
+        return u' '.join(map(lambda c: str(c), self.children))
+    
 class OrRule(ComplexRule):
     
     def __init__(self, children):
@@ -80,6 +84,9 @@ class OrRule(ComplexRule):
             startState.addTransition(None, intermStartState)
             child._doAddToNFA(intermStartState, intermEndState)
             intermEndState.addTransition(None, endState)
+    
+    def __str__(self):
+        return u'|'.join(map(lambda c: str(c), self.children))
     
 class ZeroOrMoreRule(UnaryRule):
     
@@ -98,6 +105,9 @@ class ZeroOrMoreRule(UnaryRule):
         self.child._doAddToNFA(intermStartState, intermEndState)
         intermEndState.addTransition(None, endState)
         endState.addTransition(None, intermStartState)
+    
+    def __str__(self):
+        return u'(' + str(self.child) + ')*'
 
 class ShiftOrthRule(UnaryRule):
     
@@ -110,3 +120,6 @@ class ShiftOrthRule(UnaryRule):
     def _doAddToNFA(self, startState, endState):
         self.child._doAddToNFA(startState, endState)
         startState.setTransitionData(self.child.segnum, 1)
+    
+    def __str__(self):
+        return u'(' + str(self.child) + ')>'

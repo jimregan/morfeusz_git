@@ -43,14 +43,19 @@ class RulesParser(object):
         firstNFA = None
         for defs in itertools.product(*key2Defs.values()):
             key2Def = dict([(def2Key[define], define) for define in defs])
+            print key2Def
             nfa = rulesNFA.RulesNFA()
             if not firstNFA:
                 firstNFA = nfa
             combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection('combinations')
             combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs))
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper):
+                print rule
                 rule.addToNFA(nfa)
+                nfa.debug()
             dfa = nfa.convertToDFA()
+            print '********* DFA **************'
+            dfa.debug()
 #             print dfa.tryToRecognize(bytearray([14]))
             res.addDFA(key2Def, dfa)
         return res
@@ -65,7 +70,7 @@ class RulesParser(object):
             raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid segment type: %s' % (line, segtype))
         else:
 #             return rules.TagRule(segtype)
-            return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype))
+            return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype), segtype)
     
     def _doParseOneLine(self, lineNum, line, segtypesHelper):
         rule = Forward()

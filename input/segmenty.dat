@@ -71,6 +71,7 @@ moze_interp(praet_pl by aglpl)
 #else
 moze_interp(praetcond)
 #endif
+
 # np. „by·ś”
 moze_interp(by aglsg)
 # np. „by·ście”
