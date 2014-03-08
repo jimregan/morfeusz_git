@@ -187,7 +187,6 @@ void Morfeusz::doAnalyzeOneWord(
         vector<InterpsGroup > val(state.getValue());
         for (unsigned int i = 0; i < val.size(); i++) {
             InterpsGroup& ig = val[i];
-            cerr << (int) ig.type << endl;
             SegrulesStateType newSegrulesState = segrulesState;
             newSegrulesState.proceedToNext(ig.type);
             if (newSegrulesState.isAccepting()) {
