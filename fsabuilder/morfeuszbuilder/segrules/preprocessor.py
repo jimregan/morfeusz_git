@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 '''
 Created on 23 sty 2014
 
@@ -5,8 +6,9 @@ Created on 23 sty 2014
 '''
 import re
 from pyparsing import *
+from morfeuszbuilder.utils import exceptions
 
-identifier = Word(alphas, bodyChars=alphanums+'_>*+!')
+identifier = Word(alphas, bodyChars=alphanums+u'_>*+!')
 define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + identifier + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
 ifdef = Keyword('#ifdef').suppress() + identifier + LineEnd() + StringEnd()
 endif = Keyword('#endif').suppress() + LineEnd() + StringEnd()
@@ -52,7 +54,7 @@ def _tryToSubstituteNonArgDefine(s, t, defines):
     else:
         return defineName
 
-def _processLine(line, defines):
+def _processLine(lineNum, line, defines):
     if line.strip():
         
         rule = Forward()
@@ -65,7 +67,15 @@ def _processLine(line, defines):
         rule.setParseAction(lambda s, l, t: ' '.join(t))
         defineInstance.setParseAction(lambda s, l, t: _tryToSubstituteArgDefine(s, t, defines))
         localId.setParseAction(lambda s, l, t: _tryToSubstituteNonArgDefine(s, t, defines))
-        return rule.parseString(line, parseAll=True)[0]
+        try:
+            return rule.parseString(line, parseAll=True)[0]
+        except ParseException as ex:
+            msg = u'Preprocessing of segmentation rules failed.\n'
+            msg += line + '\n'
+            msg += (ex.col - 1) * ' ' + '^\n'
+            msg += ex.msg
+#             print unicode(exceptions.SegtypesException(msg)).encode('utf8')
+            raise exceptions.SegtypesException(msg)
     else:
         return line
 
@@ -82,7 +92,7 @@ def preprocess(inputLines, defs):
                 name, arg, val = parsedDefine
                 localDefines = defines.copy()
                 localDefines[arg] = NonArgDefine(arg, arg)
-                val = _processLine(val, localDefines)
+                val = _processLine(lineNum, val, localDefines)
                 defines[name] = ArgDefine(name, arg, val)
         elif line.startswith('#ifdef'):
             name = ifdef.parseString(line)[0]
@@ -92,5 +102,5 @@ def preprocess(inputLines, defs):
         elif line.startswith('#'):
             yield lineNum, line
         elif len(ifdefsStack) == 0 or all(map(lambda name: name in defs, ifdefsStack)):
-            yield lineNum, _processLine(line, defines)
+            yield lineNum, _processLine(lineNum, line, defines)
         
