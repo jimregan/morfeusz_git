@@ -10,7 +10,7 @@ function build {
     targets=$@
     
     srcDir=`pwd`
-    buildDir=build/build-$os-$arch
+    buildDir=buildall/build-$os-$arch
     targetDir=$srcDir/target/$os-$arch
     toolchain=$srcDir/morfeusz/Toolchain-$os-$arch.cmake
     

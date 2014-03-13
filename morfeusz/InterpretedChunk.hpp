@@ -17,7 +17,6 @@ struct InterpretedChunk {
     std::vector<uint32_t> lowercaseCodepoints;
     InterpsGroup interpsGroup;
     bool shiftOrth;
-    bool shiftOrthSameType;
     bool orthWasShifted;
     std::vector<InterpretedChunk> prefixChunks;
 };

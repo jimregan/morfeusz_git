@@ -33,6 +33,7 @@ class Segtypes(object):
             raise exceptions.ConfigFileException(self.filename, lineNum, msg)
     
     def _readTags(self, segrulesConfigFile):
+        gotWildcardPattern = False
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('tags'):
             splitLine = re.split(r'\s+', line.strip())
             self._validate(
@@ -49,13 +50,27 @@ class Segtypes(object):
                            lineNum,
                            re.match(r'[a-z_\.\:\%]+', pattern))
             
+            self._validate(
+                           u'Pattern that matches everything must be the last one',
+                           lineNum - 1,
+                           not gotWildcardPattern)
+            
             if segtype in self.segtype2Segnum:
                 segnum = self.segtype2Segnum[segtype]
             else:
                 segnum = len(self.segtype2Segnum)
                 self.segtype2Segnum[segtype] = segnum
             
-            self.patternsList.append(SegtypePattern(None, pattern, segnum))
+            segtypePattern = SegtypePattern(None, pattern, segnum)
+            
+            self._validate(
+                           u'There is no tag that matches pattern "%s".' % pattern,
+                           lineNum,
+                           any([segtypePattern.tryToMatch(None, tag) != -1 for tag in self.tagset.getAllTags()]))
+            
+            self.patternsList.append(segtypePattern)
+            
+            gotWildcardPattern = gotWildcardPattern or pattern == '%'
         
         self.segnum2Segtype = dict([(v, k) for (k, v) in self.segtype2Segnum.iteritems()])
     
@@ -67,7 +82,7 @@ class Segtypes(object):
                            lineNum,
                            re.match(r'[a-z_]+', segtype))
             self._validate(
-                           u'Pattern must contain lemma and POS',
+                           u'Pattern must contain lemma and part-of-speech fields',
                            lineNum,
                            re.match(r'.+\:[a-z_]+', pattern, re.U))
             
@@ -79,7 +94,14 @@ class Segtypes(object):
             
             lemma, pos = pattern.split(':')
             
-            self.patternsList.append(SegtypePattern(lemma, '%s|%s:%%' % (pos, pos), segnum))
+            segtypePattern = SegtypePattern(lemma, pos + ':%', segnum)
+            
+            self._validate(
+                           u'There is no tag that matches pattern "%s".' % (pos + ':%'),
+                           lineNum,
+                           any([segtypePattern.tryToMatch(lemma, tag) != -1 for tag in self.tagset.getAllTags()]))
+            
+            self.patternsList.append(segtypePattern)
     
     def _debugSegnums(self):
         for tagnum, segnum in self._tagnum2Segnum.items():
@@ -121,11 +143,6 @@ class Segtypes(object):
         if not res:
             res = self._tagnum2Segnum.get(tagnum, None)
         return res
-#         for p in self.patternsList:
-#             res = p.tryToMatch(lemma, tag)
-#             if res >= 0:
-#                 return res
-#         return None
     
 class SegtypePattern(object):
     
@@ -135,8 +152,13 @@ class SegtypePattern(object):
         self.segnum = segnum
     
     def tryToMatch(self, lemma, tag):
+#         tag2Match = tag + ':' if not tag.endswith(':') else tag
+#         print tag2Match
+        patterns2Match = []
+        patterns2Match.append(self.pattern.replace('%', '.*'))
+        patterns2Match.append(re.sub(r'\:\%$', '', self.pattern).replace('%', '.*'))
         if (self.lemma is None or self.lemma == lemma) \
-        and re.match(self.pattern.replace('%', '.*'), tag):
+        and any([re.match(p, tag) for p in patterns2Match]):
             return self.segnum
         else:
             return -1

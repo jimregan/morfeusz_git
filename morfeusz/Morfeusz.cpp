@@ -37,11 +37,19 @@ static MorfeuszOptions createDefaultOptions() {
     return res;
 }
 
+static SegrulesFSA* getDefaultSegrulesFSA(const map<SegrulesOptions, SegrulesFSA*>& map) {
+    SegrulesOptions opts;
+    opts["aggl"] = "isolated";
+    opts["praet"] = "split";
+    return (*(map.find(opts))).second;
+}
+
 Morfeusz::Morfeusz()
 : env(Tagset(DEFAULT_FSA), Tagset(DEFAULT_SYNTH_FSA), DEFAULT_MORFEUSZ_CHARSET),
 analyzerPtr(DEFAULT_FSA),
 analyzerFSA(FSAType::getFSA(analyzerPtr, *initializeAnalyzerDeserializer())),
 segrulesFSAsMap(createSegrulesFSAsMap(analyzerPtr)),
+currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap)),
 isAnalyzerFSAFromFile(false),
 generatorPtr(DEFAULT_SYNTH_FSA),
 isGeneratorFSAFromFile(false),
@@ -50,9 +58,9 @@ options(createDefaultOptions()) {
 
 }
 
-static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSAType*>& fsasMap) {
+static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSA*>& fsasMap) {
     for (
-            std::map<SegrulesOptions, SegrulesFSAType*>::iterator it = fsasMap.begin();
+            std::map<SegrulesOptions, SegrulesFSA*>::iterator it = fsasMap.begin();
             it != fsasMap.end();
             ++it) {
         delete it->second;
@@ -100,11 +108,8 @@ void Morfeusz::analyzeOneWord(
     vector<InterpretedChunk> accum;
     FlexionGraph graph;
     const char* currInput = inputStart;
-    SegrulesOptions opts;
-    opts["aggl"] = "isolated";
-    opts["praet"] = "split";
-    SegrulesFSAType* segrulesFSA = (*(this->segrulesFSAsMap.find(opts))).second;
-    doAnalyzeOneWord(currInput, inputEnd, accum, graph, segrulesFSA->getInitialState());
+    SegrulesFSA* segrulesFSA = this->currSegrulesFSA;
+    doAnalyzeOneWord(currInput, inputEnd, accum, graph, segrulesFSA->initialState);
     if (!graph.empty()) {
         InterpretedChunksDecoder interpretedChunksDecoder(env);
         int srcNode = startNodeNum;
@@ -118,7 +123,8 @@ void Morfeusz::analyzeOneWord(
             srcNode++;
         }
         //        graph.getResults(*this->tagset, results);
-    } else if (inputStart != inputEnd) {
+    }
+    else if (inputStart != inputEnd) {
         this->appendIgnotiumToResults(string(inputStart, currInput), startNodeNum, results);
     }
     inputStart = currInput;
@@ -126,9 +132,9 @@ void Morfeusz::analyzeOneWord(
 
 static inline void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
     to.prefixChunks.insert(
-        to.prefixChunks.begin(), 
-        from.prefixChunks.begin(), 
-        from.prefixChunks.end());
+            to.prefixChunks.begin(),
+            from.prefixChunks.begin(),
+            from.prefixChunks.end());
     to.prefixChunks.push_back(from);
     from.orthWasShifted = true;
 }
@@ -138,7 +144,8 @@ void Morfeusz::doAnalyzeOneWord(
         const char* inputEnd,
         vector<InterpretedChunk>& accum,
         FlexionGraph& graph,
-        SegrulesStateType segrulesState) const {
+        SegrulesState segrulesState) const {
+    //    cerr << "doAnalyzeOneWord " << inputData << endl;
     bool endOfWord = inputData == inputEnd;
     const char* currInput = inputData;
     uint32_t codepoint = endOfWord ? 0 : this->env.getCharsetConverter().next(currInput, inputEnd);
@@ -159,16 +166,27 @@ void Morfeusz::doAnalyzeOneWord(
                 vector<InterpsGroup> val(state.getValue());
                 for (unsigned int i = 0; i < val.size(); i++) {
                     InterpsGroup& ig = val[i];
-                    cerr << (int) ig.type << endl;
-                    SegrulesStateType newSegrulesState = segrulesState;
-                    newSegrulesState.proceedToNext(ig.type);
-                    if (!newSegrulesState.isSink()) {
-                        bool shiftOrth = newSegrulesState.getLastTransitionValue() == 1;
-                        bool shiftOrthSameType = newSegrulesState.getLastTransitionValue() == 2;
-                        InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig, shiftOrth, shiftOrthSameType, false};
-                        if (!accum.empty() 
-                            && (accum.back().shiftOrth
-                                || (accum.back().shiftOrthSameType && accum.back().interpsGroup.type == ig.type))) {
+                    //                    newSegrulesState.proceedToNext(ig.type);
+                    //                    this->currSegrulesFSA->proceedToNext(ig.type, segrulesStates, newSegrulesStates);
+                    set<SegrulesState> newSegrulesStates;
+                    currSegrulesFSA->proceedToNext(ig.type, segrulesState, newSegrulesStates);
+                    for (
+                            set<SegrulesState>::iterator it = newSegrulesStates.begin();
+                            it != newSegrulesStates.end();
+                            it++) {
+                        SegrulesState newSegrulesState = *it;
+                        //                        bool shiftOrth = newSegrulesState.getLastTransitionValue() == 1;
+                        //                        bool shiftOrthSameType = newSegrulesState.getLastTransitionValue() == 2;
+                        InterpretedChunk ic = {
+                            inputData,
+                            originalCodepoints, 
+                            lowercaseCodepoints, 
+                            ig, 
+                            newSegrulesState.shiftOrthFromPrevious, 
+                            false,
+                            vector<InterpretedChunk>()
+                        };
+                        if (!accum.empty() && accum.back().shiftOrth) {
                             doShiftOrth(accum.back(), ic);
                         }
                         accum.push_back(ic);
@@ -182,27 +200,37 @@ void Morfeusz::doAnalyzeOneWord(
             this->env.getCharsetConverter().next(currInput, inputEnd);
         }
     }
+    //    cerr << "end of word" << endl;
     // we are at the end of word
     if (state.isAccepting()) {
         vector<InterpsGroup > val(state.getValue());
         for (unsigned int i = 0; i < val.size(); i++) {
             InterpsGroup& ig = val[i];
-            SegrulesStateType newSegrulesState = segrulesState;
-            newSegrulesState.proceedToNext(ig.type);
-            if (newSegrulesState.isAccepting()) {
-                bool shiftOrth = newSegrulesState.getLastTransitionValue() == 1;
-                bool shiftOrthSameType = newSegrulesState.getLastTransitionValue() == 2;
-                InterpretedChunk ic = {inputData, originalCodepoints, lowercaseCodepoints, ig, shiftOrth, shiftOrthSameType, false};
-                if (!accum.empty() 
-                            && (accum.back().shiftOrth 
-                                || (accum.back().shiftOrthSameType && accum.back().interpsGroup.type == ig.type))) {
-                    doShiftOrth(accum.back(), ic);
+            //            cerr << "currInput=" << currInput << endl;
+            //            cerr << "type=" << (int) ig.type << endl;
+            set<SegrulesState> newSegrulesStates;
+            currSegrulesFSA->proceedToNext(ig.type, segrulesState, newSegrulesStates);
+            for (
+                    set<SegrulesState>::iterator it = newSegrulesStates.begin();
+                    it != newSegrulesStates.end();
+                    it++) {
+                SegrulesState newSegrulesState = *it;
+                if (newSegrulesState.accepting) {
+                    InterpretedChunk ic = {
+                        inputData, 
+                        originalCodepoints, 
+                        lowercaseCodepoints, 
+                        ig, 
+                        newSegrulesState.shiftOrthFromPrevious, 
+                        false,
+                        vector<InterpretedChunk>()};
+                    if (!accum.empty() && accum.back().shiftOrth) {
+                        doShiftOrth(accum.back(), ic);
+                    }
+                    accum.push_back(ic);
+                    graph.addPath(accum);
+                    accum.pop_back();
                 }
-                accum.push_back(ic);
-                graph.addPath(accum);
-                accum.pop_back();
-            } else if (!newSegrulesState.isSink()) {
-            } else {
             }
         }
     }

@@ -584,6 +584,9 @@
 579	interp
 580	brev:pun
 581	brev:npun
+582	prefa
+583	prefs
+584	prefv
 
 [NAMES]
 

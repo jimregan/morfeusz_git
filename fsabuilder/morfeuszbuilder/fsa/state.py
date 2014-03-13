@@ -13,7 +13,7 @@ class State(object):
 
     def __init__(self, additionalData=None):
         self.transitionsMap = {}
-        self.transitionsDataMap = {}
+#         self.transitionsDataMap = {}
         self.freq = 0
         self.encodedData = None
         self.reverseOffset = None
@@ -29,11 +29,11 @@ class State(object):
     def transitionsNum(self):
         return len(self.transitionsMap)
     
-    def setTransition(self, byte, nextState):
-        self.transitionsMap[byte] = nextState
-    
-    def setTransitionData(self, byte, data):
-        self.transitionsDataMap[byte] = data
+    def setTransition(self, label, nextState):
+        self.transitionsMap[label] = nextState
+#     
+#     def setTransitionData(self, byte, data):
+#         self.transitionsDataMap[byte] = data
     
     def hasNext(self, byte):
         return byte in self.transitionsMap
@@ -67,6 +67,14 @@ class State(object):
                 for state1 in state.dfs(alreadyVisited):
                     yield state1
             yield self
+    
+    def calculateOffsets(self, sizeCounter):
+        currReverseOffset = 0
+        for state in self.dfs(set()):
+            currReverseOffset += sizeCounter(state)
+            state.reverseOffset = currReverseOffset
+        for state in self.dfs(set()):
+            state.offset = currReverseOffset - state.reverseOffset
     
     def debug(self):
         print '----------------'

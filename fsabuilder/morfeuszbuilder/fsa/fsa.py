@@ -113,12 +113,13 @@ class FSA(object):
             return q
     
     def calculateOffsets(self, sizeCounter):
-        currReverseOffset = 0
-        for state in self.initialState.dfs(set()):
-            currReverseOffset += sizeCounter(state)
-            state.reverseOffset = currReverseOffset
-        for state in self.initialState.dfs(set()):
-            state.offset = currReverseOffset - state.reverseOffset
+        self.initialState.calculateOffsets(sizeCounter)
+#         currReverseOffset = 0
+#         for state in self.initialState.dfs(set()):
+#             currReverseOffset += sizeCounter(state)
+#             state.reverseOffset = currReverseOffset
+#         for state in self.initialState.dfs(set()):
+#             state.offset = currReverseOffset - state.reverseOffset
     
     def debug(self):
         for state in self.initialState.dfs(set()):

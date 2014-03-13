@@ -7,6 +7,7 @@ Created on 23 sty 2014
 import re
 from pyparsing import *
 from morfeuszbuilder.utils import exceptions
+from pyparseString import pyparseString
 
 identifier = Word(alphas, bodyChars=alphanums+u'_>*+!')
 define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + identifier + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
@@ -54,7 +55,7 @@ def _tryToSubstituteNonArgDefine(s, t, defines):
     else:
         return defineName
 
-def _processLine(lineNum, line, defines):
+def _processLine(lineNum, line, defines, filename):
     if line.strip():
         
         rule = Forward()
@@ -67,24 +68,16 @@ def _processLine(lineNum, line, defines):
         rule.setParseAction(lambda s, l, t: ' '.join(t))
         defineInstance.setParseAction(lambda s, l, t: _tryToSubstituteArgDefine(s, t, defines))
         localId.setParseAction(lambda s, l, t: _tryToSubstituteNonArgDefine(s, t, defines))
-        try:
-            return rule.parseString(line, parseAll=True)[0]
-        except ParseException as ex:
-            msg = u'Preprocessing of segmentation rules failed.\n'
-            msg += line + '\n'
-            msg += (ex.col - 1) * ' ' + '^\n'
-            msg += ex.msg
-#             print unicode(exceptions.SegtypesException(msg)).encode('utf8')
-            raise exceptions.SegtypesException(msg)
+        return pyparseString(rule, lineNum, line, filename)[0]
     else:
         return line
 
-def preprocess(inputLines, defs):
+def preprocess(inputLines, defs, filename):
     defines = {}
     ifdefsStack = []
     for lineNum, line in inputLines:
         if line.startswith('#define'):
-            parsedDefine = list(define.parseString(line))
+            parsedDefine = list(pyparseString(define, lineNum, line, filename))
             if len(parsedDefine) == 2:
                 name, val = parsedDefine
                 defines[name] = NonArgDefine(name, val)
@@ -92,15 +85,16 @@ def preprocess(inputLines, defs):
                 name, arg, val = parsedDefine
                 localDefines = defines.copy()
                 localDefines[arg] = NonArgDefine(arg, arg)
-                val = _processLine(lineNum, val, localDefines)
+                val = _processLine(lineNum, val, localDefines, filename)
                 defines[name] = ArgDefine(name, arg, val)
         elif line.startswith('#ifdef'):
-            name = ifdef.parseString(line)[0]
+            name = pyparseString(ifdef, lineNum, line, filename)[0]
+#             name = ifdef.parseString(line)[0]
             ifdefsStack.append(name)
         elif line.startswith('#endif'):
             ifdefsStack.pop()
         elif line.startswith('#'):
             yield lineNum, line
         elif len(ifdefsStack) == 0 or all(map(lambda name: name in defs, ifdefsStack)):
-            yield lineNum, _processLine(lineNum, line, defines)
+            yield lineNum, _processLine(lineNum, line, defines, filename)
         

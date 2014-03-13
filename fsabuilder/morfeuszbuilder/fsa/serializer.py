@@ -6,6 +6,7 @@ Created on Oct 20, 2013
 
 import logging
 from state import State
+from morfeuszbuilder.utils.serializationUtils import *
 
 class Serializer(object):
     
@@ -63,7 +64,7 @@ class Serializer(object):
         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
         for state in sorted(self.fsa.dfs(), key=lambda s: s.offset):
             fsaData.extend(self.state2bytearray(state))
-        res.extend(self.htonl(len(fsaData)))
+        res.extend(htonl(len(fsaData)))
         res.extend(fsaData)
         res.extend(self.serializeEpilogue(additionalData, moreAdditionalData))
         return res
@@ -71,9 +72,9 @@ class Serializer(object):
     def _serializeTags(self, tagsMap):
         res = bytearray()
         numOfTags = len(tagsMap)
-        res.extend(self.htons(numOfTags))
+        res.extend(htons(numOfTags))
         for tag, tagnum in sorted(tagsMap.iteritems(), key=lambda (tag, tagnum): tagnum):
-            res.extend(self.htons(tagnum))
+            res.extend(htons(tagnum))
             res.extend(self.fsa.encodeWord(tag))
             res.append(0)
         return res
@@ -84,25 +85,6 @@ class Serializer(object):
         if tagset:
             res.extend(self._serializeTags(tagset._tag2tagnum))
             res.extend(self._serializeTags(tagset._name2namenum))
-        return res
-    
-    # serialize uint16 as big endian
-    def htons(self, n):
-        assert n < 65536
-        assert n >= 0
-        res = bytearray()
-        res.append((n & 0x00FF00) >> 8)
-        res.append(n & 0x0000FF)
-        return res
-    
-    # serialize uint32 as big endian
-    def htonl(self, n):
-        assert n >= 0
-        res = bytearray()
-        res.append((n & 0xFF000000) >> 24)
-        res.append((n & 0x00FF0000) >> 16)
-        res.append((n & 0x0000FF00) >> 8)
-        res.append(n & 0x000000FF)
         return res
     
     def serializePrologue(self):
@@ -126,7 +108,7 @@ class Serializer(object):
         res = bytearray()
         additionalDataSize = len(additionalData) if additionalData else 0
         moreAdditionalDataSize = len(moreAdditionalData) if moreAdditionalData else 0
-        res.extend(self.htonl(additionalDataSize))
+        res.extend(htonl(additionalDataSize))
         
         # add additional data itself
         if additionalDataSize:

@@ -7,9 +7,10 @@ praet=split composite
 
 #define moze_interp(segmenty) wsz_interp segmenty wsz_interp
 
+dig>* dig
 (adja dywiz)+ adj
-dig!>+
-dig!> dig!> dig!>
+#dig!>+
+#dig!> dig!> dig!>
 naj> adj_sup
 
 [segment types]
@@ -52,20 +53,10 @@ on_agl	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
 z_on_agl	prep:%
 samotny	brev:pun
 samotny	brev:npun
-samotny	intrj
+samotny	interj
 interp	interp
 aglsg	aglt:sg:%
 aglpl	aglt:pl:%
-praetcond	cond:%
-praetcond	praet:%:pri:%
-praetcond	praet:%:sec:%
-praetcond	praet:%:ter:%
-praet_sg_agl	praet:sg:%:agl
-praet_sg_na	praet:sg:%:nagl
-praet_sg	praet:sg:%
-praet_pl	praet:pl:%
-praet_sg	winien:sg:%
-praet_pl	winien:pl:%
 samodz		%
 
 [lexemes]

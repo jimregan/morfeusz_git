@@ -11,13 +11,13 @@
 #include <utility>
 #include <map>
 #include <string>
-#include "../fsa/fsa.hpp"
+#include "SegrulesFSA.hpp"
 
 typedef std::map<std::string, std::string> SegrulesOptions;
-typedef State<unsigned char> SegrulesStateType;
-typedef FSA<unsigned char> SegrulesFSAType;
+//typedef State<unsigned char> SegrulesStateType;
+//typedef FSA<unsigned char> SegrulesFSAType;
 
-std::map<SegrulesOptions, SegrulesFSAType*> createSegrulesFSAsMap(const unsigned char* analyzerPtr);
+std::map<SegrulesOptions, SegrulesFSA*> createSegrulesFSAsMap(const unsigned char* analyzerPtr);
 
 #endif	/* SEGRULES_HPP */
 

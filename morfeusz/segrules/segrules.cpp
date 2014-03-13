@@ -33,23 +33,23 @@ static inline SegrulesOptions deserializeOptions(const unsigned char*& ptr) {
     return res;
 }
 
-static inline SegrulesFSAType* deserializeFSA(const unsigned char*& ptr) {
+static inline SegrulesFSA* deserializeFSA(const unsigned char*& ptr) {
     uint32_t fsaSize = deserializeUint32(ptr);
-    static SegrulesDeserializer deserializer;
-    SegrulesFSAType* res = SegrulesFSAType::getFSA(ptr, deserializer);
+//    static SegrulesDeserializer deserializer;
+    SegrulesFSA* res = new SegrulesFSA(ptr);
     ptr += fsaSize;
     return res;
 }
 
-map<SegrulesOptions, SegrulesFSAType*> createSegrulesFSAsMap(const unsigned char* analyzerPtr) {
-    map<SegrulesOptions, SegrulesFSAType*> res;
+map<SegrulesOptions, SegrulesFSA*> createSegrulesFSAsMap(const unsigned char* analyzerPtr) {
+    map<SegrulesOptions, SegrulesFSA*> res;
     const unsigned char* fsasMapPtr = getFSAsMapPtr(analyzerPtr);
     const unsigned char* currPtr = fsasMapPtr;
     unsigned char fsasNum = *currPtr;
     currPtr++;
     for (unsigned char i = 0; i < fsasNum; i++) {
         SegrulesOptions options = deserializeOptions(currPtr);
-        SegrulesFSAType* fsa = deserializeFSA(currPtr);
+        SegrulesFSA* fsa = deserializeFSA(currPtr);
         res[options] = fsa;
     }
     return res;

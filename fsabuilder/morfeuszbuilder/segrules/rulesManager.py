@@ -4,7 +4,7 @@ Created on 20 lut 2014
 @author: mlenart
 '''
 import logging
-from morfeuszbuilder.fsa.serializer import SimpleSerializer
+from morfeuszbuilder.utils.serializationUtils import htons, htonl
 
 class RulesManager(object):
     
@@ -52,9 +52,9 @@ class RulesManager(object):
     
     def _serializeDFA(self, dfa):
         res = bytearray()
-        serializer = SimpleSerializer(dfa, serializeTransitionsData=True)
-        dfaBytearray = serializer.fsa2bytearray()
-        res.extend(serializer.htonl(len(dfaBytearray)))
+#         serializer = SimpleSerializer(dfa, serializeTransitionsData=True)
+        dfaBytearray = dfa.serialize()
+        res.extend(htonl(len(dfaBytearray)))
         res.extend(dfaBytearray)
         return res
     

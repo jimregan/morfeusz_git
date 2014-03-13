@@ -3,7 +3,7 @@ from pyparsing import *
 ParserElement.enablePackrat()
 from morfeuszbuilder.tagset import segtypes
 from morfeuszbuilder.utils import configFile, exceptions
-from morfeuszbuilder.segrules import preprocessor, rules, rulesManager
+from morfeuszbuilder.segrules import preprocessor, rules, rulesManager, pyparseString
 import codecs
 import re
 
@@ -48,8 +48,8 @@ class RulesParser(object):
             if not firstNFA:
                 firstNFA = nfa
             combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection('combinations')
-            combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs))
-            for rule in self._doParse(combinationEnumeratedLines, segtypesHelper):
+            combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs, filename))
+            for rule in self._doParse(combinationEnumeratedLines, segtypesHelper, filename):
 #                 print rule
                 rule.addToNFA(nfa)
 #                 nfa.debug()
@@ -60,25 +60,24 @@ class RulesParser(object):
             res.addDFA(key2Def, dfa)
         return res
     
-    def _doParse(self, combinationEnumeratedLines, segtypesHelper):
+    def _doParse(self, combinationEnumeratedLines, segtypesHelper, filename):
         for lineNum, line in combinationEnumeratedLines:
             if not line.startswith('#'):
-                yield self._doParseOneLine(lineNum, line, segtypesHelper)
+                yield self._doParseOneLine(lineNum, line, segtypesHelper, filename)
     
-    def _createNewTagRule(self, segtype, lineNum, line, segtypesHelper):
+    def _createNewTagRule(self, segtype, shiftOrth, lineNum, line, segtypesHelper):
         if not segtypesHelper.hasSegtype(segtype):
             raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid segment type: %s' % (line, segtype))
         else:
 #             return rules.TagRule(segtype)
-            return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype), segtype)
+            return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype), shiftOrth, segtype)
     
-    def _doParseOneLine(self, lineNum, line, segtypesHelper):
+    def _doParseOneLine(self, lineNum, line, segtypesHelper, filename):
         rule = Forward()
         tagRule = Word(alphanums+'_')
-        shiftOrthRule = tagRule + '>'
-        shiftOrthSameTypeRule = tagRule + '!' + '>'
+        shiftOrthRule = Word(alphanums+'_') + Suppress('>')
         parenRule = Suppress('(') + rule + Suppress(')')
-        atomicRule = tagRule ^ shiftOrthRule ^ shiftOrthSameTypeRule ^ parenRule
+        atomicRule = tagRule ^ shiftOrthRule ^ parenRule
         zeroOrMoreRule = atomicRule + Suppress('*')
         oneOrMoreRule = atomicRule + Suppress('+')
         unaryRule = atomicRule ^ zeroOrMoreRule ^ oneOrMoreRule
@@ -87,13 +86,12 @@ class RulesParser(object):
         concatRule = OneOrMore(complexRule)
         rule << concatRule
         
-        tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], lineNum, line, segtypesHelper))
-        shiftOrthRule.setParseAction(lambda string, loc, toks: rules.ShiftOrthRule(toks[0]))
-        shiftOrthSameTypeRule.setParseAction(lambda string, loc, toks: rules.ShiftOrthSameTypeRule(toks[0]))
+        tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], False, lineNum, line, segtypesHelper))
+        shiftOrthRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], True, lineNum, line, segtypesHelper))
 #         parenRule.setParseAction(lambda string, loc, toks: toks[0])
         zeroOrMoreRule.setParseAction(lambda string, loc, toks: rules.ZeroOrMoreRule(toks[0]))
         oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0])]))
         oneOfRule.setParseAction(lambda string, loc, toks: rules.OrRule(toks))
         concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(toks))
-        parsedRule = rule.parseString(line, parseAll=True)[0]
+        parsedRule = pyparseString.pyparseString(rule, lineNum, line, filename)[0]
         return parsedRule

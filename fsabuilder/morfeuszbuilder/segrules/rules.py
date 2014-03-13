@@ -25,16 +25,17 @@ class SegmentRule(object):
 
 class TagRule(SegmentRule):
     
-    def __init__(self, segnum, segtype):
+    def __init__(self, segnum, shiftOrth, segtype):
         self.segnum = segnum
         self.segtype = segtype
+        self.shiftOrth = shiftOrth
     
     def addToNFA(self, fsa):
         endState = RulesNFAState(final=True)
         self._doAddToNFA(fsa.initialState, endState)
     
     def _doAddToNFA(self, startState, endState):
-        startState.addTransition(self.segnum, endState)
+        startState.addTransition((self.segnum, self.shiftOrth), endState)
     
     def __str__(self):
         return u'%s(%d)' % (self.segtype, self.segnum)
@@ -92,6 +93,7 @@ class ZeroOrMoreRule(UnaryRule):
     
     def __init__(self, child):
         super(ZeroOrMoreRule, self).__init__(child)
+        assert isinstance(child, SegmentRule)
     
     def addToNFA(self, fsa):
         raise ValueError()
@@ -108,33 +110,3 @@ class ZeroOrMoreRule(UnaryRule):
     
     def __str__(self):
         return u'(' + str(self.child) + ')*'
-
-class ShiftOrthRule(UnaryRule):
-    
-    def __init__(self, child):
-        super(ShiftOrthRule, self).__init__(child)
-    
-    def addToNFA(self, fsa):
-        raise ValueError()
-    
-    def _doAddToNFA(self, startState, endState):
-        self.child._doAddToNFA(startState, endState)
-        startState.setTransitionData(self.child.segnum, 1)
-    
-    def __str__(self):
-        return u'(' + str(self.child) + ')>'
-
-class ShiftOrthSameTypeRule(UnaryRule):
-    
-    def __init__(self, child):
-        super(ShiftOrthSameTypeRule, self).__init__(child)
-    
-    def addToNFA(self, fsa):
-        raise ValueError()
-    
-    def _doAddToNFA(self, startState, endState):
-        self.child._doAddToNFA(startState, endState)
-        startState.setTransitionData(self.child.segnum, 2)
-    
-    def __str__(self):
-        return u'(' + str(self.child) + ')!>'

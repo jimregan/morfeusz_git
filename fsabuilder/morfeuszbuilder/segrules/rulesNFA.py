@@ -4,7 +4,7 @@ Created on 24 sty 2014
 @author: mlenart
 '''
 
-from morfeuszbuilder.fsa import fsa, state, encode
+from morfeuszbuilder.segrules.rulesFSA import RulesFSA, RulesState
 
 class RulesNFAState(object):
     
@@ -12,7 +12,7 @@ class RulesNFAState(object):
     
     def __init__(self, initial=False, final=False, weak=False):
         self.transitionsMap = {}
-        self.transitionsDataMap = {}
+#         self.transitionsDataMap = {}
         self.initial = initial
         self.final = final
         self.weak = weak
@@ -20,13 +20,9 @@ class RulesNFAState(object):
         RulesNFAState.statesCounter += 1
     
     def addTransition(self, label, targetState):
+        assert label is None or len(label) == 2
         self.transitionsMap.setdefault(label, set())
         self.transitionsMap[label].add(targetState)
-        self.transitionsDataMap[label] = 0
-    
-    def setTransitionData(self, label, byte):
-        assert len(self.transitionsMap[label]) == 1
-        self.transitionsDataMap[label] = byte
     
     def getClosure(self, visited):
         if self in visited:
@@ -64,10 +60,11 @@ class RulesNFA(object):
         for nfaState in nfaStates:
             for label, nextStates in nfaState.transitionsMap.iteritems():
                 if label is not None:
-                    transitionData = nfaState.transitionsDataMap[label]
-                    res.setdefault((label, transitionData), set())
+#                     transitionData = nfaState.transitionsDataMap[label]
+                    segnum, shiftOrth = label
+                    res.setdefault((segnum, shiftOrth), set())
                     for nextNFAState in nextStates:
-                        res[(label, transitionData)] |= nextNFAState.getClosure(set())
+                        res[(segnum, shiftOrth)] |= nextNFAState.getClosure(set())
         return res
     
     def _doConvertState(self, dfaState, nfaStates, nfaSubset2DFAState):
@@ -79,23 +76,24 @@ class RulesNFA(object):
         if final:
             # dfaState should be final
             # and contain info about weakness
-            dfaState.encodedData = bytearray([1 if weak else 0])
-        for (label, transitionData), nextNFAStates in self._groupOutputByLabels(nfaStates).iteritems():
+            dfaState.setAsAccepting(weak=weak)
+#             dfaState.encodedData = bytearray([1 if weak else 0])
+        for (segnum, shiftOrth), nextNFAStates in self._groupOutputByLabels(nfaStates).iteritems():
             key = frozenset(nextNFAStates)
             if key in nfaSubset2DFAState:
                 nextDFAState = nfaSubset2DFAState[key]
             else:
-                nextDFAState = state.State()
+                nextDFAState = RulesState()
                 nfaSubset2DFAState[key] = nextDFAState
                 self._doConvertState(nextDFAState, nextNFAStates, nfaSubset2DFAState)
-            dfaState.setTransition(label, nextDFAState)
-            dfaState.setTransitionData(label, transitionData)
+            dfaState.setTransition((segnum, shiftOrth), nextDFAState)
+#             dfaState.setTransitionData(label, transitionData)
     
     def convertToDFA(self):
-        dfa = fsa.FSA(encoder=None, encodeData=False, encodeWords=False)
+        dfa = RulesFSA()
         startStates = self.initialState.getClosure(set())
         assert not any(filter(lambda s: s.final, startStates))
-        dfa.initialState = state.State(additionalData=False)
+        dfa.initialState = RulesState()
         self._doConvertState(dfa.initialState, startStates, {frozenset(startStates): dfa.initialState})
         return dfa
     

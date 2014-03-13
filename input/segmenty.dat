@@ -19,7 +19,7 @@ samotny
 # przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
 moze_interp(praet_sg_na)
 
-# przeszlik pojedynczy w formie niezróżnicowanej aglutynacyjnie, np. „czytał”:
+# przeszlik pojedynczy w formie niezróżnicowanej aglutynacyjnie, np. „moze”:
 moze_interp(praet_sg)
 
 # przeszlik mnogi, np. „czytali”:
@@ -69,9 +69,8 @@ moze_interp(praet_sg by aglsg)
 # np. „gnietli·by·śmy”
 moze_interp(praet_pl by aglpl)
 #else
-moze_interp(praetcond)
+# moze_interp(praetcond)
 #endif
-
 # np. „by·ś”
 moze_interp(by aglsg)
 # np. „by·ście”
@@ -98,9 +97,9 @@ moze_interp( (adja dywiz)+ adj )
 # adja dywiz adja dywiz adja dywiz adj interp?
 # adja dywiz adja dywiz adja dywiz adja dywiz adj interp?
 
-# Stopień najwyższy:
-# np. „naj·zieleńszy”, „naj·mądrzej”
-moze_interp( naj> adj_sup )
+# Formy zanegowane stopnia wyższego przymiotników i przysłówków (WK)
+# np. „nie·grzeczniejszy”, „nie·grzeczniej”
+moze_interp( nie> adj_com )
 
 # Formy „zanegowane” gerundiów i imiesłowów:
 # np. „nie·czytanie”, „nie·przeczytany”, „nie·czytający”:
@@ -112,15 +111,21 @@ moze_interp(z_on_agl)
 moze_interp(z_on_agl on_agl)
 
 # Liczba zapisana jako ciąg cyfr:
-moze_interp( dig!>+ )
+moze_interp( dig )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
-# rzeczownikowe i przymiotnikowe
-# np. „euro·sodoma”, „e-·papieros”, „euro·sodomski”, „bez·argumentowy”
-moze_interp( prefs samodz )
+# rzeczownikowe
+# np. „euro·sodoma”, „e-·papieros”
+moze_interp(nomina)
+moze_interp( prefs> nomina )
 # czasownikowe np. „po·nakapywać”
-moze_interp( prefv samodz )
+moze_interp(verba_imperf)
+moze_interp( prefv> verba_imperf )
+# przymiotnikowe np. „do·żylny”, „euro·sodomski”, „bez·argumentowy”
+moze_interp(adjectiva)
+moze_interp(prefa> adj)
+moze_interp( prefa> adjectiva )
 
 # Apozycje z dywizem
 # np. „kobieta-prezydent”
@@ -133,11 +138,28 @@ adj dywiz samodz
 # ?
 samodz dywiz adj
 
+#### PONIŻEJ REGUŁY WK
+# Stopień najwyższy:
+# np. „naj·zieleńszy”, „naj·mądrzej”
+moze_interp( naj> adj_sup )
+# Cząstka li przy osobowych formach czasownika oddzielona dywizem: znasz-li ten kraj
+moze_interp( praet_sg dywiz li)
+moze_interp( praet_pl dywiz li)
+moze_interp( praet_sg_na dywiz li)
+moze_interp( fin dywiz li)
+
+# i bez dywizu --- czy bez dywizu jest sens to łapać?
+#moze_interp( praet_sg li)
+#moze_interp( praet_pl li)
+#moze_interp( praet_sg_na li)
+#moze_interp( fin li)
+
 [segment types]
 naj
 nie
 prefs
 prefv
+prefa
 dig
 adja
 adj
@@ -161,11 +183,14 @@ naj	naj
 nie	nie
 prefs	prefs
 prefv	prefv
+prefa	prefa
 dig	dig
 adja	adja
 adj	adj:%:pos
 adj_sup	adj:%:sup
 adj_sup	adv:sup
+adj_com	adj:%:com
+adj_com	adj:%:com
 negat	ger:%:neg
 negat	pact:%:neg
 negat	ppas:%:neg
@@ -173,26 +198,35 @@ on_agl	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
 z_on_agl	prep:%
 samotny	brev:pun
 samotny	brev:npun
-samotny	intrj
+samotny	interj
 interp	interp
 aglsg	aglt:sg:%
 aglpl	aglt:pl:%
-praetcond	cond:%
-praetcond	praet:%:pri:%
-praetcond	praet:%:sec:%
-praetcond	praet:%:ter:%
 praet_sg_agl	praet:sg:%:agl
 praet_sg_na	praet:sg:%:nagl
 praet_sg	praet:sg:%
 praet_pl	praet:pl:%
 praet_sg	winien:sg:%
 praet_pl	winien:pl:%
+fin		fin:%
+nomina		subst:%
+nomina		ger:%
+nomina		depr:%
+adjectiva	adv:%
+adjectiva	ppas:%
+adjectiva	pact:%
+verba_imperf	praet:%:imperf
+verba_imperf	fin:%:imperf
+verba_imperf	inf:imperf
+verba_imperf	imps:imperf
+verba_imperf	impt:%:imperf
 samodz		%
 
 [lexemes]
 z_aglt	aby:comp
 z_aglt	bowiem:comp
 by	by:qub
+li	li:qub
 z_aglt	by:comp
 z_aglt	cóż:subst
 z_aglt	czemu:adv
