@@ -33,7 +33,6 @@
 class Morfeusz;
 class ResultsIterator;
 
-typedef FSA< std::vector<InterpsGroup > > FSAType;
 typedef State< std::vector<InterpsGroup > > StateType;
 
 class Morfeusz {
@@ -102,33 +101,38 @@ public:
     friend class ResultsIterator;
 private:
 
-    void analyzeOneWord(
+    void processOneWord(
+            const Environment& env,
             const char*& inputData,
             const char* inputEnd,
             int startNodeNum,
             std::vector<MorphInterpretation>& result) const;
 
-    void doAnalyzeOneWord(
+    void doProcessOneWord(
+            const Environment& env,
             const char*& inputData,
             const char* inputEnd,
+            SegrulesState segrulesState,
             std::vector<InterpretedChunk>& accum,
-            FlexionGraph& graph,
-            SegrulesState segrulesState) const;
+            FlexionGraph& graph) const;
 
     void appendIgnotiumToResults(
+            const Environment& env,
             const std::string& word,
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const;
-    Environment env;
-    const unsigned char* analyzerPtr;
-    FSAType* analyzerFSA;
-    std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;
-    SegrulesFSA* currSegrulesFSA;
-    bool isAnalyzerFSAFromFile;
-    
-    const unsigned char* generatorPtr;
-    bool isGeneratorFSAFromFile;
-    Generator generator;
+    Environment analyzerEnv;
+    Environment generatorEnv;
+//    const unsigned char* analyzerPtr;
+//    FSAType* analyzerFSA;
+//    std::map<SegrulesOptions, SegrulesFSA*> analyzerSegrulesFSAsMap;
+//    SegrulesFSA* currAnalyzerSegrulesFSA;
+//    bool isAnalyzerFSAFromFile;
+//    
+//    const unsigned char* generatorPtr;
+//    FSAType* generatorFSA;
+//    bool isGeneratorFSAFromFile;
+//    Generator generator;
 
     MorfeuszOptions options;
 };

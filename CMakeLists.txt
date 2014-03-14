@@ -47,7 +47,7 @@ endif ()
 
 # SEGMENT_RULES_FILE
 if ("${SEGMENT_RULES_FILE}" STREQUAL "")
-   set (SEGMENT_RULES_FILE "${PROJECT_SOURCE_DIR}/input/segmenty.dat")
+   set (SEGMENT_RULES_FILE "${PROJECT_SOURCE_DIR}/input/segmenty1.dat")
 endif ()
 
 message ("Will use ${INPUT_DICTIONARIES} as default dictionary input, ${INPUT_TAGSET} as tagset and ${SEGMENT_RULES_FILE} as segmentation rules")

@@ -13,8 +13,13 @@ from morfeuszbuilder.segrules import rulesNFA
 
 class RulesParser(object):
     
-    def __init__(self, tagset):
+    PARSE4GENERATOR = 1
+    PARSE4ANALYZER = 2
+    
+    def __init__(self, tagset, rulesType):
         self.tagset = tagset
+        assert rulesType in (RulesParser.PARSE4GENERATOR, RulesParser.PARSE4ANALYZER)
+        self.rulesType = rulesType
     
     def _getKey2Defs(self, segtypesConfigFile):
         res = {}
@@ -29,7 +34,7 @@ class RulesParser(object):
     
     def parse(self, filename):
         
-        segtypesConfigFile = configFile.ConfigFile(filename, ['options', 'combinations', 'tags', 'lexemes', 'segment types'])
+        segtypesConfigFile = configFile.ConfigFile(filename, ['options', 'combinations', 'generator combinations', 'tags', 'lexemes', 'segment types'])
         key2Defs = self._getKey2Defs(segtypesConfigFile)
         segtypesHelper = segtypes.Segtypes(self.tagset, segtypesConfigFile)
         
@@ -47,7 +52,8 @@ class RulesParser(object):
             nfa = rulesNFA.RulesNFA()
             if not firstNFA:
                 firstNFA = nfa
-            combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection('combinations')
+            section = 'combinations' if self.rulesType == RulesParser.PARSE4ANALYZER else 'generator combinations'
+            combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection(section)
             combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs, filename))
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper, filename):
 #                 print rule
@@ -83,7 +89,10 @@ class RulesParser(object):
         unaryRule = atomicRule ^ zeroOrMoreRule ^ oneOrMoreRule
         oneOfRule = delimitedList(unaryRule, delim='|')
         complexRule = unaryRule ^ oneOfRule
-        concatRule = OneOrMore(complexRule)
+        if self.rulesType == RulesParser.PARSE4ANALYZER:
+            concatRule = OneOrMore(complexRule)
+        else:
+            concatRule = ZeroOrMore(shiftOrthRule) + tagRule
         rule << concatRule
         
         tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], False, lineNum, line, segtypesHelper))

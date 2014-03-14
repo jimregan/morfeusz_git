@@ -81,10 +81,11 @@ class PolimorfConverter4Analyzer(object):
 
 class PolimorfConverter4Generator(object):
     
-    def __init__(self, tagset, encoder, inputEncoding='utf8'):
+    def __init__(self, tagset, encoder, inputEncoding, segmentRulesManager):
         self.tagset = tagset
         self.encoder = encoder
         self.inputEncoding = inputEncoding
+        self.segmentRulesManager = segmentRulesManager
     
     # we do it the ugly way (parse to plain text) because it is way more memory-efficient
     def _partiallyParseLines(self, inputLines):
@@ -94,10 +95,11 @@ class PolimorfConverter4Generator(object):
             if base:
                 tagnum = self.tagset.getTagnum4Tag(tag)
                 namenum = self.tagset.getNamenum4Name(name)
-                yield '%s %s %d %d' % (
+                typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
+                yield '%s %s %d %d %d' % (
                                    orth.encode(self.inputEncoding), 
                                    base.encode(self.inputEncoding), 
-                                   tagnum, namenum)
+                                   tagnum, namenum, typenum)
             else:
                 logging.warn('Ignoring line: %s', line.strip())
     
@@ -109,10 +111,11 @@ class PolimorfConverter4Generator(object):
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip(u'\n')
             if line:
-                orth, base, tagnum, namenum = line.split(u' ')
+                orth, base, tagnum, namenum, typenum = line.split(u' ')
                 tagnum = int(tagnum)
                 namenum = int(namenum)
-                yield (base, Interpretation4Generator(orth, base, tagnum, namenum))
+                typenum = int(typenum)
+                yield (base, Interpretation4Generator(orth, base, tagnum, namenum, typenum))
     
     def convert(self, inputLines):
         return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))))

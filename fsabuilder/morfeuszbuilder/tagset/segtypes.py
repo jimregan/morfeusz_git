@@ -15,6 +15,7 @@ class Segtypes(object):
         
         self.filename = segrulesConfigFile.filename
         
+        self.segtypes = set()
         self.segtype2Segnum = {}
         self.segnum2Segtype = {}
         self.patternsList = []
@@ -22,6 +23,7 @@ class Segtypes(object):
         self._tagnum2Segnum = {}
         self._lemmaTagnum2Segnum = {}
         
+        self._readSegtypes(segrulesConfigFile)
         self._readLexemes(segrulesConfigFile)
         self._readTags(segrulesConfigFile)
         self._indexSegnums()
@@ -32,6 +34,20 @@ class Segtypes(object):
         if not cond:
             raise exceptions.ConfigFileException(self.filename, lineNum, msg)
     
+    def _readSegtypes(self, segrulesConfigFile):
+        for lineNum, line in segrulesConfigFile.enumerateLinesInSection('segment types'):
+            assert type(line) == unicode
+            self._validate(
+                           u'Segment type must be a single word', 
+                           lineNum,
+                           re.match(r'^\w+$', line))
+            self._validate(
+                           u'Segment type already defined: "%s"' % line, 
+                           lineNum,
+                           line not in self.segtypes)
+            self.segtypes.add(line)
+                
+    
     def _readTags(self, segrulesConfigFile):
         gotWildcardPattern = False
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('tags'):
@@ -41,6 +57,10 @@ class Segtypes(object):
                            lineNum,
                            len(splitLine) == 2)
             segtype, pattern = splitLine
+            self._validate(
+                           u'Undeclared segment type: "%s"' % segtype,
+                           lineNum,
+                           segtype in self.segtypes)
             self._validate(
                            u'Segment type must be a lowercase alphanumeric with optional underscores',
                            lineNum,
@@ -77,6 +97,10 @@ class Segtypes(object):
     def _readLexemes(self, segrulesConfigFile):
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('lexemes'):
             segtype, pattern = line.strip().split('\t')
+            self._validate(
+                           u'Undeclared segment type: "%s"' % segtype,
+                           lineNum,
+                           segtype in self.segtypes)
             self._validate(
                            u'Segment type must be a lowercase alphanumeric with optional underscores',
                            lineNum,

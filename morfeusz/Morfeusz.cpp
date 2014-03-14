@@ -24,12 +24,6 @@
 
 using namespace std;
 
-static Deserializer<vector<InterpsGroup> >* initializeAnalyzerDeserializer() {
-    static Deserializer < vector < InterpsGroup > > *deserializer
-            = new MorphDeserializer();
-    return deserializer;
-}
-
 static MorfeuszOptions createDefaultOptions() {
     MorfeuszOptions res;
     res.caseSensitive = true;
@@ -37,95 +31,74 @@ static MorfeuszOptions createDefaultOptions() {
     return res;
 }
 
-static SegrulesFSA* getDefaultSegrulesFSA(const map<SegrulesOptions, SegrulesFSA*>& map) {
-    SegrulesOptions opts;
-    opts["aggl"] = "isolated";
-    opts["praet"] = "split";
-    return (*(map.find(opts))).second;
-}
-
 Morfeusz::Morfeusz()
-: env(Tagset(DEFAULT_FSA), Tagset(DEFAULT_SYNTH_FSA), DEFAULT_MORFEUSZ_CHARSET),
-analyzerPtr(DEFAULT_FSA),
-analyzerFSA(FSAType::getFSA(analyzerPtr, *initializeAnalyzerDeserializer())),
-segrulesFSAsMap(createSegrulesFSAsMap(analyzerPtr)),
-currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap)),
-isAnalyzerFSAFromFile(false),
-generatorPtr(DEFAULT_SYNTH_FSA),
-isGeneratorFSAFromFile(false),
-generator(generatorPtr, env),
+: analyzerEnv(DEFAULT_MORFEUSZ_CHARSET, ANALYZER, DEFAULT_FSA),
+generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
 options(createDefaultOptions()) {
 
 }
 
-static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSA*>& fsasMap) {
-    for (
-            std::map<SegrulesOptions, SegrulesFSA*>::iterator it = fsasMap.begin();
-            it != fsasMap.end();
-            ++it) {
-        delete it->second;
-    }
-    fsasMap.clear();
-}
-
 void Morfeusz::setAnalyzerFile(const string& filename) {
-    if (this->isAnalyzerFSAFromFile) {
-        delete this->analyzerFSA;
-        deleteSegrulesFSAs(this->segrulesFSAsMap);
-        delete this->analyzerPtr;
-    }
-    this->analyzerPtr = readFile<unsigned char>(filename.c_str());
-    this->analyzerFSA = FSA< vector<InterpsGroup> > ::getFSA(analyzerPtr, *initializeAnalyzerDeserializer());
-    this->segrulesFSAsMap = createSegrulesFSAsMap(analyzerPtr);
-    this->isAnalyzerFSAFromFile = true;
+    this->analyzerEnv.setFSAFile(filename);
+    //    if (this->isAnalyzerFSAFromFile) {
+    //        delete this->analyzerFSA;
+    //        deleteSegrulesFSAs(this->analyzerSegrulesFSAsMap);
+    //        delete this->analyzerPtr;
+    //    }
+    //    this->analyzerPtr = readFile<unsigned char>(filename.c_str());
+    //    this->analyzerFSA = FSA< vector<InterpsGroup> > ::getFSA(analyzerPtr, *initializeAnalyzerDeserializer());
+    //    this->analyzerSegrulesFSAsMap = createSegrulesFSAsMap(analyzerPtr);
+    //    this->isAnalyzerFSAFromFile = true;
 }
 
 void Morfeusz::setGeneratorFile(const string& filename) {
-    if (this->isGeneratorFSAFromFile) {
-        delete this->generatorPtr;
-    }
-    this->generatorPtr = readFile<unsigned char>(filename.c_str());
-    this->generator.setGeneratorPtr(generatorPtr);
+    this->generatorEnv.setFSAFile(filename);
+    //    if (this->isGeneratorFSAFromFile) {
+    //        delete this->generatorPtr;
+    //    }
+    //    this->generatorPtr = readFile<unsigned char>(filename.c_str());
+    //    this->generator.setGeneratorPtr(generatorPtr);
 }
 
 Morfeusz::~Morfeusz() {
-    if (this->isAnalyzerFSAFromFile) {
-        delete this->analyzerFSA;
-        deleteSegrulesFSAs(this->segrulesFSAsMap);
-        delete this->analyzerPtr;
-    }
+    //    if (this->isAnalyzerFSAFromFile) {
+    //        delete this->analyzerFSA;
+    //        deleteSegrulesFSAs(this->analyzerSegrulesFSAsMap);
+    //        delete this->analyzerPtr;
+    //    }
 }
 
-void Morfeusz::analyzeOneWord(
+void Morfeusz::processOneWord(
+        const Environment& env,
         const char*& inputStart,
         const char* inputEnd,
         int startNodeNum,
         std::vector<MorphInterpretation>& results) const {
     while (inputStart != inputEnd
-            && isEndOfWord(this->env.getCharsetConverter().peek(inputStart, inputEnd))) {
-        this->env.getCharsetConverter().next(inputStart, inputEnd);
+            && isEndOfWord(env.getCharsetConverter().peek(inputStart, inputEnd))) {
+        env.getCharsetConverter().next(inputStart, inputEnd);
     }
     vector<InterpretedChunk> accum;
     FlexionGraph graph;
     const char* currInput = inputStart;
-    SegrulesFSA* segrulesFSA = this->currSegrulesFSA;
-    doAnalyzeOneWord(currInput, inputEnd, accum, graph, segrulesFSA->initialState);
+    const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
+    doProcessOneWord(env, currInput, inputEnd, segrulesFSA.initialState, accum, graph);
     if (!graph.empty()) {
-        InterpretedChunksDecoder interpretedChunksDecoder(env);
+        const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
         for (unsigned int i = 0; i < graph.getTheGraph().size(); i++) {
             vector<FlexionGraph::Edge>& edges = graph.getTheGraph()[i];
             for (unsigned int j = 0; j < edges.size(); j++) {
                 FlexionGraph::Edge& e = edges[j];
                 int targetNode = startNodeNum + e.nextNode;
-                interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, back_inserter(results));
+                interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, results);
             }
             srcNode++;
         }
         //        graph.getResults(*this->tagset, results);
     }
     else if (inputStart != inputEnd) {
-        this->appendIgnotiumToResults(string(inputStart, currInput), startNodeNum, results);
+        this->appendIgnotiumToResults(env, string(inputStart, currInput), startNodeNum, results);
     }
     inputStart = currInput;
 }
@@ -139,109 +112,82 @@ static inline void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
     from.orthWasShifted = true;
 }
 
-void Morfeusz::doAnalyzeOneWord(
+void Morfeusz::doProcessOneWord(
+        const Environment& env,
         const char*& inputData,
         const char* inputEnd,
+        SegrulesState segrulesState,
         vector<InterpretedChunk>& accum,
-        FlexionGraph& graph,
-        SegrulesState segrulesState) const {
-    //    cerr << "doAnalyzeOneWord " << inputData << endl;
-    bool endOfWord = inputData == inputEnd;
+        FlexionGraph& graph) const {
+        cerr << "doAnalyzeOneWord " << inputData << endl;
+    bool endOfProcessing = inputData == inputEnd;
     const char* currInput = inputData;
-    uint32_t codepoint = endOfWord ? 0 : this->env.getCharsetConverter().next(currInput, inputEnd);
+    uint32_t codepoint = endOfProcessing ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     //    UnicodeChunk uchunk(*(this->charsetConverter), *(this->caseConverter));
     vector<uint32_t> originalCodepoints;
     vector<uint32_t> lowercaseCodepoints;
 
-    StateType state = this->analyzerFSA->getInitialState();
+    StateType state = env.getFSA().getInitialState();
 
-    while (!isEndOfWord(codepoint)) {
-        uint32_t lowerCP = this->env.getCaseConverter().toLower(codepoint);
+    while (!endOfProcessing) {
+        if (isEndOfWord(codepoint)) {
+            endOfProcessing = true;
+        }
+        cerr << "not end of word '" << string(currInput) << "'" << endl;
+        uint32_t lowerCP = env.getCaseConverter().toLower(codepoint);
         originalCodepoints.push_back(codepoint);
         lowercaseCodepoints.push_back(lowerCP);
         feedState(state, lowerCP, UTF8CharsetConverter());
-        codepoint = currInput == inputEnd ? 0 : this->env.getCharsetConverter().peek(currInput, inputEnd);
-        if (!isEndOfWord(codepoint)) {
-            if (state.isAccepting()) {
-                vector<InterpsGroup> val(state.getValue());
-                for (unsigned int i = 0; i < val.size(); i++) {
-                    InterpsGroup& ig = val[i];
-                    //                    newSegrulesState.proceedToNext(ig.type);
-                    //                    this->currSegrulesFSA->proceedToNext(ig.type, segrulesStates, newSegrulesStates);
-                    set<SegrulesState> newSegrulesStates;
-                    currSegrulesFSA->proceedToNext(ig.type, segrulesState, newSegrulesStates);
-                    for (
-                            set<SegrulesState>::iterator it = newSegrulesStates.begin();
-                            it != newSegrulesStates.end();
-                            it++) {
-                        SegrulesState newSegrulesState = *it;
-                        //                        bool shiftOrth = newSegrulesState.getLastTransitionValue() == 1;
-                        //                        bool shiftOrthSameType = newSegrulesState.getLastTransitionValue() == 2;
-                        InterpretedChunk ic = {
-                            inputData,
-                            originalCodepoints, 
-                            lowercaseCodepoints, 
-                            ig, 
-                            newSegrulesState.shiftOrthFromPrevious, 
-                            false,
-                            vector<InterpretedChunk>()
-                        };
-                        if (!accum.empty() && accum.back().shiftOrth) {
-                            doShiftOrth(accum.back(), ic);
-                        }
-                        accum.push_back(ic);
-                        const char* newCurrInput = currInput;
-                        doAnalyzeOneWord(newCurrInput, inputEnd, accum, graph, newSegrulesState);
-                        accum.pop_back();
-                    }
-                }
-            }
-
-            this->env.getCharsetConverter().next(currInput, inputEnd);
-        }
-    }
-    //    cerr << "end of word" << endl;
-    // we are at the end of word
-    if (state.isAccepting()) {
-        vector<InterpsGroup > val(state.getValue());
-        for (unsigned int i = 0; i < val.size(); i++) {
-            InterpsGroup& ig = val[i];
-            //            cerr << "currInput=" << currInput << endl;
-            //            cerr << "type=" << (int) ig.type << endl;
-            set<SegrulesState> newSegrulesStates;
-            currSegrulesFSA->proceedToNext(ig.type, segrulesState, newSegrulesStates);
-            for (
-                    set<SegrulesState>::iterator it = newSegrulesStates.begin();
-                    it != newSegrulesStates.end();
-                    it++) {
-                SegrulesState newSegrulesState = *it;
-                if (newSegrulesState.accepting) {
+        codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().peek(currInput, inputEnd);
+        if (state.isAccepting()) {
+            cerr << "accepting" << endl;
+            vector<InterpsGroup> val(state.getValue());
+            for (unsigned int i = 0; i < val.size(); i++) {
+                InterpsGroup& ig = val[i];
+                set<SegrulesState> newSegrulesStates;
+                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
+                for (
+                        set<SegrulesState>::iterator it = newSegrulesStates.begin();
+                        it != newSegrulesStates.end();
+                        ++it) {
+                    SegrulesState newSegrulesState = *it;
                     InterpretedChunk ic = {
-                        inputData, 
-                        originalCodepoints, 
-                        lowercaseCodepoints, 
-                        ig, 
-                        newSegrulesState.shiftOrthFromPrevious, 
+                        inputData,
+                        originalCodepoints,
+                        lowercaseCodepoints,
+                        ig,
+                        newSegrulesState.shiftOrthFromPrevious,
                         false,
-                        vector<InterpretedChunk>()};
+                        vector<InterpretedChunk>()
+                    };
                     if (!accum.empty() && accum.back().shiftOrth) {
                         doShiftOrth(accum.back(), ic);
                     }
                     accum.push_back(ic);
-                    graph.addPath(accum);
+                    if (isEndOfWord(codepoint)) {
+                        cerr << "end of word inside " << currInput <<endl;
+                        if (newSegrulesState.accepting)
+                            graph.addPath(accum);
+                    }
+                    else {
+                        const char* newCurrInput = currInput;
+                        doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState, accum, graph);
+                    }
                     accum.pop_back();
                 }
             }
         }
     }
+    cerr << "end of word " << currInput << endl;
     inputData = currInput;
 }
 
 void Morfeusz::appendIgnotiumToResults(
+        const Environment& env,
         const string& word,
         int startNodeNum,
         std::vector<MorphInterpretation>& results) const {
-    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, env.getAnalyzerTagset(), env.getCharsetConverter());
+    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, env.getTagset(), env.getCharsetConverter());
     results.push_back(interp);
 }
 
@@ -258,7 +204,7 @@ void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results)
     const char* inputEnd = input + text.length();
     while (input != inputEnd) {
         int startNode = results.empty() ? 0 : results.back().getEndNode();
-        this->analyzeOneWord(input, inputEnd, startNode, results);
+        this->processOneWord(this->analyzerEnv, input, inputEnd, startNode, results);
     }
 }
 
@@ -271,12 +217,18 @@ ResultsIterator Morfeusz::generate(const string& text) const {
 }
 
 void Morfeusz::generate(const string& text, vector<MorphInterpretation>& results) const {
-    this->generator.generate(text, results);
+    const char* input = text.c_str();
+    const char* inputEnd = input + text.length();
+    while (input != inputEnd) {
+        int startNode = results.empty() ? 0 : results.back().getEndNode();
+        this->processOneWord(this->generatorEnv, input, inputEnd, startNode, results);
+    }
 }
 
 void Morfeusz::setCharset(MorfeuszCharset charset) {
     this->options.encoding = charset;
-    this->env.setCharset(charset);
+    this->analyzerEnv.setCharset(charset);
+    this->generatorEnv.setCharset(charset);
 }
 
 ResultsIterator::ResultsIterator(vector<MorphInterpretation>& res) {

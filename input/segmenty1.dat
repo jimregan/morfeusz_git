@@ -9,19 +9,22 @@ praet=split composite
 
 dig>* dig
 (adja dywiz)+ adj
-#dig!>+
-#dig!> dig!> dig!>
 naj> adj_sup
+
+[generator combinations]
 
 [segment types]
 naj
 nie
 prefs
 prefv
+prefa
 dig
 adja
 adj
 adj_sup
+adj_com
+fin
 negat
 on_agl
 z_on_agl
@@ -34,6 +37,14 @@ praet_sg_agl
 praet_sg_na
 praet_sg
 praet_pl
+z_aglt
+by
+li
+nomina
+adjectiva
+verba_imperf
+dywiz
+kropka
 samodz
 
 [tags]

@@ -18,6 +18,11 @@ enum MorfeuszCharset {
     CP852
 };
 
+enum MorfeuszProcessorType {
+    GENERATOR,
+    ANALYZER
+};
+
 extern const MorfeuszCharset DEFAULT_MORFEUSZ_CHARSET;
 
 extern const unsigned char SHIFT_ORTH_NODE;

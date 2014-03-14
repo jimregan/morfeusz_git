@@ -75,7 +75,7 @@ void Generator::decodeRes(
                 decodedOrth, lemma,
                 egi.tag,
                 egi.nameClassifier,
-                env.getAnalyzerTagset(),
+                env.getTagset(),
                 env.getCharsetConverter());
         result.push_back(mi);
     }

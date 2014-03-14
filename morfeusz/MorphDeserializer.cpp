@@ -23,7 +23,7 @@ MorphDeserializer::MorphDeserializer() {
 MorphDeserializer::~MorphDeserializer() {
 }
 
-static void deserializeLemma(const unsigned char*& ptr, EncodedLemma& lemma) {
+static void deserializeLemma(const unsigned char*& ptr, EncodedForm& lemma) {
     // XXX uważać na poprawność danych
     lemma.suffixToCut = *ptr;
     ptr++;
@@ -64,7 +64,7 @@ static void deserializeLemma(const unsigned char*& ptr, EncodedLemma& lemma) {
 static void deserializeInterp(const unsigned char*& ptr, EncodedInterpretation& interp) {
     interp.type = *ptr;
     ptr++;
-    deserializeLemma(ptr, interp.lemma);
+    deserializeLemma(ptr, interp.value);
     interp.tag = ntohs(*(reinterpret_cast<const uint16_t*>(ptr)));
     ptr += 2;
     interp.nameClassifier = *ptr;

@@ -16,17 +16,18 @@
 /*
  * Lemma in a compressed format (as in an automaton)
  */
-struct EncodedLemma {
+struct EncodedForm {
     int suffixToCut;
     std::string suffixToAdd;
     std::vector<bool> casePattern;
+    std::string prefixToAdd;
 };
 
 /*
  * Internal representation of an interpretation - with lemma encoded
  */
 struct EncodedInterpretation {
-    EncodedLemma lemma;
+    EncodedForm value;
     unsigned char type;
     int tag;
     int nameClassifier;

@@ -24,7 +24,7 @@ class Serializer(object):
     def getVersion(self):
         return 10
     
-    def serialize2CppFile(self, fname, generator, additionalData):
+    def serialize2CppFile(self, fname, generator, segmentationRulesData):
         res = []
 #         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
         res.append('\n')
@@ -37,8 +37,8 @@ class Serializer(object):
             res.append('extern const unsigned char DEFAULT_FSA[] = {')
         res.append('\n')
         for byte in self.fsa2bytearray(
-                                       additionalData=self.serializeTagset(self.fsa.tagset),
-                                       moreAdditionalData=additionalData):
+                                       tagsetData=self.serializeTagset(self.fsa.tagset),
+                                       segmentationRulesData=segmentationRulesData):
             res.append(hex(byte));
             res.append(',');
         res.append('\n')
@@ -47,16 +47,16 @@ class Serializer(object):
         with open(fname, 'w') as f:
             f.write(''.join(res))
     
-    def serialize2BinaryFile(self, fname, additionalData):
+    def serialize2BinaryFile(self, fname, segmentationRulesData):
         with open(fname, 'wb') as f:
             f.write(self.fsa2bytearray(
-                                       additionalData=self.serializeTagset(self.fsa.tagset),
-                                       moreAdditionalData=additionalData))
+                                       tagsetData=self.serializeTagset(self.fsa.tagset),
+                                       segmentationRulesData=segmentationRulesData))
     
     def getStateSize(self, state):
         raise NotImplementedError('Not implemented')
     
-    def fsa2bytearray(self, additionalData=bytearray(), moreAdditionalData=bytearray()):
+    def fsa2bytearray(self, tagsetData, segmentationRulesData):
         res = bytearray()
         res.extend(self.serializePrologue())
         fsaData = bytearray()
@@ -66,7 +66,7 @@ class Serializer(object):
             fsaData.extend(self.state2bytearray(state))
         res.extend(htonl(len(fsaData)))
         res.extend(fsaData)
-        res.extend(self.serializeEpilogue(additionalData, moreAdditionalData))
+        res.extend(self.serializeEpilogue(tagsetData, segmentationRulesData))
         return res
     
     def _serializeTags(self, tagsMap):
@@ -104,20 +104,20 @@ class Serializer(object):
         
         return res
     
-    def serializeEpilogue(self, additionalData, moreAdditionalData):
+    def serializeEpilogue(self, tagsetData, segmentationRulesData):
         res = bytearray()
-        additionalDataSize = len(additionalData) if additionalData else 0
-        moreAdditionalDataSize = len(moreAdditionalData) if moreAdditionalData else 0
-        res.extend(htonl(additionalDataSize))
+        tagsetDataSize = len(tagsetData) if tagsetData else 0
+        segmentationDataSize = len(segmentationRulesData) if segmentationRulesData else 0
+        res.extend(htonl(tagsetDataSize))
         
         # add additional data itself
-        if additionalDataSize:
-            assert type(additionalData) == bytearray
-            res.extend(additionalData)
+        if tagsetDataSize:
+            assert type(tagsetData) == bytearray
+            res.extend(tagsetData)
         
-        if moreAdditionalDataSize:
-            assert type(moreAdditionalData) == bytearray
-            res.extend(moreAdditionalData)
+        if segmentationDataSize:
+            assert type(segmentationRulesData) == bytearray
+            res.extend(segmentationRulesData)
         return res
     
     def state2bytearray(self, state):

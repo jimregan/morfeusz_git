@@ -88,8 +88,6 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
             return new CompressedFSA1<T>(startPtr, deserializer);
         case 2:
             return new CompressedFSA2<T>(startPtr, deserializer);
-        case 128:
-            return new SimpleFSA<T>(startPtr, deserializer, true);
         default:
             std::ostringstream oss;
             oss << "Invalid implementation number: " << versionNum << ", should be: " << VERSION_NUM;

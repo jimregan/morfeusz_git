@@ -114,7 +114,7 @@ class MorphEncoder(Encoder):
         assert type(interpsList) == frozenset
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
             res.extend(self._encodeTypeNum(interp.typenum))
-            res.extend(self._encodeEncodedForm(interp.lemma, withCasePattern=True))
+            res.extend(self._encodeEncodedForm(interp.lemma, withCasePattern=True, withPrefix=False))
             res.extend(self._encodeTagNum(interp.tagnum))
             res.extend(self._encodeNameNum(interp.namenum))
         del interpsList
@@ -133,6 +133,7 @@ class Encoder4Generator(Encoder):
         res.append(firstByte)
         assert type(interpsList) == frozenset
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+            res.extend(self._encodeTypeNum(interp.typenum))
             res.extend(self._encodeEncodedForm(interp.orth, withCasePattern=False, withPrefix=True))
             res.extend(self._encodeTagNum(interp.tagnum))
             res.extend(self._encodeNameNum(interp.namenum))

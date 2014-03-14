@@ -111,7 +111,7 @@ moze_interp(z_on_agl)
 moze_interp(z_on_agl on_agl)
 
 # Liczba zapisana jako ciąg cyfr:
-moze_interp( dig )
+moze_interp( dig>* dig )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
@@ -154,6 +154,10 @@ moze_interp( fin dywiz li)
 #moze_interp( praet_sg_na li)
 #moze_interp( fin li)
 
+[generator combinations]
+prefs> nomina
+nomina
+
 [segment types]
 naj
 nie
@@ -164,6 +168,8 @@ dig
 adja
 adj
 adj_sup
+adj_com
+fin
 negat
 on_agl
 z_on_agl
@@ -176,7 +182,41 @@ praet_sg_agl
 praet_sg_na
 praet_sg
 praet_pl
+z_aglt
+by
+li
+nomina
+adjectiva
+verba_imperf
+dywiz
+kropka
 samodz
+
+[lexemes]
+z_aglt	aby:comp
+z_aglt	bowiem:comp
+by	by:qub
+li	li:qub
+z_aglt	by:comp
+z_aglt	cóż:subst
+z_aglt	czemu:adv
+z_aglt	czyżby:qub
+z_aglt	choćby:comp
+z_aglt	chociażby:comp
+z_aglt	dlaczego:adv
+z_aglt	dopóki:comp
+z_aglt	dopóty:conj
+z_aglt	gdyby:comp
+z_aglt	gdzie:qub
+z_aglt	gdzie:adv
+z_aglt	jakby:comp
+z_aglt	jakoby:comp
+z_aglt	kiedy:adv
+z_aglt	kiedy:comp
+z_aglt	tylko:qub
+z_aglt	żeby:comp
+dywiz	-:interp
+kropka	.:interp
 
 [tags]
 naj	naj
@@ -221,29 +261,3 @@ verba_imperf	inf:imperf
 verba_imperf	imps:imperf
 verba_imperf	impt:%:imperf
 samodz		%
-
-[lexemes]
-z_aglt	aby:comp
-z_aglt	bowiem:comp
-by	by:qub
-li	li:qub
-z_aglt	by:comp
-z_aglt	cóż:subst
-z_aglt	czemu:adv
-z_aglt	czyżby:qub
-z_aglt	choćby:comp
-z_aglt	chociażby:comp
-z_aglt	dlaczego:adv
-z_aglt	dopóki:comp
-z_aglt	dopóty:conj
-z_aglt	gdyby:comp
-z_aglt	gdzie:qub
-z_aglt	gdzie:adv
-z_aglt	jakby:comp
-z_aglt	jakoby:comp
-z_aglt	kiedy:adv
-z_aglt	kiedy:comp
-z_aglt	tylko:qub
-z_aglt	żeby:comp
-dywiz	-:interp
-kropka	.:interp

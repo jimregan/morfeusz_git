@@ -67,11 +67,12 @@ class Interpretation(object):
 
 class Interpretation4Generator(object):
     
-    def __init__(self, orth, base, tagnum, namenum):
+    def __init__(self, orth, base, tagnum, namenum, typenum):
         self.lemma = base
         self.orth = EncodedFormWithPrefix(base, orth)
         self.tagnum = tagnum
         self.namenum = namenum
+        self.typenum = typenum
     
     def getSortKey(self):
         return (

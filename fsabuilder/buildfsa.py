@@ -137,8 +137,8 @@ def _parseOptions():
     for filename in opts.inputFiles:
         _checkOpen(filename, 'r')
     _checkOpen(opts.outputFile, 'w')
+    _checkOption(opts.segmentsFile, parser, "Segment rules file is missing")
     if opts.analyzer:
-        _checkOption(opts.segmentsFile, parser, "Segment rules file is missing")
         _checkOpen(opts.segmentsFile, 'r')
     
     if not opts.serializationMethod.upper() in [SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2]:
@@ -161,9 +161,9 @@ def _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager
     for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8', segmentRulesManager, trimSupneg).convert(_concatFiles(inputFiles)):
         yield entry
 
-def _readPolimorfInput4Generator(inputFiles, tagset, encoder):
+def _readPolimorfInput4Generator(inputFiles, tagset, encoder, segmentRulesManager):
     logging.info('reading generator data from %s', str(inputFiles))
-    for entry in convertinput.PolimorfConverter4Generator(tagset, encoder, 'utf8').convert(_concatFiles(inputFiles)):
+    for entry in convertinput.PolimorfConverter4Generator(tagset, encoder, 'utf8', segmentRulesManager).convert(_concatFiles(inputFiles)):
         yield entry
 
 def _readTrainData(trainFile):
@@ -201,10 +201,10 @@ def buildAnalyzerFromPoliMorf(inputFiles, tagset, segmentRulesManager, trimSupne
     _printStats(fsa)
     return fsa
 
-def buildGeneratorFromPoliMorf(inputFiles, tagset):
+def buildGeneratorFromPoliMorf(inputFiles, tagset, segmentRulesManager):
     encoder = encode.Encoder4Generator()
     fsa = FSA(encoder, tagset)
-    inputData = _readPolimorfInput4Generator(inputFiles, tagset, encoder)
+    inputData = _readPolimorfInput4Generator(inputFiles, tagset, encoder, segmentRulesManager)
     for word, data in inputData:
         fsa.addEntry(word, data)
     fsa.close()
@@ -227,14 +227,14 @@ def main(opts):
     
     logging.info('reading tagset from %s', opts.tagsetFile)
     tagset = Tagset(opts.tagsetFile)
+    rulesType = rulesParser.RulesParser.PARSE4ANALYZER if opts.analyzer else rulesParser.RulesParser.PARSE4GENERATOR
+    segmentRulesManager = rulesParser.RulesParser(tagset, rulesType).parse(opts.segmentsFile)
+    segmentationRulesData = segmentRulesManager.serialize()
     
     if opts.analyzer:
-        segmentRulesManager = rulesParser.RulesParser(tagset).parse(opts.segmentsFile)
-        additionalData = segmentRulesManager.serialize()
         fsa = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager, opts.trimSupneg)
     else:
-        fsa = buildGeneratorFromPoliMorf(opts.inputFiles, tagset)
-        additionalData = bytearray()
+        fsa = buildGeneratorFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
     
     if opts.trainFile:
         logging.info('training with '+opts.trainFile+' ...')
@@ -248,9 +248,9 @@ def main(opts):
                   }[opts.serializationMethod](fsa)
     
     if opts.cpp:
-        serializer.serialize2CppFile(opts.outputFile, generator=opts.generator, additionalData=additionalData)
+        serializer.serialize2CppFile(opts.outputFile, generator=opts.generator, segmentationRulesData=segmentationRulesData)
     else:
-        serializer.serialize2BinaryFile(opts.outputFile, additionalData=additionalData)
+        serializer.serialize2BinaryFile(opts.outputFile, segmentationRulesData=segmentationRulesData)
     
     logging.info('total FSA size (in bytes): '+str(fsa.initialState.reverseOffset))
 #     {
