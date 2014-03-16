@@ -40,24 +40,24 @@ class EncodedFormWithPrefix(object):
         self.suffixToAdd = bestEncodedForm.suffixToAdd
         self.prefixToAdd = targetWord[:bestPrefixLength]
 
-class Interpretation(object):
+class Interpretation4Analyzer(object):
     
     def __init__(self, orth, base, tagnum, namenum, typenum):
-        self.lemma = EncodedForm(orth, base)
+        self.encodedForm = EncodedForm(orth, base)
         self.tagnum = tagnum
         self.namenum = namenum
         self.typenum = typenum
     
     def getSortKey(self):
         return (
-                self.lemma.cutLength, 
-                tuple(self.lemma.suffixToAdd), 
-                tuple(self.lemma.casePattern), 
+                self.encodedForm.cutLength, 
+                tuple(self.encodedForm.suffixToAdd), 
+                tuple(self.encodedForm.casePattern), 
                 self.tagnum, 
                 self.namenum)
     
     def __eq__(self, other):
-        if isinstance(other, Interpretation):
+        if isinstance(other, Interpretation4Analyzer):
             return self.getSortKey() == other.getSortKey()
         else:
             return False
@@ -68,8 +68,8 @@ class Interpretation(object):
 class Interpretation4Generator(object):
     
     def __init__(self, orth, base, tagnum, namenum, typenum):
-        self.lemma = base
-        self.orth = EncodedFormWithPrefix(base, orth)
+        self.encodedForm = base
+        self.encodedForm = EncodedFormWithPrefix(base, orth)
         self.tagnum = tagnum
         self.namenum = namenum
         self.typenum = typenum
@@ -77,9 +77,9 @@ class Interpretation4Generator(object):
     def getSortKey(self):
         return (
                 self.tagnum,
-                self.orth.cutLength, 
-                tuple(self.orth.suffixToAdd), 
-#                 tuple(self.lemma.casePattern), 
+                self.encodedForm.cutLength, 
+                tuple(self.encodedForm.suffixToAdd), 
+#                 tuple(self.encodedForm.casePattern), 
                 self.namenum)
     
     def __eq__(self, other):
@@ -92,7 +92,7 @@ class Interpretation4Generator(object):
         return hash(self.getSortKey())
     
     def __unicode__(self):
-        return u'<%s,(%d %s),%d,%d>' % (self.lemma.decode('utf8'), self.orth.cutLength, self.orth.suffixToAdd.decode('utf8'), self.tagnum, self.namenum)
+        return u'<%s,(%d %s),%d,%d>' % (self.encodedForm.decode('utf8'), self.encodedForm.cutLength, self.encodedForm.suffixToAdd.decode('utf8'), self.tagnum, self.namenum)
     
     def __repr__(self):
         return unicode(self)

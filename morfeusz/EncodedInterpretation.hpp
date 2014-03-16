@@ -28,7 +28,6 @@ struct EncodedForm {
  */
 struct EncodedInterpretation {
     EncodedForm value;
-    unsigned char type;
     int tag;
     int nameClassifier;
 };

@@ -82,7 +82,9 @@ void Morfeusz::processOneWord(
     FlexionGraph graph;
     const char* currInput = inputStart;
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
+    
     doProcessOneWord(env, currInput, inputEnd, segrulesFSA.initialState, accum, graph);
+    
     if (!graph.empty()) {
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
@@ -110,6 +112,7 @@ static inline void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
             from.prefixChunks.end());
     to.prefixChunks.push_back(from);
     from.orthWasShifted = true;
+    to.chunkStartPtr = from.chunkStartPtr;
 }
 
 void Morfeusz::doProcessOneWord(
@@ -119,28 +122,21 @@ void Morfeusz::doProcessOneWord(
         SegrulesState segrulesState,
         vector<InterpretedChunk>& accum,
         FlexionGraph& graph) const {
-        cerr << "doAnalyzeOneWord " << inputData << endl;
-    bool endOfProcessing = inputData == inputEnd;
+//    cerr << "doAnalyzeOneWord " << inputData << endl;
     const char* currInput = inputData;
-    uint32_t codepoint = endOfProcessing ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
-    //    UnicodeChunk uchunk(*(this->charsetConverter), *(this->caseConverter));
+    uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     vector<uint32_t> originalCodepoints;
     vector<uint32_t> lowercaseCodepoints;
 
     StateType state = env.getFSA().getInitialState();
 
-    while (!endOfProcessing) {
-        if (isEndOfWord(codepoint)) {
-            endOfProcessing = true;
-        }
-        cerr << "not end of word '" << string(currInput) << "'" << endl;
+    while (!isEndOfWord(codepoint)) {
         uint32_t lowerCP = env.getCaseConverter().toLower(codepoint);
         originalCodepoints.push_back(codepoint);
         lowercaseCodepoints.push_back(lowerCP);
         feedState(state, lowerCP, UTF8CharsetConverter());
         codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().peek(currInput, inputEnd);
         if (state.isAccepting()) {
-            cerr << "accepting" << endl;
             vector<InterpsGroup> val(state.getValue());
             for (unsigned int i = 0; i < val.size(); i++) {
                 InterpsGroup& ig = val[i];
@@ -151,6 +147,9 @@ void Morfeusz::doProcessOneWord(
                         it != newSegrulesStates.end();
                         ++it) {
                     SegrulesState newSegrulesState = *it;
+//                    if (newSegrulesState.shiftOrthFromPrevious) {
+//                        
+//                    }
                     InterpretedChunk ic = {
                         inputData,
                         originalCodepoints,
@@ -165,7 +164,6 @@ void Morfeusz::doProcessOneWord(
                     }
                     accum.push_back(ic);
                     if (isEndOfWord(codepoint)) {
-                        cerr << "end of word inside " << currInput <<endl;
                         if (newSegrulesState.accepting)
                             graph.addPath(accum);
                     }
@@ -177,8 +175,8 @@ void Morfeusz::doProcessOneWord(
                 }
             }
         }
+        codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     }
-    cerr << "end of word " << currInput << endl;
     inputData = currInput;
 }
 

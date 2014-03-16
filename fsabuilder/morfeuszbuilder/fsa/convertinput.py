@@ -4,7 +4,7 @@ Created on Oct 23, 2013
 @author: mlenart
 '''
 import logging
-from common import Interpretation
+from common import Interpretation4Analyzer
 from morfeuszbuilder.fsa.common import Interpretation4Generator
 
 def _mergeEntries(inputLines):
@@ -74,7 +74,7 @@ class PolimorfConverter4Analyzer(object):
                 tagnum = int(tagnum)
                 namenum = int(namenum)
                 typenum = int(typenum)
-                yield (orth, Interpretation(orth, base, tagnum, namenum, typenum))
+                yield (orth, Interpretation4Analyzer(orth, base, tagnum, namenum, typenum))
     
     def convert(self, inputLines):
         return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))))

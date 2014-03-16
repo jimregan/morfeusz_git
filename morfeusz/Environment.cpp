@@ -13,10 +13,12 @@
 //class InterpretedChunksDecoder4Analyzer;
 //class InterpretedChunksDecoder4Generator;
 
-static Deserializer<vector<InterpsGroup> >* initializeDeserializer() {
-    static Deserializer < vector < InterpsGroup > > *deserializer
+static Deserializer<vector<InterpsGroup> >& initializeDeserializer(MorfeuszProcessorType processorType) {
+    static Deserializer < vector < InterpsGroup > > *analyzerDeserializer
             = new MorphDeserializer();
-    return deserializer;
+    static Deserializer < vector < InterpsGroup > > *generatorDeserializer
+            = new MorphDeserializer();
+    return *(processorType == ANALYZER ? analyzerDeserializer : generatorDeserializer);
 }
 
 static SegrulesFSA* getDefaultSegrulesFSA(const map<SegrulesOptions, SegrulesFSA*>& map) {
@@ -48,14 +50,15 @@ Environment::Environment(
         caseConverter(),
         tagset(fsaFileStartPtr),
         fsaFileStartPtr(fsaFileStartPtr),
-        fsa(FSAType::getFSA(fsaFileStartPtr, *initializeDeserializer())),
+        fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
         segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
         currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap)),
         isFromFile(false),
         chunksDecoder(
             processorType == ANALYZER
             ? (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Analyzer(*this)
-            : (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Generator(*this))
+            : (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Generator(*this)),
+        processorType(processorType)
          {
 }
 
@@ -110,7 +113,7 @@ void Environment::setFSAFile(const std::string& filename) {
         delete this->fsaFileStartPtr;
     }
     this->fsaFileStartPtr = readFile<unsigned char>(filename.c_str());
-    this->fsa = FSA< vector<InterpsGroup> > ::getFSA(fsaFileStartPtr, *initializeDeserializer());
+    this->fsa = FSA< vector<InterpsGroup> > ::getFSA(fsaFileStartPtr, initializeDeserializer(this->processorType));
     this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
     this->isFromFile = true;
 }

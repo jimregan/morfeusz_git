@@ -52,11 +52,14 @@ naj	naj
 nie	nie
 prefs	prefs
 prefv	prefv
+prefa	prefa
 dig	dig
 adja	adja
 adj	adj:%:pos
 adj_sup	adj:%:sup
 adj_sup	adv:sup
+adj_com	adj:%:com
+adj_com	adj:%:com
 negat	ger:%:neg
 negat	pact:%:neg
 negat	ppas:%:neg
@@ -69,6 +72,22 @@ interp	interp
 aglsg	aglt:sg:%
 aglpl	aglt:pl:%
 samodz		%
+praet_fin	praet:%
+praet_fin	fin:%
+li		li:qub:%
+nomina		subst:%
+nomina		ger:%
+nomina		depr:%
+adjectiva	adj:%
+adjectiva	adv:%
+adjectiva	ppas:%
+adjectiva	pact:%
+verba_imperf	praet:%:imperf
+verba_imperf	fin:%:imperf
+verba_imperf	inf:imperf
+verba_imperf	imps:imperf
+verba_imperf	impt:imperf
+
 
 [lexemes]
 z_aglt	aby:comp

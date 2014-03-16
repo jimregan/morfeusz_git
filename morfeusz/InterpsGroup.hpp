@@ -14,24 +14,26 @@
 #include "MorphInterpretation.hpp"
 #include "Tagset.hpp"
 
-class InterpsGroup {
-public:
-    
-    InterpsGroup() {
-        
-    }
-    
-    explicit InterpsGroup(const unsigned char type)
-    : type(type) {
-        
-    }
-    
-    void addInterpretation(const EncodedInterpretation& interp) {
-        interps.push_back(interp);
-    }
+struct InterpsGroup {
+//public:
+//    
+//    InterpsGroup() {
+//        
+//    }
+//    
+//    explicit InterpsGroup(const unsigned char type)
+//    : type(type) {
+//        
+//    }
+//    
+//    void addInterpretation(const EncodedInterpretation& interp) {
+//        interps.push_back(interp);
+//    }
     
     unsigned char type;
-    std::vector<EncodedInterpretation> interps;
+    uint16_t size;
+    const unsigned char* ptr;
+//    std::vector<EncodedInterpretation> interps;
 };
 
 #endif	/* GROUPEDINTERPRETATIONS_HPP */

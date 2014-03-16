@@ -5,6 +5,7 @@ Created on Oct 23, 2013
 '''
 
 import logging
+from morfeuszbuilder.utils import serializationUtils
 
 class Encoder(object):
     '''
@@ -96,6 +97,54 @@ class Encoder(object):
     def _encodeNameNum(self, namenum):
         assert namenum < 256 and namenum >= 0
         return bytearray([namenum])
+    
+    def _groupInterpsByType(self, interpsList):
+        res = {}
+        for interp in interpsList:
+            res.setdefault(interp.typenum, [])
+            res[interp.typenum].append(interp)
+        return res
+    
+    def _encodeInterps4Type(self, typenum, interpsList, withCasePattern, withPrefix):
+        res = bytearray()
+        res.extend(self._encodeTypeNum(typenum))
+        
+        encodedInterpsList = bytearray()
+        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+            encodedInterpsList.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=withCasePattern, withPrefix=withPrefix))
+            encodedInterpsList.extend(self._encodeTagNum(interp.tagnum))
+            encodedInterpsList.extend(self._encodeNameNum(interp.namenum))
+        
+        res.extend(serializationUtils.htons(len(encodedInterpsList)))
+        res.extend(encodedInterpsList)
+        return res
+    
+    def _doEncodeData(self, interpsList, withCasePattern, withPrefix):
+        
+        assert type(interpsList) == frozenset
+        
+        segnum2Interps = self._groupInterpsByType(interpsList)
+        
+        
+        res = bytearray()
+        firstByte = len(segnum2Interps)
+        assert firstByte < 256
+        assert firstByte > 0
+        res.append(firstByte)
+        
+        for typenum, interpsList in segnum2Interps.iteritems():
+            res.extend(self._encodeInterps4Type(typenum, interpsList, withCasePattern, withPrefix))
+            
+        
+#         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+#             encodedInterpsList.extend(self._encodeTypeNum(interp.typenum))
+#             encodedInterpsList.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=withCasePattern, withPrefix=withPrefix))
+#             encodedInterpsList.extend(self._encodeTagNum(interp.tagnum))
+#             encodedInterpsList.extend(self._encodeNameNum(interp.namenum))
+        del interpsList
+#         res.extend(serializationUtils.htons(len(encodedInterpsList)))
+#         res.extend(encodedInterpsList)
+        return res
 
 class MorphEncoder(Encoder):
     
@@ -106,19 +155,20 @@ class MorphEncoder(Encoder):
         self.LEMMA_MIXED_CASE = 2
     
     def encodeData(self, interpsList):
-        res = bytearray()
-        firstByte = len(interpsList)
-        assert firstByte < 256
-        assert firstByte > 0
-        res.append(firstByte)
-        assert type(interpsList) == frozenset
-        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-            res.extend(self._encodeTypeNum(interp.typenum))
-            res.extend(self._encodeEncodedForm(interp.lemma, withCasePattern=True, withPrefix=False))
-            res.extend(self._encodeTagNum(interp.tagnum))
-            res.extend(self._encodeNameNum(interp.namenum))
-        del interpsList
-        return res
+        return self._doEncodeData(interpsList, withCasePattern=True, withPrefix=False)
+#         res = bytearray()
+#         firstByte = len(interpsList)
+#         assert firstByte < 256
+#         assert firstByte > 0
+#         res.append(firstByte)
+#         assert type(interpsList) == frozenset
+#         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+#             res.extend(self._encodeTypeNum(interp.typenum))
+#             res.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=True, withPrefix=False))
+#             res.extend(self._encodeTagNum(interp.tagnum))
+#             res.extend(self._encodeNameNum(interp.namenum))
+#         del interpsList
+#         return res
 
 class Encoder4Generator(Encoder):
     
@@ -126,18 +176,19 @@ class Encoder4Generator(Encoder):
         super(Encoder4Generator, self).__init__(encoding)
     
     def encodeData(self, interpsList):
-        res = bytearray()
-        firstByte = len(interpsList)
-        assert firstByte < 256
-        assert firstByte > 0
-        res.append(firstByte)
-        assert type(interpsList) == frozenset
-        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-            res.extend(self._encodeTypeNum(interp.typenum))
-            res.extend(self._encodeEncodedForm(interp.orth, withCasePattern=False, withPrefix=True))
-            res.extend(self._encodeTagNum(interp.tagnum))
-            res.extend(self._encodeNameNum(interp.namenum))
-        return res
+        return self._doEncodeData(interpsList, withCasePattern=False, withPrefix=True)
+#         res = bytearray()
+#         firstByte = len(interpsList)
+#         assert firstByte < 256
+#         assert firstByte > 0
+#         res.append(firstByte)
+#         assert type(interpsList) == frozenset
+#         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+#             res.extend(self._encodeTypeNum(interp.typenum))
+#             res.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=False, withPrefix=True))
+#             res.extend(self._encodeTagNum(interp.tagnum))
+#             res.extend(self._encodeNameNum(interp.namenum))
+#         return res
 #     
 #     def decodeData(self, data):
 #         

@@ -64,6 +64,7 @@ private:
     bool isFromFile;
     
     const InterpretedChunksDecoder* chunksDecoder;
+    MorfeuszProcessorType processorType;
     
     const CharsetConverter* getCharsetConverter(MorfeuszCharset charset) const;
 };

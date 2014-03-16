@@ -15,7 +15,6 @@ void FlexionGraph::addStartEdge(const Edge& e) {
         this->graph.push_back(vector<Edge>());
         this->node2ChunkStartPtr.push_back(e.chunk.chunkStartPtr);
     }
-//    cerr << string(e.chunk.chunkStartPtr) << endl;
     assert(this->node2ChunkStartPtr[0] == e.chunk.chunkStartPtr);
     this->graph[0].push_back(e);
 }
@@ -30,22 +29,43 @@ void FlexionGraph::addMiddleEdge(unsigned int startNode, const Edge& e) {
     this->graph[startNode].push_back(e);
 }
 
+static inline bool chunkIsAtFront(
+        const InterpretedChunk& chunk, 
+        const std::vector<InterpretedChunk>& path) {
+    unsigned int i;
+    for (i = 0; i < path.size() - 1 && path[i].orthWasShifted; i++) {
+    }
+    assert(!path[i].orthWasShifted);
+    return &chunk == &(path[i]);
+}
+
+static inline bool chunkIsAtBack(
+        const InterpretedChunk& chunk, 
+        const std::vector<InterpretedChunk>& path) {
+    return &chunk == &(path.back());
+}
+
+static inline bool chunkIsTheOnlyOne(
+        const InterpretedChunk& chunk, 
+        const std::vector<InterpretedChunk>& path) {
+    return chunkIsAtFront(chunk, path) && chunkIsAtBack(chunk, path);
+}
+
 void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
     //    debugPath(path);
     //    debugGraph(this->graph);
     for (unsigned int i = 0; i < path.size(); i++) {
         const InterpretedChunk& chunk = path[i];
         if (!chunk.orthWasShifted) {
-            if (&chunk == &(path.front())
-                    && &chunk == &(path.back())) {
+            if (chunkIsTheOnlyOne(chunk, path)) {
                 Edge e = {chunk, UINT_MAX};
                 this->addStartEdge(e);
             }
-            else if (&chunk == &(path.front())) {
+            else if (chunkIsAtFront(chunk, path)) {
                 Edge e = {chunk, this->graph.empty() ? 1 : (unsigned int) this->graph.size()};
                 this->addStartEdge(e);
             }
-            else if (&chunk == &(path.back())) {
+            else if (chunkIsAtBack(chunk, path)) {
                 Edge e = {chunk, UINT_MAX};
                 this->addMiddleEdge((unsigned int) this->graph.size(), e);
             }

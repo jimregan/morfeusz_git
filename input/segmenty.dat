@@ -142,6 +142,7 @@ samodz dywiz adj
 # Stopień najwyższy:
 # np. „naj·zieleńszy”, „naj·mądrzej”
 moze_interp( naj> adj_sup )
+moze_interp( nie> naj> adj_sup )
 # Cząstka li przy osobowych formach czasownika oddzielona dywizem: znasz-li ten kraj
 moze_interp( praet_sg dywiz li)
 moze_interp( praet_pl dywiz li)
