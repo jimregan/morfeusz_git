@@ -22,7 +22,7 @@ class Serializer(object):
     
     # get the Morfeusz file format version that is being encoded
     def getVersion(self):
-        return 10
+        return 11
     
     def serialize2CppFile(self, fname, generator, segmentationRulesData):
         res = []
