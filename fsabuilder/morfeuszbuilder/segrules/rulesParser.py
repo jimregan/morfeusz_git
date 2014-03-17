@@ -46,14 +46,14 @@ class RulesParser(object):
                 def2Key[define] = key
         
         firstNFA = None
-        for defs in itertools.product(*key2Defs.values()):
+        for idx, defs in enumerate(itertools.product(*key2Defs.values())):
             key2Def = dict([(def2Key[define], define) for define in defs])
 #             print key2Def
             nfa = rulesNFA.RulesNFA()
             if not firstNFA:
                 firstNFA = nfa
             section = 'combinations' if self.rulesType == RulesParser.PARSE4ANALYZER else 'generator combinations'
-            combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection(section)
+            combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection(section, ignoreComments=False)
             combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs, filename))
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper, filename):
 #                 print rule
@@ -64,6 +64,8 @@ class RulesParser(object):
 #             dfa.debug()
 #             print dfa.tryToRecognize(bytearray([14]))
             res.addDFA(key2Def, dfa)
+            if idx == 0:
+                res.setDefaultOptions(key2Def)
         return res
     
     def _doParse(self, combinationEnumeratedLines, segtypesHelper, filename):

@@ -28,8 +28,12 @@ static inline const unsigned char* getFSAsMapPtr(const unsigned char* ptr) {
 
 static inline SegrulesOptions deserializeOptions(const unsigned char*& ptr) {
     SegrulesOptions res;
-    res["aggl"] = deserializeString(ptr);
-    res["praet"] = deserializeString(ptr);
+    unsigned char optsNum = *ptr;
+    ptr++;
+    for (unsigned char i = 0; i < optsNum; i++) {
+        string key = deserializeString(ptr);
+        res[key] = deserializeString(ptr);
+    }
     return res;
 }
 
@@ -53,4 +57,36 @@ map<SegrulesOptions, SegrulesFSA*> createSegrulesFSAsMap(const unsigned char* an
         res[options] = fsa;
     }
     return res;
+}
+
+SegrulesOptions getDefaultSegrulesOptions(const unsigned char* ptr) {
+    const unsigned char* fsasMapPtr = getFSAsMapPtr(ptr);
+    const unsigned char* currPtr = fsasMapPtr;
+    unsigned char fsasNum = *currPtr;
+    currPtr++;
+    for (unsigned char i = 0; i < fsasNum; i++) {
+        deserializeOptions(currPtr);
+        deserializeFSA(currPtr);
+    }
+    return deserializeOptions(currPtr);
+}
+
+SegrulesFSA* getDefaultSegrulesFSA(
+        const map<SegrulesOptions, SegrulesFSA*>& map, 
+        const unsigned char* ptr) {
+    SegrulesOptions opts = getDefaultSegrulesOptions(ptr);
+    return (*(map.find(opts))).second;
+}
+
+void debugMap(const map<SegrulesOptions, SegrulesFSA*>& res) {
+    map<SegrulesOptions, SegrulesFSA*>::const_iterator it = res.begin();
+    while (it != res.end()) {
+        SegrulesOptions::const_iterator it1 = it->first.begin();
+        while (it1 != it->first.end()) {
+            cerr << it1->first << " --> " << it1->second << endl;
+            it1++;
+        }
+        cerr << it->second << endl;
+        it++;
+    }
 }

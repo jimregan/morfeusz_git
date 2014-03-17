@@ -21,13 +21,6 @@ static Deserializer<vector<InterpsGroup> >& initializeDeserializer(MorfeuszProce
     return *(processorType == ANALYZER ? analyzerDeserializer : generatorDeserializer);
 }
 
-static SegrulesFSA* getDefaultSegrulesFSA(const map<SegrulesOptions, SegrulesFSA*>& map) {
-    SegrulesOptions opts;
-    opts["aggl"] = "isolated";
-    opts["praet"] = "split";
-    return (*(map.find(opts))).second;
-}
-
 static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSA*>& fsasMap) {
     for (
             std::map<SegrulesOptions, SegrulesFSA*>::iterator it = fsasMap.begin();
@@ -43,23 +36,23 @@ Environment::Environment(
         MorfeuszProcessorType processorType,
         const unsigned char* fsaFileStartPtr)
 : currentCharsetConverter(getCharsetConverter(charset)),
-        utf8CharsetConverter(),
-        isoCharsetConverter(),
-        cp1250CharsetConverter(),
-        cp852CharsetConverter(),
-        caseConverter(),
-        tagset(fsaFileStartPtr),
-        fsaFileStartPtr(fsaFileStartPtr),
-        fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
-        segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
-        currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap)),
-        isFromFile(false),
-        chunksDecoder(
-            processorType == ANALYZER
-            ? (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Analyzer(*this)
-            : (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Generator(*this)),
-        processorType(processorType)
-         {
+utf8CharsetConverter(),
+isoCharsetConverter(),
+cp1250CharsetConverter(),
+cp852CharsetConverter(),
+caseConverter(),
+tagset(fsaFileStartPtr),
+fsaFileStartPtr(fsaFileStartPtr),
+fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
+segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
+currSegrulesOptions(getDefaultSegrulesOptions(fsaFileStartPtr)),
+currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap, fsaFileStartPtr)),
+isFromFile(false),
+chunksDecoder(
+processorType == ANALYZER
+? (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Analyzer(*this)
+: (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Generator(*this)),
+processorType(processorType) {
 }
 
 const CharsetConverter* Environment::getCharsetConverter(MorfeuszCharset charset) const {
@@ -128,4 +121,17 @@ const FSAType& Environment::getFSA() const {
 
 const InterpretedChunksDecoder& Environment::getInterpretedChunksDecoder() const {
     return *(this->chunksDecoder);
+}
+
+void Environment::setSegrulesOption(const std::string& option, const std::string& value) {
+    if (this->currSegrulesOptions.find(option) == this->currSegrulesOptions.end()) {
+        throw MorfeuszException("Invalid segmentation option '"+option+"'");
+    }
+    SegrulesOptions prevOptions = this->currSegrulesOptions;
+    this->currSegrulesOptions[option] = value;
+    if (this->segrulesFSAsMap.find(this->currSegrulesOptions) == this->segrulesFSAsMap.end()) {
+        this->currSegrulesOptions = prevOptions;
+        throw MorfeuszException("Invalid '"+option+"' option value: '"+value+"'");
+    }
+    this->currSegrulesFSA = this->segrulesFSAsMap.find(this->currSegrulesOptions)->second;
 }

@@ -46,8 +46,13 @@ class ConfigFile(object):
         else:
             return None
     
-    def enumerateLinesInSection(self, sectionName):
-        return self.section2Lines[sectionName]
+    def enumerateLinesInSection(self, sectionName, ignoreComments=True):
+        if sectionName not in self.section2Lines:
+            raise exceptions.ConfigFileException(self.filename, None, u'Missing section: "%s"' % sectionName)
+        if not ignoreComments:
+            return self.section2Lines[sectionName]
+        else:
+            return [(linenum, line) for (linenum, line) in self.section2Lines[sectionName] if not line.startswith('#')]
     
     def _parse(self):
         with codecs.open(self.filename, 'r', 'utf8') as f:

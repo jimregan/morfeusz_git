@@ -31,4 +31,7 @@ class ConfigFileException(FSABuilderException):
         self.msg = msg
     
     def __str__(self):
-        return u'%s:%d - %s' % (self.filename, self.lineNum, self.msg)
+        if self.lineNum:
+            return u'%s:%d - %s' % (self.filename, self.lineNum, self.msg)
+        else:
+            return u'%s - %s' % (self.filename, self.msg)

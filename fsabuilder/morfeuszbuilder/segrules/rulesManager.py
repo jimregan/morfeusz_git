@@ -11,6 +11,7 @@ class RulesManager(object):
     def __init__(self, segtypes):
         self.options2DFA = {}
         self.segtypes = segtypes
+        self.defaultOptions = None
     
     def _options2Key(self, optionsMap):
         return frozenset(optionsMap.items())
@@ -20,6 +21,9 @@ class RulesManager(object):
     
     def getDFA(self, optionsMap):
         return self.options2DFA[self._options2Key(optionsMap)]
+    
+    def setDefaultOptions(self, key2Def):
+        self.defaultOptions = key2Def
     
     def addDFA(self, optionsMap, dfa):
         self.options2DFA[self._options2Key(optionsMap)] = dfa
@@ -40,13 +44,17 @@ class RulesManager(object):
             optionsMap = self._key2Options(key)
             res.extend(self._serializeOptionsMap(optionsMap))
             res.extend(self._serializeDFA(dfa))
+        res.extend(self._serializeOptionsMap(self.defaultOptions))
         logging.info('segmentation rules size: %s bytes', len(res))
         return res
     
     def _serializeOptionsMap(self, optionsMap):
         assert len(optionsMap) < 256
         res = bytearray()
+        res.append(2)
+        res.extend(self._serializeString('aggl'))
         res.extend(self._serializeString(optionsMap['aggl']))
+        res.extend(self._serializeString('praet'))
         res.extend(self._serializeString(optionsMap['praet']))
         return res
     

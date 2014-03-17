@@ -1,4 +1,5 @@
 
+
 ########## generate default dictionary data #################
 add_custom_command (
         OUTPUT "${INPUT_DICTIONARY_CPP}"
@@ -57,7 +58,7 @@ set(INCLUDE_FILES
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
 set_source_files_properties ( SOURCE "${INPUT_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
-set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz")
+set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz2")
 
 add_executable (morfeusz_analyzer morfeusz_analyzer.cpp)
 add_executable (morfeusz_generator morfeusz_generator.cpp)

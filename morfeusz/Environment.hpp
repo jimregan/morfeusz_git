@@ -41,6 +41,8 @@ public:
     
     void setFSAFile(const std::string& filename);
     
+    void setSegrulesOption(const std::string& option, const std::string& value);
+    
     const SegrulesFSA& getCurrentSegrulesFSA() const;
     
     const FSAType& getFSA() const;
@@ -60,6 +62,7 @@ private:
     const unsigned char* fsaFileStartPtr;
     const FSAType* fsa;
     std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;
+    SegrulesOptions currSegrulesOptions;
     const SegrulesFSA* currSegrulesFSA;
     bool isFromFile;
     

@@ -261,9 +261,11 @@ def main(opts):
 if __name__ == '__main__':
     import os
     opts = _parseOptions()
-#     try:
-    main(opts)
+    try:
+        main(opts)
 #     except Exception as ex:
-#         raise ex
 #         print >> sys.stderr, unicode(ex).encode('utf8')
+#         sys.exit(1)
+    finally:
+        pass
 

@@ -3,6 +3,7 @@ aggl=permissive strict isolated
 praet=split composite
 
 [combinations]
+
 #define wsz_interp (interp|kropka|dywiz)*
 
 #define moze_interp(segmenty) wsz_interp segmenty wsz_interp
@@ -19,7 +20,7 @@ samotny
 # przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
 moze_interp(praet_sg_na)
 
-# przeszlik pojedynczy w formie niezróżnicowanej aglutynacyjnie, np. „moze”:
+# przeszlik pojedynczy w formie niezróżnicowanej aglutynacyjnie, np. „czytał”:
 moze_interp(praet_sg)
 
 # przeszlik mnogi, np. „czytali”:
@@ -69,7 +70,7 @@ moze_interp(praet_sg by aglsg)
 # np. „gnietli·by·śmy”
 moze_interp(praet_pl by aglpl)
 #else
-# moze_interp(praetcond)
+#moze_interp(praetcond)
 #endif
 # np. „by·ś”
 moze_interp(by aglsg)
@@ -97,13 +98,13 @@ moze_interp( (adja dywiz)+ adj )
 # adja dywiz adja dywiz adja dywiz adj interp?
 # adja dywiz adja dywiz adja dywiz adja dywiz adj interp?
 
-# Formy zanegowane stopnia wyższego przymiotników i przysłówków (WK)
-# np. „nie·grzeczniejszy”, „nie·grzeczniej”
-moze_interp( nie> adj_com )
+# Stopień najwyższy:
+# np. „naj·zieleńszy”, „naj·mądrzej”
+moze_interp( naj> adj_sup )
 
 # Formy „zanegowane” gerundiów i imiesłowów:
 # np. „nie·czytanie”, „nie·przeczytany”, „nie·czytający”:
-moze_interp( nie> negat )
+moze_interp( nie > negat )
 
 # Przyimki akceptujące krótką formę „-ń”
 moze_interp(z_on_agl)
@@ -115,17 +116,11 @@ moze_interp( dig>* dig )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
-# rzeczownikowe
-# np. „euro·sodoma”, „e-·papieros”
-moze_interp(nomina)
-moze_interp( prefs> nomina )
+# rzeczownikowe i przymiotnikowe
+# np. „euro·sodoma”, „e-·papieros”, „euro·sodomski”, „bez·argumentowy”
+moze_interp( prefs> samodz )
 # czasownikowe np. „po·nakapywać”
-moze_interp(verba_imperf)
-moze_interp( prefv> verba_imperf )
-# przymiotnikowe np. „do·żylny”, „euro·sodomski”, „bez·argumentowy”
-moze_interp(adjectiva)
-moze_interp(prefa> adj)
-moze_interp( prefa> adjectiva )
+moze_interp( prefv> samodz )
 
 # Apozycje z dywizem
 # np. „kobieta-prezydent”
@@ -138,26 +133,12 @@ adj dywiz samodz
 # ?
 samodz dywiz adj
 
-#### PONIŻEJ REGUŁY WK
-# Stopień najwyższy:
-# np. „naj·zieleńszy”, „naj·mądrzej”
-moze_interp( naj> adj_sup )
-moze_interp( nie> naj> adj_sup )
-# Cząstka li przy osobowych formach czasownika oddzielona dywizem: znasz-li ten kraj
-moze_interp( praet_sg dywiz li)
-moze_interp( praet_pl dywiz li)
-moze_interp( praet_sg_na dywiz li)
-moze_interp( fin dywiz li)
-
-# i bez dywizu --- czy bez dywizu jest sens to łapać?
-#moze_interp( praet_sg li)
-#moze_interp( praet_pl li)
-#moze_interp( praet_sg_na li)
-#moze_interp( fin li)
-
 [generator combinations]
-prefs> nomina
-nomina
+adj
+adj_sup
+samodz
+prefs> samodz
+prefv> samodz
 
 [segment types]
 naj
@@ -193,11 +174,43 @@ dywiz
 kropka
 samodz
 
+[tags]
+naj	naj
+nie	nie
+prefs	prefs
+prefv	prefv
+dig	dig
+adja	adja
+adj	adj:%:pos
+adj_sup	adj:%:sup
+adj_sup	adv:sup
+negat	ger:%:neg
+negat	pact:%:neg
+negat	ppas:%:neg
+on_agl	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
+z_on_agl	prep:%
+samotny	brev:pun
+samotny	brev:npun
+samotny	interj
+interp	interp
+aglsg	aglt:sg:%
+aglpl	aglt:pl:%
+#praetcond	cond:%
+#praetcond	praet:%:pri:%
+#praetcond	praet:%:sec:%
+#praetcond	praet:%:ter:%
+praet_sg_agl	praet:sg:%:agl
+praet_sg_na	praet:sg:%:nagl
+praet_sg	praet:sg:%
+praet_pl	praet:pl:%
+praet_sg	winien:sg:%
+praet_pl	winien:pl:%
+samodz		%
+
 [lexemes]
 z_aglt	aby:comp
 z_aglt	bowiem:comp
 by	by:qub
-li	li:qub
 z_aglt	by:comp
 z_aglt	cóż:subst
 z_aglt	czemu:adv
@@ -218,47 +231,3 @@ z_aglt	tylko:qub
 z_aglt	żeby:comp
 dywiz	-:interp
 kropka	.:interp
-
-[tags]
-naj	naj
-nie	nie
-prefs	prefs
-prefv	prefv
-prefa	prefa
-dig	dig
-adja	adja
-adj	adj:%:pos
-adj_sup	adj:%:sup
-adj_sup	adv:sup
-adj_com	adj:%:com
-adj_com	adj:%:com
-negat	ger:%:neg
-negat	pact:%:neg
-negat	ppas:%:neg
-on_agl	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
-z_on_agl	prep:%
-samotny	brev:pun
-samotny	brev:npun
-samotny	interj
-interp	interp
-aglsg	aglt:sg:%
-aglpl	aglt:pl:%
-praet_sg_agl	praet:sg:%:agl
-praet_sg_na	praet:sg:%:nagl
-praet_sg	praet:sg:%
-praet_pl	praet:pl:%
-praet_sg	winien:sg:%
-praet_pl	winien:pl:%
-fin		fin:%
-nomina		subst:%
-nomina		ger:%
-nomina		depr:%
-adjectiva	adv:%
-adjectiva	ppas:%
-adjectiva	pact:%
-verba_imperf	praet:%:imperf
-verba_imperf	fin:%:imperf
-verba_imperf	inf:imperf
-verba_imperf	imps:imperf
-verba_imperf	impt:%:imperf
-samodz		%

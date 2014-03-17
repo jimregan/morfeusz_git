@@ -26,7 +26,6 @@ class Encoder(object):
     
     def encodeData(self, data):
         raise NotImplementedError()
-#         return bytearray(u'|'.join(data).encode(self.encoding)) + bytearray([0])
     
     def decodeData(self, rawData):
         return NotImplementedError()
@@ -134,16 +133,8 @@ class Encoder(object):
         
         for typenum, interpsList in segnum2Interps.iteritems():
             res.extend(self._encodeInterps4Type(typenum, interpsList, withCasePattern, withPrefix))
-            
-        
-#         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-#             encodedInterpsList.extend(self._encodeTypeNum(interp.typenum))
-#             encodedInterpsList.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=withCasePattern, withPrefix=withPrefix))
-#             encodedInterpsList.extend(self._encodeTagNum(interp.tagnum))
-#             encodedInterpsList.extend(self._encodeNameNum(interp.namenum))
         del interpsList
-#         res.extend(serializationUtils.htons(len(encodedInterpsList)))
-#         res.extend(encodedInterpsList)
+        
         return res
 
 class MorphEncoder(Encoder):
@@ -156,19 +147,6 @@ class MorphEncoder(Encoder):
     
     def encodeData(self, interpsList):
         return self._doEncodeData(interpsList, withCasePattern=True, withPrefix=False)
-#         res = bytearray()
-#         firstByte = len(interpsList)
-#         assert firstByte < 256
-#         assert firstByte > 0
-#         res.append(firstByte)
-#         assert type(interpsList) == frozenset
-#         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-#             res.extend(self._encodeTypeNum(interp.typenum))
-#             res.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=True, withPrefix=False))
-#             res.extend(self._encodeTagNum(interp.tagnum))
-#             res.extend(self._encodeNameNum(interp.namenum))
-#         del interpsList
-#         return res
 
 class Encoder4Generator(Encoder):
     
@@ -177,18 +155,3 @@ class Encoder4Generator(Encoder):
     
     def encodeData(self, interpsList):
         return self._doEncodeData(interpsList, withCasePattern=False, withPrefix=True)
-#         res = bytearray()
-#         firstByte = len(interpsList)
-#         assert firstByte < 256
-#         assert firstByte > 0
-#         res.append(firstByte)
-#         assert type(interpsList) == frozenset
-#         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-#             res.extend(self._encodeTypeNum(interp.typenum))
-#             res.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=False, withPrefix=True))
-#             res.extend(self._encodeTagNum(interp.tagnum))
-#             res.extend(self._encodeNameNum(interp.namenum))
-#         return res
-#     
-#     def decodeData(self, data):
-#         

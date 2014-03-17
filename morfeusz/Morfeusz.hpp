@@ -35,6 +35,12 @@ class ResultsIterator;
 
 typedef State< std::vector<InterpsGroup > > StateType;
 
+/**
+ * Performs morphological analysis (analyze methods) and syntesis (generate methods).
+ * 
+ * It is NOT thread-safe
+ * but it is possible to use separate Morfeusz instance for each concurrent thread.
+ */
 class Morfeusz {
 public:
     
@@ -57,6 +63,9 @@ public:
      */
     void setGeneratorFile(const std::string& filename);
     
+    /**
+     * Destroys Morfeusz object.
+     */
     virtual ~Morfeusz();
     
     /**
@@ -82,6 +91,16 @@ public:
      * @return - iterator over morphological analysis results
      */
     ResultsIterator generate(const std::string& lemma) const;
+    
+    /**
+     * Perform morphological synthesis on a given lemma and return the results as iterator.
+     * Limit results to interpretations with the specified tag.
+     * 
+     * @param text - text for morphological analysis
+     * @param tag - tag of result interpretations
+     * @return - iterator over morphological analysis results
+     */
+    ResultsIterator generate(const std::string& lemma, int tagnum) const;
 
     /**
      * Perform morphological synthesis on a given lemma and put results in a vector.
@@ -90,6 +109,16 @@ public:
      * @param result - results vector
      */
     void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const;
+    
+    /**
+     * Perform morphological synthesis on a given lemma and put results in a vector.
+     * Limit results to interpretations with the specified tag.
+     * 
+     * @param lemma - lemma to be analyzed
+     * @param tag - tag of result interpretations
+     * @param result - results vector
+     */
+    void generate(const std::string& lemma, int tagnum, std::vector<MorphInterpretation>& result) const;
 
     /**
      * Set encoding for input and output string objects.
@@ -97,6 +126,20 @@ public:
      * @param encoding
      */
     void setCharset(MorfeuszCharset encoding);
+    
+    /**
+     * Set aggl segmentation option value.
+     * 
+     * @param aggl
+     */
+    void setAggl(const std::string& aggl);
+    
+    /**
+     * Set praet segmentation option value.
+     * 
+     * @param praet
+     */
+    void setPraet(const std::string& praet);
 
     friend class ResultsIterator;
 private:
@@ -121,19 +164,9 @@ private:
             const std::string& word,
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const;
+    
     Environment analyzerEnv;
     Environment generatorEnv;
-//    const unsigned char* analyzerPtr;
-//    FSAType* analyzerFSA;
-//    std::map<SegrulesOptions, SegrulesFSA*> analyzerSegrulesFSAsMap;
-//    SegrulesFSA* currAnalyzerSegrulesFSA;
-//    bool isAnalyzerFSAFromFile;
-//    
-//    const unsigned char* generatorPtr;
-//    FSAType* generatorFSA;
-//    bool isGeneratorFSAFromFile;
-//    Generator generator;
-
     MorfeuszOptions options;
 };
 
@@ -143,7 +176,7 @@ public:
     bool hasNext();
     friend class Morfeusz;
 private:
-    ResultsIterator(vector<MorphInterpretation>& res);
+    ResultsIterator(const std::vector<MorphInterpretation>& res);
     const char* rawInput;
     std::list<MorphInterpretation> resultsBuffer;
     int startNode;

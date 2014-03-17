@@ -8,18 +8,96 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <map>
 #include "fsa/fsa.hpp"
 #include "Tagset.hpp"
 #include "Morfeusz.hpp"
 #include "const.hpp"
 
-using namespace std;
+#include "cli/cli.hpp"
 
-int main(int argc, char** argv) {
+using namespace std;
+using namespace ez;
+
+int main(int argc, const char** argv) {
+
+    ezOptionParser opt;
+
+    opt.overview = "Morfeusz analyzer";
+    opt.syntax = string(argv[0]) + " [OPTIONS]";
+    opt.example = string(argv[0]) + " --aggl strict --praet split --input /path/to/file.fsa";
+    //	opt.footer = "Morfeusz Copyright (C) 2014\n";
+
+    opt.add(
+            "", // Default.
+            0, // Required?
+            0, // Number of args expected.
+            0, // Delimiter if expecting multiple args.
+            "Display usage instructions.", // Help description.
+            "-h", // Flag token. 
+            "-help", // Flag token.
+            "--help", // Flag token.
+            "--usage" // Flag token.
+            );
+
+    opt.add(
+            "", // Default.
+            0, // Required?
+            1, // Number of args expected.
+            0, // Delimiter if expecting multiple args.
+            "file with analyzer finite state automaton and data, created with buildfsa.py script.", // Help description.
+            "-i", // Flag token. 
+            "-input", // Flag token.
+            "--input" // Flag token.
+            );
+    
+    opt.add(
+            "", // Default.
+            0, // Required?
+            1, // Number of args expected.
+            0, // Delimiter if expecting multiple args.
+            "aggl option.", // Help description.
+            "-a", // Flag token. 
+            "-aggl", // Flag token.
+            "--aggl" // Flag token.
+            );
+    
+    opt.add(
+            "", // Default.
+            0, // Required?
+            1, // Number of args expected.
+            0, // Delimiter if expecting multiple args.
+            "praet option.", // Help description.
+            "-p", // Flag token. 
+            "-praet", // Flag token.
+            "--praet" // Flag token.
+            );
+
+    opt.parse(argc, argv);
+
+    if (opt.isSet("-h")) {
+        printCLIUsage(opt, cout);
+        return 0;
+    }
+
     Morfeusz morfeusz;
-    if (argc > 1) {
-        morfeusz.setAnalyzerFile(argv[1]);
-        printf("Using dictionary from %s\n", argv[1]);
+    if (opt.isSet("-i")) {
+        string analyzerFile;
+        opt.get("-i")->getString(analyzerFile);
+        morfeusz.setAnalyzerFile(analyzerFile);
+        printf("Using dictionary from %s\n", analyzerFile.c_str());
+    }
+    if (opt.isSet("-a")) {
+        string aggl;
+        opt.get("-a")->getString(aggl);
+        cerr << "setting aggl option to " << aggl << endl;
+        morfeusz.setAggl(aggl);
+    }
+    if (opt.isSet("-p")) {
+        string praet;
+        opt.get("-p")->getString(praet);
+        cerr << "setting praet option to " << praet << endl;
+        morfeusz.setPraet(praet);
     }
 #ifdef _WIN32
     morfeusz.setCharset(CP852);
@@ -37,10 +115,11 @@ int main(int argc, char** argv) {
         printf("[");
         for (unsigned int i = 0; i < res.size(); i++) {
             MorphInterpretation& mi = res[i];
-            if (prevStart != -1 
+            if (prevStart != -1
                     && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
                 printf("]\n[");
-            } else if (prevStart != -1) {
+            }
+            else if (prevStart != -1) {
                 printf("; ");
             }
             printf("%d,%d,%s,%s,%s,%s",

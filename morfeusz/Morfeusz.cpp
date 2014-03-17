@@ -40,32 +40,13 @@ options(createDefaultOptions()) {
 
 void Morfeusz::setAnalyzerFile(const string& filename) {
     this->analyzerEnv.setFSAFile(filename);
-    //    if (this->isAnalyzerFSAFromFile) {
-    //        delete this->analyzerFSA;
-    //        deleteSegrulesFSAs(this->analyzerSegrulesFSAsMap);
-    //        delete this->analyzerPtr;
-    //    }
-    //    this->analyzerPtr = readFile<unsigned char>(filename.c_str());
-    //    this->analyzerFSA = FSA< vector<InterpsGroup> > ::getFSA(analyzerPtr, *initializeAnalyzerDeserializer());
-    //    this->analyzerSegrulesFSAsMap = createSegrulesFSAsMap(analyzerPtr);
-    //    this->isAnalyzerFSAFromFile = true;
 }
 
 void Morfeusz::setGeneratorFile(const string& filename) {
     this->generatorEnv.setFSAFile(filename);
-    //    if (this->isGeneratorFSAFromFile) {
-    //        delete this->generatorPtr;
-    //    }
-    //    this->generatorPtr = readFile<unsigned char>(filename.c_str());
-    //    this->generator.setGeneratorPtr(generatorPtr);
 }
 
 Morfeusz::~Morfeusz() {
-    //    if (this->isAnalyzerFSAFromFile) {
-    //        delete this->analyzerFSA;
-    //        deleteSegrulesFSAs(this->analyzerSegrulesFSAsMap);
-    //        delete this->analyzerPtr;
-    //    }
 }
 
 void Morfeusz::processOneWord(
@@ -97,7 +78,6 @@ void Morfeusz::processOneWord(
             }
             srcNode++;
         }
-        //        graph.getResults(*this->tagset, results);
     }
     else if (inputStart != inputEnd) {
         this->appendIgnotiumToResults(env, string(inputStart, currInput), startNodeNum, results);
@@ -140,6 +120,7 @@ void Morfeusz::doProcessOneWord(
             vector<InterpsGroup> val(state.getValue());
             for (unsigned int i = 0; i < val.size(); i++) {
                 InterpsGroup& ig = val[i];
+//                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
                 set<SegrulesState> newSegrulesStates;
                 env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
                 for (
@@ -147,9 +128,6 @@ void Morfeusz::doProcessOneWord(
                         it != newSegrulesStates.end();
                         ++it) {
                     SegrulesState newSegrulesState = *it;
-//                    if (newSegrulesState.shiftOrthFromPrevious) {
-//                        
-//                    }
                     InterpretedChunk ic = {
                         inputData,
                         originalCodepoints,
@@ -160,12 +138,19 @@ void Morfeusz::doProcessOneWord(
                         vector<InterpretedChunk>()
                     };
                     if (!accum.empty() && accum.back().shiftOrth) {
+//                        cerr << "shift orth from " << (int) accum.back().interpsGroup.type << " to " << (int) ig.type << endl;
                         doShiftOrth(accum.back(), ic);
                     }
                     accum.push_back(ic);
                     if (isEndOfWord(codepoint)) {
-                        if (newSegrulesState.accepting)
+//                        cerr << "end of word" << endl;
+                        if (newSegrulesState.accepting) {
+//                            cerr << "accept " << (int) ig.type << endl;
                             graph.addPath(accum);
+                        }
+                        else {
+//                            cerr << "not accept " << (int) ig.type << endl;
+                        }
                     }
                     else {
                         const char* newCurrInput = currInput;
@@ -190,8 +175,6 @@ void Morfeusz::appendIgnotiumToResults(
 }
 
 ResultsIterator Morfeusz::analyze(const string& text) const {
-    //    const char* textStart = text.c_str();
-    //    const char* textEnd = text.c_str() + text.length();
     vector<MorphInterpretation> res;
     this->analyze(text, res);
     return ResultsIterator(res);
@@ -207,19 +190,34 @@ void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results)
 }
 
 ResultsIterator Morfeusz::generate(const string& text) const {
-    //    const char* textStart = text.c_str();
-    //    const char* textEnd = text.c_str() + text.length();
     vector<MorphInterpretation> res;
     this->generate(text, res);
     return ResultsIterator(res);
 }
 
-void Morfeusz::generate(const string& text, vector<MorphInterpretation>& results) const {
-    const char* input = text.c_str();
-    const char* inputEnd = input + text.length();
+ResultsIterator Morfeusz::generate(const string& text, int tagnum) const {
+    vector<MorphInterpretation> res;
+    this->generate(text, tagnum, res);
+    return ResultsIterator(res);
+}
+
+void Morfeusz::generate(const string& lemma, vector<MorphInterpretation>& results) const {
+    const char* input = lemma.c_str();
+    const char* inputEnd = input + lemma.length();
     while (input != inputEnd) {
         int startNode = results.empty() ? 0 : results.back().getEndNode();
         this->processOneWord(this->generatorEnv, input, inputEnd, startNode, results);
+    }
+}
+
+// XXX - someday it should be improved
+void Morfeusz::generate(const std::string& lemma, int tagnum, vector<MorphInterpretation>& result) const {
+    vector<MorphInterpretation> partRes;
+    this->generate(lemma, partRes);
+    for (unsigned int i = 0; i < partRes.size(); i++) {
+        if (partRes[i].getTagnum() == tagnum) {
+            result.push_back(partRes[i]);
+        }
     }
 }
 
@@ -229,7 +227,17 @@ void Morfeusz::setCharset(MorfeuszCharset charset) {
     this->generatorEnv.setCharset(charset);
 }
 
-ResultsIterator::ResultsIterator(vector<MorphInterpretation>& res) {
+void Morfeusz::setAggl(const std::string& aggl) {
+    this->analyzerEnv.setSegrulesOption("aggl", aggl);
+    this->generatorEnv.setSegrulesOption("aggl", aggl);
+}
+
+void Morfeusz::setPraet(const std::string& praet) {
+    this->analyzerEnv.setSegrulesOption("praet", praet);
+    this->generatorEnv.setSegrulesOption("praet", praet);
+}
+
+ResultsIterator::ResultsIterator(const vector<MorphInterpretation>& res) {
     resultsBuffer.insert(resultsBuffer.begin(), res.begin(), res.end());
 }
 
