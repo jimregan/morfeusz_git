@@ -123,6 +123,7 @@ void Morfeusz::doProcessOneWord(
 //                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
                 set<SegrulesState> newSegrulesStates;
                 env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
+//                cerr << "newSegrulesStates.size() " << newSegrulesStates.size() << endl;
                 for (
                         set<SegrulesState>::iterator it = newSegrulesStates.begin();
                         it != newSegrulesStates.end();

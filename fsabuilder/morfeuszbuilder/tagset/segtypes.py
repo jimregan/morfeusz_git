@@ -28,6 +28,9 @@ class Segtypes(object):
         self._readTags(segrulesConfigFile)
         self._indexSegnums()
         
+        print self._lemmaTagnum2Segnum
+        print self._tagnum2Segnum
+        
         print self.segnum2Segtype
         
     def _validate(self, msg, lineNum, cond):
@@ -108,7 +111,7 @@ class Segtypes(object):
             self._validate(
                            u'Pattern must contain encodedForm and part-of-speech fields',
                            lineNum,
-                           re.match(r'.+\:[a-z_]+', pattern, re.U))
+                           re.match(r'.+?\:[a-z_]+', pattern, re.U))
             
             if segtype in self.segtype2Segnum:
                 segnum = self.segtype2Segnum[segtype]
@@ -146,13 +149,13 @@ class Segtypes(object):
         
         # index lexemes
         for p in self.patternsList:
-            if p.encodedForm:
+            if p.lemma:
                 for tag in self.tagset.getAllTags():
                     tagnum = self.tagset.getTagnum4Tag(tag)
-                    if not (p.encodedForm, tagnum) in self._lemmaTagnum2Segnum:
-                        segnum = p.tryToMatch(p.encodedForm, tag)
+                    if not (p.lemma, tagnum) in self._lemmaTagnum2Segnum:
+                        segnum = p.tryToMatch(p.lemma, tag)
                         if segnum != -1:
-                            self._lemmaTagnum2Segnum[(p.encodedForm, tagnum)] = segnum
+                            self._lemmaTagnum2Segnum[(p.lemma, tagnum)] = segnum
 #         logging.info('indexing segment type numbers - done')
 #         self._debugSegnums()
     
@@ -171,7 +174,7 @@ class Segtypes(object):
 class SegtypePattern(object):
     
     def __init__(self, lemma, pattern, segnum):
-        self.encodedForm = lemma
+        self.lemma = lemma
         self.pattern = pattern
         self.segnum = segnum
     
@@ -181,8 +184,9 @@ class SegtypePattern(object):
         patterns2Match = []
         patterns2Match.append(self.pattern.replace('%', '.*'))
         patterns2Match.append(re.sub(r'\:\%$', '', self.pattern).replace('%', '.*'))
-        if (self.encodedForm is None or self.encodedForm == lemma) \
+        if (self.lemma is None or self.lemma == lemma) \
         and any([re.match(p, tag) for p in patterns2Match]):
             return self.segnum
         else:
+#             print 'NOT match', lemma.encode('utf8') if lemma else '%', tag, self.segnum
             return -1

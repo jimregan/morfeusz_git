@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, Extension
 
-morfeusz = Extension('_morfeusz',
-                    libraries=['morfeusz'],
+morfeusz2 = Extension('_morfeusz',
+                    libraries=['morfeusz2'],
                     library_dirs=['${CMAKE_CURRENT_BINARY_DIR}/..'],
                     include_dirs=['${CMAKE_CURRENT_SOURCE_DIR}/..'],
                     sources=['${CMAKE_CURRENT_BINARY_DIR}/${SWIG_PYTHON_OUTFILE}'])
@@ -14,5 +14,5 @@ if __name__ == '__main__':
           description='Python bindings for Morfeusz',
           version='${PYMORFEUSZ_VERSION}',
           package_dir={ '': '${CMAKE_CURRENT_BINARY_DIR}'},
-          py_modules = ['morfeusz'],
-          ext_modules = [morfeusz])
+          py_modules = ['morfeusz2'],
+          ext_modules = [morfeusz2])

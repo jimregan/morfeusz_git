@@ -29,7 +29,7 @@ configure_file (${SETUP_PY_IN} ${SETUP_PY})
 add_custom_command (OUTPUT ${SETUP_PY}
                        COMMAND python
                        ARGS setup.py build
-                       DEPENDS ${DEPS})
+                       DEPENDS ${DEPS} ${SETUP_PY_IN})
 
 add_custom_target (pymorfeusz DEPENDS ${SETUP_PY} libmorfeusz)
 

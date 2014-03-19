@@ -108,6 +108,7 @@ void Environment::setFSAFile(const std::string& filename) {
     this->fsaFileStartPtr = readFile<unsigned char>(filename.c_str());
     this->fsa = FSA< vector<InterpsGroup> > ::getFSA(fsaFileStartPtr, initializeDeserializer(this->processorType));
     this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
+    this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
     this->isFromFile = true;
 }
 

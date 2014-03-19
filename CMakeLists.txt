@@ -5,7 +5,7 @@ project (Morfeusz)
 set (Morfeusz_VERSION_MAJOR 2)
 set (Morfeusz_VERSION_MINOR 0)
 set (Morfeusz_VERSION_PATCH 0)
-set (CMAKE_BUILD_TYPE "Debug")
+set (CMAKE_BUILD_TYPE "Release")
 
 enable_testing()
 
@@ -36,7 +36,7 @@ if ("${INPUT_DICTIONARIES}" STREQUAL "")
    if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
     set (INPUT_DICTIONARIES ${PROJECT_SOURCE_DIR}/input/empty.txt)
    else ()
-    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/PoliMorfSmall.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
+    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/PoliMorf-0.6.7.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
    endif ()
 endif ()
 
