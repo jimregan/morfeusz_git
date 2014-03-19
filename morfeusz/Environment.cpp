@@ -136,3 +136,7 @@ void Environment::setSegrulesOption(const std::string& option, const std::string
     }
     this->currSegrulesFSA = this->segrulesFSAsMap.find(this->currSegrulesOptions)->second;
 }
+
+MorfeuszProcessorType Environment::getProcessorType() const {
+    return this->processorType;
+}

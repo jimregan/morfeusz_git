@@ -49,6 +49,8 @@ public:
     
     const InterpretedChunksDecoder& getInterpretedChunksDecoder() const;
     
+    MorfeuszProcessorType getProcessorType() const;
+    
     virtual ~Environment();
 private:
     const CharsetConverter* currentCharsetConverter;

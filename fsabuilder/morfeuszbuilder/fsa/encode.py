@@ -13,15 +13,16 @@ class Encoder(object):
     '''
 
 
-    def __init__(self, encoding='utf8'):
+    def __init__(self, lowercase, encoding='utf8'):
         '''
         Constructor
         '''
+        self.lowercase = lowercase
         self.encoding = encoding
     
     def encodeWord(self, word, lowercase=True):
         assert type(word) == unicode
-        res = bytearray(word.lower() if lowercase else word, self.encoding)
+        res = bytearray(word.lower() if self.lowercase and lowercase else word, self.encoding)
         return res
     
     def encodeData(self, data):
@@ -34,7 +35,8 @@ class Encoder(object):
         return unicode(str(rawWord).strip('\x00'), self.encoding)
     
     def word2SortKey(self, word):
-        return word.lower().encode(self.encoding)
+        normalizedWord = word.lower() if self.lowercase else word
+        return normalizedWord.encode(self.encoding)
     
     def _encodeTypeNum(self, typenum):
         assert typenum >= 0 and typenum < 256
@@ -140,7 +142,7 @@ class Encoder(object):
 class MorphEncoder(Encoder):
     
     def __init__(self, encoding='utf8'):
-        super(MorphEncoder, self).__init__(encoding)
+        super(MorphEncoder, self).__init__(True, encoding)
         self.LEMMA_ONLY_LOWER = 0
         self.LEMMA_UPPER_PREFIX = 1
         self.LEMMA_MIXED_CASE = 2
@@ -151,7 +153,7 @@ class MorphEncoder(Encoder):
 class Encoder4Generator(Encoder):
     
     def __init__(self, encoding='utf8'):
-        super(Encoder4Generator, self).__init__(encoding)
+        super(Encoder4Generator, self).__init__(False, encoding)
     
     def encodeData(self, interpsList):
         return self._doEncodeData(interpsList, withCasePattern=False, withPrefix=True)

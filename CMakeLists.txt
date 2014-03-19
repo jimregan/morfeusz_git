@@ -36,7 +36,7 @@ if ("${INPUT_DICTIONARIES}" STREQUAL "")
    if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
     set (INPUT_DICTIONARIES ${PROJECT_SOURCE_DIR}/input/empty.txt)
    else ()
-    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/PoliMorf-0.6.7.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
+    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/PoliMorfSmall.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
    endif ()
 endif ()
 

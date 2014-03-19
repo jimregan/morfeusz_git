@@ -9,12 +9,12 @@ import logging
 
 class EncodedForm(object):
     
-    def __init__(self, fromWord, targetWord):
+    def __init__(self, fromWord, targetWord, lowercase):
         assert type(fromWord) == unicode
         assert type(targetWord) == unicode
         root = u''
         for o, b in zip(fromWord, targetWord):
-            if o.lower() == b.lower():
+            if ((o.lower() == b.lower()) if lowercase else o == b):
                 root += b
             else:
                 break
@@ -24,13 +24,13 @@ class EncodedForm(object):
 
 class EncodedFormWithPrefix(object):
     
-    def __init__(self, fromWord, targetWord):
+    def __init__(self, fromWord, targetWord, lowercase):
         assert type(fromWord) == unicode
         assert type(targetWord) == unicode
         bestEncodedForm = None
         bestPrefixLength = -1
         for prefixLength in range(min(len(targetWord), 5)):
-            encodedForm = EncodedForm(fromWord, targetWord[prefixLength:])
+            encodedForm = EncodedForm(fromWord, targetWord[prefixLength:], lowercase)
             if not bestEncodedForm \
             or len(encodedForm.suffixToAdd) + prefixLength < len(bestEncodedForm.suffixToAdd) + bestPrefixLength:
                 bestEncodedForm = encodedForm
@@ -43,7 +43,7 @@ class EncodedFormWithPrefix(object):
 class Interpretation4Analyzer(object):
     
     def __init__(self, orth, base, tagnum, namenum, typenum):
-        self.encodedForm = EncodedForm(orth, base)
+        self.encodedForm = EncodedForm(orth, base, lowercase=True)
         self.tagnum = tagnum
         self.namenum = namenum
         self.typenum = typenum
@@ -68,8 +68,8 @@ class Interpretation4Analyzer(object):
 class Interpretation4Generator(object):
     
     def __init__(self, orth, base, tagnum, namenum, typenum):
-        self.encodedForm = base
-        self.encodedForm = EncodedFormWithPrefix(base, orth)
+        self.lemma = base
+        self.encodedForm = EncodedFormWithPrefix(base, orth, lowercase=False)
         self.tagnum = tagnum
         self.namenum = namenum
         self.typenum = typenum
@@ -92,7 +92,7 @@ class Interpretation4Generator(object):
         return hash(self.getSortKey())
     
     def __unicode__(self):
-        return u'<%s,(%d %s),%d,%d>' % (self.encodedForm.decode('utf8'), self.encodedForm.cutLength, self.encodedForm.suffixToAdd.decode('utf8'), self.tagnum, self.namenum)
+        return u'<%s,(%d %s),%d,%d>' % (self.lemma.decode('utf8'), self.encodedForm.cutLength, self.encodedForm.suffixToAdd.decode('utf8'), self.tagnum, self.namenum)
     
     def __repr__(self):
         return unicode(self)

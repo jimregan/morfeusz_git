@@ -106,15 +106,17 @@ void Morfeusz::doProcessOneWord(
     const char* currInput = inputData;
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     vector<uint32_t> originalCodepoints;
-    vector<uint32_t> lowercaseCodepoints;
+    vector<uint32_t> normalizedCodepoints;
 
     StateType state = env.getFSA().getInitialState();
 
     while (!isEndOfWord(codepoint)) {
-        uint32_t lowerCP = env.getCaseConverter().toLower(codepoint);
+        uint32_t normalizedCodepoint = env.getProcessorType() == ANALYZER
+            ? env.getCaseConverter().toLower(codepoint)
+            : codepoint;
         originalCodepoints.push_back(codepoint);
-        lowercaseCodepoints.push_back(lowerCP);
-        feedState(state, lowerCP, UTF8CharsetConverter());
+        normalizedCodepoints.push_back(normalizedCodepoint);
+        feedState(state, normalizedCodepoint, UTF8CharsetConverter());
         codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().peek(currInput, inputEnd);
         if (state.isAccepting()) {
             vector<InterpsGroup> val(state.getValue());
@@ -132,7 +134,7 @@ void Morfeusz::doProcessOneWord(
                     InterpretedChunk ic = {
                         inputData,
                         originalCodepoints,
-                        lowercaseCodepoints,
+                        normalizedCodepoints,
                         ig,
                         newSegrulesState.shiftOrthFromPrevious,
                         false,
@@ -161,7 +163,7 @@ void Morfeusz::doProcessOneWord(
                 }
             }
         }
-        codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
+        codepoint = currInput == inputEnd || isEndOfWord(codepoint) ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     }
     inputData = currInput;
 }

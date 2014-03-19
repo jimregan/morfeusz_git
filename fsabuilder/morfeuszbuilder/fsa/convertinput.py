@@ -7,11 +7,11 @@ import logging
 from common import Interpretation4Analyzer
 from morfeuszbuilder.fsa.common import Interpretation4Generator
 
-def _mergeEntries(inputLines):
+def _mergeEntries(inputLines, lowercase):
     prevKey = None
     prevInterps = None
     for key, interp in inputLines:
-        key = key.lower()
+        key = key.lower() if lowercase else key
 #         print key
         assert key
         if prevKey and prevKey == key:
@@ -77,7 +77,7 @@ class PolimorfConverter4Analyzer(object):
                 yield (orth, Interpretation4Analyzer(orth, base, tagnum, namenum, typenum))
     
     def convert(self, inputLines):
-        return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))))
+        return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))), lowercase=True)
 
 class PolimorfConverter4Generator(object):
     
@@ -118,4 +118,4 @@ class PolimorfConverter4Generator(object):
                 yield (base, Interpretation4Generator(orth, base, tagnum, namenum, typenum))
     
     def convert(self, inputLines):
-        return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))))
+        return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))), lowercase=False)
