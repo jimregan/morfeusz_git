@@ -110,6 +110,7 @@ void Environment::setFSAFile(const std::string& filename) {
     this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
     this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
     this->isFromFile = true;
+    this->tagset = Tagset(fsaFileStartPtr);
 }
 
 const SegrulesFSA& Environment::getCurrentSegrulesFSA() const {
