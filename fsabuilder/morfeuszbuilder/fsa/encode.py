@@ -42,7 +42,7 @@ class Encoder(object):
         assert typenum >= 0 and typenum < 256
         return bytearray([typenum])
     
-    def _encodeEncodedForm(self, form, withCasePattern, withPrefix=False):
+    def _encodeEncodedForm(self, form, withCasePattern, withPrefix):
         res = bytearray()
         assert form.cutLength < 256 and form.cutLength >= 0
         if withPrefix:
@@ -106,12 +106,15 @@ class Encoder(object):
             res[interp.typenum].append(interp)
         return res
     
-    def _encodeInterps4Type(self, typenum, interpsList, withCasePattern, withPrefix):
+    def _encodeInterps4Type(self, typenum, interpsList, withCasePattern, withPrefix, withHomonymId):
         res = bytearray()
         res.extend(self._encodeTypeNum(typenum))
         
         encodedInterpsList = bytearray()
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+            if withHomonymId:
+                encodedInterpsList.extend(self.encodeWord(interp.homonymId, lowercase=False))
+                encodedInterpsList.append(0)
             encodedInterpsList.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=withCasePattern, withPrefix=withPrefix))
             encodedInterpsList.extend(self._encodeTagNum(interp.tagnum))
             encodedInterpsList.extend(self._encodeNameNum(interp.namenum))
@@ -120,7 +123,7 @@ class Encoder(object):
         res.extend(encodedInterpsList)
         return res
     
-    def _doEncodeData(self, interpsList, withCasePattern, withPrefix):
+    def _doEncodeData(self, interpsList, withCasePattern, withPrefix, withHomonymId):
         
         assert type(interpsList) == frozenset
         
@@ -134,7 +137,7 @@ class Encoder(object):
         res.append(firstByte)
         
         for typenum, interpsList in segnum2Interps.iteritems():
-            res.extend(self._encodeInterps4Type(typenum, interpsList, withCasePattern, withPrefix))
+            res.extend(self._encodeInterps4Type(typenum, interpsList, withCasePattern, withPrefix, withHomonymId))
         del interpsList
         
         return res
@@ -148,7 +151,7 @@ class MorphEncoder(Encoder):
         self.LEMMA_MIXED_CASE = 2
     
     def encodeData(self, interpsList):
-        return self._doEncodeData(interpsList, withCasePattern=True, withPrefix=False)
+        return self._doEncodeData(interpsList, withCasePattern=True, withPrefix=False, withHomonymId=False)
 
 class Encoder4Generator(Encoder):
     
@@ -156,4 +159,4 @@ class Encoder4Generator(Encoder):
         super(Encoder4Generator, self).__init__(False, encoding)
     
     def encodeData(self, interpsList):
-        return self._doEncodeData(interpsList, withCasePattern=False, withPrefix=True)
+        return self._doEncodeData(interpsList, withCasePattern=False, withPrefix=True, withHomonymId=True)

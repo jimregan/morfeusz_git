@@ -694,4 +694,6 @@ nielubianego	lubić	ppas:sg:acc:m1.m2:imperf:neg	pospolita
 nienajpierwszych	nienajpierwszy	adj:pl:loc:m1.m2.m3.f.n1.n2.p1.p2.p3:pos	pospolita
 nienajlepiej	nienajlepiej	adj:pl:loc:m1.m2.m3.f.n1.n2.p1.p2.p3:pos	pospolita
 biało	biały	adja	pospolita
-czerwony	czerwony	adj:sg:acc:m3:pos	pospolita
+czerwony	czerwony:homo1	adj:sg:acc:m3:pos	pospolita
+czerwony	czerwony:homo2	adj:sg:acc:m3:pos	pospolita
+że	+że	qub	pospolita

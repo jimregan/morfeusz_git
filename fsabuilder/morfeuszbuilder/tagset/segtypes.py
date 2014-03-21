@@ -99,7 +99,7 @@ class Segtypes(object):
     
     def _readLexemes(self, segrulesConfigFile):
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('lexemes'):
-            split = re.split(re.escape('\s+'), line.strip())
+            split = re.split(r'\s+', line.strip())
             self._validate(
                            u'Line in [lexemes] section must contain exactly two fields - segment type and lexeme pattern',
                            lineNum,

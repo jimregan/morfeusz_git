@@ -216,11 +216,14 @@ private:
             const InterpretedChunk& chunk,
             const unsigned char*& ptr) const {
         string orth = orthPrefix;
+        string homonymId = (const char*) ptr;
+        ptr += strlen((const char*) ptr) + 1;
         EncodedInterpretation ei = this->deserializeInterp(ptr);
         this->decodeForm(chunk.originalCodepoints, ei.value, orth);
+        string realLemma = homonymId.empty() ? lemma : (lemma + ":" + homonymId);
         return MorphInterpretation(
                 startNode, endNode,
-                orth, lemma,
+                orth, realLemma,
                 ei.tag,
                 ei.nameClassifier,
                 env.getTagset(),

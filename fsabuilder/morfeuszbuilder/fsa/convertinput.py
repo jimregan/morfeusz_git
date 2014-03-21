@@ -24,14 +24,16 @@ def _mergeEntries(inputLines, lowercase):
     yield (prevKey, frozenset(prevInterps))
 
 def _parseLine(line):
-    splitLine = line.split(u'\t')
-    if len(splitLine) == 4:
+    splitLine = line.strip().split(u'\t')
+    if len(splitLine) == 5:
+        orth, base, tag, name, classifier = splitLine
+    elif len(splitLine) == 4:
         orth, base, tag, name = splitLine
     elif len(splitLine) == 3:
         orth, base, tag = splitLine
         name = ''
     else:
-        raise ValueError('input line "%s" does not have 3 or 4 tab-separated fields', line)
+        raise ValueError('input line "%s" does not have 3, 4 or 5 tab-separated fields' % line)
     return orth, base, tag, name
 
 class PolimorfConverter4Analyzer(object):
@@ -93,15 +95,26 @@ class PolimorfConverter4Generator(object):
             line = line.decode(self.inputEncoding).strip('\n')
             orth, base, tag, name = _parseLine(line)
             if base:
+                if u':' in base and len(base) > 1:
+                    base, homonymId = base.split(u':', 1)
+                else:
+                    homonymId = ''
                 tagnum = self.tagset.getTagnum4Tag(tag)
                 namenum = self.tagset.getNamenum4Name(name)
                 typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
-                yield '%s %s %d %d %d' % (
+                yield '%s %s %d %d %d %s' % (
                                    orth.encode(self.inputEncoding), 
                                    base.encode(self.inputEncoding), 
-                                   tagnum, namenum, typenum)
+                                   tagnum, namenum, typenum,
+                                   homonymId.encode(self.inputEncoding))
+#                 if u':' in base and len(base) > 1:
+#                     realBase, _ = base.split(u':', 1)
+#                     yield '%s %s %d %d %d' % (
+#                                    orth.encode(self.inputEncoding), 
+#                                    realBase.encode(self.inputEncoding), 
+#                                    tagnum, namenum, typenum)
             else:
-                logging.warn('Ignoring line: %s', line.strip())
+                logging.warn('Ignoring line: "%s" - contains empty lemma', line.strip())
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
@@ -111,11 +124,12 @@ class PolimorfConverter4Generator(object):
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip(u'\n')
             if line:
-                orth, base, tagnum, namenum, typenum = line.split(u' ')
+                orth, base, tagnum, namenum, typenum, homonymId = line.split(u' ')
+#                 print orth.encode('utf8'), base.encode('utf8'), homonymId
                 tagnum = int(tagnum)
                 namenum = int(namenum)
                 typenum = int(typenum)
-                yield (base, Interpretation4Generator(orth, base, tagnum, namenum, typenum))
+                yield (base, Interpretation4Generator(orth, base, tagnum, namenum, typenum, homonymId))
     
     def convert(self, inputLines):
         return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))), lowercase=False)

@@ -115,8 +115,6 @@
       <item path="build/default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="build/morfeusz/morfeuszJAVA_wrap.cxx"
             ex="false"

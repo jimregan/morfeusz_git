@@ -154,7 +154,10 @@ def _concatFiles(inputFiles):
         if inputFile:
             with open(inputFile, 'r') as f:
                 for line in f:
-                    yield line
+                    if not ' ' in ''.join(line.split('\t')[:2]):
+                        yield line
+                    else:
+                        logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % line.strip().decode('utf8'))
 
 def _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager, trimSupneg):
     logging.info('reading analyzer data from %s', str(inputFiles))

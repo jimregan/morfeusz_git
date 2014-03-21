@@ -74,6 +74,17 @@ int main(int argc, const char** argv) {
             );
 
     opt.parse(argc, argv);
+    
+    if (!opt.firstArgs.empty()) {
+        cerr << "Invalid argument (not bound to any flag): " << *opt.firstArgs[0] << endl;
+        return 1;
+    }
+    
+    if (!opt.lastArgs.empty()) {
+        cerr << "Invalid argument (not bound to any flag): " << *opt.lastArgs[0] << endl;
+        return 1;
+    }
+    
 
     if (opt.isSet("-h")) {
         printCLIUsage(opt, cout);
