@@ -75,8 +75,8 @@ int main(int argc, const char** argv) {
 
     opt.parse(argc, argv);
     
-    if (!opt.firstArgs.empty()) {
-        cerr << "Invalid argument (not bound to any flag): " << *opt.firstArgs[0] << endl;
+    if (opt.firstArgs.size() > 1) {
+        cerr << "Invalid argument (not bound to any flag): " << *opt.firstArgs[1] << endl;
         return 1;
     }
     
