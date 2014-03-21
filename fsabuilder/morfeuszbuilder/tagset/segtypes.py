@@ -111,7 +111,7 @@ class Segtypes(object):
             self._validate(
                            u'Pattern must contain encodedForm and part-of-speech fields',
                            lineNum,
-                           re.match(r'.+?\:[a-z_]+', pattern, re.U) and len(pattern.split(':')) == 2)
+                           re.match(r'.+?\:[a-z_]+', pattern, re.U))
             
             if segtype in self.segtype2Segnum:
                 segnum = self.segtype2Segnum[segtype]
@@ -119,7 +119,7 @@ class Segtypes(object):
                 segnum = len(self.segtype2Segnum)
                 self.segtype2Segnum[segtype] = segnum
             
-            lemma, pos = pattern.split(':')
+            lemma, pos = pattern.split(':', 1)
             
             segtypePattern = SegtypePattern(lemma, pos + ':%', segnum)
             
