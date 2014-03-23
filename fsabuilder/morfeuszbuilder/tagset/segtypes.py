@@ -179,7 +179,7 @@ class Segtypes(object):
 class SegtypePattern(object):
     
     def __init__(self, lemma, pattern, segnum):
-        self.lemma = lemma
+        self.lemma = lemma.split(':')[0] if len(lemma) > 1 else lemma
         self.pattern = pattern
         self.segnum = segnum
     
