@@ -38,9 +38,7 @@ int main(int argc, char** argv) {
                 printf("; ");
             }
             MorphInterpretation& mi = res[i];
-            printf("%s,%s,%s,%s",
-                    mi.getOrth().c_str(), mi.getLemma().c_str(),
-                    mi.getTag().c_str(), mi.getName().c_str());
+            printf("%s", mi.toString(false).c_str());
         }
         printf("]\n");
     }

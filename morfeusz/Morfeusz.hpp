@@ -24,7 +24,6 @@
 #include "MorfeuszOptions.hpp"
 #include "const.hpp"
 #include "exceptions.hpp"
-#include "Generator.hpp"
 #include "Environment.hpp"
 
 #include "segrules/segrules.hpp"

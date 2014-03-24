@@ -19,6 +19,7 @@ struct InterpretedChunk {
     bool shiftOrth;
     bool orthWasShifted;
     std::vector<InterpretedChunk> prefixChunks;
+    std::string requiredHomonymId;
 };
 
 #endif	/* INTERPRETEDCHUNK_HPP */

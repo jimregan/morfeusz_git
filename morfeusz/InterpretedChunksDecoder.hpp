@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 
 #include "charset/CharsetConverter.hpp"
 #include "EncodedInterpretation.hpp"
@@ -147,6 +148,16 @@ protected:
     }
 private:
     
+    pair<string, string> getLemmaHomonymIdPair(const string& lemma) const {
+        vector<string> splitRes(split(lemma, ':'));
+        if (splitRes.size() == 2) {
+            return make_pair(splitRes[0], splitRes[1]);
+        }
+        else {
+            return make_pair(lemma, "");
+        }
+    }
+    
     MorphInterpretation decodeMorphInterpretation(
             unsigned int startNode, unsigned int endNode,
             const string& orth,
@@ -156,9 +167,11 @@ private:
         string lemma = lemmaPrefix;
         EncodedInterpretation ei = this->deserializeInterp(ptr);
         this->decodeForm(chunk.lowercaseCodepoints, ei.value, lemma);
+        pair<string, string> lemmaHomonymId = getLemmaHomonymIdPair(lemma);
         return MorphInterpretation(
                 startNode, endNode,
-                orth, lemma,
+                orth, lemmaHomonymId.first,
+                lemmaHomonymId.second,
                 ei.tag,
                 ei.nameClassifier,
                 env.getTagset(),
@@ -193,7 +206,12 @@ public:
         lemma += env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
         const unsigned char* currPtr = interpretedChunk.interpsGroup.ptr;
         while (currPtr - interpretedChunk.interpsGroup.ptr < interpretedChunk.interpsGroup.size) {
-            out.push_back(this->decodeMorphInterpretation(startNode, endNode, orthPrefix, lemma, interpretedChunk, currPtr));
+            MorphInterpretation mi = this->decodeMorphInterpretation(startNode, endNode, orthPrefix, lemma, interpretedChunk, currPtr);
+//            cerr << mi.toString(false) << endl;
+//            cerr << "required='" << interpretedChunk.requiredHomonymId << "' morphInterp='" << mi.getHomonymId() << "'" << endl;
+            if (interpretedChunk.requiredHomonymId.empty() || mi.getHomonymId() == interpretedChunk.requiredHomonymId) {
+                out.push_back(mi);
+            }
         }
     }
 
@@ -220,10 +238,11 @@ private:
         ptr += strlen((const char*) ptr) + 1;
         EncodedInterpretation ei = this->deserializeInterp(ptr);
         this->decodeForm(chunk.originalCodepoints, ei.value, orth);
-        string realLemma = homonymId.empty() ? lemma : (lemma + ":" + homonymId);
+//        string realLemma = homonymId.empty() ? lemma : (lemma + ":" + homonymId);
         return MorphInterpretation(
                 startNode, endNode,
-                orth, realLemma,
+                orth, lemma,
+                homonymId,
                 ei.tag,
                 ei.nameClassifier,
                 env.getTagset(),

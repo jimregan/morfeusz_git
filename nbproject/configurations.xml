@@ -38,8 +38,6 @@
       </df>
       <in>Environment.cpp</in>
       <in>FlexionGraph.cpp</in>
-      <in>Generator.cpp</in>
-      <in>GeneratorDeserializer.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
@@ -106,12 +104,8 @@
         </makeTool>
       </makefileType>
       <item path="../default_fsa.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="../default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="build/default_fsa.cpp" ex="false" tool="1" flavor2="4">
       </item>
@@ -281,7 +275,7 @@
         <ccTool>
           <incDir>
             <pElem>morfeusz</pElem>
-            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
+            <pElem>/usr/lib/jvm/default-java/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>NDEBUG</Elem>
@@ -335,32 +329,6 @@
         </ccTool>
       </item>
       <item path="morfeusz/FlexionGraph.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>libmorfeusz_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </item>
-      <item path="morfeusz/Generator.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>libmorfeusz_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </item>
-      <item path="morfeusz/GeneratorDeserializer.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
           <incDir>
             <pElem>build</pElem>

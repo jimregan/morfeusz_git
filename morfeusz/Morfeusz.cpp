@@ -12,7 +12,6 @@
 #include "data/default_fsa.hpp"
 #include "Morfeusz.hpp"
 #include "MorphDeserializer.hpp"
-#include "GeneratorDeserializer.hpp"
 #include "InterpretedChunksDecoder.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
@@ -118,6 +117,16 @@ void Morfeusz::doProcessOneWord(
         normalizedCodepoints.push_back(normalizedCodepoint);
         feedState(state, normalizedCodepoint, UTF8CharsetConverter());
         codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().peek(currInput, inputEnd);
+        string homonymId;
+        if (env.getProcessorType() == GENERATOR && codepoint == 0x3A && currInput + 1 != inputEnd) {
+            if (originalCodepoints.size() == 1) {
+                throw MorfeuszException("Lemma of length > 1 cannot start with a colon");
+            }
+            homonymId = string(currInput + 1, inputEnd);
+//            cerr << "homonym " << homonymId << endl;
+            currInput = inputEnd;
+            codepoint = 0x00;
+        }
         if (state.isAccepting()) {
             vector<InterpsGroup> val(state.getValue());
             for (unsigned int i = 0; i < val.size(); i++) {
@@ -138,24 +147,18 @@ void Morfeusz::doProcessOneWord(
                         ig,
                         newSegrulesState.shiftOrthFromPrevious,
                         false,
-                        vector<InterpretedChunk>()
+                        vector<InterpretedChunk>(),
+                        homonymId
                     };
                     if (!accum.empty() && accum.back().shiftOrth) {
-//                        cerr << "shift orth from " << (int) accum.back().interpsGroup.type << " to " << (int) ig.type << endl;
                         doShiftOrth(accum.back(), ic);
                     }
                     accum.push_back(ic);
-                    if (isEndOfWord(codepoint)) {
-//                        cerr << "end of word" << endl;
-                        if (newSegrulesState.accepting) {
-//                            cerr << "accept " << (int) ig.type << endl;
-                            graph.addPath(accum);
-                        }
-                        else {
-//                            cerr << "not accept " << (int) ig.type << endl;
-                        }
+                    if (isEndOfWord(codepoint) && newSegrulesState.accepting) {
+                        graph.addPath(accum);
                     }
-                    else {
+                    else if (!isEndOfWord(codepoint)) {
+//                        cerr << "will process " << currInput << endl;
                         const char* newCurrInput = currInput;
                         doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState, accum, graph);
                     }

@@ -126,6 +126,11 @@ int main(int argc, const char** argv) {
         printf("[");
         for (unsigned int i = 0; i < res.size(); i++) {
             MorphInterpretation& mi = res[i];
+            string lemmaToShow = mi.getLemma().c_str();
+            if (!mi.getHomonymId().empty()) {
+                lemmaToShow += ":";
+                lemmaToShow += mi.getHomonymId();
+            }
             if (prevStart != -1
                     && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
                 printf("]\n[");
@@ -133,10 +138,11 @@ int main(int argc, const char** argv) {
             else if (prevStart != -1) {
                 printf("; ");
             }
-            printf("%d,%d,%s,%s,%s,%s",
-                    mi.getStartNode(), mi.getEndNode(),
-                    mi.getOrth().c_str(), mi.getLemma().c_str(),
-                    mi.getTag().c_str(), mi.getName().c_str());
+            printf("%s", mi.toString(true).c_str());
+//            printf("%d,%d,%s,%s,%s,%s",
+//                    mi.getStartNode(), mi.getEndNode(),
+//                    mi.getOrth().c_str(), lemmaToShow.c_str(),
+//                    mi.getTag().c_str(), lemmaToShow.c_str());
             prevStart = mi.getStartNode();
             prevEnd = mi.getEndNode();
         }

@@ -26,8 +26,6 @@ set(SRC_FILES
     ${INPUT_SYNTH_DICTIONARY_CPP}
     Environment.cpp
     MorphDeserializer.cpp
-    GeneratorDeserializer.cpp
-    Generator.cpp
     Tagset.cpp 
     fsa/const.cpp 
     MorphInterpretation.cpp 
@@ -44,8 +42,6 @@ set(INCLUDE_FILES
     const.hpp 
     data/default_fsa.hpp
     MorphDeserializer.hpp
-    GeneratorDeserializer.hpp
-    Generator.hpp
     Tagset.hpp 
     fsa/const.hpp 
     MorphInterpretation.hpp 

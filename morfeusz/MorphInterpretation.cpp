@@ -6,6 +6,7 @@
  */
 
 #include <string>
+#include <sstream>
 #include "MorphInterpretation.hpp"
 #include "EncodedInterpretation.hpp"
 
@@ -16,6 +17,7 @@ MorphInterpretation::MorphInterpretation(
         int endNode,
         const string& orth,
         const string& lemma,
+        const string& homonymId,
         int tagnum,
         int namenum,
         const Tagset& tagset,
@@ -24,6 +26,7 @@ MorphInterpretation::MorphInterpretation(
         endNode(endNode), 
         orth(orth),
         lemma(lemma),
+        homonymId(homonymId),
         tagnum(tagnum),
         namenum(namenum),
         tag(tagset.getTag(tagnum, charsetConverter)),
@@ -40,6 +43,7 @@ MorphInterpretation::MorphInterpretation(
         endNode(startNode + 1), 
         orth(orth),
         lemma(orth),
+        homonymId(""),
         tagnum(0),
         namenum(0),
         tag(tagset.getTag(0, charsetConverter)),
@@ -67,6 +71,10 @@ const std::string& MorphInterpretation::getLemma() const {
     return this->lemma;
 }
 
+const std::string& MorphInterpretation::getHomonymId() const {
+    return this->homonymId;
+}
+
 int MorphInterpretation::getTagnum() const {
     return this->tagnum;
 }
@@ -83,3 +91,22 @@ const std::string& MorphInterpretation::getName() const {
     return this->name;
 }
 
+std::string MorphInterpretation::toString(bool includeNodeNumbers) const {
+    std::stringstream res;
+    if (includeNodeNumbers) {
+        res << startNode << "," << endNode << ",";
+    }
+    res << orth << ",";
+    
+    res << lemma;
+    if (!this->homonymId.empty()) {
+        res << ":" << homonymId;
+    }
+    res << ",";
+    
+    res << tag;
+    if (!name.empty()) {
+        res << "," << name;
+    }
+    return res.str();
+}

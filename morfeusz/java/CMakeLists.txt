@@ -31,10 +31,15 @@ endif ()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set (CMAKE_SHARED_LIBRARY_SUFFIX ".jnilib")
+    #~ set (CMAKE_SHARED_LINKER_FLAGS "${-dylib")
 endif ()
 
 set (CMAKE_JAVA_TARGET_VERSION ${JMORFEUSZ_VERSION})
 set (CMAKE_JAVA_TARGET_OUTPUT_NAME jmorfeusz)
+
+#~ add_custom_target (jmorfeusz-repair-library
+    #~ COMMAND ${DARWIN64_ROOT}/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-install_name_tool -change /home/mlenart/xxx/morfeusz/buildall/build-Darwin-amd64/morfeusz/libmorfeusz2.dylib morfeusz2 ${PROJECT_BINARY_DIR}/morfeusz/java/libjmorfeusz.jnilib
+    #~ DEPENDS libjmorfeusz)
 
 # build jmorfeusz
 file(GLOB_RECURSE JAVA_SOURCES ${JAVA_SRC_DIR} "*.java")
@@ -42,8 +47,9 @@ add_jar (jmorfeusz
     SOURCES "${JAVA_SOURCES}"
     DEPENDS libjmorfeusz)
 
-add_custom_target(jmorfeusz-copy-readme
+add_custom_target (jmorfeusz-copy-readme
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/README" "${CMAKE_CURRENT_BINARY_DIR}/README")
+
 
 add_custom_target(package-java
     COMMAND mkdir -p "${TARGET_DIR}" && ${CMAKE_COMMAND} -E tar "cfvz" "${TARGET_DIR}/jmorfeusz-${JMORFEUSZ_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}.tar.gz" "${CMAKE_CURRENT_BINARY_DIR}/*.jar" "${CMAKE_CURRENT_BINARY_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_CURRENT_BINARY_DIR}/README"

@@ -20,6 +20,7 @@ public:
             int endNode,
             const std::string& orth,
             const std::string& lemma,
+            const std::string& homonymId,
             int tagnum,
             int namenum,
             const Tagset& tagset,
@@ -30,10 +31,13 @@ public:
     int getEndNode() const;
     const std::string& getOrth() const;
     const std::string& getLemma() const;
+    const std::string& getHomonymId() const;
     int getTagnum() const;
     int getNamenum() const;
     const std::string& getTag() const;
     const std::string& getName() const;
+    
+    std::string toString(bool includeNodeNumbers) const;
 private:
     MorphInterpretation(
             int startNode,
@@ -44,6 +48,7 @@ private:
     int endNode;
     std::string orth;
     std::string lemma;
+    std::string homonymId;
     int tagnum;
     int namenum;
     std::string tag;
