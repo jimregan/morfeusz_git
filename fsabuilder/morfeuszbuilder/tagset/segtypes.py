@@ -7,6 +7,11 @@ import re
 import logging
 from morfeuszbuilder.utils import exceptions
 
+def _cutHomonymFromLemma(lemma):
+    if lemma:
+        lemma = lemma.split(':')[0] if lemma and len(lemma) > 1 else lemma
+    return lemma
+
 class Segtypes(object):
     
     def __init__(self, tagset, segrulesConfigFile):
@@ -32,6 +37,8 @@ class Segtypes(object):
         print self._tagnum2Segnum
         
         print self.segnum2Segtype
+        
+#         self._debugSegnums()
         
     def _validate(self, msg, lineNum, cond):
         if not cond:
@@ -171,15 +178,16 @@ class Segtypes(object):
         return self.segtype2Segnum[segTypeString]
     
     def lexeme2Segnum(self, lemma, tagnum):
+        lemma = _cutHomonymFromLemma(lemma)
         res = self._lemmaTagnum2Segnum.get((lemma, tagnum), None)
-        if not res:
+        if res is None:
             res = self._tagnum2Segnum.get(tagnum, None)
         return res
     
 class SegtypePattern(object):
     
     def __init__(self, lemma, pattern, segnum):
-        self.lemma = lemma.split(':')[0] if lemma and len(lemma) > 1 else lemma
+        self.lemma = _cutHomonymFromLemma(lemma)
         self.pattern = pattern
         self.segnum = segnum
     
@@ -189,8 +197,7 @@ class SegtypePattern(object):
         patterns2Match = []
         patterns2Match.append(self.pattern.replace('%', '.*'))
         patterns2Match.append(re.sub(r'\:\%$', '', self.pattern).replace('%', '.*'))
-        if lemma:
-            lemma = lemma.split(':')[0] if lemma and len(lemma) > 1 else lemma
+        lemma = _cutHomonymFromLemma(lemma)
         if (self.lemma is None or self.lemma == lemma) \
         and any([re.match(p, tag) for p in patterns2Match]):
             return self.segnum

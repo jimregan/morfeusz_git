@@ -697,3 +697,13 @@ biało	biały	adja	pospolita
 czerwony	czerwony:homo1	adj:sg:acc:m3:pos	pospolita
 czerwony	czerwony:homo2	adj:sg:acc:m3:pos	pospolita
 że	+że	qub	pospolita
+wielo	wiele:n1	num:comp
+pół	pół	num:comp
+pół	pół	num:pl:nom.gen.dat.inst.acc.loc.voc:m1.m2.m3.f.n1.n2.p1.p2:rec
+i	i:i	interj
+i	i:j	conj
+i	i:q	qub
+dwu	dwa	num:comp
+dwu	dwa	num:pl:gen.dat.loc:m1.m2.m3.n2.f:congr
+dwu	dwa	num:pl:inst:m1.m2.m3.n2:congr
+dwu	dwa	num:pl:nom.acc.voc:m1:rec
