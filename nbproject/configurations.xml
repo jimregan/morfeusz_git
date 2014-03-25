@@ -33,7 +33,6 @@
         <in>test_speed.cpp</in>
       </df>
       <df name="segrules">
-        <in>SegrulesDeserializer.cpp</in>
         <in>segrules.cpp</in>
       </df>
       <in>Environment.cpp</in>
@@ -495,11 +494,6 @@
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
-      </item>
-      <item path="morfeusz/segrules/SegrulesDeserializer.cpp"
-            ex="false"
-            tool="1"
-            flavor2="4">
       </item>
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
       </item>

@@ -154,8 +154,9 @@ void Morfeusz::doProcessOneWord(
                         doShiftOrth(accum.back(), ic);
                     }
                     accum.push_back(ic);
-                    if (isEndOfWord(codepoint) && newSegrulesState.accepting) {
-                        graph.addPath(accum);
+                    if (isEndOfWord(codepoint) 
+                            && newSegrulesState.accepting) {
+                        graph.addPath(accum, newSegrulesState.weak);
                     }
                     else if (!isEndOfWord(codepoint)) {
 //                        cerr << "will process " << currInput << endl;

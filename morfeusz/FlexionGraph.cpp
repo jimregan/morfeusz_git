@@ -51,9 +51,17 @@ static inline bool chunkIsTheOnlyOne(
     return chunkIsAtFront(chunk, path) && chunkIsAtBack(chunk, path);
 }
 
-void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path) {
+void FlexionGraph::addPath(const std::vector<InterpretedChunk>& path, bool weak) {
     //    debugPath(path);
     //    debugGraph(this->graph);
+    if (weak && !this->empty() && !this->onlyWeakPaths) {
+        return;
+    }
+    else if (this->onlyWeakPaths && !weak) {
+        this->graph.clear();
+        this->node2ChunkStartPtr.clear();
+        this->onlyWeakPaths = false;
+    }
     for (unsigned int i = 0; i < path.size(); i++) {
         const InterpretedChunk& chunk = path[i];
         if (!chunk.orthWasShifted) {

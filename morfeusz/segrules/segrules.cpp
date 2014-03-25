@@ -1,5 +1,4 @@
 
-#include "SegrulesDeserializer.hpp"
 #include "segrules.hpp"
 #include "../fsa/fsa.hpp"
 #include "../fsa/const.hpp"

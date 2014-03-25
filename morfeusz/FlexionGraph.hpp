@@ -15,13 +15,17 @@
 
 class FlexionGraph {
 public:
+    
+    FlexionGraph(): graph(), node2ChunkStartPtr(), onlyWeakPaths(true) {
+        
+    }
 
     struct Edge {
         InterpretedChunk chunk;
         unsigned int nextNode;
     };
 
-    void addPath(const std::vector<InterpretedChunk>& path);
+    void addPath(const std::vector<InterpretedChunk>& path, bool weak);
 
     //    void getResults(const Tagset& tagset, const CharsetConverter& charsetConverter, std::vector<MorphInterpretation>& results);
 
@@ -64,6 +68,7 @@ private:
 
     std::vector< std::vector<Edge> > graph;
     std::vector< const char* > node2ChunkStartPtr;
+    bool onlyWeakPaths;
 };
 
 #endif	/* FLEXIONGRAPH_HPP */

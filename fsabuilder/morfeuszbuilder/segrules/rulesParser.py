@@ -95,7 +95,7 @@ class RulesParser(object):
             concatRule = OneOrMore(complexRule)
         else:
             concatRule = ZeroOrMore(shiftOrthRule) + tagRule
-        rule << concatRule
+        rule << concatRule + Optional(CaselessLiteral('!weak'))
         
         tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], False, lineNum, line, segtypesHelper))
         shiftOrthRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], True, lineNum, line, segtypesHelper))
@@ -104,5 +104,6 @@ class RulesParser(object):
         oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0])]))
         oneOfRule.setParseAction(lambda string, loc, toks: rules.OrRule(toks))
         concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(toks))
+        rule.setParseAction(lambda string, loc, toks: toks[0].setWeak(len(toks) == 2))
         parsedRule = pyparseString.pyparseString(rule, lineNum, line, filename)[0]
         return parsedRule

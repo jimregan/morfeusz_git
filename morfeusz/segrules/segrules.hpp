@@ -19,8 +19,8 @@ typedef std::map<std::string, std::string> SegrulesOptions;
 
 std::map<SegrulesOptions, SegrulesFSA*> createSegrulesFSAsMap(const unsigned char* analyzerPtr);
 SegrulesOptions getDefaultSegrulesOptions(const unsigned char* ptr);
-SegrulesFSA* getDefaultSegrulesFSA(const map<SegrulesOptions, SegrulesFSA*>& map, const unsigned char* analyzerPtr);
-void debugMap(const map<SegrulesOptions, SegrulesFSA*>& res);
+SegrulesFSA* getDefaultSegrulesFSA(const std::map<SegrulesOptions, SegrulesFSA*>& map, const unsigned char* analyzerPtr);
+void debugMap(const std::map<SegrulesOptions, SegrulesFSA*>& res);
 
 #endif	/* SEGRULES_HPP */
 

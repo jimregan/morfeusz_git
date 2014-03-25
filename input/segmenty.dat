@@ -101,6 +101,7 @@ moze_interp( (adja dywiz)+ adj )
 # Stopień najwyższy:
 # np. „naj·zieleńszy”, „naj·mądrzej”
 moze_interp( naj> adj_sup )
+moze_interp( nie> naj> adj_sup ) !weak
 
 # Formy „zanegowane” gerundiów i imiesłowów:
 # np. „nie·czytanie”, „nie·przeczytany”, „nie·czytający”:
@@ -112,7 +113,7 @@ moze_interp(z_on_agl)
 moze_interp(z_on_agl on_agl)
 
 # Liczba zapisana jako ciąg cyfr:
-moze_interp( dig>* dig )
+moze_interp( dig>* dig ) !weak
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!

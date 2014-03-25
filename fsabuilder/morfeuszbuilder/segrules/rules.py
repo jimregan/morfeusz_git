@@ -13,9 +13,12 @@ class SegmentRule(object):
 
 
     def __init__(self):
-        '''
-        Constructor
-        '''
+        
+        self.weak = False
+    
+    def setWeak(self, weak):
+        self.weak = weak
+        return self
     
     def addToNFA(self, fsa):
         raise NotImplementedError()
@@ -31,7 +34,7 @@ class TagRule(SegmentRule):
         self.shiftOrth = shiftOrth
     
     def addToNFA(self, fsa):
-        endState = RulesNFAState(final=True)
+        endState = RulesNFAState(final=True, weak=self.weak)
         self._doAddToNFA(fsa.initialState, endState)
     
     def _doAddToNFA(self, startState, endState):
@@ -51,7 +54,7 @@ class ComplexRule(SegmentRule):
         self.children = children
     
     def addToNFA(self, fsa):
-        endState = RulesNFAState(final=True)
+        endState = RulesNFAState(final=True, weak=self.weak)
         self._doAddToNFA(fsa.initialState, endState)
 
 class ConcatRule(ComplexRule):

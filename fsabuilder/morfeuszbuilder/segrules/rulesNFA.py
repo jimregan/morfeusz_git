@@ -68,11 +68,11 @@ class RulesNFA(object):
         return res
     
     def _doConvertState(self, dfaState, nfaStates, nfaSubset2DFAState):
-        assert all(map(lambda state: state.weak, nfaStates)) \
-            or not any(map(lambda state: state.weak, nfaStates))
-        weak = all(map(lambda state: state.weak or not state.final, nfaStates))
+        assert all(map(lambda state: state.weak, filter(lambda state: state.final, nfaStates))) \
+            or not any(map(lambda state: state.weak, filter(lambda state: state.final, nfaStates)))
+        weak = any(map(lambda state: state.weak and state.final, nfaStates))
         final = any(map(lambda state: state.final, nfaStates))
-        assert not weak or not final
+#         assert not weak or not final
         if final:
             # dfaState should be final
             # and contain info about weakness

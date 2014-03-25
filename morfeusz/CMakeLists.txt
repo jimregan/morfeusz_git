@@ -36,7 +36,7 @@ set(SRC_FILES
     charset/caseconv.cpp
     charset/conversion_tables.cpp
     segrules/segrules.cpp
-    segrules/SegrulesDeserializer.cpp)
+)
 
 set(INCLUDE_FILES 
     const.hpp 
@@ -50,7 +50,8 @@ set(INCLUDE_FILES
     charset/CharsetConverter.hpp
     charset/CaseConverter.hpp
     charset/caseconv.hpp
-    charset/conversion_tables.hpp)
+    charset/conversion_tables.hpp
+)
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
 set_source_files_properties ( SOURCE "${INPUT_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)

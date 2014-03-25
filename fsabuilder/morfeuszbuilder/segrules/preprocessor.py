@@ -9,7 +9,7 @@ from pyparsing import *
 from morfeuszbuilder.utils import exceptions
 from pyparseString import pyparseString
 
-identifier = Word(alphas, bodyChars=alphanums+u'_>*+!')
+identifier = Word(alphas, bodyChars=alphanums+u'_>*+')
 define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + identifier + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
 ifdef = Keyword('#ifdef').suppress() + identifier + LineEnd() + StringEnd()
 endif = Keyword('#endif').suppress() + LineEnd() + StringEnd()
@@ -61,8 +61,9 @@ def _processLine(lineNum, line, defines, filename):
         rule = Forward()
         defineInstance = Forward()
         localId = identifier.copy()
+        weakLiteral = CaselessLiteral('!weak')
         
-        rule << OneOrMore(defineInstance ^ localId ^ Word('*|+?>') ^ (Literal('(') + rule + Literal(')')))
+        rule << OneOrMore(defineInstance ^ localId ^ Word('*|+?>') ^ (Literal('(') + rule + Literal(')')) ^ weakLiteral)
         defineInstance << localId + Suppress('(') + rule + Suppress(')')
         
         rule.setParseAction(lambda s, l, t: ' '.join(t))
