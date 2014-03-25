@@ -20,7 +20,7 @@
 #include "charset/CharsetConverter.hpp"
 #include "charset/CaseConverter.hpp"
 #include "InterpretedChunk.hpp"
-#include "FlexionGraph.hpp"
+#include "InflexionGraph.hpp"
 #include "MorfeuszOptions.hpp"
 #include "const.hpp"
 #include "exceptions.hpp"
@@ -156,7 +156,7 @@ private:
             const char* inputEnd,
             SegrulesState segrulesState,
             std::vector<InterpretedChunk>& accum,
-            FlexionGraph& graph) const;
+            InflexionGraph& graph) const;
 
     void appendIgnotiumToResults(
             const Environment& env,

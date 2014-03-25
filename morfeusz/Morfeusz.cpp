@@ -59,7 +59,7 @@ void Morfeusz::processOneWord(
         env.getCharsetConverter().next(inputStart, inputEnd);
     }
     vector<InterpretedChunk> accum;
-    FlexionGraph graph;
+    InflexionGraph graph;
     const char* currInput = inputStart;
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
     
@@ -69,9 +69,9 @@ void Morfeusz::processOneWord(
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
         for (unsigned int i = 0; i < graph.getTheGraph().size(); i++) {
-            vector<FlexionGraph::Edge>& edges = graph.getTheGraph()[i];
+            vector<InflexionGraph::Edge>& edges = graph.getTheGraph()[i];
             for (unsigned int j = 0; j < edges.size(); j++) {
-                FlexionGraph::Edge& e = edges[j];
+                InflexionGraph::Edge& e = edges[j];
                 int targetNode = startNodeNum + e.nextNode;
                 interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, results);
             }
@@ -100,7 +100,7 @@ void Morfeusz::doProcessOneWord(
         const char* inputEnd,
         SegrulesState segrulesState,
         vector<InterpretedChunk>& accum,
-        FlexionGraph& graph) const {
+        InflexionGraph& graph) const {
 //    cerr << "doAnalyzeOneWord " << inputData << endl;
     const char* currInput = inputData;
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);

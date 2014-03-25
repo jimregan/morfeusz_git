@@ -30,7 +30,7 @@ set(SRC_FILES
     fsa/const.cpp 
     MorphInterpretation.cpp 
     Morfeusz.cpp
-    FlexionGraph.cpp
+    InflexionGraph.cpp
     charset/CharsetConverter.cpp
     charset/CaseConverter.cpp
     charset/caseconv.cpp
@@ -46,7 +46,7 @@ set(INCLUDE_FILES
     fsa/const.hpp 
     MorphInterpretation.hpp 
     Morfeusz.hpp
-    FlexionGraph.hpp
+    InflexionGraph.hpp
     charset/CharsetConverter.hpp
     charset/CaseConverter.hpp
     charset/caseconv.hpp

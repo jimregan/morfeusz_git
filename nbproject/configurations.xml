@@ -36,7 +36,6 @@
         <in>segrules.cpp</in>
       </df>
       <in>Environment.cpp</in>
-      <in>FlexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
@@ -325,18 +324,9 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="morfeusz/FlexionGraph.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>libmorfeusz_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
+      <item path="morfeusz/InflexionGraph.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="morfeusz/InflexionGraph.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">

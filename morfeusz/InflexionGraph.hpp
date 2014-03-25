@@ -13,10 +13,10 @@
 #include <utility>
 #include "InterpretedChunk.hpp"
 
-class FlexionGraph {
+class InflexionGraph {
 public:
     
-    FlexionGraph(): graph(), node2ChunkStartPtr(), onlyWeakPaths(true) {
+    InflexionGraph(): graph(), node2ChunkStartPtr(), onlyWeakPaths(true) {
         
     }
 
@@ -29,7 +29,7 @@ public:
 
     //    void getResults(const Tagset& tagset, const CharsetConverter& charsetConverter, std::vector<MorphInterpretation>& results);
 
-    std::vector< std::vector<FlexionGraph::Edge> >& getTheGraph() {
+    std::vector< std::vector<InflexionGraph::Edge> >& getTheGraph() {
         minimizeGraph();
         repairLastNodeNumbers();
         return this->graph;
