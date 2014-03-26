@@ -23,54 +23,6 @@ MorphDeserializer::MorphDeserializer() {
 MorphDeserializer::~MorphDeserializer() {
 }
 
-//static void deserializeLemma(const unsigned char*& ptr, EncodedForm& lemma) {
-//    // XXX uważać na poprawność danych
-//    lemma.suffixToCut = *ptr;
-//    ptr++;
-//    lemma.suffixToAdd = (const char*) ptr;
-//    ptr += strlen((const char*) ptr) + 1;
-//    assert(lemma.casePattern.size() == 0);
-////    lemma.casePattern.resize(MAX_WORD_SIZE, false);
-//    uint8_t casePatternType = *ptr;
-//    ptr++;
-//    uint8_t prefixLength;
-//    uint8_t patternLength;
-//    switch (casePatternType) {
-//        case LEMMA_ONLY_LOWER:
-//            break;
-//        case LEMMA_UPPER_PREFIX:
-//            prefixLength = *ptr;
-//            ptr++;
-//            for (unsigned int i = 0; i < prefixLength; i++) {
-////                lemma.casePattern[i] = true;
-//                lemma.casePattern.push_back(true);
-//            }
-////            lemma.casePattern.resize(prefixLength, true);
-//            break;
-//        case LEMMA_MIXED_CASE:
-//            patternLength = *ptr;
-//            ptr++;
-//            for (unsigned int i = 0; i < patternLength; i++) {
-//                uint8_t idx = *ptr;
-//                ptr++;
-////                lemma.casePattern[idx] = true;
-//                lemma.casePattern.resize(idx + 1, false);
-//                lemma.casePattern[idx] = true;
-//            }
-//            break;
-//    }
-//}
-//
-//static void deserializeInterp(const unsigned char*& ptr, EncodedInterpretation& interp) {
-//    interp.type = *ptr;
-//    ptr++;
-//    deserializeLemma(ptr, interp.value);
-//    interp.tag = ntohs(*(reinterpret_cast<const uint16_t*>(ptr)));
-//    ptr += 2;
-//    interp.nameClassifier = *ptr;
-//    ptr++;
-//}
-
 long MorphDeserializer::deserialize(const unsigned char* ptr, vector<InterpsGroup>& interps) const {
     const unsigned char* currPtr = ptr;
     uint8_t interpTypesNum = *currPtr;
@@ -89,27 +41,3 @@ long MorphDeserializer::deserialize(const unsigned char* ptr, vector<InterpsGrou
     }
     return currPtr - ptr;
 }
-
-//long MorphDeserializer::deserialize(const unsigned char* ptr, vector<InterpsGroup>& interps) const {
-//    const unsigned char* currPtr = ptr;
-//    uint8_t interpsNum = *ptr;
-//    interps.clear();
-//    interps.reserve(interpsNum);
-//    currPtr++;
-//    // FIXME - to jest do poprawy
-//    map<int, InterpsGroup> results;
-//    for (unsigned int i = 0; i < interpsNum; ++i) {
-//        EncodedInterpretation interp;
-//        deserializeInterp(currPtr, interp);
-//        if (results.count(interp.type) == 0) {
-//            results[interp.type] = InterpsGroup(interp.type);
-//        }
-//        results[interp.type].addInterpretation(interp);
-////        interps.push_back(interp);
-//    }
-//    map<int, InterpsGroup>::iterator it;
-//    for (it = results.begin(); it != results.end(); ++it) {
-//        interps.push_back((*it).second);
-//    }
-//    return currPtr - ptr;
-//}
