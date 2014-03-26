@@ -11,6 +11,8 @@ set (CMAKE_SYSTEM_PROCESSOR "x86_64")
 set (JAVA_ROOT ${DARWIN64_ROOT}/JavaVM.framework)
 set (PYTHON_ROOT ${DARWIN64_ROOT}/Python.framework/Versions/2.7)
 
+set (INSTALL_NAME_TOOL ${DARWIN64_ROOT}/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-install_name_tool)
+
 # here is the target environment located
 set (CMAKE_FIND_ROOT_PATH ${DARWIN64_ROOT}/x86_64-apple-darwin9 ${JAVA_ROOT} ${PYTHON_ROOT})
 

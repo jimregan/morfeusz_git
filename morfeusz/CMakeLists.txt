@@ -77,6 +77,13 @@ endif ()
 add_subdirectory (java)
 add_subdirectory (python)
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    add_custom_target (morfeusz-repair-library
+        COMMAND ${INSTALL_NAME_TOOL} -id libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib
+        DEPENDS libmorfeusz)
+    add_dependencies (morfeusz_analyzer morfeusz-repair-library)
+endif ()
+
 install (FILES ${INCLUDE_FILES} DESTINATION include/morfeusz)
 install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
 install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)
