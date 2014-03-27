@@ -12,9 +12,10 @@ class SegmentRule(object):
     '''
 
 
-    def __init__(self):
+    def __init__(self, linenum):
         
         self.weak = False
+        self.linenum = linenum
     
     def setWeak(self, weak):
         self.weak = weak
@@ -28,13 +29,14 @@ class SegmentRule(object):
 
 class TagRule(SegmentRule):
     
-    def __init__(self, segnum, shiftOrth, segtype):
+    def __init__(self, segnum, shiftOrth, segtype, linenum):
         self.segnum = segnum
         self.segtype = segtype
         self.shiftOrth = shiftOrth
+        self.linenum = linenum
     
     def addToNFA(self, fsa):
-        endState = RulesNFAState(final=True, weak=self.weak)
+        endState = RulesNFAState(self, final=True, weak=self.weak)
         self._doAddToNFA(fsa.initialState, endState)
     
     def _doAddToNFA(self, startState, endState):
@@ -45,29 +47,31 @@ class TagRule(SegmentRule):
 
 class UnaryRule(SegmentRule):
     
-    def __init__(self, child):
+    def __init__(self, child, linenum):
         self.child = child
+        self.linenum = linenum
 
 class ComplexRule(SegmentRule):
     
-    def __init__(self, children):
+    def __init__(self, children, linenum):
         self.children = children
+        self.linenum = linenum
     
     def addToNFA(self, fsa):
-        endState = RulesNFAState(final=True, weak=self.weak)
+        endState = RulesNFAState(self, final=True, weak=self.weak)
         self._doAddToNFA(fsa.initialState, endState)
 
 class ConcatRule(ComplexRule):
     
-    def __init__(self, children):
-        super(ConcatRule, self).__init__(children)
+    def __init__(self, children, linenum):
+        super(ConcatRule, self).__init__(children, linenum)
     
     def _doAddToNFA(self, startState, endState):
         currStartState = startState
         for child in self.children[:-1]:
-            currEndState = RulesNFAState()
+            currEndState = RulesNFAState(self)
             child._doAddToNFA(currStartState, currEndState)
-            nextStartState = RulesNFAState()
+            nextStartState = RulesNFAState(self)
             currEndState.addTransition(None, nextStartState)
             currStartState = nextStartState
         lastChild = self.children[-1]
@@ -78,13 +82,13 @@ class ConcatRule(ComplexRule):
     
 class OrRule(ComplexRule):
     
-    def __init__(self, children):
-        super(OrRule, self).__init__(children)
+    def __init__(self, children, linenum):
+        super(OrRule, self).__init__(children, linenum)
     
     def _doAddToNFA(self, startState, endState):
         for child in self.children:
-            intermStartState = RulesNFAState()
-            intermEndState = RulesNFAState()
+            intermStartState = RulesNFAState(self)
+            intermEndState = RulesNFAState(self)
             startState.addTransition(None, intermStartState)
             child._doAddToNFA(intermStartState, intermEndState)
             intermEndState.addTransition(None, endState)
@@ -94,16 +98,16 @@ class OrRule(ComplexRule):
     
 class ZeroOrMoreRule(UnaryRule):
     
-    def __init__(self, child):
-        super(ZeroOrMoreRule, self).__init__(child)
+    def __init__(self, child, linenum):
+        super(ZeroOrMoreRule, self).__init__(child, linenum)
         assert isinstance(child, SegmentRule)
     
     def addToNFA(self, fsa):
         raise ValueError()
     
     def _doAddToNFA(self, startState, endState):
-        intermStartState = RulesNFAState()
-        intermEndState = RulesNFAState()
+        intermStartState = RulesNFAState(self)
+        intermEndState = RulesNFAState(self)
         
         startState.addTransition(None, intermStartState)
         startState.addTransition(None, endState)

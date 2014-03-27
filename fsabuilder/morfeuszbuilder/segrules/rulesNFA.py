@@ -10,7 +10,8 @@ class RulesNFAState(object):
     
     statesCounter = 0
     
-    def __init__(self, initial=False, final=False, weak=False):
+    def __init__(self, rule, initial=False, final=False, weak=False):
+        self.rule = rule
         self.transitionsMap = {}
 #         self.transitionsDataMap = {}
         self.initial = initial
@@ -53,7 +54,7 @@ class RulesNFAState(object):
 class RulesNFA(object):
     
     def __init__(self):
-        self.initialState = RulesNFAState(initial=True)
+        self.initialState = RulesNFAState(rule=None, initial=True)
     
     def _groupOutputByLabels(self, nfaStates):
         res = {}
@@ -68,8 +69,11 @@ class RulesNFA(object):
         return res
     
     def _doConvertState(self, dfaState, nfaStates, nfaSubset2DFAState):
-        assert all(map(lambda state: state.weak, filter(lambda state: state.final, nfaStates))) \
-            or not any(map(lambda state: state.weak, filter(lambda state: state.final, nfaStates)))
+        if not all(map(lambda state: state.weak, filter(lambda state: state.final, nfaStates))) \
+            and any(map(lambda state: state.weak, filter(lambda state: state.final, nfaStates))):
+            weakState = list(filter(lambda state: state.final and state.weak, nfaStates))[0]
+            nonWeakState = list(filter(lambda state: state.final and not state.weak, nfaStates))[0]
+            raise InconsistentStateWeaknessException(weakState, nonWeakState)
         weak = any(map(lambda state: state.weak and state.final, nfaStates))
         final = any(map(lambda state: state.final, nfaStates))
 #         assert not weak or not final
@@ -100,4 +104,9 @@ class RulesNFA(object):
     def debug(self):
         for state in self.initialState.dfs():
             state.debug()
+
+class InconsistentStateWeaknessException(Exception):
     
+    def __init__(self, weakState, nonWeakState):
+        self.weakState = weakState
+        self.nonWeakState = nonWeakState

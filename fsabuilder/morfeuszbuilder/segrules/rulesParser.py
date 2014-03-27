@@ -59,11 +59,14 @@ class RulesParser(object):
 #                 print rule
                 rule.addToNFA(nfa)
 #                 nfa.debug()
-            dfa = nfa.convertToDFA()
+            try:
+                dfa = nfa.convertToDFA()
+                res.addDFA(key2Def, dfa)
+            except rulesNFA.InconsistentStateWeaknessException as ex:
+                raise exceptions.ConfigFileException(filename, ex.weakState.rule.linenum, 'conflicts with rule at line %d. Segmentation for some chunks can be both weak and non-weak which is illegal.' % ex.nonWeakState.rule.linenum)
 #             print '********* DFA **************'
 #             dfa.debug()
 #             print dfa.tryToRecognize(bytearray([14]))
-            res.addDFA(key2Def, dfa)
             if idx == 0:
                 res.setDefaultOptions(key2Def)
         return res
@@ -78,7 +81,7 @@ class RulesParser(object):
             raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid segment type: %s' % (line, segtype))
         else:
 #             return rules.TagRule(segtype)
-            return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype), shiftOrth, segtype)
+            return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype), shiftOrth, segtype, lineNum)
     
     def _doParseOneLine(self, lineNum, line, segtypesHelper, filename):
         rule = Forward()
@@ -100,10 +103,10 @@ class RulesParser(object):
         tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], False, lineNum, line, segtypesHelper))
         shiftOrthRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], True, lineNum, line, segtypesHelper))
 #         parenRule.setParseAction(lambda string, loc, toks: toks[0])
-        zeroOrMoreRule.setParseAction(lambda string, loc, toks: rules.ZeroOrMoreRule(toks[0]))
-        oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0])]))
-        oneOfRule.setParseAction(lambda string, loc, toks: rules.OrRule(toks))
-        concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(toks))
+        zeroOrMoreRule.setParseAction(lambda string, loc, toks: rules.ZeroOrMoreRule(toks[0], lineNum))
+        oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0], lineNum)], lineNum))
+        oneOfRule.setParseAction(lambda string, loc, toks: rules.OrRule(toks, lineNum))
+        concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(toks, lineNum))
         rule.setParseAction(lambda string, loc, toks: toks[0].setWeak(len(toks) == 2))
         parsedRule = pyparseString.pyparseString(rule, lineNum, line, filename)[0]
         return parsedRule
