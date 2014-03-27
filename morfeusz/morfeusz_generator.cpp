@@ -12,21 +12,14 @@
 #include "Tagset.hpp"
 #include "Morfeusz.hpp"
 #include "const.hpp"
+#include "cli/cli.hpp"
 
 using namespace std;
 
-int main(int argc, char** argv) {
+int main(int argc, const char** argv) {
+    ez::ezOptionParser opt = getOptions(argc, argv, "Morfeusz analyzer");
     Morfeusz morfeusz;
-    if (argc > 1) {
-        morfeusz.setGeneratorFile(argv[1]);
-        printf("Using dictionary from %s\n", argv[1]);
-    }
-#ifdef _WIN32
-    morfeusz.setCharset(CP852);
-#endif
-#ifdef _WIN64
-    morfeusz.setCharset(CP852);
-#endif
+    initializeMorfeusz(opt, morfeusz);
     string line;
     while (getline(cin, line)) {
         //        printf("%s\n", line.c_str());

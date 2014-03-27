@@ -63,7 +63,10 @@ class RulesParser(object):
                 dfa = nfa.convertToDFA()
                 res.addDFA(key2Def, dfa)
             except rulesNFA.InconsistentStateWeaknessException as ex:
-                raise exceptions.ConfigFileException(filename, ex.weakState.rule.linenum, 'conflicts with rule at line %d. Segmentation for some chunks can be both weak and non-weak which is illegal.' % ex.nonWeakState.rule.linenum)
+                raise exceptions.ConfigFileException(
+                                                     filename, 
+                                                     ex.weakState.rule.linenum, 
+                                                     'conflicts with rule at line %d. Segmentation for some chunks can be both weak and non-weak which is illegal.' % ex.nonWeakState.rule.linenum)
 #             print '********* DFA **************'
 #             dfa.debug()
 #             print dfa.tryToRecognize(bytearray([14]))

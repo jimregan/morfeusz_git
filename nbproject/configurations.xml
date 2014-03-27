@@ -23,6 +23,9 @@
         <in>caseconv.cpp</in>
         <in>conversion_tables.cpp</in>
       </df>
+      <df name="cli">
+        <in>cli.cpp</in>
+      </df>
       <df name="data">
         <in>default_fsa.cpp</in>
       </df>
@@ -36,6 +39,7 @@
         <in>segrules.cpp</in>
       </df>
       <in>Environment.cpp</in>
+      <in>InflexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
@@ -88,8 +92,8 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++98 -O3"/>
-        <element flagsID="1" commonFlags="-std=c++98 -O3 -fPIC"/>
+        <element flagsID="0" commonFlags="-std=c++98"/>
+        <element flagsID="1" commonFlags="-std=c++98 -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -194,7 +198,18 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/cli">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -226,7 +241,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -274,7 +288,6 @@
             <pElem>/usr/lib/jvm/default-java/include</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libjmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -306,7 +319,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -319,14 +331,21 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="morfeusz/InflexionGraph.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="morfeusz/InflexionGraph.hpp" ex="false" tool="3" flavor2="0">
+      <item path="morfeusz/InflexionGraph.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
       </item>
       <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
@@ -336,7 +355,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -349,7 +367,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -362,7 +379,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -375,7 +391,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -394,6 +409,8 @@
             tool="1"
             flavor2="4">
       </item>
+      <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
+      </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
           <incDir>
@@ -402,7 +419,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -417,7 +433,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -468,9 +483,6 @@
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/morfeusz_generator.cpp" ex="false" tool="1" flavor2="4">
@@ -480,9 +492,6 @@
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
@@ -494,9 +503,6 @@
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/test_result_equals.cpp" ex="false" tool="1" flavor2="4">
@@ -506,9 +512,6 @@
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
     </conf>

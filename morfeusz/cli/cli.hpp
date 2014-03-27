@@ -19,6 +19,7 @@
 #endif
 
 #include <iostream>
+#include "../Morfeusz.hpp"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
@@ -34,13 +35,10 @@
 
 #include "ezOptionParser.hpp"
 
-#pragma GCC diagnostic pop
+ez::ezOptionParser getOptions(int argc, const char** argv, const string& titleText);
+void initializeMorfeusz(ez::ezOptionParser opt, Morfeusz& morfeusz);
 
-void printCLIUsage(ez::ezOptionParser& opt, std::ostream& out) {
-	std::string usage;
-	opt.getUsage(usage);
-	out << usage;
-}
+#pragma GCC diagnostic pop
 
 #ifdef _WIN64
 #define IN  TMPDUPA_IN

@@ -35,6 +35,7 @@ set(SRC_FILES
     charset/CaseConverter.cpp
     charset/caseconv.cpp
     charset/conversion_tables.cpp
+    cli/cli.cpp
     segrules/segrules.cpp
 )
 
@@ -51,6 +52,8 @@ set(INCLUDE_FILES
     charset/CaseConverter.hpp
     charset/caseconv.hpp
     charset/conversion_tables.hpp
+    cli/cli.hpp
+    segrules/segrules.hpp
 )
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
