@@ -17,7 +17,7 @@
 using namespace std;
 
 int main(int argc, const char** argv) {
-    ez::ezOptionParser opt = getOptions(argc, argv, "Morfeusz analyzer");
+    ez::ezOptionParser& opt = *getOptions(argc, argv, "Morfeusz analyzer");
     Morfeusz morfeusz;
     initializeMorfeusz(opt, morfeusz);
     string line;
@@ -36,5 +36,6 @@ int main(int argc, const char** argv) {
         printf("]\n");
     }
     printf("\n");
+    delete &opt;
     return 0;
 }

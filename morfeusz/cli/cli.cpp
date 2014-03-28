@@ -12,9 +12,9 @@ static inline void printCLIUsage(ezOptionParser& opt, ostream& out) {
     out << usage;
 }
 
-ezOptionParser getOptions(int argc, const char** argv, const string& titleText) {
+ezOptionParser* getOptions(int argc, const char** argv, const string& titleText) {
 
-    ezOptionParser opt;
+    ezOptionParser& opt = *(new ezOptionParser());
 
     opt.overview = titleText;
     opt.syntax = string(argv[0]) + " [OPTIONS]";
@@ -83,10 +83,10 @@ ezOptionParser getOptions(int argc, const char** argv, const string& titleText) 
         printCLIUsage(opt, cout);
         exit(0);
     }
-    return opt;
+    return &opt;
 }
 
-void initializeMorfeusz(ezOptionParser opt, Morfeusz& morfeusz) {
+void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
     if (opt.isSet("-i")) {
         string analyzerFile;
         opt.get("-i")->getString(analyzerFile);

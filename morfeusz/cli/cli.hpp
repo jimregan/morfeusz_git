@@ -35,8 +35,8 @@
 
 #include "ezOptionParser.hpp"
 
-ez::ezOptionParser getOptions(int argc, const char** argv, const string& titleText);
-void initializeMorfeusz(ez::ezOptionParser opt, Morfeusz& morfeusz);
+ez::ezOptionParser* getOptions(int argc, const char** argv, const string& titleText);
+void initializeMorfeusz(ez::ezOptionParser& opt, Morfeusz& morfeusz);
 
 #pragma GCC diagnostic pop
 
