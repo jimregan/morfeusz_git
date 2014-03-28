@@ -30,6 +30,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include "core.h"
 #include <stdexcept>
+#include <iostream>
 
 namespace utf8
 {
@@ -110,12 +111,14 @@ namespace utf8
                     throw not_enough_room();
                 case internal::INVALID_LEAD:
                     out = utf8::append (replacement, out);
+                    std::cerr << "WARNING: Replacing invalid UTF8 sequence with replacement char: 0xfffd" << std::endl;
                     ++start;
                     break;
                 case internal::INCOMPLETE_SEQUENCE:
                 case internal::OVERLONG_SEQUENCE:
                 case internal::INVALID_CODE_POINT:
                     out = utf8::append (replacement, out);
+                    std::cerr << "WARNING: Replacing invalid UTF8 sequence with replacement char: 0xfffd" << std::endl;
                     ++start;
                     // just one replacement mark for the sequence
                     while (start != end && utf8::internal::is_trail(*start))

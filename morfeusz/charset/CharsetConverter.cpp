@@ -26,11 +26,18 @@ CharsetConverter::~CharsetConverter() {
 }
 
 uint32_t UTF8CharsetConverter::peek(const char*& it, const char* end) const {
-    return utf8::peek_next(it, end);
+    return utf8::unchecked::peek_next(it);
 }
 
 uint32_t UTF8CharsetConverter::next(const char*& it, const char* end) const {
-    return utf8::next(it, end);
+    return utf8::unchecked::next(it);
+//    catch (utf8::exception ex) {
+//        cerr << "WARNING: Replacing invalid character: " << hex << (uint16_t) *it << dec << " with replacement char: 0xFFFD" << endl;
+//        while (it != end && peek(it, end) == 0xFFFD) {
+//            utf8::unchecked::next(it);
+//        }
+//        return 0xFFFD;
+//    }
 }
 
 void UTF8CharsetConverter::append(uint32_t cp, string& result) const {

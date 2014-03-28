@@ -18,6 +18,7 @@
 #include "charset/CaseConverter.hpp"
 #include "segrules/segrules.hpp"
 #include "const.hpp"
+#include "charset/utf8.h"
 
 // TODO - konstruktor kopiujący działający Tak-Jak-Trzeba
 
@@ -46,6 +47,13 @@ void Morfeusz::setGeneratorFile(const string& filename) {
 }
 
 Morfeusz::~Morfeusz() {
+}
+
+string Morfeusz::prepareStringToProcess(const std::string& str) const {
+    string res;
+    res.reserve(str.size());
+    utf8::replace_invalid(str.begin(), str.end(), back_inserter(res));
+    return res;
 }
 
 void Morfeusz::processOneWord(
@@ -188,8 +196,9 @@ ResultsIterator Morfeusz::analyze(const string& text) const {
 }
 
 void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results) const {
-    const char* input = text.c_str();
-    const char* inputEnd = input + text.length();
+    string preparedText = this->prepareStringToProcess(text);
+    const char* input = preparedText.c_str();
+    const char* inputEnd = input + preparedText.length();
     while (input != inputEnd) {
         int startNode = results.empty() ? 0 : results.back().getEndNode();
         this->processOneWord(this->analyzerEnv, input, inputEnd, startNode, results);
@@ -208,12 +217,14 @@ ResultsIterator Morfeusz::generate(const string& text, int tagnum) const {
     return ResultsIterator(res);
 }
 
-void Morfeusz::generate(const string& lemma, vector<MorphInterpretation>& results) const {
+void Morfeusz::generate(const string& text, vector<MorphInterpretation>& results) const {
+    string lemma = this->prepareStringToProcess(text);
     const char* input = lemma.c_str();
     const char* inputEnd = input + lemma.length();
-    while (input != inputEnd) {
-        int startNode = results.empty() ? 0 : results.back().getEndNode();
-        this->processOneWord(this->generatorEnv, input, inputEnd, startNode, results);
+    int startNode = 0;
+    this->processOneWord(this->generatorEnv, input, inputEnd, startNode, results);
+    if (input != inputEnd) {
+        throw MorfeuszException("Input contains more than one word");
     }
 }
 
