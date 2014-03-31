@@ -41,7 +41,7 @@ class FSA(object):
         self.n += 1
         
         # debug
-        if self.n % 100000 == 0:
+        if self.n == 1 or self.n % 10000 == 0:
             logging.info(u'%d %s' % (self.n, word))
 #             logging.info(str(self.register.getStatesNum()))
     #             allWords.append(word)

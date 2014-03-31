@@ -8,19 +8,50 @@
 7	7	dig
 8	8	dig
 9	9	dig
+I	I	romandig
+V	V	romandig
+X	X	romandig
+C	C	romandig
+M	M	romandig
+pół	pół	num:comp
 ń	on	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
 by	by	qub
 naj		naj
 nie		nie
 się	się	qub
+wolnoć	wolnoć	pred
 -	-	interp
+–	–	interp
+—	—	interp
 .	.	interp
 ,	,	interp
 (	(	interp
 )	)	interp
+[	[	interp
+]	]	interp
 "	"	interp
 „	„	interp
 ”	”	interp
+‹	‹	interp
+›	›	interp
+«	«	interp
+»	»	interp
+:	:	interp
+!	!	interp
+?	?	interp
+;	;	interp
+…	…	interp
+*	*	interp
+§	§	interp
+%	%	interp
+:-)	:-)	emoticon
+:)	:)	emoticon
+;-)	;-)	emoticon
+;)	;)	emoticon
+:-))	:-))	emoticon
+:))	:))	emoticon
+;-))	;-))	emoticon
+;))	;))	emoticon
 to	to	pred
 a	A	brev:pun
 b	B	brev:pun
@@ -219,4 +250,141 @@ energo	energo	prefa
 para	para	prefa
 para	para	prefs
 ś	ś	prefv
-wg	wg	brev:npun
+wibro	wibro	prefa
+wibro	wibro	prefs
+izo	izo	prefa
+izo	izo	prefs
+anarcho	anarcho	prefs
+anarcho	anarcho	prefa
+antropo	antropo	prefs
+antropo	antropo	prefa
+łże	łże	prefs
+łże	łże	prefa
+wewnątrz	wewnątrz	prefa
+niedo	niedo	prefppas
+o	+o+	morphconj
+kredyto	kredyt	substa
+trawo	trawa	substa
+dupa	dupo	substa
+biorcą	+biorca	subst:sg:inst:m1	pospolita
+biorce	+biorca	depr:pl:nom:m2	pospolita
+biorce	+biorca	depr:pl:voc:m2	pospolita
+biorcę	+biorca	subst:sg:acc:m1	pospolita
+biorco	+biorca	subst:sg:voc:m1	pospolita
+biorcom	+biorca	subst:pl:dat:m1	pospolita
+biorców	+biorca	subst:pl:acc:m1	pospolita
+biorców	+biorca	subst:pl:gen:m1	pospolita
+biorcy	+biorca	subst:pl:nom:m1	pospolita
+biorcy	+biorca	subst:pl:voc:m1	pospolita
+biorcy	+biorca	subst:sg:dat:m1	pospolita
+biorcy	+biorca	subst:sg:gen:m1	pospolita
+biorcy	+biorca	subst:sg:loc:m1	pospolita
+dawcach	+dawca	subst:pl:loc:m1	pospolita
+dawca	+dawca	subst:sg:nom:m1	pospolita
+dawcami	+dawca	subst:pl:inst:m1	pospolita
+dawcą	+dawca	subst:sg:inst:m1	pospolita
+dawce	+dawca	depr:pl:nom:m2	pospolita
+dawce	+dawca	depr:pl:voc:m2	pospolita
+dawcę	+dawca	subst:sg:acc:m1	pospolita
+dawco	+dawca	subst:sg:voc:m1	pospolita
+dawcom	+dawca	subst:pl:dat:m1	pospolita
+dawców	+dawca	subst:pl:acc:m1	pospolita
+dawców	+dawca	subst:pl:gen:m1	pospolita
+dawcy	+dawca	subst:pl:nom:m1	pospolita
+dawcy	+dawca	subst:pl:voc:m1	pospolita
+dawcy	+dawca	subst:sg:dat:m1	pospolita
+dawcy	+dawca	subst:sg:gen:m1	pospolita
+dawcy	+dawca	subst:sg:loc:m1	pospolita
+żerca	+żerca	subst:sg:nom:m1	pospolita
+żercą	+żerca	subst:sg:inst:m1	pospolita
+żerce	+żerca	depr:pl:nom:m2	pospolita
+żerce	+żerca	depr:pl:voc:m2	pospolita
+żercę	+żerca	subst:sg:acc:m1	pospolita
+żercom	+żerca	subst:pl:dat:m1	pospolita
+żerco	+żerca	subst:sg:voc:m1	pospolita
+żerców	+żerca	subst:pl:acc:m1	pospolita
+żerców	+żerca	subst:pl:gen:m1	pospolita
+żercy	+żerca	subst:pl:nom:m1	pospolita
+żercy	+żerca	subst:pl:voc:m1	pospolita
+żercy	+żerca	subst:sg:dat:m1	pospolita
+żercy	+żerca	subst:sg:gen:m1	pospolita
+żercy	+żerca	subst:sg:loc:m1	pospolita
+znawcach	+znawca	subst:pl:loc:m1	pospolita
+znawcami	+znawca	subst:pl:inst:m1	pospolita
+znawca	+znawca	subst:sg:nom:m1	pospolita
+znawcą	+znawca	subst:sg:inst:m1	pospolita
+znawce	+znawca	depr:pl:nom:m2	pospolita
+znawce	+znawca	depr:pl:voc:m2	pospolita
+znawcę	+znawca	subst:sg:acc:m1	pospolita
+znawcom	+znawca	subst:pl:dat:m1	pospolita
+znawco	+znawca	subst:sg:voc:m1	pospolita
+znawców	+znawca	subst:pl:acc:m1	pospolita
+znawców	+znawca	subst:pl:gen:m1	pospolita
+znawcy	+znawca	subst:pl:nom:m1	pospolita
+znawcy	+znawca	subst:pl:voc:m1	pospolita
+znawcy	+znawca	subst:sg:dat:m1	pospolita
+znawcy	+znawca	subst:sg:gen:m1	pospolita
+znawcy	+znawca	subst:sg:loc:m1	pospolita
+maniacy	+maniak	subst:pl:nom:m1	pospolita
+maniacy	+maniak	subst:pl:voc:m1	pospolita
+maniakach	+maniak	subst:pl:loc:m1	pospolita
+maniaka	+maniak	subst:sg:acc:m1	pospolita
+maniaka	+maniak	subst:sg:gen:m1	pospolita
+maniakami	+maniak	subst:pl:inst:m1	pospolita
+maniakiem	+maniak	subst:sg:inst:m1	pospolita
+maniaki	+maniak	depr:pl:nom:m2	pospolita
+maniaki	+maniak	depr:pl:voc:m2	pospolita
+maniak	+maniak	subst:sg:nom:m1	pospolita
+maniakom	+maniak	subst:pl:dat:m1	pospolita
+maniakowi	+maniak	subst:sg:dat:m1	pospolita
+maniaków	+maniak	subst:pl:acc:m1	pospolita
+maniaków	+maniak	subst:pl:gen:m1	pospolita
+lodzy	+log	subst:pl:nom:m1	pospolita
+lodzy	+log	subst:pl:voc:m1	pospolita
+logach	+log	subst:pl:loc:m1	pospolita
+loga	+log	subst:sg:acc:m1	pospolita
+loga	+log	subst:sg:gen:m1	pospolita
+logami	+log	subst:pl:inst:m1	pospolita
+log	+log	subst:sg:nom:m1	pospolita
+logiem	+log	subst:sg:inst:m1	pospolita
+logi	+log	depr:pl:nom:m2	pospolita
+logi	+log	depr:pl:voc:m2	pospolita
+logom	+log	subst:pl:dat:m1	pospolita
+logowie	+log	subst:pl:nom:m1	pospolita
+logowie	+log	subst:pl:voc:m1	pospolita
+logowi	+log	subst:sg:dat:m1	pospolita
+logów	+log	subst:pl:acc:m1	pospolita
+logów	+log	subst:pl:gen:m1	pospolita
+logu	+log	subst:sg:loc:m1	pospolita
+logu	+log	subst:sg:voc:m1	pospolita
+logiach	+logia	subst:pl:loc:f	pospolita
+logia	+logia	subst:sg:nom:f	pospolita
+logiami	+logia	subst:pl:inst:f	pospolita
+logią	+logia	subst:sg:inst:f	pospolita
+logie	+logia	subst:pl:acc:f	pospolita
+logie	+logia	subst:pl:nom:f	pospolita
+logie	+logia	subst:pl:voc:f	pospolita
+logię	+logia	subst:sg:acc:f	pospolita
+logii	+logia	subst:pl:gen:f	pospolita
+logii	+logia	subst:sg:dat:f	pospolita
+logii	+logia	subst:sg:gen:f	pospolita
+logii	+logia	subst:sg:loc:f	pospolita
+logij	+logia	subst:pl:gen:f	pospolita
+logio	+logia	subst:sg:voc:f	pospolita
+logiom	+logia	subst:pl:dat:f	pospolita
+latek	latek	subst:sg:nom:m1	pospolita	
+latkach	latek	subst:pl:loc:m1	pospolita	
+latka	latek	subst:sg:acc:m1	pospolita	
+latka	latek	subst:sg:gen:m1	pospolita	
+latkami	latek	subst:pl:inst:m1	pospolita	
+latki	latek	depr:pl:nom:m2	pospolita	
+latki	latek	depr:pl:voc:m2	pospolita	
+latkiem	latek	subst:sg:inst:m1	pospolita	
+latkom	latek	subst:pl:dat:m1	pospolita	
+latkowi	latek	subst:sg:dat:m1	pospolita	
+latkowie	latek	subst:pl:nom:m1	pospolita	
+latkowie	latek	subst:pl:voc:m1	pospolita	
+latków	latek	subst:pl:acc:m1	pospolita	
+latków	latek	subst:pl:gen:m1	pospolita	
+latku	latek	subst:sg:loc:m1	pospolita	
+latku	latek	subst:sg:voc:m1	pospolita

@@ -5,7 +5,7 @@
 #ifdef SWIGJAVA
 %module MorfeuszWrapper
 #else
-%module morfeusz
+%module morfeusz2
 #endif 
 
 %feature("autodoc", "2");
@@ -66,22 +66,22 @@ namespace std {
 
 def analyze(self, text):
   res = InterpsVector()
-  _morfeusz.Morfeusz_analyze(self, text, res)
+  _morfeusz2.Morfeusz_analyze(self, text, res)
   return list(res)
 
 Morfeusz.analyze = analyze
 
 def getOrth(self):
-  return _morfeusz.MorphInterpretation_getOrth(self).decode('utf8')
+  return _morfeusz2.MorphInterpretation_getOrth(self).decode('utf8')
 
 def getLemma(self):
-  return _morfeusz.MorphInterpretation_getLemma(self).decode('utf8')
+  return _morfeusz2.MorphInterpretation_getLemma(self).decode('utf8')
 
 def getTag(self):
-  return _morfeusz.MorphInterpretation_getTag(self).decode('utf8')
+  return _morfeusz2.MorphInterpretation_getTag(self).decode('utf8')
 
 def getName(self):
-  return _morfeusz.MorphInterpretation_getName(self).decode('utf8')
+  return _morfeusz2.MorphInterpretation_getName(self).decode('utf8')
 
 MorphInterpretation.getOrth = getOrth
 MorphInterpretation.getLemma = getLemma

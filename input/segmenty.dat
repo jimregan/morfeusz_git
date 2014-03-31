@@ -3,7 +3,6 @@ aggl=permissive strict isolated
 praet=split composite
 
 [combinations]
-
 #define wsz_interp (interp|kropka|dywiz)*
 
 #define moze_interp(segmenty) wsz_interp segmenty wsz_interp
@@ -20,7 +19,7 @@ samotny
 # przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
 moze_interp(praet_sg_na)
 
-# przeszlik pojedynczy w formie niezróżnicowanej aglutynacyjnie, np. „czytał”:
+# przeszlik pojedynczy w formie niezróżnicowanej aglutynacyjnie, np. „moze”:
 moze_interp(praet_sg)
 
 # przeszlik mnogi, np. „czytali”:
@@ -32,13 +31,18 @@ moze_interp(by)
 # inne segmenty, które dopuszczają po sobie aglutynant,
 # np. „powininna”, „czyżby”:
 moze_interp(z_aglt)
+moze_interp(z_aglt_by)
 
 # forma przymiotnikowa (dopuszcza adja):
 moze_interp(adj)
 
-# dywiz (jako samodzielny segment jest tyko błędnym użyciem w funkcji
+# dywiz (jako samodzielny segment jest tylko błędnym użyciem w funkcji
 # myślnika, ale trzeba to dopuścić):
 dywiz
+
+# pauza i półpauza w funkcji myślnika
+pauza
+polpauza
 
 #ifdef isolated
 adja
@@ -70,7 +74,7 @@ moze_interp(praet_sg by aglsg)
 # np. „gnietli·by·śmy”
 moze_interp(praet_pl by aglpl)
 #else
-#moze_interp(praetcond)
+# moze_interp(praetcond)
 #endif
 # np. „by·ś”
 moze_interp(by aglsg)
@@ -79,8 +83,13 @@ moze_interp(by aglpl)
 
 # np. „gdyby·m”
 moze_interp(z_aglt aglsg)
+moze_interp(z_aglt_by aglsg)
 # np. „gdyby·ście”
 moze_interp(z_aglt aglpl)
+moze_interp(z_aglt_by aglpl)
+# oraz wersje z by, np. chybabym
+moze_interp(z_aglt by aglsg)
+moze_interp(z_aglt by aglpl)
 
 # To jest dużo za dużo, ale tytułem eksperymentu:
 #ifdef permissive
@@ -98,14 +107,14 @@ moze_interp( (adja dywiz)+ adj )
 # adja dywiz adja dywiz adja dywiz adj interp?
 # adja dywiz adja dywiz adja dywiz adja dywiz adj interp?
 
-# Stopień najwyższy:
-# np. „naj·zieleńszy”, „naj·mądrzej”
-moze_interp( naj> adj_sup )
-moze_interp( nie> naj> adj_sup ) !weak
+# Formy zanegowane stopnia wyższego przymiotników i przysłówków (WK)
+# np. „nie·grzeczniejszy”, „nie·grzeczniej”
+moze_interp( adj_com )
+moze_interp( nie> adj_com )
 
 # Formy „zanegowane” gerundiów i imiesłowów:
 # np. „nie·czytanie”, „nie·przeczytany”, „nie·czytający”:
-moze_interp( nie > negat )
+moze_interp( nie> negat )
 
 # Przyimki akceptujące krótką formę „-ń”
 moze_interp(z_on_agl)
@@ -113,19 +122,34 @@ moze_interp(z_on_agl)
 moze_interp(z_on_agl on_agl)
 
 # Liczba zapisana jako ciąg cyfr:
-moze_interp( dig>* dig ) !weak
+moze_interp( dig>* dig )
+
+# Liczba rzymska zapisana jako ciąg cyfr rzymskich:
+# (kiepskie, trzeba poprawić wyrażeniem regularnym)
+moze_interp( roman>* roman )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
-# rzeczownikowe i przymiotnikowe
-# np. „euro·sodoma”, „e-·papieros”, „euro·sodomski”, „bez·argumentowy”
-moze_interp( prefs> samodz )
+# rzeczownikowe
+# np. „euro·sodoma”, „e-·papieros”
+moze_interp(nomina)
+moze_interp( prefs> nomina ) !weak
 # czasownikowe np. „po·nakapywać”
-moze_interp( prefv> samodz )
+moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|impt_sg_perf|impt_pl_perf)
+moze_interp( prefv> (inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf) ) !weak
+# przymiotnikowe np. „do·żylny”, „euro·sodomski”, „bez·argumentowy”
+moze_interp(ppas|adv_pos|pact)
+# moze_interp(prefa> adj)
+moze_interp( prefa> ( adj|adv_pos|pact|ppas ) ) !weak 
+moze_interp( prefppas> ppas ) !weak
 
 # Apozycje z dywizem
 # np. „kobieta-prezydent”
-moze_interp( samodz dywiz samodz )
+moze_interp( nomina (dywiz) nomina )
+
+# Zakresy liczbowe, daty, np. 1911-1939.
+moze_interp((dig>* dig) dywiz (dig>* dig))
+
 # poniższe do sprawdzenia, najwyraźniej obecne w tekstach, skoro wprowadziliśmy:
 # ?
 adj dywiz adj
@@ -134,13 +158,92 @@ adj dywiz samodz
 # ?
 samodz dywiz adj
 
+#### PONIŻEJ REGUŁY WK
+# Stopień najwyższy:
+# np. „naj·zieleńszy”, „naj·mądrzej”
+moze_interp( naj> adj_sup )
+# Cząstka li przy osobowych formach czasownika oddzielona dywizem: znasz-li ten kraj
+moze_interp( praet_sg dywiz li)
+moze_interp( praet_sg aglsg dywiz li)
+moze_interp( praet_pl dywiz li)
+moze_interp( praet_pl aglpl dywiz li)
+moze_interp( praet_sg_na dywiz li)
+moze_interp( fin_perf)
+moze_interp( fin_imperf)
+moze_interp( (fin_perf|fin_imperf) dywiz li)
+
+# i bez dywizu --- czy bez dywizu jest sens łapać?
+#moze_interp( praet_sg li)
+#moze_interp( praet_pl li)
+#moze_interp( praet_sg_na li)
+#moze_interp( (fin_perf|fin_imperf) li)
+
+# reguła z partykułą ‹+że› przy trybie rozkazującym
+# zakończonym na spółgłoskę
+moze_interp(impt_sg_imperf ze)
+moze_interp(impt_sg_perf ze)
+# dodatkowo reguła dla part+że (niemalże, omalże, nieomalże):
+# moze_interp(part_z_ze ze) --- już niepotrzebne, part. wpisane do słownika
+# potrzebna jeszcze reguła dla ‹onże›
+# i dla ‹+ż› przy zakończonym na samogłoskę
+moze_interp(impt_pl_imperf z)
+moze_interp(impt_pl_perf z)
+
+# aglutynant przy przymiotniku --- obsługiwane wyżej w wersji permissive
+# moze_interp( adj aglsg )
+moze_interp( adj aglpl )
+
+# forma złoż. liczebnika + przymiotnik, np. wieloaspektowy, pięciomasztowy
+# dwudziestopięcioipółletni
+moze_interp( i )
+moze_interp( pol_zloz > adj ) !weak
+moze_interp( num_zloz>+ adj ) !weak
+moze_interp( num_zloz>+ i> pol_zloz> adj ) !weak
+# moze_interp(num_zloz+ (i pol_zloz)? adj)
+
+# półdolarówka, półsiostra
+moze_interp( ( pol_zloz>|num_zloz> ) nomina ) !weak
+# nie analizuje: dwudziestopięcioipółlatek --- powinien?
+# moze_interp( num_zloz nomina )
+# czy dodać sufiksy: +latek m1, +latek m2, +latka f ? Chyba nie trzeba
+
+# wykluczenie ze złożeń przymiotników: ten, ów, ki, si.
+moze_interp(adj_anty_zloz)
+
+# złożenia adja+adj/adv bez dywizu, np. średniopienny, sierściowłosy
+moze_interp(adja>+ adj) !weak
+
+# złożenia konkretnych przyimków z formą -ń rzeczownika on:
+moze_interp(prep_n)
+moze_interp(prep_n n)
+
+# REGUŁY EKSPERYMENTALNE
+# formy złoż. rzeczowników i sufiksy
+moze_interp( substa> sufs ) !weak
+
+# złożenia imiesłowów przymiotnikowych czynnych;
+# z braku form złoż. korzysta się z imiesłowów przysłówkowych + o
+moze_interp(pcon)
+# moze_interp( (pcon> morphconj dywiz)+ pact )
+
+# liczba arabska formą przymiotnikową, przysłówkową lub rzeczownikową: 22-letni, 20-latek, 
+# 1-majowy, 3-krotnie
+moze_interp( dig>+ dywiz> (adj|adv_pos|nomina) )
+
+# liczba rzymska z formą przymiotnikową: XIX-wieczny
+moze_interp( roman>+ dywiz> adj )
+
+# formy złoż. z sufiksem +latek:
+moze_interp( num_zloz>+ latek ) !weak
+moze_interp(num_zloz>+ i> pol_zloz> latek ) !weak
+
+# złożenia liczbowe z sufiksem +latek, np. 20-latek:
+moze_interp( dig>+ dywiz> latek )
+
+# interpretacja znaków interpunkcyjnych
+# moze_interp(samodz interp)
+
 [generator combinations]
-adja
-adj
-adj_sup
-samodz
-prefs> samodz
-prefv> samodz
 
 [segment types]
 naj
@@ -148,12 +251,35 @@ nie
 prefs
 prefv
 prefa
+prefppas
+ppas
+pcon
+morphconj
+li
+substa
+sufs
+latek
+dywiz
+pauza
+polpauza
+kropka
+adj_anty_zloz
+adj_com
+fin_perf
+fin_imperf
+nomina
+adv_pos
+pact
+inf_imperf
+praet_imperf
+imps_imperf
+ze
+z
 dig
+roman
 adja
 adj
 adj_sup
-adj_com
-fin
 negat
 on_agl
 z_on_agl
@@ -161,31 +287,45 @@ samotny
 interp
 aglsg
 aglpl
+z_aglt
+z_aglt_by
+by
 praetcond
 praet_sg_agl
 praet_sg_na
 praet_sg
 praet_pl
-z_aglt
-by
-li
-nomina
-adjectiva
-verba_imperf
-dywiz
-kropka
+impt_sg_perf
+impt_sg_imperf
+impt_pl_perf
+impt_pl_imperf
+pol_zloz
+num_zloz
+i
+n
+prep_n
+emoticon
+killfile
 samodz
+
 
 [tags]
 naj	naj
 nie	nie
 prefs	prefs
 prefv	prefv
+prefa	prefa
+prefppas	prefppas
 dig	dig
+roman	romandig
 adja	adja
+substa	substa
 adj	adj:%:pos
 adj_sup	adj:%:sup
 adj_sup	adv:sup
+adj_com	adj:%:com
+adj_com	adj:%:com
+pcon	pcon:imperf
 negat	ger:%:neg
 negat	pact:%:neg
 negat	ppas:%:neg
@@ -193,43 +333,110 @@ on_agl	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
 z_on_agl	prep:%
 samotny	brev:pun
 samotny	brev:npun
-samotny	interj
+# samotny	interj
+samotny	emoticon
 interp	interp
 aglsg	aglt:sg:%
 aglpl	aglt:pl:%
-#praetcond	cond:%
-#praetcond	praet:%:pri:%
-#praetcond	praet:%:sec:%
-#praetcond	praet:%:ter:%
 praet_sg_agl	praet:sg:%:agl
 praet_sg_na	praet:sg:%:nagl
 praet_sg	praet:sg:%
 praet_pl	praet:pl:%
 praet_sg	winien:sg:%
 praet_pl	winien:pl:%
+fin_perf	fin:%:perf
+fin_imperf	fin:%:imperf
+nomina		subst:%
+nomina		ger:%
+nomina		depr:%
+adv_pos		adv:pos
+ppas		ppas:%
+pact		pact:%
+praet_imperf	praet:%:imperf
+inf_imperf	inf:imperf
+imps_imperf	imps:imperf
+impt_sg_imperf	impt:sg:%:imperf
+impt_sg_perf	impt:sg:%:perf
+impt_pl_imperf	impt:pl:%:imperf
+impt_pl_perf	impt:pl:%:perf
+num_zloz	num:comp
+prep_n		prep:%:wok
 samodz		%
 
 [lexemes]
+pol_zloz	pół:num:comp
+i	i:conj
+by	by:qub
+li	li:qub
+ze	+że:qub
+z	+ż:qub
+killfile	+ć:qub
 z_aglt	aby:comp
 z_aglt	bowiem:comp
-by	by:qub
 z_aglt	by:comp
 z_aglt	cóż:subst
 z_aglt	czemu:adv
-z_aglt	czyżby:qub
-z_aglt	choćby:comp
-z_aglt	chociażby:comp
+z_aglt_by	czyżby:qub
+z_aglt_by	choćby:comp
+z_aglt_by	chociażby:comp
 z_aglt	dlaczego:adv
 z_aglt	dopóki:comp
 z_aglt	dopóty:conj
-z_aglt	gdyby:comp
+z_aglt_by	gdyby:comp
 z_aglt	gdzie:qub
 z_aglt	gdzie:adv
-z_aglt	jakby:comp
-z_aglt	jakoby:comp
+z_aglt_by	jakby:comp
+z_aglt_by	jakoby:comp
 z_aglt	kiedy:adv
 z_aglt	kiedy:comp
 z_aglt	tylko:qub
 z_aglt	żeby:comp
+z_aglt	to:conj
+z_aglt	chyba:qub
+z_aglt	że:qub
+z_aglt	czy:conj
+z_aglt_by	oby:qub
+z_aglt_by	bodajby:qub
+z_aglt	co:comp
 dywiz	-:interp
+pauza	—:interp
+polpauza	–:interp
 kropka	.:interp
+n	on:ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
+adj_anty_zloz	ten:adj:%
+adj_anty_zloz	tenże:adj:%
+adj_anty_zloz	ck:adj:%
+adj_anty_zloz	c.k.:adj:%
+adj_anty_zloz	ki:adj:%
+adj_anty_zloz	si:adj:%
+adj_anty_zloz	ow:adj:%
+adj_anty_zloz	ów:adj:%
+adj_anty_zloz	ówże:adj:%
+adj_anty_zloz	mój:adj:%
+adj_anty_zloz	a-z:adj:%
+adj_anty_zloz	a-ż:adj:%
+adj_anty_zloz	kiż:adj:%
+adj_anty_zloz	be:adj:%
+adj_anty_zloz	caca:adj:%
+adj_anty_zloz	czyj:adj:%
+adj_anty_zloz	oboj:adj:%
+adj_anty_zloz	on:adj:%
+adj_anty_zloz	tyli:adj:%
+prep_n		do:prep:%
+prep_n		dla:prep:%
+prep_n		koło:prep:%
+prep_n		na:prep:%
+prep_n		o:prep:%
+prep_n		po:prep:%
+prep_n		poza:prep:%
+prep_n		spoza:prep:%
+prep_n		za:prep:%
+prep_n		zza:prep:%
+morphconj	+o+:morphconj
+# adj_anty_zloz	pop:adj:%
+sufs	+znawca:subst:%
+sufs	+dawca:subst:%
+sufs	+biorca:subst:%
+sufs	+żerca:subst:%
+sufs	+maniak:subst:%
+latek	latek:subst:%
