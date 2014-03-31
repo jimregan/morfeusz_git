@@ -15,25 +15,9 @@
 #include "Tagset.hpp"
 
 struct InterpsGroup {
-//public:
-//    
-//    InterpsGroup() {
-//        
-//    }
-//    
-//    explicit InterpsGroup(const unsigned char type)
-//    : type(type) {
-//        
-//    }
-//    
-//    void addInterpretation(const EncodedInterpretation& interp) {
-//        interps.push_back(interp);
-//    }
-    
     unsigned char type;
     uint16_t size;
     const unsigned char* ptr;
-//    std::vector<EncodedInterpretation> interps;
 };
 
 #endif	/* GROUPEDINTERPRETATIONS_HPP */

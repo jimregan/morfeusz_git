@@ -13,6 +13,7 @@
 
 struct InterpretedChunk {
     const char* chunkStartPtr;
+    const char* chunkEndPtr;
     std::vector<uint32_t> originalCodepoints;
     std::vector<uint32_t> lowercaseCodepoints;
     InterpsGroup interpsGroup;

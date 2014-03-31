@@ -41,9 +41,9 @@ class FSA(object):
         self.n += 1
         
         # debug
-        if self.n % 10000 == 0:
-            logging.info(word)
-            logging.info(str(self.register.getStatesNum()))
+        if self.n % 100000 == 0:
+            logging.info(u'%d %s' % (self.n, word))
+#             logging.info(str(self.register.getStatesNum()))
     #             allWords.append(word)
         for label in encodedWord:
             self.label2Freq[label] = self.label2Freq.get(label, 0) + 1

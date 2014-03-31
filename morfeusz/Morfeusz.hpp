@@ -139,6 +139,13 @@ public:
      * @param praet
      */
     void setPraet(const std::string& praet);
+    
+    /**
+     * Set debug option value.
+     * 
+     * @param praet
+     */
+    void setDebug(bool debug);
 
     friend class ResultsIterator;
 private:

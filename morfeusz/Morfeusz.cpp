@@ -28,6 +28,7 @@ static MorfeuszOptions createDefaultOptions() {
     MorfeuszOptions res;
     res.caseSensitive = true;
     res.encoding = UTF8;
+    res.debug = false;
     return res;
 }
 
@@ -102,6 +103,21 @@ static inline void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
     to.chunkStartPtr = from.chunkStartPtr;
 }
 
+static inline string debugInterpsGroup(unsigned char type, const char* startPtr, const char* endPtr) {
+    stringstream res;
+    res << "(" << (int) type << ", " << string(startPtr, endPtr) << "), ";
+    return res.str();
+}
+
+static inline string debugAccum(vector<InterpretedChunk>& accum) {
+    stringstream res;
+    for (unsigned int i = 0; i < accum.size(); i++) {
+        res << debugInterpsGroup(accum[i].interpsGroup.type, accum[i].chunkStartPtr, accum[i].chunkEndPtr);
+//        res << "(" << (int) accum[i].interpsGroup.type << ", " << string(accum[i].chunkStartPtr, accum[i].chunkStartPtr) << "), ";
+    }
+    return res.str();
+}
+
 void Morfeusz::doProcessOneWord(
         const Environment& env,
         const char*& inputData,
@@ -109,7 +125,12 @@ void Morfeusz::doProcessOneWord(
         SegrulesState segrulesState,
         vector<InterpretedChunk>& accum,
         InflexionGraph& graph) const {
+//    if (this->options.debug) {
+//        cerr << "----------" << endl;
+//        cerr << "PROCESS: '" << inputData << "', already recognized: " << debugAccum(accum) << endl;
+//    }
 //    cerr << "doAnalyzeOneWord " << inputData << endl;
+    const char* inputStart = inputData;
     const char* currInput = inputData;
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     vector<uint32_t> originalCodepoints;
@@ -139,9 +160,15 @@ void Morfeusz::doProcessOneWord(
             vector<InterpsGroup> val(state.getValue());
             for (unsigned int i = 0; i < val.size(); i++) {
                 InterpsGroup& ig = val[i];
+                if (this->options.debug) {
+                    cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
+                }
 //                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
                 set<SegrulesState> newSegrulesStates;
                 env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
+                if (this->options.debug && newSegrulesStates.empty()) {
+                    cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
+                }
 //                cerr << "newSegrulesStates.size() " << newSegrulesStates.size() << endl;
                 for (
                         set<SegrulesState>::iterator it = newSegrulesStates.begin();
@@ -149,7 +176,8 @@ void Morfeusz::doProcessOneWord(
                         ++it) {
                     SegrulesState newSegrulesState = *it;
                     InterpretedChunk ic = {
-                        inputData,
+                        inputStart,
+                        currInput,
                         originalCodepoints,
                         normalizedCodepoints,
                         ig,
@@ -164,6 +192,9 @@ void Morfeusz::doProcessOneWord(
                     accum.push_back(ic);
                     if (isEndOfWord(codepoint) 
                             && newSegrulesState.accepting) {
+                        if (this->options.debug) {
+                            cerr << "ACCEPTING " << debugAccum(accum) << endl;
+                        }
                         graph.addPath(accum, newSegrulesState.weak);
                     }
                     else if (!isEndOfWord(codepoint)) {
@@ -253,6 +284,10 @@ void Morfeusz::setAggl(const std::string& aggl) {
 void Morfeusz::setPraet(const std::string& praet) {
     this->analyzerEnv.setSegrulesOption("praet", praet);
     this->generatorEnv.setSegrulesOption("praet", praet);
+}
+
+void Morfeusz::setDebug(bool debug) {
+    this->options.debug = debug;
 }
 
 ResultsIterator::ResultsIterator(const vector<MorphInterpretation>& res) {

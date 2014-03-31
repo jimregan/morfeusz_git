@@ -5,6 +5,7 @@ Created on 17 lut 2014
 '''
 import re
 import logging
+import sys
 from morfeuszbuilder.utils import exceptions
 
 def _cutHomonymFromLemma(lemma):
@@ -33,10 +34,12 @@ class Segtypes(object):
         self._readTags(segrulesConfigFile)
         self._indexSegnums()
         
-        print self._lemmaTagnum2Segnum
-        print self._tagnum2Segnum
-        
-        print self.segnum2Segtype
+#         print self._lemmaTagnum2Segnum
+#         print self._tagnum2Segnum
+        logging.info('segment number -> segment type')
+        logging.info('------------------------------')
+        logging.info(str(self.segnum2Segtype))
+        logging.info('------------------------------')
         
 #         self._debugSegnums()
         

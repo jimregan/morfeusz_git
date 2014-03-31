@@ -68,6 +68,6 @@ class RulesFSA(object):
             res.extend(self.stateData2bytearray(state))
             res.extend(self.transitionsData2bytearray(state))
         
-        logging.info('Segmentation automaton size: %d bytes', len(res))
-        print list(res)
+#         logging.info('Segmentation automaton size: %d bytes', len(res))
+#         print list(res)
         return res

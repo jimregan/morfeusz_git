@@ -65,6 +65,17 @@ ezOptionParser* getOptions(int argc, const char** argv, const string& titleText)
             "-praet", // Flag token.
             "--praet" // Flag token.
             );
+    
+    opt.add(
+            "", // Default.
+            0, // Required?
+            0, // Number of args expected.
+            0, // Delimiter if expecting multiple args.
+            "praet option.", // Help description.
+            "-d", // Flag token. 
+            "-debug", // Flag token.
+            "--debug" // Flag token.
+            );
 
     opt.parse(argc, argv);
 
@@ -104,6 +115,10 @@ void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
         opt.get("-p")->getString(praet);
         cerr << "setting praet option to " << praet << endl;
         morfeusz.setPraet(praet);
+    }
+    if (opt.isSet("-d")) {
+        cerr << "setting debug to TRUE" << endl;
+        morfeusz.setDebug(true);
     }
 #ifdef _WIN32
     morfeusz.setCharset(CP852);

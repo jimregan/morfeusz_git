@@ -13,6 +13,7 @@
 struct MorfeuszOptions {
     bool caseSensitive;
     MorfeuszCharset encoding;
+    bool debug;
 };
 
 #endif	/* MORFEUSZOPTIONS_HPP */
