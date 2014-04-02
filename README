@@ -5,7 +5,7 @@ Compilation - prerequisites
 
 This tutorial assumes that build process is performed on Linux 64bit machine (preferably from Debian/Ubuntu family).
 
-sudo apt-get install build-essential autotools python setuptools python-stdeb
+sudo apt-get install build-essential autotools-dev python python-setuptools python-stdeb
 sudo pip install pyinstaller
 
 For cross compiling:
@@ -69,10 +69,11 @@ make install-python
 Customizing build process
 ***************
 
-Available custom CMake variables:
+Optional CMake variables:
 INPUT_TAGSET - tagset file
 INPUT_DICTIONARIES - comma-separated list of dictionary files (can use empty one from input/empty.txt)
-TARGET_DIR - a dir where packages built by CMake are put
+SEGMENT_RULES_FILE - segmentation rules file
+TARGET_DIR - a dir where packages built by CMake are put in
 
 Execute like following:
 cmake -D INPUT_TAGSET=<file1> -D INPUT_DICTIONARIES="<dict_file1>,<dict_file2>" ..
@@ -80,13 +81,6 @@ cmake -D INPUT_TAGSET=<file1> -D INPUT_DICTIONARIES="<dict_file1>,<dict_file2>" 
 **************************
 Notes on cross-compilation
 **************************
-
-Create separate build directory, for example build-darwin.
-
-Run:
-cmake -DCMAKE_TOOLCHAIN_FILE=../morfeusz/Toolchain-xxx.cmake ..
-make
-make package package-java package-python
 
 Copy Java JDK and Python libraries from target platform. Set JAVA_ROOT and PYTHON_ROOT in Toolchain files to match directories copied from target platform.
 
@@ -97,6 +91,13 @@ Copy Java JDK and Python libraries from target platform. Set JAVA_ROOT and PYTHO
 [Linux 32bit] Java is usually at /usr/lib/jvm/default-java (alternatively you can download a package from Oracle website). The preferred way of obtaining Python is to compile it:
 - compile latest version using ./configure --prefix=/some/directory/python
 - copy contents of /some/directory/python to the build machine and set it as PYTHON_ROOT in Toolchain file
+
+Create separate build directory, for example build-darwin.
+
+Run:
+cmake -DCMAKE_TOOLCHAIN_FILE=../morfeusz/Toolchain-xxx.cmake ..
+make
+make package package-java package-python
 
 
 *************
