@@ -5,7 +5,7 @@ Compilation - prerequisites
 
 This tutorial assumes that build process is performed on Linux 64bit machine (preferably from Debian/Ubuntu family).
 
-sudo apt-get install build-essential autotools-dev python python-setuptools python-stdeb
+sudo apt-get install build-essential autotools-dev python python-setuptools python-stdeb python-pip
 sudo pip install pyinstaller
 
 For cross compiling:
@@ -52,6 +52,10 @@ make package-java
 Create packages with Python bindings for target platform:
 
 make package-python
+
+Create packages with dictionary builder:
+
+make package-builder
 
 ***************
 Installation
