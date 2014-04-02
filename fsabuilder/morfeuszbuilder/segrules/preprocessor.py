@@ -9,7 +9,7 @@ from pyparsing import *
 from morfeuszbuilder.utils import exceptions
 from pyparseString import pyparseString
 
-identifier = Word(alphas, bodyChars=alphanums+u'_>*+')
+identifier = Word(alphas, bodyChars=alphanums+u'_>*+{},')
 define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + identifier + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
 ifdef = Keyword('#ifdef').suppress() + identifier + LineEnd() + StringEnd()
 endif = Keyword('#endif').suppress() + LineEnd() + StringEnd()

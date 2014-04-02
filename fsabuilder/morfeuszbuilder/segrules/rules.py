@@ -24,6 +24,9 @@ class SegmentRule(object):
     def addToNFA(self, fsa):
         raise NotImplementedError()
     
+    def allowsEmptySequence(self):
+        raise NotImplementedError()
+    
     def _doAddToNFA(self, startStates, endState):
         raise NotImplementedError()
 
@@ -41,6 +44,9 @@ class TagRule(SegmentRule):
     
     def _doAddToNFA(self, startState, endState):
         startState.addTransition((self.segnum, self.shiftOrth), endState)
+    
+    def allowsEmptySequence(self):
+        return False
     
     def __str__(self):
         return u'%s(%d)' % (self.segtype, self.segnum)
@@ -77,6 +83,9 @@ class ConcatRule(ComplexRule):
         lastChild = self.children[-1]
         lastChild._doAddToNFA(currStartState, endState)
     
+    def allowsEmptySequence(self):
+        return all(map(lambda rule: rule.allowsEmptySequence(), self.children))
+    
     def __str__(self):
         return u' '.join(map(lambda c: str(c), self.children))
     
@@ -92,6 +101,9 @@ class OrRule(ComplexRule):
             startState.addTransition(None, intermStartState)
             child._doAddToNFA(intermStartState, intermEndState)
             intermEndState.addTransition(None, endState)
+    
+    def allowsEmptySequence(self):
+        return any(map(lambda rule: rule.allowsEmptySequence(), self.children))
     
     def __str__(self):
         return u'|'.join(map(lambda c: str(c), self.children))
@@ -115,5 +127,33 @@ class ZeroOrMoreRule(UnaryRule):
         intermEndState.addTransition(None, endState)
         endState.addTransition(None, intermStartState)
     
+    def allowsEmptySequence(self):
+        return True
+    
     def __str__(self):
         return u'(' + str(self.child) + ')*'
+
+class OptionalRule(UnaryRule):
+    
+    def __init__(self, child, linenum):
+        super(OptionalRule, self).__init__(child, linenum)
+        assert isinstance(child, SegmentRule)
+    
+    def addToNFA(self, fsa):
+        raise ValueError()
+    
+    def _doAddToNFA(self, startState, endState):
+        intermStartState = RulesNFAState(self)
+        intermEndState = RulesNFAState(self)
+        
+        startState.addTransition(None, intermStartState)
+        startState.addTransition(None, endState)
+        self.child._doAddToNFA(intermStartState, intermEndState)
+        intermEndState.addTransition(None, endState)
+    
+    def allowsEmptySequence(self):
+        return True
+    
+    def __str__(self):
+        return u'(' + str(self.child) + ')?'
+    

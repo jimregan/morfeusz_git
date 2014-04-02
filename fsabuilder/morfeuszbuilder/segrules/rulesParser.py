@@ -56,7 +56,11 @@ class RulesParser(object):
             combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection(section, ignoreComments=False)
             combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs, filename))
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper, filename):
-#                 print rule
+                if rule.allowsEmptySequence():
+                    raise exceptions.ConfigFileException(
+                                                     filename, 
+                                                     rule.linenum, 
+                                                     'This rule allows empty segments sequence to be accepted')
                 rule.addToNFA(nfa)
 #                 nfa.debug()
             try:
@@ -86,6 +90,35 @@ class RulesParser(object):
 #             return rules.TagRule(segtype)
             return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype), shiftOrth, segtype, lineNum)
     
+    def _createQuantRule1(self, child, quantity, lineNum, line, segtypesHelper):
+        if quantity <= 0:
+            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid quantity: %d' % (line, quantity))
+        else:
+            return rules.ConcatRule(quantity * [child], lineNum)
+    
+    def _createQuantRule2(self, child, leftN, rightN, lineNum, line, segtypesHelper):
+        if leftN > rightN or (leftN, rightN) == (0, 0):
+            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid quantities: %d %d' % (line, leftN, rightN))
+        elif leftN == 0:
+            children = [rules.OptionalRule(child, lineNum)]
+            for n in range(2, rightN + 1):
+                children.append(self._createQuantRule1(child, n, lineNum, line, segtypesHelper))
+            return rules.OrRule(children, lineNum)
+        else:
+            children = [self._createQuantRule1(child, n, lineNum, line, segtypesHelper) for n in range(leftN, rightN + 1)]
+            return rules.OrRule(children, lineNum)
+    
+    def _createQuantRule3(self, child, quantity, lineNum, line, segtypesHelper):
+        if quantity <= 0:
+            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid quantity: %d' % (line, quantity))
+        else:
+            return rules.ConcatRule(
+                                    [
+                                        rules.ConcatRule(quantity * [child], lineNum),
+                                        rules.ZeroOrMoreRule(child, lineNum)
+                                    ],
+                                    lineNum)
+    
     def _doParseOneLine(self, lineNum, line, segtypesHelper, filename):
         rule = Forward()
         tagRule = Word(alphanums+'_')
@@ -94,7 +127,11 @@ class RulesParser(object):
         atomicRule = tagRule ^ shiftOrthRule ^ parenRule
         zeroOrMoreRule = atomicRule + Suppress('*')
         oneOrMoreRule = atomicRule + Suppress('+')
-        unaryRule = atomicRule ^ zeroOrMoreRule ^ oneOrMoreRule
+        optionalRule = atomicRule + Suppress('?')
+        quantRule1 = atomicRule + Suppress('{') + Word(nums) + Suppress('}')
+        quantRule2 = atomicRule + Suppress('{') + Word(nums) + Suppress(',') + Word(nums) + Suppress('}')
+        quantRule3 = atomicRule + Suppress('{') + Word(nums) + Suppress(',') + Suppress('}')
+        unaryRule = atomicRule ^ zeroOrMoreRule ^ oneOrMoreRule ^ optionalRule ^ quantRule1 ^ quantRule2 ^ quantRule3
         oneOfRule = delimitedList(unaryRule, delim='|')
         complexRule = unaryRule ^ oneOfRule
         if self.rulesType == RulesParser.PARSE4ANALYZER:
@@ -107,6 +144,10 @@ class RulesParser(object):
         shiftOrthRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], True, lineNum, line, segtypesHelper))
 #         parenRule.setParseAction(lambda string, loc, toks: toks[0])
         zeroOrMoreRule.setParseAction(lambda string, loc, toks: rules.ZeroOrMoreRule(toks[0], lineNum))
+        quantRule1.setParseAction(lambda string, loc, toks: self._createQuantRule1(toks[0], int(toks[1], 10), lineNum, line, segtypesHelper))
+        quantRule2.setParseAction(lambda string, loc, toks: self._createQuantRule2(toks[0], int(toks[1], 10), int(toks[2], 10), lineNum, line, segtypesHelper))
+        quantRule3.setParseAction(lambda string, loc, toks: self._createQuantRule3(toks[0], int(toks[1], 10), lineNum, line, segtypesHelper))
+        optionalRule.setParseAction(lambda string, loc, toks: rules.OptionalRule(toks[0], lineNum))
         oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0], lineNum)], lineNum))
         oneOfRule.setParseAction(lambda string, loc, toks: rules.OrRule(toks, lineNum))
         concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(toks, lineNum))

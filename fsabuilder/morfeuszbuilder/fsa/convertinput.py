@@ -12,7 +12,7 @@ def _mergeEntries(inputLines, lowercase):
     prevInterps = None
     for key, interp in inputLines:
         key = key.lower() if lowercase else key
-#         print key
+#         print 'key=', key, 'interp=', interp
         assert key
         if prevKey and prevKey == key:
             prevInterps.append(interp)
@@ -95,7 +95,7 @@ class PolimorfConverter4Generator(object):
             line = line.decode(self.inputEncoding).strip('\n')
             orth, base, tag, name = _parseLine(line)
             if base:
-                if u':' in base and len(base) > 1:
+                if u':' in base and len(base) > 1 and base.split(u':', 1)[1].isalpha():
                     base, homonymId = base.split(u':', 1)
                 else:
                     homonymId = ''
@@ -130,8 +130,8 @@ class PolimorfConverter4Generator(object):
                 tagnum = int(tagnum)
                 namenum = int(namenum)
                 typenum = int(typenum)
-                yield (base, Interpretation4Generator(orth, base, tagnum, namenum, typenum, homonymId))
                 prevLine = line
+                yield (base, Interpretation4Generator(orth, base, tagnum, namenum, typenum, homonymId))
     
     def convert(self, inputLines):
         return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))), lowercase=False)
