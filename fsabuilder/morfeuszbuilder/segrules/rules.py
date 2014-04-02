@@ -125,7 +125,7 @@ class ZeroOrMoreRule(UnaryRule):
         startState.addTransition(None, endState)
         self.child._doAddToNFA(intermStartState, intermEndState)
         intermEndState.addTransition(None, endState)
-        endState.addTransition(None, intermStartState)
+        intermEndState.addTransition(None, intermStartState)
     
     def allowsEmptySequence(self):
         return True
