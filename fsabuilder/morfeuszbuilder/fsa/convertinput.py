@@ -121,15 +121,17 @@ class PolimorfConverter4Generator(object):
         return sorted(inputLines, key=lambda line: (self.encoder.word2SortKey(line.split(' ')[1].decode('utf8')), line))
     
     def _reallyParseLines(self, inputLines):
+        prevLine = None
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip(u'\n')
-            if line:
+            if line and line != prevLine:
                 orth, base, tagnum, namenum, typenum, homonymId = line.split(u' ')
 #                 print orth.encode('utf8'), base.encode('utf8'), homonymId
                 tagnum = int(tagnum)
                 namenum = int(namenum)
                 typenum = int(typenum)
                 yield (base, Interpretation4Generator(orth, base, tagnum, namenum, typenum, homonymId))
+                prevLine = line
     
     def convert(self, inputLines):
         return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))), lowercase=False)
