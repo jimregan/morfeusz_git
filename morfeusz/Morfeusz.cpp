@@ -62,7 +62,8 @@ void Morfeusz::processOneWord(
         const char*& inputStart,
         const char* inputEnd,
         int startNodeNum,
-        std::vector<MorphInterpretation>& results) const {
+        std::vector<MorphInterpretation>& results,
+        bool insideIgnHandler) const {
     while (inputStart != inputEnd
             && isEndOfWord(env.getCharsetConverter().peek(inputStart, inputEnd))) {
         env.getCharsetConverter().next(inputStart, inputEnd);
@@ -71,9 +72,9 @@ void Morfeusz::processOneWord(
     InflexionGraph graph;
     const char* currInput = inputStart;
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
-    
+
     doProcessOneWord(env, currInput, inputEnd, segrulesFSA.initialState, accum, graph);
-    
+
     if (!graph.empty()) {
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
@@ -86,6 +87,12 @@ void Morfeusz::processOneWord(
             }
             srcNode++;
         }
+    }
+    else if (inputStart != inputEnd 
+            && env.getProcessorType() == ANALYZER 
+            && !insideIgnHandler) {
+        this->handleIgnChunk(env, inputStart, currInput, startNodeNum, results);
+        //        this->appendIgnotiumToResults(env, string(inputStart, currInput), startNodeNum, results);
     }
     else if (inputStart != inputEnd) {
         this->appendIgnotiumToResults(env, string(inputStart, currInput), startNodeNum, results);
@@ -113,7 +120,7 @@ static inline string debugAccum(vector<InterpretedChunk>& accum) {
     stringstream res;
     for (unsigned int i = 0; i < accum.size(); i++) {
         res << debugInterpsGroup(accum[i].interpsGroup.type, accum[i].chunkStartPtr, accum[i].chunkEndPtr);
-//        res << "(" << (int) accum[i].interpsGroup.type << ", " << string(accum[i].chunkStartPtr, accum[i].chunkStartPtr) << "), ";
+        //        res << "(" << (int) accum[i].interpsGroup.type << ", " << string(accum[i].chunkStartPtr, accum[i].chunkStartPtr) << "), ";
     }
     return res.str();
 }
@@ -125,11 +132,11 @@ void Morfeusz::doProcessOneWord(
         SegrulesState segrulesState,
         vector<InterpretedChunk>& accum,
         InflexionGraph& graph) const {
-//    if (this->options.debug) {
-//        cerr << "----------" << endl;
-//        cerr << "PROCESS: '" << inputData << "', already recognized: " << debugAccum(accum) << endl;
-//    }
-//    cerr << "doAnalyzeOneWord " << inputData << endl;
+    //    if (this->options.debug) {
+    //        cerr << "----------" << endl;
+    //        cerr << "PROCESS: '" << inputData << "', already recognized: " << debugAccum(accum) << endl;
+    //    }
+    //    cerr << "doAnalyzeOneWord " << inputData << endl;
     const char* inputStart = inputData;
     const char* currInput = inputData;
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
@@ -140,8 +147,8 @@ void Morfeusz::doProcessOneWord(
 
     while (!isEndOfWord(codepoint)) {
         uint32_t normalizedCodepoint = env.getProcessorType() == ANALYZER
-            ? env.getCaseConverter().toLower(codepoint)
-            : codepoint;
+                ? env.getCaseConverter().toLower(codepoint)
+                : codepoint;
         originalCodepoints.push_back(codepoint);
         normalizedCodepoints.push_back(normalizedCodepoint);
         feedState(state, normalizedCodepoint, UTF8CharsetConverter());
@@ -152,7 +159,7 @@ void Morfeusz::doProcessOneWord(
                 throw MorfeuszException("Lemma of length > 1 cannot start with a colon");
             }
             homonymId = string(currInput + 1, inputEnd);
-//            cerr << "homonym " << homonymId << endl;
+            //            cerr << "homonym " << homonymId << endl;
             currInput = inputEnd;
             codepoint = 0x00;
         }
@@ -163,13 +170,13 @@ void Morfeusz::doProcessOneWord(
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
-//                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
+                //                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
                 set<SegrulesState> newSegrulesStates;
                 env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
                 if (this->options.debug && newSegrulesStates.empty()) {
                     cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
                 }
-//                cerr << "newSegrulesStates.size() " << newSegrulesStates.size() << endl;
+                //                cerr << "newSegrulesStates.size() " << newSegrulesStates.size() << endl;
                 for (
                         set<SegrulesState>::iterator it = newSegrulesStates.begin();
                         it != newSegrulesStates.end();
@@ -190,7 +197,7 @@ void Morfeusz::doProcessOneWord(
                         doShiftOrth(accum.back(), ic);
                     }
                     accum.push_back(ic);
-                    if (isEndOfWord(codepoint) 
+                    if (isEndOfWord(codepoint)
                             && newSegrulesState.accepting) {
                         if (this->options.debug) {
                             cerr << "ACCEPTING " << debugAccum(accum) << endl;
@@ -198,7 +205,7 @@ void Morfeusz::doProcessOneWord(
                         graph.addPath(accum, newSegrulesState.weak);
                     }
                     else if (!isEndOfWord(codepoint)) {
-//                        cerr << "will process " << currInput << endl;
+                        //                        cerr << "will process " << currInput << endl;
                         const char* newCurrInput = currInput;
                         doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState, accum, graph);
                     }
@@ -209,6 +216,58 @@ void Morfeusz::doProcessOneWord(
         codepoint = currInput == inputEnd || isEndOfWord(codepoint) ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     }
     inputData = currInput;
+}
+
+static inline bool isSeparator(uint32_t codepoint) {
+    return codepoint == 44;
+}
+
+void Morfeusz::handleIgnChunk(
+        const Environment& env,
+        const char* inputStart,
+        const char* inputEnd,
+        int startNodeNum,
+        std::vector<MorphInterpretation>& results) const {
+    const char* currInput = inputStart;
+    const char* prevInput;
+    uint32_t codepoint;
+    bool separatorFound = false;
+    while (currInput != inputEnd) {
+        prevInput = currInput;
+        const char* nonSeparatorInputEnd = prevInput;
+        do {
+            codepoint = env.getCharsetConverter().next(currInput, inputEnd);
+            if (!isSeparator(codepoint)) {
+                nonSeparatorInputEnd = currInput;
+            }
+        }
+        while (currInput != inputEnd && !isSeparator(codepoint));
+
+        if (isSeparator(codepoint)) {
+            separatorFound = true;
+            if (nonSeparatorInputEnd != prevInput) {
+                int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+                this->processOneWord(env, prevInput, nonSeparatorInputEnd, startNode, results, true);
+                startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+                this->processOneWord(env, nonSeparatorInputEnd, currInput, startNode, results, true);
+            }
+            else {
+                int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+                this->processOneWord(env, prevInput, currInput, startNode, results, true);
+            }
+        }
+    }
+
+    // currInput == inputEnd
+    if (!isSeparator(codepoint)) {
+        if (separatorFound) {
+            int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+            this->processOneWord(env, prevInput, inputEnd, startNode, results, true);
+        }
+        else {
+            this->appendIgnotiumToResults(env, string(inputStart, inputEnd), startNodeNum, results);
+        }
+    }
 }
 
 void Morfeusz::appendIgnotiumToResults(
@@ -260,6 +319,7 @@ void Morfeusz::generate(const string& text, vector<MorphInterpretation>& results
 }
 
 // XXX - someday it should be improved
+
 void Morfeusz::generate(const std::string& lemma, int tagnum, vector<MorphInterpretation>& result) const {
     vector<MorphInterpretation> partRes;
     this->generate(lemma, partRes);

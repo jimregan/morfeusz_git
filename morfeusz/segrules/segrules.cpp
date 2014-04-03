@@ -18,11 +18,19 @@ static inline string deserializeString(const unsigned char*& ptr) {
     return res;
 }
 
+static inline void ignoreSeparatorsList(const unsigned char*& ptr) {
+    uint16_t listSize = ntohs(*reinterpret_cast<const uint16_t*>(ptr));
+    ptr += 2;
+    ptr += 4 * listSize;
+}
+
 static inline const unsigned char* getFSAsMapPtr(const unsigned char* ptr) {
     const unsigned char* additionalDataPtr = ptr 
         + FSA_DATA_OFFSET 
         + ntohl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
-    return additionalDataPtr + deserializeUint32(additionalDataPtr) + 4;
+    const unsigned char* res = additionalDataPtr + deserializeUint32(additionalDataPtr) + 4;
+    ignoreSeparatorsList(res);
+    return res;
 }
 
 static inline SegrulesOptions deserializeOptions(const unsigned char*& ptr) {

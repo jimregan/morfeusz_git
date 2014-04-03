@@ -3,7 +3,7 @@ from pyparsing import *
 ParserElement.enablePackrat()
 from morfeuszbuilder.tagset import segtypes
 from morfeuszbuilder.utils import configFile, exceptions
-from morfeuszbuilder.segrules import preprocessor, rules, rulesManager, pyparseString
+from morfeuszbuilder.segrules import preprocessor, rules, rulesManager, pyparseString, separatorChars
 import codecs
 import re
 
@@ -34,11 +34,22 @@ class RulesParser(object):
     
     def parse(self, filename):
         
-        segtypesConfigFile = configFile.ConfigFile(filename, ['options', 'combinations', 'generator combinations', 'tags', 'lexemes', 'segment types'])
+        segtypesConfigFile = configFile.ConfigFile(filename, 
+                                                   [
+                                                    'options', 
+                                                    'combinations', 
+                                                    'generator combinations', 
+                                                    'tags', 
+                                                    'lexemes', 
+                                                    'segment types', 
+                                                    'separator chars'])
         key2Defs = self._getKey2Defs(segtypesConfigFile)
         segtypesHelper = segtypes.Segtypes(self.tagset, segtypesConfigFile)
+        separatorsList = separatorChars.parseSeparatorChars(segtypesConfigFile) \
+            if self.rulesType == RulesParser.PARSE4ANALYZER \
+            else []
         
-        res = rulesManager.RulesManager(segtypesHelper)
+        res = rulesManager.RulesManager(segtypesHelper, separatorsList)
         
         def2Key = {}
         for key, defs in key2Defs.iteritems():

@@ -157,7 +157,8 @@ private:
             const char*& inputData,
             const char* inputEnd,
             int startNodeNum,
-            std::vector<MorphInterpretation>& result) const;
+            std::vector<MorphInterpretation>& result,
+            bool insideIgnHandler=false) const;
 
     void doProcessOneWord(
             const Environment& env,
@@ -166,6 +167,13 @@ private:
             SegrulesState segrulesState,
             std::vector<InterpretedChunk>& accum,
             InflexionGraph& graph) const;
+    
+    void handleIgnChunk(
+        const Environment& env,
+        const char* inputStart,
+        const char* inputEnd,
+        int startNodeNum,
+        std::vector<MorphInterpretation>& results) const;
 
     void appendIgnotiumToResults(
             const Environment& env,

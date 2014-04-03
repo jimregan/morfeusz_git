@@ -243,6 +243,16 @@ moze_interp( dig>+ dywiz> latek )
 # interpretacja znaków interpunkcyjnych
 # moze_interp(samodz interp)
 
+[separator chars]
+# ,
+44
+
+# .
+46
+
+# ;
+59
+
 [generator combinations]
 
 [segment types]

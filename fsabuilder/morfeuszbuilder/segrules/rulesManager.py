@@ -5,12 +5,14 @@ Created on 20 lut 2014
 '''
 import logging
 from morfeuszbuilder.utils.serializationUtils import htons, htonl
+from morfeuszbuilder.utils import serializationUtils
 
 class RulesManager(object):
     
-    def __init__(self, segtypes):
+    def __init__(self, segtypes, separatorsList):
         self.options2DFA = {}
         self.segtypes = segtypes
+        self.separatorsList = separatorsList
         self.defaultOptions = None
     
     def _options2Key(self, optionsMap):
@@ -37,6 +39,7 @@ class RulesManager(object):
     
     def serialize(self):
         res = bytearray()
+        res.extend(self._serializeSeparatorsList())
         dfasNum = len(self.options2DFA)
         assert dfasNum > 0 and dfasNum < 256
         res.append(dfasNum)
@@ -46,6 +49,13 @@ class RulesManager(object):
             res.extend(self._serializeDFA(dfa))
         res.extend(self._serializeOptionsMap(self.defaultOptions))
         logging.info('segmentation rules size: %s bytes', len(res))
+        return res
+    
+    def _serializeSeparatorsList(self):
+        res = bytearray()
+        res.extend(serializationUtils.htons(len(self.separatorsList)))
+        for cp in sorted(self.separatorsList):
+            res.extend(serializationUtils.htonl(cp))
         return res
     
     def _serializeOptionsMap(self, optionsMap):
