@@ -272,7 +272,7 @@ void Morfeusz::appendIgnotiumToResults(
         const string& word,
         int startNodeNum,
         std::vector<MorphInterpretation>& results) const {
-    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, env.getTagset(), env.getCharsetConverter());
+    MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, env);
     results.push_back(interp);
 }
 

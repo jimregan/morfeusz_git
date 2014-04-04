@@ -44,6 +44,7 @@ cp1250CharsetConverter(),
 cp852CharsetConverter(),
 caseConverter(),
 tagset(fsaFileStartPtr),
+qualifiers(fsaFileStartPtr),
 fsaFileStartPtr(fsaFileStartPtr),
 fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
 separatorsList(getSeparatorsList(fsaFileStartPtr)),
@@ -116,6 +117,7 @@ void Environment::setFSAFile(const std::string& filename) {
     this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
     this->isFromFile = true;
     this->tagset = Tagset(fsaFileStartPtr);
+    this->qualifiers = Qualifiers(fsaFileStartPtr);
 }
 
 const SegrulesFSA& Environment::getCurrentSegrulesFSA() const {
@@ -153,6 +155,10 @@ void Environment::setCaseSensitive(bool caseSensitive) {
 
 const CasePatternHelper& Environment::getCasePatternHelper() const {
     return this->casePatternHelper;
+}
+
+const Qualifiers& Environment::getQualifiersHelper() const {
+    return this->qualifiers;
 }
 
 bool Environment::isSeparator(uint32_t codepoint) const {

@@ -12,6 +12,7 @@
 #include "Tagset.hpp"
 #include "EncodedInterpretation.hpp"
 #include "charset/CharsetConverter.hpp"
+#include "Environment.hpp"
 
 class MorphInterpretation {
 public:
@@ -23,9 +24,9 @@ public:
             const std::string& homonymId,
             int tagnum,
             int namenum,
-            const Tagset& tagset,
-            const CharsetConverter& charsetConverter);
-    static MorphInterpretation createIgn(int startNode, const std::string& orth, const Tagset& tagset, const CharsetConverter& charsetConverter);
+            int qualifiersNum,
+            const Environment& env);
+    static MorphInterpretation createIgn(int startNode, const std::string& orth, const Environment& env);
 //    virtual ~MorphInterpretation();
     int getStartNode() const;
     int getEndNode() const;
@@ -36,14 +37,14 @@ public:
     int getNamenum() const;
     const std::string& getTag() const;
     const std::string& getName() const;
+    const std::vector<std::string>& getQualifiers() const;
     
     std::string toString(bool includeNodeNumbers) const;
 private:
     MorphInterpretation(
             int startNode,
             const std::string& orth,
-            const Tagset& tagset,
-            const CharsetConverter& charsetConverter);
+            const Environment& env);
     int startNode;
     int endNode;
     std::string orth;
@@ -53,6 +54,7 @@ private:
     int namenum;
     std::string tag;
     std::string name;
+    std::vector<std::string> qualifiers;
 };
 
 #endif	/* MORPHINTERPRETATION_HPP */

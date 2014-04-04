@@ -12,7 +12,7 @@
 #include <fstream>
 #include <iostream>
 #include "Morfeusz.hpp"
-#include "utils.hpp"
+#include "consoleUtils.hpp"
 
 using namespace std;
 

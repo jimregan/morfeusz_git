@@ -20,39 +20,41 @@ MorphInterpretation::MorphInterpretation(
         const string& homonymId,
         int tagnum,
         int namenum,
-        const Tagset& tagset,
-        const CharsetConverter& charsetConverter)
-: startNode(startNode), 
-        endNode(endNode), 
-        orth(orth),
-        lemma(lemma),
-        homonymId(homonymId),
-        tagnum(tagnum),
-        namenum(namenum),
-        tag(tagset.getTag(tagnum, charsetConverter)),
-        name(tagset.getName(namenum, charsetConverter)) {
+        int qualifiersNum,
+        const Environment& env)
+: startNode(startNode),
+endNode(endNode),
+orth(orth),
+lemma(lemma),
+homonymId(homonymId),
+tagnum(tagnum),
+namenum(namenum),
+tag(env.getTagset().getTag(tagnum, env.getCharsetConverter())),
+name(env.getTagset().getName(namenum, env.getCharsetConverter())),
+qualifiers(env.getQualifiersHelper().getQualifiers(qualifiersNum)) {
 
 }
 
 MorphInterpretation::MorphInterpretation(
         int startNode,
         const std::string& orth,
-        const Tagset& tagset,
-        const CharsetConverter& charsetConverter)
-: startNode(startNode), 
-        endNode(startNode + 1), 
-        orth(orth),
-        lemma(orth),
-        homonymId(""),
-        tagnum(0),
-        namenum(0),
-        tag(tagset.getTag(0, charsetConverter)),
-        name(tagset.getName(0, charsetConverter)) {
+        const Environment& env)
+: startNode(startNode),
+endNode(startNode + 1),
+orth(orth),
+lemma(orth),
+homonymId(""),
+tagnum(0),
+namenum(0),
+//        qualifiersNum(0),
+tag(env.getTagset().getTag(0, env.getCharsetConverter())),
+name(env.getTagset().getName(0, env.getCharsetConverter())),
+qualifiers() {
 
 }
 
-MorphInterpretation MorphInterpretation::createIgn(int startNode, const std::string& orth, const Tagset& tagset, const CharsetConverter& charsetConverter) {
-    return MorphInterpretation(startNode, orth, tagset, charsetConverter);
+MorphInterpretation MorphInterpretation::createIgn(int startNode, const std::string& orth, const Environment& env) {
+    return MorphInterpretation(startNode, orth, env);
 }
 
 int MorphInterpretation::getStartNode() const {
@@ -91,22 +93,40 @@ const std::string& MorphInterpretation::getName() const {
     return this->name;
 }
 
+const vector<string>& MorphInterpretation::getQualifiers() const {
+    return this->qualifiers;
+}
+
+static inline string getQualifiersStr(const MorphInterpretation& mi) {
+    string res;
+    for (unsigned int i = 0; i < mi.getQualifiers().size(); i++) {
+        res += mi.getQualifiers()[i];
+        if (i + 1 < mi.getQualifiers().size()) {
+            res += "|";
+        }
+    }
+    return res;
+}
+
 std::string MorphInterpretation::toString(bool includeNodeNumbers) const {
     std::stringstream res;
     if (includeNodeNumbers) {
         res << startNode << "," << endNode << ",";
     }
     res << orth << ",";
-    
+
     res << lemma;
     if (!this->homonymId.empty()) {
         res << ":" << homonymId;
     }
     res << ",";
-    
+
     res << tag;
     if (!name.empty()) {
         res << "," << name;
+    }
+    if (!qualifiers.empty()) {
+        res << "," << getQualifiersStr(*this);
     }
     return res.str();
 }

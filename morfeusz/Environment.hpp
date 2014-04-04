@@ -21,7 +21,9 @@ class InterpretedChunksDecoder;
 //#include "InterpretedChunksDecoder.hpp"
 #include "InterpsGroup.hpp"
 #include "CasePatternHelper.hpp"
+#include "Qualifiers.hpp"
 
+struct InterpsGroup;
 typedef FSA< std::vector<InterpsGroup > > FSAType;
 
 class Environment {
@@ -56,6 +58,8 @@ public:
     
     const CasePatternHelper& getCasePatternHelper() const;
     
+    const Qualifiers& getQualifiersHelper() const;
+    
     bool isSeparator(uint32_t codepoint) const;
     
     virtual ~Environment();
@@ -67,6 +71,7 @@ private:
     const CP852_CharsetConverter cp852CharsetConverter;
     const CaseConverter caseConverter;
     Tagset tagset;
+    Qualifiers qualifiers;
     
     const unsigned char* fsaFileStartPtr;
     const FSAType* fsa;

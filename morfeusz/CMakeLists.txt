@@ -26,7 +26,8 @@ set(SRC_FILES
     ${INPUT_SYNTH_DICTIONARY_CPP}
     Environment.cpp
     MorphDeserializer.cpp
-    Tagset.cpp 
+    Tagset.cpp
+    Qualifiers.cpp
     fsa/const.cpp 
     MorphInterpretation.cpp 
     Morfeusz.cpp
@@ -43,7 +44,8 @@ set(INCLUDE_FILES
     const.hpp 
     data/default_fsa.hpp
     MorphDeserializer.hpp
-    Tagset.hpp 
+    Tagset.hpp
+    Qualifiers.hpp
     fsa/const.hpp 
     MorphInterpretation.hpp 
     Morfeusz.hpp

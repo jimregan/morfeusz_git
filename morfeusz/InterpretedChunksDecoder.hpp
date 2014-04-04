@@ -18,7 +18,9 @@
 #include "EncodedInterpretation.hpp"
 #include "charset/CaseConverter.hpp"
 #include "Environment.hpp"
+#include "MorphInterpretation.hpp"
 #include "CasePatternHelper.hpp"
+#include "deserializationUtils.hpp"
 
 class InterpretedChunksDecoder {
 public:
@@ -53,10 +55,9 @@ protected:
     EncodedInterpretation deserializeInterp(const unsigned char*& ptr) const {
         EncodedInterpretation interp;
         deserializeEncodedForm(ptr, interp.value);
-        interp.tag = ntohs(*(reinterpret_cast<const uint16_t*> (ptr)));
-        ptr += 2;
-        interp.nameClassifier = *ptr;
-        ptr++;
+        interp.tag = readInt16(ptr);
+        interp.nameClassifier = *ptr++;
+        interp.qualifiers = readInt16(ptr);
         return interp;
     }
 
@@ -174,8 +175,8 @@ private:
                     lemmaHomonymId.second,
                     ei.tag,
                     ei.nameClassifier,
-                    env.getTagset(),
-                    env.getCharsetConverter()));
+                    ei.qualifiers,
+                    env));
         }
     }
 
@@ -252,8 +253,8 @@ private:
                 homonymId,
                 ei.tag,
                 ei.nameClassifier,
-                env.getTagset(),
-                env.getCharsetConverter());
+                ei.qualifiers,
+                env);
     }
 
     void decodeForm(

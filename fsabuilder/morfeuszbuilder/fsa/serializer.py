@@ -12,9 +12,24 @@ class Serializer(object):
     
     MAGIC_NUMBER = 0x8fc2bc1b
 
-    def __init__(self, fsa, headerFilename="data/default_fsa.hpp"):
+    def __init__(self, fsa):
         self._fsa = fsa
-        self.headerFilename = headerFilename
+        self.tagset = None
+        self.qualifiersMap = None
+        self.segmentationRulesData = None
+    
+    @staticmethod
+    def getSerializer(serializationMethod, fsa, tagset, qualifiersMap, segmentationRulesData):
+        from buildfsa import SerializationMethod
+        res = {
+            SerializationMethod.SIMPLE: SimpleSerializer,
+            SerializationMethod.V1: VLengthSerializer1,
+            SerializationMethod.V2: VLengthSerializer2,
+        }[serializationMethod](fsa)
+        res.tagset = tagset
+        res.qualifiersMap = qualifiersMap
+        res.segmentationRulesData = segmentationRulesData
+        return res
     
     @property
     def fsa(self):
@@ -22,23 +37,21 @@ class Serializer(object):
     
     # get the Morfeusz file format version that is being encoded
     def getVersion(self):
-        return 13
+        return 14
     
-    def serialize2CppFile(self, fname, generator, segmentationRulesData):
+    def serialize2CppFile(self, fname, isGenerator, headerFilename="data/default_fsa.hpp"):
         res = []
 #         self.fsa.calculateOffsets(sizeCounter=lambda state: self.getStateSize(state))
         res.append('\n')
-        res.append('#include "%s"' % self.headerFilename)
+        res.append('#include "%s"' % headerFilename)
         res.append('\n')
         res.append('\n')
-        if generator:
+        if isGenerator:
             res.append('extern const unsigned char DEFAULT_SYNTH_FSA[] = {')
         else:
             res.append('extern const unsigned char DEFAULT_FSA[] = {')
         res.append('\n')
-        for byte in self.fsa2bytearray(
-                                       tagsetData=self.serializeTagset(self.fsa.tagset),
-                                       segmentationRulesData=segmentationRulesData):
+        for byte in self.fsa2bytearray(isGenerator):
             res.append(hex(byte));
             res.append(',');
         res.append('\n')
@@ -47,16 +60,17 @@ class Serializer(object):
         with open(fname, 'w') as f:
             f.write(''.join(res))
     
-    def serialize2BinaryFile(self, fname, segmentationRulesData):
+    def serialize2BinaryFile(self, fname, isGenerator):
         with open(fname, 'wb') as f:
-            f.write(self.fsa2bytearray(
-                                       tagsetData=self.serializeTagset(self.fsa.tagset),
-                                       segmentationRulesData=segmentationRulesData))
+            f.write(self.fsa2bytearray(isGenerator))
     
     def getStateSize(self, state):
         raise NotImplementedError('Not implemented')
     
-    def fsa2bytearray(self, tagsetData, segmentationRulesData):
+    def fsa2bytearray(self, isGenerator):
+        tagsetData = self.serializeTagset(self.tagset)
+        qualifiersData = self.serializeQualifiersMap()
+        segmentationRulesData = self.segmentationRulesData
         res = bytearray()
         res.extend(self.serializePrologue())
         fsaData = bytearray()
@@ -66,7 +80,7 @@ class Serializer(object):
             fsaData.extend(self.state2bytearray(state))
         res.extend(htonl(len(fsaData)))
         res.extend(fsaData)
-        res.extend(self.serializeEpilogue(tagsetData, segmentationRulesData))
+        res.extend(self.serializeEpilogue(tagsetData, qualifiersData, segmentationRulesData))
         return res
     
     def _serializeTags(self, tagsMap):
@@ -87,6 +101,16 @@ class Serializer(object):
             res.extend(self._serializeTags(tagset._name2namenum))
         return res
     
+    def serializeQualifiersMap(self):
+        res = bytearray()
+        res.extend(htons(len(self.qualifiersMap)))
+        for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n):
+            res.append(len(qualifiers))
+            for q in qualifiers:
+                res.extend(q.encode('utf8'))
+                res.append(0)
+        return res
+    
     def serializePrologue(self):
         res = bytearray()
         
@@ -104,18 +128,23 @@ class Serializer(object):
         
         return res
     
-    def serializeEpilogue(self, tagsetData, segmentationRulesData):
+    def serializeEpilogue(self, tagsetData, qualifiersData, segmentationRulesData):
         res = bytearray()
         tagsetDataSize = len(tagsetData) if tagsetData else 0
-        segmentationDataSize = len(segmentationRulesData) if segmentationRulesData else 0
-        res.extend(htonl(tagsetDataSize))
+        qualifiersDataSize = len(qualifiersData) if qualifiersData else 0
+#         segmentationDataSize = len(segmentationRulesData) if segmentationRulesData else 0
+        res.extend(htonl(tagsetDataSize + qualifiersDataSize))
         
         # add additional data itself
-        if tagsetDataSize:
+        if tagsetData:
             assert type(tagsetData) == bytearray
             res.extend(tagsetData)
         
-        if segmentationDataSize:
+        if qualifiersData:
+            assert type(qualifiersData) == bytearray
+            res.extend(qualifiersData)
+        
+        if segmentationRulesData:
             assert type(segmentationRulesData) == bytearray
             res.extend(segmentationRulesData)
         return res
@@ -129,7 +158,7 @@ class Serializer(object):
     def getSortedTransitions(self, state):
         defaultKey = lambda (label, nextState): (-state.label2Freq.get(label, 0), -self.fsa.label2Freq.get(label, 0))
         return list(sorted(
-                           state.transitionsMap.iteritems(), 
+                           state.transitionsMap.iteritems(),
                            key=defaultKey))
     
     def stateData2bytearray(self, state):
@@ -201,8 +230,8 @@ class VLengthSerializer1(Serializer):
         self.useArrays = useArrays
         self.label2ShortLabel = None
         
-        self.ACCEPTING_FLAG =   0b10000000
-        self.ARRAY_FLAG =       0b01000000
+        self.ACCEPTING_FLAG = 0b10000000
+        self.ARRAY_FLAG = 0b01000000
     
     def getImplementationCode(self):
         return 1
@@ -256,7 +285,7 @@ class VLengthSerializer1(Serializer):
         res = bytearray()
         transitions = self.getSortedTransitions(state)
         thisIdx = self.state2Index[originalState if originalState is not None else state]
-        logging.debug('state '+str(state.offset))
+        logging.debug('state ' + str(state.offset))
         if len(transitions) == 0:
             assert state.isAccepting()
             return bytearray()
@@ -266,8 +295,8 @@ class VLengthSerializer1(Serializer):
                 transitionBytes = bytearray()
                 assert nextState.reverseOffset is not None
                 assert stateAfterThis.reverseOffset is not None
-                logging.debug('next state reverse: '+str(nextState.reverseOffset))
-                logging.debug('after state reverse: '+str(stateAfterThis.reverseOffset))
+                logging.debug('next state reverse: ' + str(nextState.reverseOffset))
+                logging.debug('after state reverse: ' + str(stateAfterThis.reverseOffset))
                 
 #                 firstByte = label
                 
@@ -288,7 +317,7 @@ class VLengthSerializer1(Serializer):
                     offsetSize += 1
                 if offset >= 256 * 256:
                     offsetSize += 1
-                assert offset < 256 * 256 * 256 #TODO - przerobic na jakis porzadny wyjatek
+                assert offset < 256 * 256 * 256  # TODO - przerobic na jakis porzadny wyjatek
                 assert offsetSize <= 3
                 assert offsetSize > 0 or isNext
                 firstByte |= offsetSize
@@ -305,7 +334,7 @@ class VLengthSerializer1(Serializer):
                     transitionBytes.append(offset & 0x0000FF)
                 for b in reversed(transitionBytes):
                     res.insert(0, b)
-                logging.debug('inserted transition at beginning '+chr(label)+' -> '+str(offset))
+                logging.debug('inserted transition at beginning ' + chr(label) + ' -> ' + str(offset))
 
         return res
     
@@ -359,7 +388,7 @@ class VLengthSerializer2(Serializer):
         self.state2Index = dict([(state, idx) for (idx, state) in enumerate(self.statesTable)])
         
         self.HAS_REMAINING_FLAG = 128
-        self.ACCEPTING_FLAG =    64
+        self.ACCEPTING_FLAG = 64
         self.LAST_FLAG = 32
     
     def serializeFSAPrologue(self):
@@ -416,8 +445,8 @@ class VLengthSerializer2(Serializer):
                 transitionBytes = bytearray()
                 assert nextState.reverseOffset is not None
                 assert stateAfterThis.reverseOffset is not None
-                logging.debug('next state reverse: '+str(nextState.reverseOffset))
-                logging.debug('after state reverse: '+str(stateAfterThis.reverseOffset))
+                logging.debug('next state reverse: ' + str(nextState.reverseOffset))
+                logging.debug('after state reverse: ' + str(stateAfterThis.reverseOffset))
                 
                 n = len(transitions) - reversedN
                 firstByte = label
@@ -437,7 +466,7 @@ class VLengthSerializer2(Serializer):
                 transitionBytes.extend(self._getOffsetBytes(offset))
                 for b in reversed(transitionBytes):
                     res.insert(0, b)
-                logging.debug('inserted transition at beginning '+chr(label)+' -> '+str(offset))
+                logging.debug('inserted transition at beginning ' + chr(label) + ' -> ' + str(offset))
 
         return res
 #     

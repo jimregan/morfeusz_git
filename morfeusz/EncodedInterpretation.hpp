@@ -31,6 +31,7 @@ struct EncodedInterpretation {
     int tag;
     int nameClassifier;
     std::string homonymId;
+    int qualifiers;
 };
 
 #endif	/* INTERPRETATION_HPP */

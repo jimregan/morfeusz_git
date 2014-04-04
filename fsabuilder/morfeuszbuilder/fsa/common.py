@@ -43,11 +43,12 @@ class EncodedForm4Generator(object):
 
 class Interpretation4Analyzer(object):
     
-    def __init__(self, orth, base, tagnum, namenum, typenum):
+    def __init__(self, orth, base, tagnum, namenum, typenum, qualifiers):
         self.encodedForm = EncodedForm(orth, base, lowercase=True)
         self.tagnum = tagnum
         self.namenum = namenum
         self.typenum = typenum
+        self.qualifiers = qualifiers
     
     def getSortKey(self):
         return (
@@ -68,13 +69,14 @@ class Interpretation4Analyzer(object):
 
 class Interpretation4Generator(object):
     
-    def __init__(self, orth, base, tagnum, namenum, typenum, homonymId):
+    def __init__(self, orth, base, tagnum, namenum, typenum, homonymId, qualifiers):
         self.lemma = base
         self.encodedForm = EncodedForm4Generator(base, orth)
         self.tagnum = tagnum
         self.namenum = namenum
         self.typenum = typenum
         self.homonymId = homonymId
+        self.qualifiers = qualifiers
     
     def getSortKey(self):
         return (

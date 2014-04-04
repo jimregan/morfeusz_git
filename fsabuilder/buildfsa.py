@@ -12,7 +12,7 @@ import codecs
 from morfeuszbuilder.fsa import encode
 from morfeuszbuilder.fsa import convertinput
 from morfeuszbuilder.fsa.fsa import FSA
-from morfeuszbuilder.fsa.serializer import VLengthSerializer1, VLengthSerializer2, SimpleSerializer
+from morfeuszbuilder.fsa.serializer import Serializer
 from morfeuszbuilder.tagset.tagset import Tagset
 from morfeuszbuilder.segrules import rulesParser
 from optparse import OptionParser
@@ -202,7 +202,7 @@ def buildAnalyzerFromPoliMorf(inputFiles, tagset, segmentRulesManager, trimSupne
     logging.info('Analyzer FSA stats:')
     logging.info('------')
     _printStats(fsa)
-    return fsa
+    return fsa, encoder.qualifiersMap
 
 def buildGeneratorFromPoliMorf(inputFiles, tagset, segmentRulesManager):
     encoder = encode.Encoder4Generator()
@@ -215,7 +215,7 @@ def buildGeneratorFromPoliMorf(inputFiles, tagset, segmentRulesManager):
     logging.info('Generator FSA stats:')
     logging.info('------')
     _printStats(fsa)
-    return fsa
+    return fsa, encoder.qualifiersMap
 
 def main(opts):
     if opts.debug:
@@ -235,25 +235,26 @@ def main(opts):
     segmentationRulesData = segmentRulesManager.serialize()
     
     if opts.analyzer:
-        fsa = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager, opts.trimSupneg)
+        fsa, qualifiersMap = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager, opts.trimSupneg)
     else:
-        fsa = buildGeneratorFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
+        fsa, qualifiersMap = buildGeneratorFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
     
     if opts.trainFile:
         logging.info('training with '+opts.trainFile+' ...')
         fsa.train(_readTrainData(opts.trainFile))
         logging.info('done training')
         
-    serializer = {
-                  SerializationMethod.SIMPLE: SimpleSerializer,
-                  SerializationMethod.V1: VLengthSerializer1,
-                  SerializationMethod.V2: VLengthSerializer2,
-                  }[opts.serializationMethod](fsa)
+#     serializer = {
+#                   SerializationMethod.SIMPLE: SimpleSerializer,
+#                   SerializationMethod.V1: VLengthSerializer1,
+#                   SerializationMethod.V2: VLengthSerializer2,
+#                   }[opts.serializationMethod](fsa)
+    serializer = Serializer.getSerializer(opts.serializationMethod, fsa, tagset, qualifiersMap, segmentationRulesData)
     
     if opts.cpp:
-        serializer.serialize2CppFile(opts.outputFile, generator=opts.generator, segmentationRulesData=segmentationRulesData)
+        serializer.serialize2CppFile(opts.outputFile, isGenerator=opts.generator)
     else:
-        serializer.serialize2BinaryFile(opts.outputFile, segmentationRulesData=segmentationRulesData)
+        serializer.serialize2BinaryFile(opts.outputFile, isGenerator=opts.generator)
     
     logging.info('total FSA size (in bytes): '+str(fsa.initialState.reverseOffset))
 #     {

@@ -8,11 +8,7 @@
 #ifndef INTERPSGROUP_HPP
 #define	INTERPSGROUP_HPP
 
-#include <vector>
-#include <string>
-#include "EncodedInterpretation.hpp"
-#include "MorphInterpretation.hpp"
-#include "Tagset.hpp"
+#include <stdint.h>
 
 struct InterpsGroup {
     unsigned char type;

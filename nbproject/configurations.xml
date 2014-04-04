@@ -43,7 +43,9 @@
       <in>Morfeusz.cpp</in>
       <in>MorphDeserializer.cpp</in>
       <in>MorphInterpretation.cpp</in>
+      <in>Qualifiers.cpp</in>
       <in>Tagset.cpp</in>
+      <in>consoleUtils.hpp</in>
       <in>const.cpp</in>
       <in>main.cpp</in>
       <in>morfeusz_analyzer.cpp</in>
@@ -106,8 +108,12 @@
         </makeTool>
       </makefileType>
       <item path="../default_fsa.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="../default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="build/default_fsa.cpp" ex="false" tool="1" flavor2="4">
       </item>
@@ -385,6 +391,18 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="morfeusz/Qualifiers.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="morfeusz/Tagset.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
           <incDir>
@@ -414,6 +432,8 @@
       <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="morfeusz/consoleUtils.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">

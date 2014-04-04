@@ -14,7 +14,6 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include "MorphInterpretation.hpp"
 
 //using namespace std;
 
@@ -67,31 +66,11 @@ inline T* readFile(const char* fname) {
     return memblock;
 }
 
-template <class OutputStream>
-void appendMorfeuszResults(const std::vector<MorphInterpretation>& res, OutputStream& out) {
-    int prevStart = -1;
-    int prevEnd = -1;
-    out << "[";
-    for (unsigned int i = 0; i < res.size(); i++) {
-        const MorphInterpretation& mi = res[i];
-        if (prevStart != -1
-                && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
-            out << "]\n[";
-        }
-        else if (prevStart != -1) {
-            out << "; ";
-        }
-        out << mi.getStartNode() << ","
-                << mi.getEndNode() << ","
-                << mi.getOrth() << ","
-                << mi.getLemma() << ","
-                << mi.getTag() << ","
-                << mi.getName();
-        prevStart = mi.getStartNode();
-        prevEnd = mi.getEndNode();
-    }
-    out << "]\n";
-}
+//template<>
+//unsigned char* readFile<unsigned char>(const char* fname);
+//
+//template<>
+//char* readFile<char>(const char* fname);
 
 #endif	/* UTILS_HPP */
 

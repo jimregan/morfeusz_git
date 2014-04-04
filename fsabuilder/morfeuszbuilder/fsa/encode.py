@@ -20,6 +20,7 @@ class Encoder(object):
         '''
         self.lowercase = lowercase
         self.encoding = encoding
+        self.qualifiersMap = { frozenset(): 0}
     
     def encodeWord(self, word, lowercase=True):
         assert type(word) == unicode
@@ -73,6 +74,26 @@ class Encoder(object):
                 if casePattern[idx]:
                     res.append(idx)
             return res
+    
+    def _encodeQualifiers(self, qualifiers):
+        res = bytearray()
+        key = frozenset(qualifiers)
+        if key in self.qualifiersMap:
+            n = self.qualifiersMap[key]
+        else:
+            n = len(self.qualifiersMap)
+            self.qualifiersMap[key] = n
+        res.extend(serializationUtils.htons(n))
+#         res.append(len(qualifiers))
+#         
+#         for q in qualifiers:
+#             if q in self.qualifiersMap:
+#                 n = self.qualifiersMap[q]
+#             else:
+#                 n = len(self.qualifiersMap)
+#                 self.qualifiersMap[q] = n
+#             res.extend(serializationUtils.htons(n))
+        return res
     
     def _hasUpperPrefix(self, casePattern):
         for i in range(len(casePattern) + 1):
@@ -132,6 +153,7 @@ class Encoder(object):
             encodedInterpsList.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=withCasePattern, withPrefix=withPrefix))
             encodedInterpsList.extend(self._encodeTagNum(interp.tagnum))
             encodedInterpsList.extend(self._encodeNameNum(interp.namenum))
+            encodedInterpsList.extend(self._encodeQualifiers(interp.qualifiers))
         
         res.extend(serializationUtils.htons(len(encodedInterpsList)))
         res.extend(encodedInterpsList)

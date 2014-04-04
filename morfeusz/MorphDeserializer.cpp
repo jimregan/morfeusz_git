@@ -12,10 +12,10 @@
 #include "EncodedInterpretation.hpp"
 #include "InterpsGroup.hpp"
 
-const uint8_t LEMMA_ONLY_LOWER = 0;
-const uint8_t LEMMA_UPPER_PREFIX = 1;
-const uint8_t LEMMA_MIXED_CASE = 2;
-const unsigned int MAX_WORD_SIZE = 256;
+//const uint8_t LEMMA_ONLY_LOWER = 0;
+//const uint8_t LEMMA_UPPER_PREFIX = 1;
+//const uint8_t LEMMA_MIXED_CASE = 2;
+//const unsigned int MAX_WORD_SIZE = 256;
 
 MorphDeserializer::MorphDeserializer() {
 }
