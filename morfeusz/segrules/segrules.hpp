@@ -11,6 +11,7 @@
 #include <utility>
 #include <map>
 #include <string>
+#include <vector>
 #include "SegrulesFSA.hpp"
 
 typedef std::map<std::string, std::string> SegrulesOptions;
@@ -20,6 +21,7 @@ typedef std::map<std::string, std::string> SegrulesOptions;
 std::map<SegrulesOptions, SegrulesFSA*> createSegrulesFSAsMap(const unsigned char* analyzerPtr);
 SegrulesOptions getDefaultSegrulesOptions(const unsigned char* ptr);
 SegrulesFSA* getDefaultSegrulesFSA(const std::map<SegrulesOptions, SegrulesFSA*>& map, const unsigned char* analyzerPtr);
+std::vector<uint32_t> getSeparatorsList(const unsigned char* ptr);
 void debugMap(const std::map<SegrulesOptions, SegrulesFSA*>& res);
 
 #endif	/* SEGRULES_HPP */

@@ -219,10 +219,6 @@ void Morfeusz::doProcessOneWord(
     inputData = currInput;
 }
 
-static inline bool isSeparator(uint32_t codepoint) {
-    return codepoint == 44;
-}
-
 void Morfeusz::handleIgnChunk(
         const Environment& env,
         const char* inputStart,
@@ -238,13 +234,13 @@ void Morfeusz::handleIgnChunk(
         const char* nonSeparatorInputEnd = prevInput;
         do {
             codepoint = env.getCharsetConverter().next(currInput, inputEnd);
-            if (!isSeparator(codepoint)) {
+            if (!env.isSeparator(codepoint)) {
                 nonSeparatorInputEnd = currInput;
             }
         }
-        while (currInput != inputEnd && !isSeparator(codepoint));
+        while (currInput != inputEnd && !env.isSeparator(codepoint));
 
-        if (isSeparator(codepoint)) {
+        if (env.isSeparator(codepoint)) {
             separatorFound = true;
             if (nonSeparatorInputEnd != prevInput) {
                 int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
@@ -260,7 +256,7 @@ void Morfeusz::handleIgnChunk(
     }
 
     // currInput == inputEnd
-    if (!isSeparator(codepoint)) {
+    if (!env.isSeparator(codepoint)) {
         if (separatorFound) {
             int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
             this->processOneWord(env, prevInput, inputEnd, startNode, results, true);
@@ -349,6 +345,7 @@ void Morfeusz::setPraet(const std::string& praet) {
 
 void Morfeusz::setCaseSensitive(bool caseSensitive) {
     this->options.caseSensitive = caseSensitive;
+    this->analyzerEnv.setCaseSensitive(caseSensitive);
 }
 
 void Morfeusz::setDebug(bool debug) {

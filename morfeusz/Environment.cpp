@@ -5,6 +5,8 @@
  * Created on 22 styczeń 2014, 12:08
  */
 
+#include <vector>
+#include <algorithm>
 #include "Environment.hpp"
 #include "InterpretedChunksDecoder.hpp"
 #include "MorphDeserializer.hpp"
@@ -44,6 +46,7 @@ caseConverter(),
 tagset(fsaFileStartPtr),
 fsaFileStartPtr(fsaFileStartPtr),
 fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
+separatorsList(getSeparatorsList(fsaFileStartPtr)),
 segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
 currSegrulesOptions(getDefaultSegrulesOptions(fsaFileStartPtr)),
 currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap, fsaFileStartPtr)),
@@ -108,6 +111,7 @@ void Environment::setFSAFile(const std::string& filename) {
     }
     this->fsaFileStartPtr = readFile<unsigned char>(filename.c_str());
     this->fsa = FSA< vector<InterpsGroup> > ::getFSA(fsaFileStartPtr, initializeDeserializer(this->processorType));
+    this->separatorsList = getSeparatorsList(fsaFileStartPtr);
     this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
     this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
     this->isFromFile = true;
@@ -149,4 +153,11 @@ void Environment::setCaseSensitive(bool caseSensitive) {
 
 const CasePatternHelper& Environment::getCasePatternHelper() const {
     return this->casePatternHelper;
+}
+
+bool Environment::isSeparator(uint32_t codepoint) const {
+    return binary_search(
+            this->separatorsList.begin(), 
+            this->separatorsList.end(), 
+            codepoint);
 }

@@ -135,6 +135,10 @@ void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
         cerr << "setting debug to TRUE" << endl;
         morfeusz.setDebug(true);
     }
+    if (opt.isSet("-case-insensitive")) {
+        cerr << "setting case sensitive to FALSE" << endl;
+        morfeusz.setCaseSensitive(false);
+    }
 #ifdef _WIN32
     morfeusz.setCharset(CP852);
 #endif

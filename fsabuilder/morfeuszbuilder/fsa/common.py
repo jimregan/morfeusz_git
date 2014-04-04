@@ -20,7 +20,7 @@ class EncodedForm(object):
                 break
         self.cutLength = len(fromWord) - len(root)
         self.suffixToAdd = targetWord[len(root):]
-        self.casePattern = [c == c.upper() for c in root]
+        self.casePattern = [c == c.upper() and c != c.lower() for c in root]
 
 class EncodedForm4Generator(object):
     

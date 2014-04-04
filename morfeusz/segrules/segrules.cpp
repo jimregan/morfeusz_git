@@ -18,18 +18,27 @@ static inline string deserializeString(const unsigned char*& ptr) {
     return res;
 }
 
-static inline void ignoreSeparatorsList(const unsigned char*& ptr) {
+static inline void skipSeparatorsList(const unsigned char*& ptr) {
     uint16_t listSize = ntohs(*reinterpret_cast<const uint16_t*>(ptr));
     ptr += 2;
     ptr += 4 * listSize;
 }
 
-static inline const unsigned char* getFSAsMapPtr(const unsigned char* ptr) {
+static inline const unsigned char* getSeparatorsListPtr(const unsigned char* ptr) {
     const unsigned char* additionalDataPtr = ptr 
         + FSA_DATA_OFFSET 
         + ntohl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
     const unsigned char* res = additionalDataPtr + deserializeUint32(additionalDataPtr) + 4;
-    ignoreSeparatorsList(res);
+    return res;
+}
+
+static inline const unsigned char* getFSAsMapPtr(const unsigned char* ptr) {
+//    const unsigned char* additionalDataPtr = ptr 
+//        + FSA_DATA_OFFSET 
+//        + ntohl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
+//    const unsigned char* res = additionalDataPtr + deserializeUint32(additionalDataPtr) + 4;
+    const unsigned char* res = getSeparatorsListPtr(ptr);
+    skipSeparatorsList(res);
     return res;
 }
 
@@ -83,6 +92,18 @@ SegrulesFSA* getDefaultSegrulesFSA(
         const unsigned char* ptr) {
     SegrulesOptions opts = getDefaultSegrulesOptions(ptr);
     return (*(map.find(opts))).second;
+}
+
+vector<uint32_t> getSeparatorsList(const unsigned char* ptr) {
+    ptr = getSeparatorsListPtr(ptr);
+    vector<uint32_t> res;
+    uint16_t listSize = ntohs(*reinterpret_cast<const uint16_t*>(ptr));
+    ptr += 2;
+    for (unsigned int i = 0; i < listSize; i++) {
+        res.push_back(ntohl(*reinterpret_cast<const uint32_t*>(ptr)));
+        ptr += 4;
+    }
+    return res;
 }
 
 void debugMap(const map<SegrulesOptions, SegrulesFSA*>& res) {

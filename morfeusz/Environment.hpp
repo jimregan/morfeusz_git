@@ -56,6 +56,8 @@ public:
     
     const CasePatternHelper& getCasePatternHelper() const;
     
+    bool isSeparator(uint32_t codepoint) const;
+    
     virtual ~Environment();
 private:
     const CharsetConverter* currentCharsetConverter;
@@ -68,6 +70,7 @@ private:
     
     const unsigned char* fsaFileStartPtr;
     const FSAType* fsa;
+    std::vector<uint32_t> separatorsList;
     std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;
     SegrulesOptions currSegrulesOptions;
     const SegrulesFSA* currSegrulesFSA;

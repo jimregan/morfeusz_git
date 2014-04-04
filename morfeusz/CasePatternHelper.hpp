@@ -37,20 +37,20 @@ public:
         return true;
     }
 
-    bool checkCasePattern(const std::vector<InterpretedChunk>& chunks) const {
-        if (this->caseSensitive) {
-            for (unsigned int i = 0; i < chunks.size(); i++) {
-                const InterpretedChunk& ic = chunks[i];
-                const unsigned char* casePatternPtr = ic.interpsGroup.ptr;
-                std::vector<bool> casePattern;
-                deserializeCasePattern(casePatternPtr, casePattern);
-                if (!checkCasePattern(ic, casePattern)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+//    bool checkCasePattern(const std::vector<InterpretedChunk>& chunks) const {
+//        if (this->caseSensitive) {
+//            for (unsigned int i = 0; i < chunks.size(); i++) {
+//                const InterpretedChunk& ic = chunks[i];
+//                const unsigned char* casePatternPtr = ic.interpsGroup.ptr;
+//                std::vector<bool> casePattern;
+//                deserializeCasePattern(casePatternPtr, casePattern);
+//                if (!checkCasePattern(ic, casePattern)) {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
     void skipCasePattern(const unsigned char*& ptr) const {
         vector<bool> _dupa;
