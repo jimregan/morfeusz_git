@@ -26,10 +26,13 @@ public:
         this->caseSensitive = caseSensitive;
     }
 
-    bool checkCasePattern(const InterpretedChunk& ic, const std::vector<bool>& casePattern) const {
+    bool checkCasePattern(
+        const std::vector<uint32_t>& lowercaseCodepoints, 
+        const std::vector<uint32_t>& originalCodepoints, 
+        const std::vector<bool>& casePattern) const {
         if (this->caseSensitive) {
             for (unsigned int i = 0; i < casePattern.size(); i++) {
-                if (casePattern[i] && ic.lowercaseCodepoints[i] == ic.originalCodepoints[i]) {
+                if (casePattern[i] && lowercaseCodepoints[i] == originalCodepoints[i]) {
                     return false;
                 }
             }

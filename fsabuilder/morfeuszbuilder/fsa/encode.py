@@ -83,16 +83,8 @@ class Encoder(object):
         else:
             n = len(self.qualifiersMap)
             self.qualifiersMap[key] = n
+        assert n < 500
         res.extend(serializationUtils.htons(n))
-#         res.append(len(qualifiers))
-#         
-#         for q in qualifiers:
-#             if q in self.qualifiersMap:
-#                 n = self.qualifiersMap[q]
-#             else:
-#                 n = len(self.qualifiersMap)
-#                 self.qualifiersMap[q] = n
-#             res.extend(serializationUtils.htons(n))
         return res
     
     def _hasUpperPrefix(self, casePattern):
@@ -132,7 +124,7 @@ class Encoder(object):
         res = None
         for interp in interpsList:
             if res is None:
-                res = interp.encodedForm.casePattern
+                res = list(interp.encodedForm.casePattern)
             else:
                 while len(interp.encodedForm.casePattern) > len(res):
                     res.append(False)

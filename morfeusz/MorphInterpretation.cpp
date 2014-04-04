@@ -33,6 +33,7 @@ tag(env.getTagset().getTag(tagnum, env.getCharsetConverter())),
 name(env.getTagset().getName(namenum, env.getCharsetConverter())),
 qualifiers(env.getQualifiersHelper().getQualifiers(qualifiersNum)) {
 
+    
 }
 
 MorphInterpretation::MorphInterpretation(

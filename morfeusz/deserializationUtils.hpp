@@ -9,6 +9,7 @@
 #define	DESERIALIZATIONUTILS_HPP
 
 #include "endianness.hpp"
+#include <iostream>
 
 inline uint16_t readInt16(const unsigned char*& currPtr) {
     uint16_t res = htons(*reinterpret_cast<const uint16_t*>(currPtr));

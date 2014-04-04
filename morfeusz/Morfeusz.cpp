@@ -89,8 +89,8 @@ void Morfeusz::processOneWord(
             srcNode++;
         }
     }
-    else if (inputStart != inputEnd 
-            && env.getProcessorType() == ANALYZER 
+    else if (inputStart != inputEnd
+            && env.getProcessorType() == ANALYZER
             && !insideIgnHandler) {
         this->handleIgnChunk(env, inputStart, currInput, startNodeNum, results);
         //        this->appendIgnotiumToResults(env, string(inputStart, currInput), startNodeNum, results);
@@ -168,49 +168,56 @@ void Morfeusz::doProcessOneWord(
             vector<InterpsGroup> val(state.getValue());
             for (unsigned int i = 0; i < val.size(); i++) {
                 InterpsGroup& ig = val[i];
+                vector<bool> casePattern;
+//                env.getCasePatternHelper().skipCasePattern(ig.ptr);
+                const unsigned char* casePatternPtr = ig.ptr;
+                env.getCasePatternHelper().deserializeCasePattern(casePatternPtr, casePattern);
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
-                //                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
-                set<SegrulesState> newSegrulesStates;
-                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
-                if (this->options.debug && newSegrulesStates.empty()) {
-                    cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
-                }
-                //                cerr << "newSegrulesStates.size() " << newSegrulesStates.size() << endl;
-                for (
-                        set<SegrulesState>::iterator it = newSegrulesStates.begin();
-                        it != newSegrulesStates.end();
-                        ++it) {
-                    SegrulesState newSegrulesState = *it;
-                    InterpretedChunk ic = {
-                        inputStart,
-                        currInput,
-                        originalCodepoints,
-                        normalizedCodepoints,
-                        ig,
-                        newSegrulesState.shiftOrthFromPrevious,
-                        false,
-                        vector<InterpretedChunk>(),
-                        homonymId
-                    };
-                    if (!accum.empty() && accum.back().shiftOrth) {
-                        doShiftOrth(accum.back(), ic);
+                if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, originalCodepoints, casePattern)) {
+//                if (true) {
+                    //                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
+                    set<SegrulesState> newSegrulesStates;
+                    env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
+                    if (this->options.debug && newSegrulesStates.empty()) {
+                        cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
                     }
-                    accum.push_back(ic);
-                    if (isEndOfWord(codepoint)
-                            && newSegrulesState.accepting) {
-                        if (this->options.debug) {
-                            cerr << "ACCEPTING " << debugAccum(accum) << endl;
+                    //                cerr << "newSegrulesStates.size() " << newSegrulesStates.size() << endl;
+                    for (
+                            set<SegrulesState>::iterator it = newSegrulesStates.begin();
+                            it != newSegrulesStates.end();
+                            ++it) {
+                        SegrulesState newSegrulesState = *it;
+                        InterpretedChunk ic = {
+                            inputStart,
+                            currInput,
+                            originalCodepoints,
+                            normalizedCodepoints,
+                            ig,
+                            newSegrulesState.shiftOrthFromPrevious,
+                            false,
+                            vector<InterpretedChunk>(),
+                            homonymId
+                        };
+                        if (!accum.empty() && accum.back().shiftOrth) {
+                            doShiftOrth(accum.back(), ic);
                         }
-                        graph.addPath(accum, newSegrulesState.weak);
+                        accum.push_back(ic);
+                        if (isEndOfWord(codepoint)
+                                && newSegrulesState.accepting) {
+                            if (this->options.debug) {
+                                cerr << "ACCEPTING " << debugAccum(accum) << endl;
+                            }
+                            graph.addPath(accum, newSegrulesState.weak);
+                        }
+                        else if (!isEndOfWord(codepoint)) {
+                            //                        cerr << "will process " << currInput << endl;
+                            const char* newCurrInput = currInput;
+                            doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState, accum, graph);
+                        }
+                        accum.pop_back();
                     }
-                    else if (!isEndOfWord(codepoint)) {
-                        //                        cerr << "will process " << currInput << endl;
-                        const char* newCurrInput = currInput;
-                        doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState, accum, graph);
-                    }
-                    accum.pop_back();
                 }
             }
         }

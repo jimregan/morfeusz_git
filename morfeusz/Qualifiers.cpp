@@ -12,7 +12,8 @@
 
 using namespace std;
 
-Qualifiers::Qualifiers(const unsigned char* ptr) {
+Qualifiers::Qualifiers(const unsigned char* ptr):
+qualifiers() {
     uint32_t fsaSize = htonl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
     const unsigned char* currPtr = ptr + FSA_DATA_OFFSET + fsaSize + 4;
     vector<string> _dupa;
@@ -32,8 +33,12 @@ Qualifiers::Qualifiers(const unsigned char* ptr) {
     }
 }
 
-vector<string> Qualifiers::getQualifiers(uint16_t n) const {
-    return this->qualifiers[n];
+vector<string> Qualifiers::getQualifiers(int n) const {
+    return this->qualifiers.at(n);
+}
+
+int Qualifiers::getQualifiersNum() const {
+    return this->qualifiers.size();
 }
 
 Qualifiers::~Qualifiers() {

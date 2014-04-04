@@ -238,7 +238,7 @@ def main(opts):
         fsa, qualifiersMap = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager, opts.trimSupneg)
     else:
         fsa, qualifiersMap = buildGeneratorFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
-    
+    print qualifiersMap
     if opts.trainFile:
         logging.info('training with '+opts.trainFile+' ...')
         fsa.train(_readTrainData(opts.trainFile))

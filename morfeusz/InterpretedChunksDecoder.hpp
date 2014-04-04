@@ -40,18 +40,6 @@ public:
 
 protected:
 
-    //    virtual MorphInterpretation decodeMorphInterpretation(
-    //            unsigned int startNode, unsigned int endNode,
-    //            const string& orth,
-    //            const string& lemmaPrefix,
-    //            const InterpretedChunk& chunk,
-    //            const unsigned char*& ptr) const = 0;
-
-    //    virtual void decodeForm(
-    //            const std::vector<uint32_t>& orth,
-    //            const EncodedForm& form,
-    //            std::string& res) const = 0;
-
     EncodedInterpretation deserializeInterp(const unsigned char*& ptr) const {
         EncodedInterpretation interp;
         deserializeEncodedForm(ptr, interp.value);
@@ -117,34 +105,6 @@ protected:
         ptr += strlen((const char*) ptr) + 1;
         assert(encodedForm.casePattern.size() == 0);
         env.getCasePatternHelper().deserializeCasePattern(ptr, encodedForm.casePattern);
-        //        uint8_t casePatternType = *ptr;
-        //        ptr++;
-        //        uint8_t prefixLength;
-        //        uint8_t patternLength;
-        //        switch (casePatternType) {
-        //            case LEMMA_ONLY_LOWER:
-        //                break;
-        //            case LEMMA_UPPER_PREFIX:
-        //                prefixLength = *ptr;
-        //                ptr++;
-        //                for (unsigned int i = 0; i < prefixLength; i++) {
-        //                    //                lemma.casePattern[i] = true;
-        //                    encodedForm.casePattern.push_back(true);
-        //                }
-        //                //            lemma.casePattern.resize(prefixLength, true);
-        //                break;
-        //            case LEMMA_MIXED_CASE:
-        //                patternLength = *ptr;
-        //                ptr++;
-        //                for (unsigned int i = 0; i < patternLength; i++) {
-        //                    uint8_t idx = *ptr;
-        //                    ptr++;
-        //                    //                lemma.casePattern[idx] = true;
-        //                    encodedForm.casePattern.resize(idx + 1, false);
-        //                    encodedForm.casePattern[idx] = true;
-        //                }
-        //                break;
-        //        }
     }
 private:
 
@@ -166,7 +126,7 @@ private:
             std::vector<MorphInterpretation>& out) const {
         string lemma = lemmaPrefix;
         EncodedInterpretation ei = this->deserializeInterp(ptr);
-        if (env.getCasePatternHelper().checkCasePattern(chunk, ei.value.casePattern)) {
+        if (env.getCasePatternHelper().checkCasePattern(chunk.lowercaseCodepoints, chunk.originalCodepoints, ei.value.casePattern)) {
             this->decodeForm(chunk.lowercaseCodepoints, ei.value, lemma);
             pair<string, string> lemmaHomonymId = getLemmaHomonymIdPair(lemma);
             out.push_back(MorphInterpretation(
@@ -186,6 +146,7 @@ private:
             orth += env.getCharsetConverter().toString(prefixChunk.originalCodepoints);
             const unsigned char* ptr = prefixChunk.interpsGroup.ptr;
             std::vector<MorphInterpretation> mi;
+            env.getCasePatternHelper().skipCasePattern(ptr);
             this->decodeMorphInterpretation(0, 0, orth, string(""), prefixChunk, ptr, mi);
             if (!mi.empty()) {
                 lemmaPrefix += mi[0].getLemma();
