@@ -114,6 +114,8 @@
       <item path="build/default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="build/morfeusz/morfeuszJAVA_wrap.cxx"
             ex="false"
@@ -285,7 +287,7 @@
         <ccTool>
           <incDir>
             <pElem>morfeusz</pElem>
-            <pElem>/usr/lib/jvm/default-java/include</pElem>
+            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>libjmorfeusz_EXPORTS</Elem>
@@ -410,6 +412,8 @@
             flavor2="4">
       </item>
       <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
@@ -495,6 +499,8 @@
         </ccTool>
       </item>
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/test_recognize_dict.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="0">

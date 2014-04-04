@@ -20,17 +20,20 @@ class InterpretedChunksDecoder;
 #include "Tagset.hpp"
 //#include "InterpretedChunksDecoder.hpp"
 #include "InterpsGroup.hpp"
+#include "CasePatternHelper.hpp"
 
 typedef FSA< std::vector<InterpsGroup > > FSAType;
 
 class Environment {
 public:
     Environment(
-            MorfeuszCharset charset, 
-            MorfeuszProcessorType morfeuszProcessor, 
+            MorfeuszCharset charset,
+            MorfeuszProcessorType morfeuszProcessor,
             const unsigned char* fileStartPtr);
     
     void setCharset(MorfeuszCharset charset);
+    
+    void setCaseSensitive(bool caseSensitive);
     
     const CharsetConverter& getCharsetConverter() const;
     
@@ -51,6 +54,8 @@ public:
     
     MorfeuszProcessorType getProcessorType() const;
     
+    const CasePatternHelper& getCasePatternHelper() const;
+    
     virtual ~Environment();
 private:
     const CharsetConverter* currentCharsetConverter;
@@ -70,6 +75,7 @@ private:
     
     const InterpretedChunksDecoder* chunksDecoder;
     MorfeuszProcessorType processorType;
+    CasePatternHelper casePatternHelper;
     
     const CharsetConverter* getCharsetConverter(MorfeuszCharset charset) const;
 };

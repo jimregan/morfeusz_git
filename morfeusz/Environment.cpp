@@ -52,7 +52,8 @@ chunksDecoder(
 processorType == ANALYZER
 ? (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Analyzer(*this)
 : (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Generator(*this)),
-processorType(processorType) {
+processorType(processorType),
+casePatternHelper() {
 }
 
 const CharsetConverter* Environment::getCharsetConverter(MorfeuszCharset charset) const {
@@ -140,4 +141,12 @@ void Environment::setSegrulesOption(const std::string& option, const std::string
 
 MorfeuszProcessorType Environment::getProcessorType() const {
     return this->processorType;
+}
+
+void Environment::setCaseSensitive(bool caseSensitive) {
+    this->casePatternHelper.setCaseSensitive(caseSensitive);
+}
+
+const CasePatternHelper& Environment::getCasePatternHelper() const {
+    return this->casePatternHelper;
 }

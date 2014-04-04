@@ -23,7 +23,7 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
-#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-pedantic"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wconversion"
 #pragma GCC diagnostic ignored "-Wreorder"
@@ -35,7 +35,7 @@
 
 #include "ezOptionParser.hpp"
 
-ez::ezOptionParser* getOptions(int argc, const char** argv, const string& titleText);
+ez::ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType processorType);
 void initializeMorfeusz(ez::ezOptionParser& opt, Morfeusz& morfeusz);
 
 #pragma GCC diagnostic pop

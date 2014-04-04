@@ -36,7 +36,8 @@ Morfeusz::Morfeusz()
 : analyzerEnv(DEFAULT_MORFEUSZ_CHARSET, ANALYZER, DEFAULT_FSA),
 generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
 options(createDefaultOptions()) {
-
+    analyzerEnv.setCaseSensitive(options.caseSensitive);
+    generatorEnv.setCaseSensitive(false);
 }
 
 void Morfeusz::setAnalyzerFile(const string& filename) {
@@ -344,6 +345,10 @@ void Morfeusz::setAggl(const std::string& aggl) {
 void Morfeusz::setPraet(const std::string& praet) {
     this->analyzerEnv.setSegrulesOption("praet", praet);
     this->generatorEnv.setSegrulesOption("praet", praet);
+}
+
+void Morfeusz::setCaseSensitive(bool caseSensitive) {
+    this->options.caseSensitive = caseSensitive;
 }
 
 void Morfeusz::setDebug(bool debug) {

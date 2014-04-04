@@ -5,6 +5,7 @@ Created on Oct 23, 2013
 '''
 
 import logging
+import itertools
 from morfeuszbuilder.utils import serializationUtils
 
 class Encoder(object):
@@ -106,11 +107,24 @@ class Encoder(object):
             res[interp.typenum].append(interp)
         return res
     
+    def _getMostLiberalCasePattern(self, interpsList):
+        res = None
+        for interp in interpsList:
+            if res is None:
+                res = interp.encodedForm.casePattern
+            else:
+                while len(interp.encodedForm.casePattern) > len(res):
+                    res.append(False)
+                for idx, (case1, case2) in enumerate(itertools.izip_longest(res, interp.encodedForm.casePattern, fillvalue=False)):
+                    res[idx] = case1 and case2
+        return res
+    
     def _encodeInterps4Type(self, typenum, interpsList, withCasePattern, withPrefix, withHomonymId):
         res = bytearray()
         res.extend(self._encodeTypeNum(typenum))
-        
         encodedInterpsList = bytearray()
+        if withCasePattern:
+            encodedInterpsList.extend(self._encodeCasePattern(self._getMostLiberalCasePattern(interpsList)))
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
             if withHomonymId:
                 encodedInterpsList.extend(self.encodeWord(interp.homonymId, lowercase=False))

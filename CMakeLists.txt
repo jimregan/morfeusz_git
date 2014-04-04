@@ -109,7 +109,7 @@ endif ()
 set (CPACK_PACKAGE_FILE_NAME "morfeusz2-${PROJECT_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}")
 set (CPACK_PACKAGE_VENDOR "Michał Lenart")
 set (CPACK_PACKAGE_CONTACT "michal.lenart@ipipan.waw.pl")
-set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Morphological analyzer for Polish language.")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Morphological analyzer for the Polish language.")
 set (CPACK_OUTPUT_FILE_PREFIX "${TARGET_DIR}")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

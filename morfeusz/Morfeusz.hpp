@@ -141,9 +141,17 @@ public:
     void setPraet(const std::string& praet);
     
     /**
+     * If set to true characters case in analyzed text must match
+     * the case in the recognized forms from dictionary.
+     * 
+     * @param caseSensitive
+     */
+    void setCaseSensitive(bool caseSensitive);
+    
+    /**
      * Set debug option value.
      * 
-     * @param praet
+     * @param debug
      */
     void setDebug(bool debug);
 

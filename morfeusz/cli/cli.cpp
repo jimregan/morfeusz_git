@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "cli.hpp"
+#include "../const.hpp"
 
 using namespace std;
 using namespace ez;
@@ -12,11 +13,13 @@ static inline void printCLIUsage(ezOptionParser& opt, ostream& out) {
     out << usage;
 }
 
-ezOptionParser* getOptions(int argc, const char** argv, const string& titleText) {
+ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType processorType) {
 
     ezOptionParser& opt = *(new ezOptionParser());
 
-    opt.overview = titleText;
+    opt.overview = processorType == ANALYZER
+            ? "Morfeusz analyzer"
+            : "Morfeusz generator";
     opt.syntax = string(argv[0]) + " [OPTIONS]";
     opt.example = string(argv[0]) + " --aggl strict --praet split --input /path/to/file.fsa";
     //	opt.footer = "Morfeusz Copyright (C) 2014\n";
@@ -66,12 +69,24 @@ ezOptionParser* getOptions(int argc, const char** argv, const string& titleText)
             "--praet" // Flag token.
             );
     
+    if (processorType == ANALYZER) {
+        opt.add(
+            "", // Default.
+            0, // Required?
+            1, // Number of args expected.
+            0, // Delimiter if expecting multiple args.
+            "case insensitive - don't force matching uppercase with dictionary forms", // Help description.
+            "-case-insensitive", // Flag token.
+            "--case-insensitive" // Flag token.
+            );
+    }
+    
     opt.add(
             "", // Default.
             0, // Required?
             0, // Number of args expected.
             0, // Delimiter if expecting multiple args.
-            "praet option.", // Help description.
+            "show some debug information.", // Help description.
             "-d", // Flag token. 
             "-debug", // Flag token.
             "--debug" // Flag token.
