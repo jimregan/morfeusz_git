@@ -5,7 +5,7 @@ project (Morfeusz)
 set (Morfeusz_VERSION_MAJOR 2)
 set (Morfeusz_VERSION_MINOR 0)
 set (Morfeusz_VERSION_PATCH 0)
-set (CMAKE_BUILD_TYPE "Debug")
+#~ set (CMAKE_BUILD_TYPE "Release")
 
 enable_testing()
 
@@ -30,13 +30,13 @@ set (PROJECT_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morf
 ### USER DEFINED VARIABLES
 
 # INPUT_DICTIONARY_CPP
-set (INPUT_DICTIONARY_CPP "${PROJECT_SOURCE_DIR}/../default_fsa.cpp")
-set (INPUT_SYNTH_DICTIONARY_CPP "${PROJECT_SOURCE_DIR}/../default_synth_fsa.cpp")
+set (INPUT_DICTIONARY_CPP "default_fsa.cpp")
+set (INPUT_SYNTH_DICTIONARY_CPP "default_synth_fsa.cpp")
 if ("${INPUT_DICTIONARIES}" STREQUAL "")
    if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
     set (INPUT_DICTIONARIES ${PROJECT_SOURCE_DIR}/input/empty.txt)
    else ()
-    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/PoliMorfSmall.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
+    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/sgjp-hom.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
    endif ()
 endif ()
 
@@ -98,10 +98,10 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 
 # the RPATH to be used when installing, but only if it's not a system directory
-list (FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-if ("${isSystemDir}" STREQUAL "-1")
-   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-endif ()
+#~ list (FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+#~ if ("${isSystemDir}" STREQUAL "-1")
+   #~ SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#~ endif ()
 
 ########## Configure CPack ##########
 
@@ -110,14 +110,16 @@ set (CPACK_PACKAGE_FILE_NAME "morfeusz2-${PROJECT_VERSION}-${CMAKE_SYSTEM_NAME}-
 set (CPACK_PACKAGE_VENDOR "Michał Lenart")
 set (CPACK_PACKAGE_CONTACT "michal.lenart@ipipan.waw.pl")
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Morphological analyzer for the Polish language.")
+set (CPACK_PACKAGE_DESCRIPTION "This is the second version of Morfeusz. Among numerous improvements it has better segmentation and case-sensitive lemmas handling. It also makes it possible to perform morphological synthesis and to use your own dictionary")
+set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/License.txt")
 set (CPACK_OUTPUT_FILE_PREFIX "${TARGET_DIR}")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (CPACK_GENERATOR "DEB" "TGZ")
     #debian
     set (CPACK_DEBIAN_PACKAGE_NAME "morfeusz2")
-    set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT}")
-    set (CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6 (>= 4.6)")
+    set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Michał Lenart <${CPACK_PACKAGE_CONTACT}>")
+    set (CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6 (>= 4.6), libc6")
     set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "${ARCHITECTURE}")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if (${ARCHITECTURE} MATCHES "amd64")
@@ -149,15 +151,15 @@ add_subdirectory (fsabuilder)
 ########## add tests ##########
 
 macro (test_build_and_recognize fname method)
-    add_test (TestBuild-${method}-${fname} python fsabuilder/buildfsa.py --analyzer --input-files testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --segments-file=testfiles/segmenty.dat --serialization-method=${method})
-    add_test (TestBuild4Synth-${method}-${fname} python fsabuilder/buildfsa.py --generator --input-files testfiles/${fname} -o /tmp/test-synth-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --serialization-method=${method})
+    add_test (TestBuild-${method}-${fname} python fsabuilder/morfeusz_builder --analyzer --input-files testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --segments-file=testfiles/segmenty.dat --serialization-method=${method})
+    add_test (TestBuild4Synth-${method}-${fname} python fsabuilder/morfeusz_builder --generator --input-files testfiles/${fname} -o /tmp/test-synth-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --serialization-method=${method})
     add_test (TestRecognize-${method}-${fname} morfeusz/test_recognize_dict /tmp/test-${method}-${fname}.fsa testfiles/${fname})
     # add_test (TestNOTRecognize-${method}-${fname} fsa/test_not_recognize /tmp/test-${method}-${fname}.fsa testfiles/out_of_dict)
     # add_test (TestSpeed-${method}-${fname} fsa/test_speed /tmp/test-${method}-${fname}.fsa testfiles/speed_test_data)
 endmacro ()
 
 macro (test_result_equals inputFilename requiredOutputFilename encoding)
-    # add_test (TestBuild4ResultEquals-${dictFilename}-${requiredOutputFilename} python fsabuilder/fsa/buildfsa.py -i ${dictFilename} -o /tmp/test.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=SIMPLE)
+    # add_test (TestBuild4ResultEquals-${dictFilename}-${requiredOutputFilename} python fsabuilder/fsa/morfeusz_builder -i ${dictFilename} -o /tmp/test.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=SIMPLE)
     add_test (TestResultEquals-${inputFilename}-${requiredOutputFilename} morfeusz/test_result_equals ${inputFilename} ${requiredOutputFilename} ${encoding})
 endmacro ()
 

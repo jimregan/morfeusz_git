@@ -12,20 +12,10 @@ import codecs
 from morfeuszbuilder.fsa import encode
 from morfeuszbuilder.fsa import convertinput
 from morfeuszbuilder.fsa.fsa import FSA
-from morfeuszbuilder.fsa.serializer import Serializer
+from morfeuszbuilder.fsa.serializer import Serializer, SerializationMethod
 from morfeuszbuilder.tagset.tagset import Tagset
 from morfeuszbuilder.segrules import rulesParser
 from optparse import OptionParser
-
-# class InputFormat():
-#     ENCODED = 'ENCODED'
-#     POLIMORF = 'POLIMORF'
-#     PLAIN = 'PLAIN'
-
-class SerializationMethod():
-    SIMPLE = 'SIMPLE'
-    V1 = 'V1'
-    V2 = 'V2'
 
 def _checkOption(opt, parser, msg):
     if opt is None:
@@ -46,6 +36,8 @@ def _checkOpen(filename, mode):
     try:
         with open(filename, mode) as _:
             pass
+        if 'w' in mode:
+            os.remove(filename)
     except IOError as ex:
         print >> sys.stderr, str(ex)
         exit(1)
@@ -238,7 +230,6 @@ def main(opts):
         fsa, qualifiersMap = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager, opts.trimSupneg)
     else:
         fsa, qualifiersMap = buildGeneratorFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
-    print qualifiersMap
     if opts.trainFile:
         logging.info('training with '+opts.trainFile+' ...')
         fsa.train(_readTrainData(opts.trainFile))

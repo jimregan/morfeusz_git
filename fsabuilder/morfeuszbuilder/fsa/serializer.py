@@ -8,6 +8,11 @@ import logging
 from state import State
 from morfeuszbuilder.utils.serializationUtils import *
 
+class SerializationMethod(object):
+    SIMPLE = 'SIMPLE'
+    V1 = 'V1'
+    V2 = 'V2'
+
 class Serializer(object):
     
     MAGIC_NUMBER = 0x8fc2bc1b
@@ -20,7 +25,6 @@ class Serializer(object):
     
     @staticmethod
     def getSerializer(serializationMethod, fsa, tagset, qualifiersMap, segmentationRulesData):
-        from buildfsa import SerializationMethod
         res = {
             SerializationMethod.SIMPLE: SimpleSerializer,
             SerializationMethod.V1: VLengthSerializer1,
@@ -37,7 +41,7 @@ class Serializer(object):
     
     # get the Morfeusz file format version that is being encoded
     def getVersion(self):
-        return 14
+        return 15
     
     def serialize2CppFile(self, fname, isGenerator, headerFilename="data/default_fsa.hpp"):
         res = []

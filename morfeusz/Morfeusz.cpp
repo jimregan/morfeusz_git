@@ -108,7 +108,7 @@ static inline void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
             from.prefixChunks.end());
     to.prefixChunks.push_back(from);
     from.orthWasShifted = true;
-    to.chunkStartPtr = from.chunkStartPtr;
+    to.textStartPtr = from.textStartPtr;
 }
 
 static inline string debugInterpsGroup(unsigned char type, const char* startPtr, const char* endPtr) {
@@ -120,7 +120,7 @@ static inline string debugInterpsGroup(unsigned char type, const char* startPtr,
 static inline string debugAccum(vector<InterpretedChunk>& accum) {
     stringstream res;
     for (unsigned int i = 0; i < accum.size(); i++) {
-        res << debugInterpsGroup(accum[i].interpsGroup.type, accum[i].chunkStartPtr, accum[i].chunkEndPtr);
+        res << debugInterpsGroup(accum[i].segmentType, accum[i].textStartPtr, accum[i].textEndPtr);
         //        res << "(" << (int) accum[i].interpsGroup.type << ", " << string(accum[i].chunkStartPtr, accum[i].chunkStartPtr) << "), ";
     }
     return res.str();
@@ -168,33 +168,37 @@ void Morfeusz::doProcessOneWord(
             vector<InterpsGroup> val(state.getValue());
             for (unsigned int i = 0; i < val.size(); i++) {
                 InterpsGroup& ig = val[i];
-                vector<bool> casePattern;
-//                env.getCasePatternHelper().skipCasePattern(ig.ptr);
-                const unsigned char* casePatternPtr = ig.ptr;
-                env.getCasePatternHelper().deserializeCasePattern(casePatternPtr, casePattern);
+                //                vector<bool> casePattern;
+                //                env.getCasePatternHelper().skipCasePattern(ig.ptr);
+                //                const unsigned char* casePatternPtr = ig.ptr;
+                //                env.getCasePatternHelper().deserializeCasePattern(casePatternPtr, casePattern);
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
-                if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, originalCodepoints, casePattern)) {
-//                if (true) {
-                    //                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
-                    set<SegrulesState> newSegrulesStates;
-                    env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
-                    if (this->options.debug && newSegrulesStates.empty()) {
-                        cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
-                    }
-                    //                cerr << "newSegrulesStates.size() " << newSegrulesStates.size() << endl;
+                //                if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, originalCodepoints, casePattern)) {
+                //                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
+                set<SegrulesState> newSegrulesStates;
+                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
+                if (this->options.debug && newSegrulesStates.empty()) {
+                    cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
+                }
+                if (!newSegrulesStates.empty() && env.getCasePatternHelper().checkInterpsGroupCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
+                    
                     for (
                             set<SegrulesState>::iterator it = newSegrulesStates.begin();
                             it != newSegrulesStates.end();
                             ++it) {
                         SegrulesState newSegrulesState = *it;
+                        const unsigned char* interpsPtr = env.getCasePatternHelper().getInterpretationsPtr(ig);
+                        const unsigned char* interpsEndPtr = ig.ptr + ig.size;
                         InterpretedChunk ic = {
+                            ig.type,
                             inputStart,
                             currInput,
                             originalCodepoints,
                             normalizedCodepoints,
-                            ig,
+                            interpsPtr,
+                            interpsEndPtr,
                             newSegrulesState.shiftOrthFromPrevious,
                             false,
                             vector<InterpretedChunk>(),

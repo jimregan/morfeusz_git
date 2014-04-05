@@ -21,6 +21,7 @@ class EncodedForm(object):
         self.cutLength = len(fromWord) - len(root)
         self.suffixToAdd = targetWord[len(root):]
         self.casePattern = [c == c.upper() and c != c.lower() for c in root]
+#         print fromWord.encode('utf8'), targetWord.encode('utf8'), self.casePattern
 
 class EncodedForm4Generator(object):
     
@@ -54,7 +55,7 @@ class Interpretation4Analyzer(object):
         return (
                 self.encodedForm.cutLength, 
                 tuple(self.encodedForm.suffixToAdd), 
-                tuple(self.encodedForm.casePattern), 
+                tuple(self.encodedForm.casePattern),
                 self.tagnum, 
                 self.namenum)
     

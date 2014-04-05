@@ -69,9 +69,8 @@ public:
         string lemmaPrefix;
         if (convertPrefixes(interpretedChunk, orth, lemmaPrefix)) {
             orth += env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
-            const unsigned char* currPtr = interpretedChunk.interpsGroup.ptr;
-            env.getCasePatternHelper().skipCasePattern(currPtr);
-            while (currPtr - interpretedChunk.interpsGroup.ptr < interpretedChunk.interpsGroup.size) {
+            const unsigned char* currPtr = interpretedChunk.interpsPtr;
+            while (currPtr < interpretedChunk.interpsEndPtr) {
                 this->decodeMorphInterpretation(startNode, endNode, orth, lemmaPrefix, interpretedChunk, currPtr, out);
             }
         }
@@ -104,7 +103,7 @@ protected:
         encodedForm.suffixToAdd = (const char*) ptr;
         ptr += strlen((const char*) ptr) + 1;
         assert(encodedForm.casePattern.size() == 0);
-        env.getCasePatternHelper().deserializeCasePattern(ptr, encodedForm.casePattern);
+        encodedForm.casePattern = env.getCasePatternHelper().deserializeOneCasePattern(ptr);
     }
 private:
 
@@ -126,8 +125,8 @@ private:
             std::vector<MorphInterpretation>& out) const {
         string lemma = lemmaPrefix;
         EncodedInterpretation ei = this->deserializeInterp(ptr);
+        this->decodeForm(chunk.lowercaseCodepoints, ei.value, lemma);
         if (env.getCasePatternHelper().checkCasePattern(chunk.lowercaseCodepoints, chunk.originalCodepoints, ei.value.casePattern)) {
-            this->decodeForm(chunk.lowercaseCodepoints, ei.value, lemma);
             pair<string, string> lemmaHomonymId = getLemmaHomonymIdPair(lemma);
             out.push_back(MorphInterpretation(
                     startNode, endNode,
@@ -144,9 +143,9 @@ private:
         for (unsigned int i = 0; i < interpretedChunk.prefixChunks.size(); i++) {
             const InterpretedChunk& prefixChunk = interpretedChunk.prefixChunks[i];
             orth += env.getCharsetConverter().toString(prefixChunk.originalCodepoints);
-            const unsigned char* ptr = prefixChunk.interpsGroup.ptr;
+            const unsigned char* ptr = prefixChunk.interpsPtr;
             std::vector<MorphInterpretation> mi;
-            env.getCasePatternHelper().skipCasePattern(ptr);
+//            env.getCasePatternHelper().skipCasePattern(ptr);
             this->decodeMorphInterpretation(0, 0, orth, string(""), prefixChunk, ptr, mi);
             if (!mi.empty()) {
                 lemmaPrefix += mi[0].getLemma();
@@ -173,8 +172,8 @@ public:
         string lemma;
         convertPrefixes(interpretedChunk, orthPrefix, lemma);
         lemma += env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
-        const unsigned char* currPtr = interpretedChunk.interpsGroup.ptr;
-        while (currPtr - interpretedChunk.interpsGroup.ptr < interpretedChunk.interpsGroup.size) {
+        const unsigned char* currPtr = interpretedChunk.interpsPtr;
+        while (currPtr < interpretedChunk.interpsEndPtr) {
             MorphInterpretation mi = this->decodeMorphInterpretation(startNode, endNode, orthPrefix, lemma, interpretedChunk, currPtr);
             //            cerr << mi.toString(false) << endl;
             //            cerr << "required='" << interpretedChunk.requiredHomonymId << "' morphInterp='" << mi.getHomonymId() << "'" << endl;
@@ -190,7 +189,7 @@ private:
         for (unsigned int i = 0; i < interpretedChunk.prefixChunks.size(); i++) {
             const InterpretedChunk& prefixChunk = interpretedChunk.prefixChunks[i];
             lemma += env.getCharsetConverter().toString(prefixChunk.originalCodepoints);
-            const unsigned char* ptr = prefixChunk.interpsGroup.ptr;
+            const unsigned char* ptr = prefixChunk.interpsPtr;
             MorphInterpretation mi = this->decodeMorphInterpretation(0, 0, orthPrefix, string(""), prefixChunk, ptr);
             orthPrefix += mi.getOrth();
         }

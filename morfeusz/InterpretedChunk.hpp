@@ -12,11 +12,13 @@
 #include "InterpsGroup.hpp"
 
 struct InterpretedChunk {
-    const char* chunkStartPtr;
-    const char* chunkEndPtr;
+    unsigned char segmentType;
+    const char* textStartPtr;
+    const char* textEndPtr;
     std::vector<uint32_t> originalCodepoints;
     std::vector<uint32_t> lowercaseCodepoints;
-    InterpsGroup interpsGroup;
+    const unsigned char* interpsPtr;
+    const unsigned char* interpsEndPtr;
     bool shiftOrth;
     bool orthWasShifted;
     std::vector<InterpretedChunk> prefixChunks;

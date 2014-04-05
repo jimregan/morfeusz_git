@@ -8,5 +8,5 @@ if __name__ == '__main__':
           description='Finite state automata builder for Morfeusz.',
           version='${MORFEUSZBUILDER_VERSION}',
           packages=['morfeuszbuilder', 'morfeuszbuilder.fsa', 'morfeuszbuilder.tagset', 'morfeuszbuilder.segrules', 'morfeuszbuilder.utils'],
-          scripts = ['buildfsa.py'],
+          scripts = ['morfeusz_builder'],
           requires=['pyparsing'])

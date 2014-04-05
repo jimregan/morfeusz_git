@@ -9,7 +9,7 @@
 #define	CASEPATTERNHELPER_HPP
 
 #include <vector>
-#include "InterpretedChunk.hpp"
+#include "InterpsGroup.hpp"
 
 const uint8_t LEMMA_ONLY_LOWER = 0;
 const uint8_t LEMMA_UPPER_PREFIX = 1;
@@ -39,28 +39,40 @@ public:
         }
         return true;
     }
-
-//    bool checkCasePattern(const std::vector<InterpretedChunk>& chunks) const {
-//        if (this->caseSensitive) {
-//            for (unsigned int i = 0; i < chunks.size(); i++) {
-//                const InterpretedChunk& ic = chunks[i];
-//                const unsigned char* casePatternPtr = ic.interpsGroup.ptr;
-//                std::vector<bool> casePattern;
-//                deserializeCasePattern(casePatternPtr, casePattern);
-//                if (!checkCasePattern(ic, casePattern)) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-
-    void skipCasePattern(const unsigned char*& ptr) const {
-        vector<bool> _dupa;
-        deserializeCasePattern(ptr, _dupa);
+    
+    bool checkInterpsGroupCasePatterns(
+        const std::vector<uint32_t>& lowercaseCodepoints, 
+        const std::vector<uint32_t>& originalCodepoints,
+        const InterpsGroup& ig) const {
+        const unsigned char* currPtr = ig.ptr;
+        unsigned char casePatternsNum = *currPtr++;
+        if (casePatternsNum == 0) {
+            return true;
+        }
+        else {
+            for (unsigned int i = 0; i < casePatternsNum; i++) {
+                if (checkCasePattern(
+                        lowercaseCodepoints, 
+                        originalCodepoints, 
+                        deserializeOneCasePattern(currPtr))) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
-
-    void deserializeCasePattern(const unsigned char*& ptr, std::vector<bool>& res) const {
+    
+    const unsigned char* getInterpretationsPtr(const InterpsGroup& ig) const {
+        const unsigned char* currPtr = ig.ptr;
+        unsigned char casePatternsNum = *currPtr++;
+        for (unsigned int i = 0; i < casePatternsNum; i++) {
+            deserializeOneCasePattern(currPtr);
+        }
+        return currPtr;
+    }
+    
+    std::vector<bool> deserializeOneCasePattern(const unsigned char*& ptr) const {
+        std::vector<bool> res;
         uint8_t casePatternType = *ptr;
         ptr++;
         uint8_t prefixLength;
@@ -89,9 +101,31 @@ public:
                 }
                 break;
         }
+        return res;
     }
+
+//    bool checkCasePattern(const std::vector<InterpretedChunk>& chunks) const {
+//        if (this->caseSensitive) {
+//            for (unsigned int i = 0; i < chunks.size(); i++) {
+//                const InterpretedChunk& ic = chunks[i];
+//                const unsigned char* casePatternPtr = ic.interpsGroup.ptr;
+//                std::vector<bool> casePattern;
+//                deserializeCasePattern(casePatternPtr, casePattern);
+//                if (!checkCasePattern(ic, casePattern)) {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
+
+//    void skipCasePattern(const unsigned char*& ptr) const {
+//        vector<bool> _dupa;
+//        deserializeCasePattern(ptr, _dupa);
+//    }
 private:
     bool caseSensitive;
+    
 };
 
 #endif	/* CASEPATTERNHELPER_HPP */

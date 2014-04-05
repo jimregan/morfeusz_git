@@ -13,9 +13,9 @@ void InflexionGraph::addStartEdge(const Edge& e) {
     if (this->graph.empty()) {
         assert(this->node2ChunkStartPtr.empty());
         this->graph.push_back(vector<Edge>());
-        this->node2ChunkStartPtr.push_back(e.chunk.chunkStartPtr);
+        this->node2ChunkStartPtr.push_back(e.chunk.textStartPtr);
     }
-    assert(this->node2ChunkStartPtr[0] == e.chunk.chunkStartPtr);
+    assert(this->node2ChunkStartPtr[0] == e.chunk.textStartPtr);
     this->graph[0].push_back(e);
 }
 
@@ -24,7 +24,7 @@ void InflexionGraph::addMiddleEdge(unsigned int startNode, const Edge& e) {
     assert(startNode == this->graph.size());
     if (startNode == this->graph.size()) {
         this->graph.push_back(vector<Edge>());
-        this->node2ChunkStartPtr.push_back(e.chunk.chunkStartPtr);
+        this->node2ChunkStartPtr.push_back(e.chunk.textStartPtr);
     }
     this->graph[startNode].push_back(e);
 }
@@ -98,7 +98,7 @@ set<InflexionGraph::Path> InflexionGraph::getPossiblePaths(unsigned int node) {
         vector<Edge>& edges = this->graph.at(node);
         for (unsigned int i = 0; i < edges.size(); i++) {
             Edge& e = edges[i];
-            InflexionGraph::PathElement pathElem(e.chunk.chunkStartPtr, e.chunk.interpsGroup.type);
+            InflexionGraph::PathElement pathElem(e.chunk.textStartPtr, e.chunk.segmentType);
             if (e.nextNode != this->graph.size()) {
                 set<Path> possiblePaths = this->getPossiblePaths(e.nextNode);
                 vector<Path> nextPaths(possiblePaths.begin(), possiblePaths.end());
@@ -116,9 +116,9 @@ set<InflexionGraph::Path> InflexionGraph::getPossiblePaths(unsigned int node) {
 static bool containsEqualEdge(const vector<InflexionGraph::Edge>& edges, const InflexionGraph::Edge& e) {
     for (unsigned int i = 0; i < edges.size(); i++) {
         const InflexionGraph::Edge& e1 = edges[i];
-        if (e1.chunk.chunkStartPtr == e.chunk.chunkStartPtr
+        if (e1.chunk.textStartPtr == e.chunk.textStartPtr
                 && e1.chunk.lowercaseCodepoints == e.chunk.lowercaseCodepoints
-                && e1.chunk.interpsGroup.type == e.chunk.interpsGroup.type
+                && e1.chunk.segmentType == e.chunk.segmentType
                 && e1.nextNode == e.nextNode) {
             return true;
         }

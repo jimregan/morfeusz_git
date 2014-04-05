@@ -16,15 +16,6 @@ add_custom_command (OUTPUT ${SETUP_PY}
 
 add_custom_target (builder-setup DEPENDS ${SETUP_PY})
 
-#~ add_custom_target (buildfsa-exec ALL
-    #~ COMMAND pyinstaller --noconfirm --onefile --console --strip --distpath="${DIST_PATH}" --clean fsa/buildfsa.py
-#~ )
-#~ 
-#~ add_executable (buildfsa IMPORTED)
-#~ add_dependencies (buildfsa buildfsa-exec)
-#~ set_property (TARGET buildfsa PROPERTY IMPORTED_LOCATION "${DIST_PATH}")
-#~ install (PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/buildfsa" DESTINATION bin)
-
 if (${UNIX})
     add_custom_target (install-builder
         COMMAND python ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX}
@@ -62,6 +53,15 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         DEPENDS builder-setup
     )
     list (APPEND PACKAGE_DEPENDS package-python-win-installer)
+    
+    #~ add_custom_target (buildfsa-exec ALL
+    #~ COMMAND pyinstaller --noconfirm --onefile --console --strip --distpath="${DIST_PATH}" --clean fsa/morfeusz_builder
+#~ )
+#~ 
+#~ add_executable (morfeusz_builder IMPORTED)
+#~ add_dependencies (morfeusz_builder buildfsa-exec)
+#~ set_property (TARGET morfeusz_builder PROPERTY IMPORTED_LOCATION "${DIST_PATH}")
+#~ install (PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/morfeusz_builder" DESTINATION bin)
 endif ()
 
 add_custom_target(package-builder DEPENDS ${PACKAGE_DEPENDS})
