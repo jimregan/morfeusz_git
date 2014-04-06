@@ -42,6 +42,7 @@ protected:
 
     EncodedInterpretation deserializeInterp(const unsigned char*& ptr) const {
         EncodedInterpretation interp;
+        interp.orthCasePattern = this->env.getCasePatternHelper().deserializeOneCasePattern(ptr);
         deserializeEncodedForm(ptr, interp.value);
         interp.tag = readInt16(ptr);
         interp.nameClassifier = *ptr++;
@@ -68,7 +69,7 @@ public:
         string orth;
         string lemmaPrefix;
         if (convertPrefixes(interpretedChunk, orth, lemmaPrefix)) {
-            orth += env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
+            orth += this->env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
             const unsigned char* currPtr = interpretedChunk.interpsPtr;
             while (currPtr < interpretedChunk.interpsEndPtr) {
                 this->decodeMorphInterpretation(startNode, endNode, orth, lemmaPrefix, interpretedChunk, currPtr, out);
@@ -126,7 +127,7 @@ private:
         string lemma = lemmaPrefix;
         EncodedInterpretation ei = this->deserializeInterp(ptr);
         this->decodeForm(chunk.lowercaseCodepoints, ei.value, lemma);
-        if (env.getCasePatternHelper().checkCasePattern(chunk.lowercaseCodepoints, chunk.originalCodepoints, ei.value.casePattern)) {
+        if (env.getCasePatternHelper().checkCasePattern(chunk.lowercaseCodepoints, chunk.originalCodepoints, ei.orthCasePattern)) {
             pair<string, string> lemmaHomonymId = getLemmaHomonymIdPair(lemma);
             out.push_back(MorphInterpretation(
                     startNode, endNode,

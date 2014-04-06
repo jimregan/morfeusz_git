@@ -46,6 +46,7 @@ class Interpretation4Analyzer(object):
     
     def __init__(self, orth, base, tagnum, namenum, typenum, qualifiers):
         self.encodedForm = EncodedForm(orth, base, lowercase=True)
+        self.orthCasePattern = [c == c.upper() and c != c.lower() for c in orth[:len(orth) - self.encodedForm.cutLength]]
         self.tagnum = tagnum
         self.namenum = namenum
         self.typenum = typenum
@@ -56,6 +57,7 @@ class Interpretation4Analyzer(object):
                 self.encodedForm.cutLength, 
                 tuple(self.encodedForm.suffixToAdd), 
                 tuple(self.encodedForm.casePattern),
+                tuple(self.orthCasePattern),
                 self.tagnum, 
                 self.namenum)
     

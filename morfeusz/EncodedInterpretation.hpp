@@ -27,6 +27,7 @@ struct EncodedForm {
  * Internal representation of an interpretation - with lemma encoded
  */
 struct EncodedInterpretation {
+    std::vector<bool> orthCasePattern;
     EncodedForm value;
     int tag;
     int nameClassifier;

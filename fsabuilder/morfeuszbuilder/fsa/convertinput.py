@@ -62,16 +62,17 @@ class PolimorfConverter4Analyzer(object):
             namenum = self.tagset.getNamenum4Name(name)
 #             typenum = tag2typenum.get(tag, 0)
             typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
-            yield '\t'.join((orth.encode(self.inputEncoding), 
-                        base.encode(self.inputEncoding), 
-                        str(tagnum), 
-                        str(namenum), 
+            yield '\t'.join((
+                        orth.encode(self.inputEncoding),
+                        base.encode(self.inputEncoding),
+                        str(tagnum),
+                        str(namenum),
                         str(typenum), 
                         qualifier.encode(self.inputEncoding)))
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
-        return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split(' ')[0].decode('utf8')))
+        return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split('\t')[0].decode('utf8')))
     
     def _reallyParseLines(self, inputLines):
         for line in inputLines:

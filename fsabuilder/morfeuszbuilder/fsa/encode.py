@@ -120,13 +120,13 @@ class Encoder(object):
             res[interp.typenum].append(interp)
         return res
     
-    def _getCasePatterns(self, interpsList):
+    def _getOrthCasePatterns(self, interpsList):
         res = []
         for interp in interpsList:
-            if not True in interp.encodedForm.casePattern:
+            if not True in interp.orthCasePattern:
                 return []
             else:
-                res.append(list(interp.encodedForm.casePattern))
+                res.append(list(interp.orthCasePattern))
         return res
     
     def _encodeInterps4Type(self, typenum, interpsList, withCasePattern, withPrefix, withHomonymId):
@@ -134,7 +134,7 @@ class Encoder(object):
         res.extend(self._encodeTypeNum(typenum))
         encodedInterpsList = bytearray()
         if withCasePattern:
-            casePatterns = self._getCasePatterns(interpsList)
+            casePatterns = self._getOrthCasePatterns(interpsList)
             encodedInterpsList.append(len(casePatterns))
             for casePattern in casePatterns:
                 encodedInterpsList.extend(self._encodeCasePattern(casePattern))
@@ -142,6 +142,8 @@ class Encoder(object):
             if withHomonymId:
                 encodedInterpsList.extend(self.encodeWord(interp.homonymId, lowercase=False))
                 encodedInterpsList.append(0)
+            if withCasePattern:
+                encodedInterpsList.extend(self._encodeCasePattern(interp.orthCasePattern))
             encodedInterpsList.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=withCasePattern, withPrefix=withPrefix))
             encodedInterpsList.extend(self._encodeTagNum(interp.tagnum))
             encodedInterpsList.extend(self._encodeNameNum(interp.namenum))

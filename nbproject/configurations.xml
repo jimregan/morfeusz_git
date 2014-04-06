@@ -45,7 +45,6 @@
       <in>MorphInterpretation.cpp</in>
       <in>Qualifiers.cpp</in>
       <in>Tagset.cpp</in>
-      <in>consoleUtils.hpp</in>
       <in>const.cpp</in>
       <in>main.cpp</in>
       <in>morfeusz_analyzer.cpp</in>
@@ -64,7 +63,9 @@
         <itemPath>build/morfeusz/python/swigPYTHON.cpp</itemPath>
       </logicalFolder>
       <itemPath>default_fsa.cpp</itemPath>
+      <itemPath>build/morfeusz/default_fsa.cpp</itemPath>
       <itemPath>default_synth_fsa.cpp</itemPath>
+      <itemPath>build/morfeusz/default_synth_fsa.cpp</itemPath>
       <itemPath>build/morfeusz/morfeuszJAVA_wrap.cxx</itemPath>
       <itemPath>build/morfeusz/morfeuszPYTHON_wrap.cxx</itemPath>
     </logicalFolder>
@@ -108,20 +109,37 @@
         </makeTool>
       </makefileType>
       <item path="../default_fsa.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="../default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="build/default_fsa.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="build/default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
       </item>
-      <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
+      <item path="build/morfeusz/default_fsa.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
+          <incDir>
+            <pElem>morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
+      </item>
+      <item path="build/morfeusz/default_synth_fsa.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="build/morfeusz/morfeuszJAVA_wrap.cxx"
             ex="false"
@@ -416,24 +434,28 @@
         </ccTool>
       </item>
       <item path="morfeusz/charset/CaseConverter.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/charset/CharsetConverter.cpp"
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/charset/caseconv.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/charset/conversion_tables.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-      </item>
-      <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="morfeusz/consoleUtils.hpp" ex="false" tool="3" flavor2="0">
+      <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
@@ -519,8 +541,6 @@
         </ccTool>
       </item>
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/test_recognize_dict.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="0">
