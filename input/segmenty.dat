@@ -3,14 +3,28 @@ aggl=permissive strict isolated
 praet=split composite
 
 [combinations]
-#define wsz_interp (interp|kropka|dywiz)*
+#define wsz_interp (interp|kropka|przecinek|dywiz|polpauza)*
 
 #define moze_interp(segmenty) wsz_interp segmenty wsz_interp
+
+# Tu będzie wyrażenie regularne łapiące liczby rzymskie.
+
+#define rzeczowniki (subst|ger|depr)
+
+#define	adj (adj_pos|adv_pos|adj_com|adv_com|adj_sup)
+
+#define aglsg (aglsg1_wok|aglsg1_nwok|aglsg2_wok|aglsg2_nwok)
+#define aglpl (aglpl1_wok|aglpl1_nwok|aglpl2_wok|aglpl2_nwok)
+
+#define praet_sg (praet_sg_masc|praet_sg_nmasc)
 
 # Segmenty występujące samodzielnie:
 #
 # domyślny typ segmentu samodzielnego:
 moze_interp(samodz)
+
+# Pojedyncze znaki interpunkcyjne
+moze_interp(interp|kropka|przecinek|dywiz)
 
 # segment samotny, który nie dopuszcza nawet znaku interpunkcyjnego po
 # sobie
@@ -32,9 +46,11 @@ moze_interp(by)
 # np. „powininna”, „czyżby”:
 moze_interp(z_aglt)
 moze_interp(z_aglt_by)
+moze_interp(z_aglt_nwok)
 
 # forma przymiotnikowa (dopuszcza adja):
 moze_interp(adj)
+
 
 # dywiz (jako samodzielny segment jest tylko błędnym użyciem w funkcji
 # myślnika, ale trzeba to dopuścić):
@@ -54,11 +70,11 @@ adja
 #ifdef split
 # Czas przeszły:
 # np. „gniotł·am”
-moze_interp( praet_sg_agl aglsg )
+moze_interp( praet_sg_agl (aglsg1_wok|aglsg2_wok) )
 # np. „czytał·em”
-moze_interp(praet_sg aglsg)
+moze_interp(praet_sg (aglsg1_wok|aglsg2_wok))
 # np. „czytali·ście”
-moze_interp(praet_pl aglpl)
+moze_interp(praet_pl (aglpl1_nwok|aglpl2_nwok))
 
 # Tryb warunkowy:
 # np. „gniótł·by”
@@ -68,46 +84,56 @@ moze_interp(praet_sg by)
 # np. „gnietli·by”
 moze_interp(praet_pl by)
 # np. „gniótł·by·ś”
-moze_interp(praet_sg_na by aglsg)
+moze_interp(praet_sg_na by (aglsg1_nwok|aglsg2_nwok))
 # np. „czytał·by·m”
-moze_interp(praet_sg by aglsg)
+moze_interp(praet_sg by (aglsg1_nwok|aglsg2_nwok))
 # np. „gnietli·by·śmy”
-moze_interp(praet_pl by aglpl)
+moze_interp(praet_pl by (aglpl1_nwok|aglpl2_nwok))
 #else
 # moze_interp(praetcond)
 #endif
 # np. „by·ś”
-moze_interp(by aglsg)
+moze_interp(by (aglsg1_nwok|aglsg2_nwok))
 # np. „by·ście”
-moze_interp(by aglpl)
+moze_interp(by (aglpl1_nwok|aglpl2_nwok))
 
 # np. „gdyby·m”
-moze_interp(z_aglt aglsg)
-moze_interp(z_aglt_by aglsg)
+moze_interp(z_aglt (aglsg1_wok|aglsg2_wok))
+moze_interp((z_aglt_by|z_aglt_nwok) (aglsg1_nwok|aglsg2_nwok))
 # np. „gdyby·ście”
-moze_interp(z_aglt aglpl)
-moze_interp(z_aglt_by aglpl)
+moze_interp(z_aglt (aglpl1_wok|aglpl2_wok))
+moze_interp((z_aglt_by|z_aglt_nwok) (aglpl1_nwok|aglpl2_nwok))
 # oraz wersje z by, np. chybabym
-moze_interp(z_aglt by aglsg)
-moze_interp(z_aglt by aglpl)
+moze_interp(z_aglt by (aglsg1_nwok|aglsg2_nwok))
+moze_interp(z_aglt by (aglpl1_nwok|aglpl2_nwok))
 
-# To jest dużo za dużo, ale tytułem eksperymentu:
+# Aglutynant przy przymiotnikach i rzeczownikach: 
+# ładni·śmy, świnia·ś
+# Problem: nie można sprawdzić, którą wersję (wok czy nwok) 
+# aglutynantu przykleić, więc dopuszczamy obie, ale to może
+# wpuszczać śmieci.
 #ifdef permissive
-moze_interp(samodz aglsg)
-moze_interp(samodz aglpl)
+moze_interp((adj|subst) aglsg)
+moze_interp((adj|subst) aglpl)
 #endif
+
+# złożenia z zaimkami 1. i 2. osoby: ja·m, ty·ś, my·śmy, wy·ście
+moze_interp(ja|ty|my|wy)
+moze_interp(ja aglsg1_nwok)
+moze_interp(ty aglsg2_nwok)
+moze_interp(my aglpl1_nwok)
+moze_interp(wy aglpl2_nwok)
 
 # Złożone formy przymiotnikowe
 # np. „biało·-·czerwony”
 moze_interp( (adja dywiz)+ adj )
 # poniższe załatwione przez + powyżej:
-# # np. „niebiesko·-·biało·-·czerwona”
+# np. „niebiesko·-·biało·-·czerwona”
 # adja dywiz adja dywiz adj interp?
-# # itd. (zatrzymujemy się pragmatycznie na 5 członach)
 # adja dywiz adja dywiz adja dywiz adj interp?
 # adja dywiz adja dywiz adja dywiz adja dywiz adj interp?
 
-# Formy zanegowane stopnia wyższego przymiotników i przysłówków (WK)
+# Formy zanegowane stopnia wyższego przymiotników i przysłówków
 # np. „nie·grzeczniejszy”, „nie·grzeczniej”
 moze_interp( adj_com )
 moze_interp( nie> adj_com )
@@ -117,51 +143,60 @@ moze_interp( nie> adj_com )
 moze_interp( nie> negat )
 
 # Przyimki akceptujące krótką formę „-ń”
-moze_interp(z_on_agl)
+# moze_interp(z_on_agl)
 # np. „do·ń”
-moze_interp(z_on_agl on_agl)
+# moze_interp(z_on_agl on_agl)
+# DO USUNIĘCIA — zrobione lepiej poniżej
 
 # Liczba zapisana jako ciąg cyfr:
 moze_interp( dig>* dig )
 
 # Liczba rzymska zapisana jako ciąg cyfr rzymskich:
 # (kiepskie, trzeba poprawić wyrażeniem regularnym)
-moze_interp( roman>* roman )
+# moze_interp( roman_num )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
 # rzeczownikowe
 # np. „euro·sodoma”, „e-·papieros”
-moze_interp(nomina)
-moze_interp( prefs> nomina ) !weak
+moze_interp(rzeczowniki)
+moze_interp(subst_anty_zloz)
+moze_interp( prefs> rzeczowniki ) !weak
+# wersja z dywizem, bez ‹e-›
+moze_interp( prefs> dywiz> rzeczowniki ) !weak
+moze_interp( pref_dyw> rzeczowniki ) !weak
 # czasownikowe np. „po·nakapywać”
 moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|impt_sg_perf|impt_pl_perf)
-moze_interp( prefv> (inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf) ) !weak
+moze_interp( prefv> (inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
 # przymiotnikowe np. „do·żylny”, „euro·sodomski”, „bez·argumentowy”
 moze_interp(ppas|adv_pos|pact)
 # moze_interp(prefa> adj)
-moze_interp( prefa> ( adj|adv_pos|pact|ppas ) ) !weak 
+moze_interp( prefa> ( adj|pact|ppas ) ) !weak 
+# wersja z dywizem, bez ‹e-›
+moze_interp( prefa> dywiz> ( adj|pact|ppas ) ) !weak 
+moze_interp( pref_dyw> ( adj|pact|ppas ) ) !weak 
 moze_interp( prefppas> ppas ) !weak
 
 # Apozycje z dywizem
 # np. „kobieta-prezydent”
-moze_interp( nomina (dywiz) nomina )
+moze_interp( rzeczowniki (dywiz) rzeczowniki )
 
 # Zakresy liczbowe, daty, np. 1911-1939.
 moze_interp((dig>* dig) dywiz (dig>* dig))
 
 # poniższe do sprawdzenia, najwyraźniej obecne w tekstach, skoro wprowadziliśmy:
 # ?
-adj dywiz adj
+# adj dywiz adj
 # ?
-adj dywiz samodz
+# adj dywiz samodz
 # ?
-samodz dywiz adj
+# samodz dywiz adj
 
-#### PONIŻEJ REGUŁY WK
 # Stopień najwyższy:
 # np. „naj·zieleńszy”, „naj·mądrzej”
 moze_interp( naj> adj_sup )
+
+
 # Cząstka li przy osobowych formach czasownika oddzielona dywizem: znasz-li ten kraj
 moze_interp( praet_sg dywiz li)
 moze_interp( praet_sg aglsg dywiz li)
@@ -173,10 +208,10 @@ moze_interp( fin_imperf)
 moze_interp( (fin_perf|fin_imperf) dywiz li)
 
 # i bez dywizu --- czy bez dywizu jest sens łapać?
-#moze_interp( praet_sg li)
-#moze_interp( praet_pl li)
-#moze_interp( praet_sg_na li)
-#moze_interp( (fin_perf|fin_imperf) li)
+# moze_interp( praet_sg li)
+# moze_interp( praet_pl li)
+# moze_interp( praet_sg_na li)
+# moze_interp( (fin_perf|fin_imperf) li)
 
 # reguła z partykułą ‹+że› przy trybie rozkazującym
 # zakończonym na spółgłoskę
@@ -184,79 +219,97 @@ moze_interp(impt_sg_imperf ze)
 moze_interp(impt_sg_perf ze)
 # dodatkowo reguła dla part+że (niemalże, omalże, nieomalże):
 # moze_interp(part_z_ze ze) --- już niepotrzebne, part. wpisane do słownika
-# potrzebna jeszcze reguła dla ‹onże›
+
 # i dla ‹+ż› przy zakończonym na samogłoskę
 moze_interp(impt_pl_imperf z)
 moze_interp(impt_pl_perf z)
 
-# aglutynant przy przymiotniku --- obsługiwane wyżej w wersji permissive
-# moze_interp( adj aglsg )
-moze_interp( adj aglpl )
+# TODO! potrzebna jeszcze reguła dla ‹on·że›.
+
+# dziwności: potrzebował·że·by·ś (Lem)
+moze_interp(praet_sg_masc ze by (aglsg1_nwok|aglsg2_nwok))
+moze_interp(praet_sg_nmasc z by (aglsg1_nwok|aglsg2_nwok))
+moze_interp(praet_pl z by (aglpl1_nwok|aglpl2_nwok))
 
 # forma złoż. liczebnika + przymiotnik, np. wieloaspektowy, pięciomasztowy
 # dwudziestopięcioipółletni
 moze_interp( i )
-moze_interp( pol_zloz > adj ) !weak
-moze_interp( num_zloz>+ adj ) !weak
-moze_interp( num_zloz>+ i> pol_zloz> adj ) !weak
-# moze_interp(num_zloz+ (i pol_zloz)? adj)
+moze_interp( pol_zloz> adj_pos ) !weak
+moze_interp( num_zloz>+ adj_pos ) !weak
+moze_interp( num_zloz>+ i> pol_zloz> adj_pos ) !weak
 
 # półdolarówka, półsiostra
-moze_interp( ( pol_zloz>|num_zloz> ) nomina ) !weak
+moze_interp( ( pol_zloz>|num_zloz> ) (subst|depr) ) !weak
 # nie analizuje: dwudziestopięcioipółlatek --- powinien?
-# moze_interp( num_zloz nomina )
-# czy dodać sufiksy: +latek m1, +latek m2, +latka f ? Chyba nie trzeba
+# moze_interp( num_zloz (subst|depr) )
 
-# wykluczenie ze złożeń przymiotników: ten, ów, ki, si.
+# wykluczenie ze złożeń przymiotników: ten, ów, ki, si itp.
 moze_interp(adj_anty_zloz)
 
+# wykluczenie ze złożeń rzeczowników: co.
+moze_interp(subst_anty_zloz)
+
 # złożenia adja+adj/adv bez dywizu, np. średniopienny, sierściowłosy
-moze_interp(adja>+ adj) !weak
+moze_interp(adja>+ (adj_pos|adv_pos)) !weak
+
+# formy złoż. z samym dywizem w wyrażeniach takich jak:
+# zachodnio- i południowosłowiański, dwu- i pięciozłotowe
+moze_interp((adja|num_zloz|pol_zloz) dywiz ) 
 
 # złożenia konkretnych przyimków z formą -ń rzeczownika on:
-moze_interp(prep_n)
-moze_interp(prep_n n)
+moze_interp(prep_n|prep_na)
+moze_interp((prep_n|prep_na) n)
 
-# REGUŁY EKSPERYMENTALNE
-# formy złoż. rzeczowników i sufiksy
-moze_interp( substa> sufs ) !weak
+# predykatywy (typ pred jest używany w regułach dla zapisów niepoprawnych poniżej)
+moze_interp(pred)
 
-# złożenia imiesłowów przymiotnikowych czynnych;
-# z braku form złoż. korzysta się z imiesłowów przysłówkowych + o
-moze_interp(pcon)
-# moze_interp( (pcon> morphconj dywiz)+ pact )
+# złożenia imiesłowów przymiotnikowych czynnych:
+# trzeba poczekać na formy złoż. imiesłowów.
 
-# liczba arabska formą przymiotnikową, przysłówkową lub rzeczownikową: 22-letni, 20-latek, 
+# liczba arabska z formą przymiotnikową lub przysłówkową: 22-letni, 
 # 1-majowy, 3-krotnie
-moze_interp( dig>+ dywiz> (adj|adv_pos|nomina) )
+moze_interp( dig>+ dywiz> (adj_pos|adv_pos) )
+
+# wersja z ułamkiem dziesiętnym, np. 6,5-metrowy, 8,5-procentowy
+moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
 
 # liczba rzymska z formą przymiotnikową: XIX-wieczny
-moze_interp( roman>+ dywiz> adj )
+# moze_interp( roman_num> dywiz> (adj_pos|adv_pos) )
 
-# formy złoż. z sufiksem +latek:
-moze_interp( num_zloz>+ latek ) !weak
-moze_interp(num_zloz>+ i> pol_zloz> latek ) !weak
+# formy złoż. z sufiksami rzeczownikowymi przyłączającymi 
+# formy złoż. liczebników:
+moze_interp( num_zloz>+ suf_num ) !weak
+moze_interp(num_zloz>+ i> pol_zloz> suf_num ) !weak
 
-# złożenia liczbowe z sufiksem +latek, np. 20-latek:
-moze_interp( dig>+ dywiz> latek )
+# złożenia liczbowe z sufiksami rzeczownikowymi przyłączającymi 
+# formy złoż. liczebników:
+moze_interp( dig>+ dywiz> suf_num )
 
 # interpretacja znaków interpunkcyjnych
 # moze_interp(samodz interp)
 
-[separator chars]
-# ,
-44
+# REGUŁY DLA ZAPISÓW NIEPOPRAWNYCH
 
-# .
-46
+# ‹by› z predykatywami łącznie
+moze_interp(pred by) !weak
 
-# ;
-59
+# Stopień najwyższy z ‹nie›:
+# np. „nie·naj·zieleńszy”, „nie·naj·mądrzej”
+moze_interp( nie> naj> adj_sup ) !weak
 
-[generator combinations]
+# zapis typu: 50-tych, 20-te
+moze_interp(dig>+ dywiz> suf_ord)
 
-nomina
-adj
+# zapis łączny: tymbardziej, tymładniej
+moze_interp(tym)
+moze_interp(bardziej)
+moze_interp(niemniej)
+moze_interp(tym bardziej)
+moze_interp(tym niemniej)
+moze_interp(tym adj_com) !weak
+
+# ‹na pewno› zapisane łącznie
+moze_interp(prep_na pewno) !weak
 
 [segment types]
 naj
@@ -264,24 +317,24 @@ nie
 prefs
 prefv
 prefa
+pref_dyw
 prefppas
 ppas
-pcon
-morphconj
 li
-substa
-sufs
-latek
+suf_num
+suf_ord
 dywiz
 pauza
 polpauza
 kropka
+przecinek
 adj_anty_zloz
-adj_com
+subst_anty_zloz
 fin_perf
 fin_imperf
-nomina
-adv_pos
+subst
+ger
+depr
 pact
 inf_imperf
 praet_imperf
@@ -289,24 +342,40 @@ imps_imperf
 ze
 z
 dig
-roman
 adja
-adj
+adj_pos
+adj_com
 adj_sup
+adv_pos
+adv_com
+tym
+bardziej
+niemniej
+pewno
 negat
-on_agl
-z_on_agl
 samotny
 interp
-aglsg
-aglpl
+aglsg1_wok
+aglsg2_wok
+aglpl1_wok
+aglpl2_wok
+aglsg1_nwok
+aglsg2_nwok
+aglpl1_nwok
+aglpl2_nwok
 z_aglt
 z_aglt_by
+z_aglt_nwok
+ja
+ty
+my
+wy
 by
 praetcond
 praet_sg_agl
 praet_sg_na
-praet_sg
+praet_sg_masc
+praet_sg_nmasc
 praet_pl
 impt_sg_perf
 impt_sg_imperf
@@ -317,8 +386,17 @@ num_zloz
 i
 n
 prep_n
+prep_na
 emoticon
 killfile
+pred
+rom_i
+rom_v
+rom_x
+rom_l
+rom_d
+rom_c
+rom_m
 samodz
 
 
@@ -330,39 +408,44 @@ prefv	prefv
 prefa	prefa
 prefppas	prefppas
 dig	dig
-roman	romandig
 adja	adja
-substa	substa
-adj	adj:%:pos
+adj_pos	adj:%:pos
+adv_pos	adv:pos
 adj_sup	adj:%:sup
 adj_sup	adv:sup
 adj_com	adj:%:com
-adj_com	adj:%:com
-pcon	pcon:imperf
+adv_com	adv:com
 negat	ger:%:neg
 negat	pact:%:neg
 negat	ppas:%:neg
-on_agl	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
-z_on_agl	prep:%
 samotny	brev:pun
 samotny	brev:npun
 # samotny	interj
 samotny	emoticon
 interp	interp
-aglsg	aglt:sg:%
-aglpl	aglt:pl:%
+aglsg1_wok	aglt:sg:pri:%:wok
+aglpl1_wok	aglt:pl:pri:%:wok
+aglsg1_nwok	aglt:sg:pri:%:nwok
+aglpl1_nwok	aglt:pl:pri:%:nwok
+aglsg2_wok	aglt:sg:sec:%:wok
+aglpl2_wok	aglt:pl:sec:%:wok
+aglsg2_nwok	aglt:sg:sec:%:nwok
+aglpl2_nwok	aglt:pl:sec:%:nwok
 praet_sg_agl	praet:sg:%:agl
 praet_sg_na	praet:sg:%:nagl
-praet_sg	praet:sg:%
+praet_sg_masc	praet:sg:m1.m2.m3:%
+praet_sg_nmasc	praet:sg:f:%
+praet_sg_nmasc	praet:sg:n1.n2:%
 praet_pl	praet:pl:%
-praet_sg	winien:sg:%
+praet_sg_masc	winien:sg:m1.m2.m3:%
+praet_sg_nmasc	winien:sg:f:%
+praet_sg_nmasc	winien:sg:n1.n2:%
 praet_pl	winien:pl:%
 fin_perf	fin:%:perf
 fin_imperf	fin:%:imperf
-nomina		subst:%
-nomina		ger:%
-nomina		depr:%
-adv_pos		adv:pos
+subst		subst:%
+ger		ger:%
+depr		depr:%
 ppas		ppas:%
 pact		pact:%
 praet_imperf	praet:%:imperf
@@ -374,9 +457,14 @@ impt_pl_imperf	impt:pl:%:imperf
 impt_pl_perf	impt:pl:%:perf
 num_zloz	num:comp
 prep_n		prep:%:wok
+pred		pred
 samodz		%
 
 [lexemes]
+tym	tym:adv
+bardziej	bardziej:adv
+niemniej	niemniej:qub
+pewno	pewno:qub
 pol_zloz	pół:num:comp
 i	i:conj
 by	by:qub
@@ -384,37 +472,49 @@ li	li:qub
 ze	+że:qub
 z	+ż:qub
 killfile	+ć:qub
-z_aglt	aby:comp
+killfile	+anka:subst:%
+killfile	+owa:subst:%
+killfile	+anka:subst:%
+killfile	+ina:subst:%
+killfile	+yna:subst:%
+killfile	+ówna:subst:%
+z_aglt_by	aby:comp
 z_aglt	bowiem:comp
-z_aglt	by:comp
+z_aglt_by	by:comp
 z_aglt	cóż:subst
-z_aglt	czemu:adv
+z_aglt_nwok	czemu:adv
 z_aglt_by	czyżby:qub
 z_aglt_by	choćby:comp
 z_aglt_by	chociażby:comp
-z_aglt	dlaczego:adv
-z_aglt	dopóki:comp
-z_aglt	dopóty:conj
+z_aglt_nwok	dlaczego:adv
+z_aglt_nwok	dopóki:comp
+z_aglt_nwok	dopóty:conj
 z_aglt_by	gdyby:comp
-z_aglt	gdzie:qub
-z_aglt	gdzie:adv
+z_aglt_nwok	gdy:adv
+z_aglt_nwok	gdzie:qub
+z_aglt_nwok	gdzie:adv
+z_aglt_nwok	kto:subst:%
 z_aglt_by	jakby:comp
 z_aglt_by	jakoby:comp
-z_aglt	kiedy:adv
-z_aglt	kiedy:comp
-z_aglt	tylko:qub
-z_aglt	żeby:comp
-z_aglt	to:conj
-z_aglt	chyba:qub
-z_aglt	że:qub
-z_aglt	czy:conj
+z_aglt_nwok	kiedy:adv
+z_aglt_nwok	kiedy:comp
+z_aglt_nwok	tylko:qub
+z_aglt_by	żeby:comp
+z_aglt_nwok	to:conj
+z_aglt_nwok	chyba:qub
+z_aglt_nwok	że:qub
+z_aglt_nwok	czy:conj
 z_aglt_by	oby:qub
 z_aglt_by	bodajby:qub
-z_aglt	co:comp
+z_aglt_nwok	co:comp
+z_aglt_nwok	bo:comp
+z_aglt_nwok	byle:comp
+z_aglt_by	byleby:comp
 dywiz	-:interp
 pauza	—:interp
 polpauza	–:interp
 kropka	.:interp
+przecinek	,:interp
 n	on:ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
 adj_anty_zloz	ten:adj:%
 adj_anty_zloz	tenże:adj:%
@@ -435,21 +535,45 @@ adj_anty_zloz	czyj:adj:%
 adj_anty_zloz	oboj:adj:%
 adj_anty_zloz	on:adj:%
 adj_anty_zloz	tyli:adj:%
+adj_anty_zloz	rany:adj:%
+adj_anty_zloz	taki:adj:%
+adj_anty_zloz	pop:adj:%
+subst_anty_zloz	co:subst:%
+prep_na		na:prep:%
 prep_n		do:prep:%
 prep_n		dla:prep:%
 prep_n		koło:prep:%
-prep_n		na:prep:%
 prep_n		o:prep:%
 prep_n		po:prep:%
 prep_n		poza:prep:%
 prep_n		spoza:prep:%
 prep_n		za:prep:%
 prep_n		zza:prep:%
-morphconj	+o+:morphconj
-# adj_anty_zloz	pop:adj:%
-sufs	+znawca:subst:%
-sufs	+dawca:subst:%
-sufs	+biorca:subst:%
-sufs	+żerca:subst:%
-sufs	+maniak:subst:%
-latek	latek:subst:%
+suf_num	+latek:subst:%
+suf_num	+latka:subst:%
+suf_num	+lecie:subst:%
+suf_num	+krotność:subst:%
+suf_ord	ty:adj:%
+suf_ord	y:adj:%
+rom_i	I:romandig
+rom_v	V:romandig
+rom_x	X:romandig
+rom_l	L:romandig
+rom_d	D:romandig
+rom_c	C:romandig
+rom_m	M:romandig
+ja	ja:ppron12:sg:nom:%
+ty	ty:ppron12:sg:nom:%
+my	my:ppron12:pl:nom:%
+wy	wy:ppron12:pl:nom:%
+pref_dyw	e-+:prefa
+pref_dyw	e-+:prefs
+[separator chars]
+# ,
+44
+
+# .
+46
+
+# ;
+59

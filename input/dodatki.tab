@@ -11,14 +11,23 @@
 I	I	romandig
 V	V	romandig
 X	X	romandig
+L	L	romandig
+D	D	romandig
 C	C	romandig
 M	M	romandig
 pół	pół	num:comp
+czworo	czworo	num:comp
+czwór	czwór	num:comp
 ń	on	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
-by	by	qub
 naj		naj
 nie		nie
 się	się	qub
+sobie	siebie	siebie:loc
+sobie	siebie	siebie:dat
+siebie	siebie	siebie:acc
+siebie	siebie	siebie:gen
+sobą	siebie	siebie:inst
+se	siebie	siebie:dat		niepopr.|pot.
 wolnoć	wolnoć	pred
 -	-	interp
 –	–	interp
@@ -82,309 +91,290 @@ z	Z	brev:pun
 ż	Ż	brev:pun
 ch	Ch	brev:pun
 st	St	brev:pun
-poli	poli	prefa
-poli	poli	prefs
-niby	niby	prefa
-niby	niby	prefs
-eks	eks	prefs
-ex	ex	prefs
-euro	euro	prefa
-euro	euro	prefs
-mikro	mikro	prefs
-mikro	mikro	prefa
-makro	makro	prefa
-makro	makro	prefs
-bez	bez	prefa
-do	do	prefv
-do	do	prefa
-dez	dez	prefv
-dez	dez	prefa
-dez	dez	prefs
-ko	ko	prefa
-ko	ko	prefs
-między	między	prefa
-między	między	prefs
-na	na	prefa
-na	na	prefs
-na	na	prefv
-nad	nad	prefa
-nad	nad	prefs
-nad	nad	prefv
-o	o	prefv
-ob	ob	prefv
-od	od	prefa
-od	od	prefs
-od	od	prefv
-pra	pra	prefs
-post	post	prefa
-post	post	prefs
-pod	pod	prefa
-pod	pod	prefs
-pod	pod	prefv
-poza	poza	prefa
-ponad	ponad	prefa
-pre	pre	prefa
-pre	pre	prefs
-pro	pro	prefa
-pro	pro	prefs
-prze	prze	prefa
-prze	prze	prefv
-przeciw	przeciw	prefa
-przeciw	przeciw	prefs
-re	re	prefa
-re	re	prefs
-re	re	prefv
-przy	przy	prefa
-przy	przy	prefv
-roz	roz	prefv
-u	u	prefv
-samo	samo	prefa
-samo	samo	prefs
-video	video	prefs
-video	video	prefa
-w	w	prefv
-wy	wy	prefv
-współ	współ	prefv
-współ	współ	prefa
-współ	współ	prefs
-wice	wice	prefs
-neo	neo	prefa
-neo	neo	prefs
-tele	tele	prefs
-tele	tele	prefa
-z	z	prefv
-za	za	prefv
-za	za	prefa
-za	za	prefs
-wideo	wideo	prefa
-wideo	wideo	prefs
-meta	meta	prefs
-meta	meta	prefa
-multi	multi	prefa
-multi	multi	prefs
-mega	mega	prefa
-mega	mega	prefs
-kontra	kontra	prefs
-kontra	kontra	prefa
-inter	inter	prefa
-inter	inter	prefs
-homo	homo	prefs
-homo	homo	prefa
-ekstra	ekstra	prefa
-ekstra	ekstra	prefs
-giga	giga	prefa
-giga	giga	prefs
-bi	bi	prefs
-bi	bi	prefa
-auto	auto	prefs
-auto	auto	prefa
-de	de	prefv
-de	de	prefa
-de	de	prefs
-ultra	ultra	prefs
-ultra	ultra	prefa
-e-	e-	prefa
-e-	e-	prefs
-mini	mini	prefs
-mini	mini	prefa
-maxi	maxi	prefs
-maxi	maxi	prefa
-midi	midi	prefs
-midi	midi	prefa
-arcy	arcy	prefs
-arcy	arcy	prefa
-anty	anty	prefa
-anty	anty	prefs
-a	a	prefa
-a	a	prefs
-pan	pan	prefs
-pan	pan	prefa
-in	in	prefa
-in	in	prefs
-dys	dys	prefs
-dys	dys	prefa
-mono	mono	prefa
-mono	mono	prefs
-porno	porno	prefs
-porno	porno	prefa
-anglo	anglo	prefa
-aero	aero	prefs
-aero	aero	prefa
-bio	bio	prefs
-bio	bio	prefa
-wszystko	wszystko	prefs
-wszystko	wszystko	prefa
-wszech	wszech	prefs
-wszech	wszech	prefa
-śród	śród	prefs
-śród	śród	prefa
-audio	audio	prefs
-audio	audio	prefa
-eko	eko	prefs
-eko	eko	prefa
-s	s	prefv
-elektro	elektro	prefs
-elektro	elektro	prefa
-trans	trans	prefa
-trans	trans	prefs
-kontr	kontr	prefs
-kontr	kontr	prefa
-pseudo	pseudo	prefs
-pseudo	pseudo	prefa
-quasi	quasi	prefs
-quasi	quasi	prefa
-super	super	prefs
-super	super	prefa
-po	po	prefv
-po	po	prefa
-po	po	prefs
-sub	sub	prefs
-sub	sub	prefa
-hiper	hiper	prefa
-hiper	hiper	prefs
-non	non	prefs
-non	non	prefa
-stereo	stereo	prefa
-stereo	stereo	prefs
-energo	energo	prefa
-para	para	prefa
-para	para	prefs
-ś	ś	prefv
-wibro	wibro	prefa
-wibro	wibro	prefs
-izo	izo	prefa
-izo	izo	prefs
-anarcho	anarcho	prefs
-anarcho	anarcho	prefa
-antropo	antropo	prefs
-antropo	antropo	prefa
-łże	łże	prefs
-łże	łże	prefa
-wewnątrz	wewnątrz	prefa
-niedo	niedo	prefppas
-o	+o+	morphconj
-kredyto	kredyt	substa
-trawo	trawa	substa
-dupa	dupo	substa
-biorcą	+biorca	subst:sg:inst:m1	pospolita
-biorce	+biorca	depr:pl:nom:m2	pospolita
-biorce	+biorca	depr:pl:voc:m2	pospolita
-biorcę	+biorca	subst:sg:acc:m1	pospolita
-biorco	+biorca	subst:sg:voc:m1	pospolita
-biorcom	+biorca	subst:pl:dat:m1	pospolita
-biorców	+biorca	subst:pl:acc:m1	pospolita
-biorców	+biorca	subst:pl:gen:m1	pospolita
-biorcy	+biorca	subst:pl:nom:m1	pospolita
-biorcy	+biorca	subst:pl:voc:m1	pospolita
-biorcy	+biorca	subst:sg:dat:m1	pospolita
-biorcy	+biorca	subst:sg:gen:m1	pospolita
-biorcy	+biorca	subst:sg:loc:m1	pospolita
-dawcach	+dawca	subst:pl:loc:m1	pospolita
-dawca	+dawca	subst:sg:nom:m1	pospolita
-dawcami	+dawca	subst:pl:inst:m1	pospolita
-dawcą	+dawca	subst:sg:inst:m1	pospolita
-dawce	+dawca	depr:pl:nom:m2	pospolita
-dawce	+dawca	depr:pl:voc:m2	pospolita
-dawcę	+dawca	subst:sg:acc:m1	pospolita
-dawco	+dawca	subst:sg:voc:m1	pospolita
-dawcom	+dawca	subst:pl:dat:m1	pospolita
-dawców	+dawca	subst:pl:acc:m1	pospolita
-dawców	+dawca	subst:pl:gen:m1	pospolita
-dawcy	+dawca	subst:pl:nom:m1	pospolita
-dawcy	+dawca	subst:pl:voc:m1	pospolita
-dawcy	+dawca	subst:sg:dat:m1	pospolita
-dawcy	+dawca	subst:sg:gen:m1	pospolita
-dawcy	+dawca	subst:sg:loc:m1	pospolita
-żerca	+żerca	subst:sg:nom:m1	pospolita
-żercą	+żerca	subst:sg:inst:m1	pospolita
-żerce	+żerca	depr:pl:nom:m2	pospolita
-żerce	+żerca	depr:pl:voc:m2	pospolita
-żercę	+żerca	subst:sg:acc:m1	pospolita
-żercom	+żerca	subst:pl:dat:m1	pospolita
-żerco	+żerca	subst:sg:voc:m1	pospolita
-żerców	+żerca	subst:pl:acc:m1	pospolita
-żerców	+żerca	subst:pl:gen:m1	pospolita
-żercy	+żerca	subst:pl:nom:m1	pospolita
-żercy	+żerca	subst:pl:voc:m1	pospolita
-żercy	+żerca	subst:sg:dat:m1	pospolita
-żercy	+żerca	subst:sg:gen:m1	pospolita
-żercy	+żerca	subst:sg:loc:m1	pospolita
-znawcach	+znawca	subst:pl:loc:m1	pospolita
-znawcami	+znawca	subst:pl:inst:m1	pospolita
-znawca	+znawca	subst:sg:nom:m1	pospolita
-znawcą	+znawca	subst:sg:inst:m1	pospolita
-znawce	+znawca	depr:pl:nom:m2	pospolita
-znawce	+znawca	depr:pl:voc:m2	pospolita
-znawcę	+znawca	subst:sg:acc:m1	pospolita
-znawcom	+znawca	subst:pl:dat:m1	pospolita
-znawco	+znawca	subst:sg:voc:m1	pospolita
-znawców	+znawca	subst:pl:acc:m1	pospolita
-znawców	+znawca	subst:pl:gen:m1	pospolita
-znawcy	+znawca	subst:pl:nom:m1	pospolita
-znawcy	+znawca	subst:pl:voc:m1	pospolita
-znawcy	+znawca	subst:sg:dat:m1	pospolita
-znawcy	+znawca	subst:sg:gen:m1	pospolita
-znawcy	+znawca	subst:sg:loc:m1	pospolita
-maniacy	+maniak	subst:pl:nom:m1	pospolita
-maniacy	+maniak	subst:pl:voc:m1	pospolita
-maniakach	+maniak	subst:pl:loc:m1	pospolita
-maniaka	+maniak	subst:sg:acc:m1	pospolita
-maniaka	+maniak	subst:sg:gen:m1	pospolita
-maniakami	+maniak	subst:pl:inst:m1	pospolita
-maniakiem	+maniak	subst:sg:inst:m1	pospolita
-maniaki	+maniak	depr:pl:nom:m2	pospolita
-maniaki	+maniak	depr:pl:voc:m2	pospolita
-maniak	+maniak	subst:sg:nom:m1	pospolita
-maniakom	+maniak	subst:pl:dat:m1	pospolita
-maniakowi	+maniak	subst:sg:dat:m1	pospolita
-maniaków	+maniak	subst:pl:acc:m1	pospolita
-maniaków	+maniak	subst:pl:gen:m1	pospolita
-lodzy	+log	subst:pl:nom:m1	pospolita
-lodzy	+log	subst:pl:voc:m1	pospolita
-logach	+log	subst:pl:loc:m1	pospolita
-loga	+log	subst:sg:acc:m1	pospolita
-loga	+log	subst:sg:gen:m1	pospolita
-logami	+log	subst:pl:inst:m1	pospolita
-log	+log	subst:sg:nom:m1	pospolita
-logiem	+log	subst:sg:inst:m1	pospolita
-logi	+log	depr:pl:nom:m2	pospolita
-logi	+log	depr:pl:voc:m2	pospolita
-logom	+log	subst:pl:dat:m1	pospolita
-logowie	+log	subst:pl:nom:m1	pospolita
-logowie	+log	subst:pl:voc:m1	pospolita
-logowi	+log	subst:sg:dat:m1	pospolita
-logów	+log	subst:pl:acc:m1	pospolita
-logów	+log	subst:pl:gen:m1	pospolita
-logu	+log	subst:sg:loc:m1	pospolita
-logu	+log	subst:sg:voc:m1	pospolita
-logiach	+logia	subst:pl:loc:f	pospolita
-logia	+logia	subst:sg:nom:f	pospolita
-logiami	+logia	subst:pl:inst:f	pospolita
-logią	+logia	subst:sg:inst:f	pospolita
-logie	+logia	subst:pl:acc:f	pospolita
-logie	+logia	subst:pl:nom:f	pospolita
-logie	+logia	subst:pl:voc:f	pospolita
-logię	+logia	subst:sg:acc:f	pospolita
-logii	+logia	subst:pl:gen:f	pospolita
-logii	+logia	subst:sg:dat:f	pospolita
-logii	+logia	subst:sg:gen:f	pospolita
-logii	+logia	subst:sg:loc:f	pospolita
-logij	+logia	subst:pl:gen:f	pospolita
-logio	+logia	subst:sg:voc:f	pospolita
-logiom	+logia	subst:pl:dat:f	pospolita
-latek	latek	subst:sg:nom:m1	pospolita	
-latkach	latek	subst:pl:loc:m1	pospolita	
-latka	latek	subst:sg:acc:m1	pospolita	
-latka	latek	subst:sg:gen:m1	pospolita	
-latkami	latek	subst:pl:inst:m1	pospolita	
-latki	latek	depr:pl:nom:m2	pospolita	
-latki	latek	depr:pl:voc:m2	pospolita	
-latkiem	latek	subst:sg:inst:m1	pospolita	
-latkom	latek	subst:pl:dat:m1	pospolita	
-latkowi	latek	subst:sg:dat:m1	pospolita	
-latkowie	latek	subst:pl:nom:m1	pospolita	
-latkowie	latek	subst:pl:voc:m1	pospolita	
-latków	latek	subst:pl:acc:m1	pospolita	
-latków	latek	subst:pl:gen:m1	pospolita	
-latku	latek	subst:sg:loc:m1	pospolita	
-latku	latek	subst:sg:voc:m1	pospolita
+a	a+	prefa
+aero	aero+	prefa
+aero	aero+	prefs
+anarcho	anarcho+	prefa
+anarcho	anarcho+	prefs
+anglo	anglo+	prefa
+antropo	antropo+	prefa
+antropo	antropo+	prefs
+anty	anty+	prefa
+anty	anty+	prefs
+archi	archi+	prefa
+archi	archi+	prefs
+arcy	arcy+	prefa
+arcy	arcy+	prefs
+audio	audio+	prefa
+audio	audio+	prefs
+auto	auto+	prefa
+auto	auto+	prefs
+bez	bez+	prefa
+bez	bez+	prefs
+beze+	beze+	prefa
+bio	bio+	prefa
+bio	bio+	prefs
+cyber	cyfer+	prefa
+cyber	cyfer+	prefs
+de	de+	prefa
+de	de+	prefs
+de	de+	prefv
+dez	dez+	prefa
+dez	dez+	prefs
+dez	dez+	prefv
+do	do+	prefa
+do	do+	prefv
+dys	dys+	prefa
+dys	dys+	prefs
+e-	e-+	prefa
+e-	e-+	prefs
+eko	eko+	prefa
+eko	eko+	prefs
+eks	eks+	prefs
+ekstra	ekstra+	prefa
+ekstra	ekstra+	prefs
+elektro	elektro+	prefa
+elektro	elektro+	prefs
+energo	energo+	prefa
+euro	euro+	prefa
+euro	euro+	prefs
+ex	ex+	prefs
+giga	giga+	prefa
+giga	giga+	prefs
+hiper	hiper+	prefa
+hiper	hiper+	prefs
+homo	homo+	prefa
+homo	homo+	prefs
+in	in+	prefa
+in	in+	prefs
+infra	infra+	prefa
+infra	infra+	prefs
+inter	inter+	prefa
+inter	inter+	prefs
+izo	izo+	prefa
+izo	izo+	prefs
+kontra	kontra+	prefa
+kontra	kontra+	prefs
+kontr	kontr+	prefa
+kontr	kontr+	prefs
+łże	łże+	prefa
+łże	łże+	prefs
+makro	makro+	prefa
+makro	makro+	prefs
+maksi	maksi+	prefa
+maksi	maksi+	prefs
+maxi	maxi+	prefa
+maxi	maxi+	prefs
+mega	mega+	prefa
+mega	mega+	prefs
+meta	meta+	prefa
+meta	meta+	prefs
+midi	midi+	prefa
+midi	midi+	prefs
+między	między+	prefa
+między	między+	prefs
+mikro	mikro+	prefa
+mikro	mikro+	prefs
+mini	mini+	prefa
+mini	mini+	prefs
+mono	mono+	prefa
+mono	mono+	prefs
+multi	multi+	prefa
+multi	multi+	prefs
+nad	nad+	prefa
+nad	nad+	prefs
+nad	nad+	prefv
+nade	nade+	prefv
+na	na+	prefa
+na	na+	prefs
+na	na+	prefv
+narko	narko+	prefa
+narko	narko+	prefs
+neo	neo+	prefa
+neo	neo+	prefs
+niby	niby+	prefa
+niby	niby+	prefs
+niedo	niedo+	prefppas
+non	non+	prefa
+non	non+	prefs
+o	o+	prefv
+ob	ob+	prefv
+od	od+	prefa
+od	od+	prefs
+od	od+	prefv
+ode	ode+	prefv
+około	około+	prefa
+pan	pan+	prefa
+pan	pan+	prefs
+para	para+	prefa
+para	para+	prefs
+po	po+	prefa
+pod	pod+	prefa
+pod	pod+	prefs
+pod	pod+	prefv
+pode	pode+	prefv
+poli	poli+	prefa
+poli	poli+	prefs
+ponad	ponad+	prefa
+po	po+	prefa
+porno	porno+	prefa
+porno	porno+	prefs
+post	post+	prefa
+post	post+	prefs
+poza	poza+	prefa
+pra	pra+	prefs
+pre	pre+	prefa
+pre	pre+	prefs
+pro	pro+	prefa
+pro	pro+	prefs
+przeciw	przeciw+	prefa
+przeciw	przeciw+	prefs
+prze	prze+	prefa
+prze	prze+	prefv
+przy	przy+	prefa
+przy	przy+	prefv
+pseudo	pseudo+	prefa
+pseudo	pseudo+	prefs
+przed	przed+	prefa
+quasi	quasi+	prefa
+quasi	quasi+	prefs
+re	re+	prefa
+re	re+	prefs
+re	re+	prefv
+roz	roz+	prefv
+samo	samo+	prefa
+samo	samo+	prefs
+seks	seks+	prefa
+seks	seks+	prefs
+s	s+	prefv
+stereo	stereo+	prefa
+stereo	stereo+	prefs
+sub	sub+	prefa
+sub	sub+	prefs
+super	super+	prefa
+super	super+	prefs
+śród	śród+	prefa
+śród	śród+	prefs
+ś	ś+	prefv
+tele	tele+	prefa
+tele	tele+	prefs
+trans	trans+	prefa
+trans	trans+	prefs
+ultra	ultra+	prefa
+ultra	ultra+	prefs
+u	u+	prefv
+video	video+	prefa
+video	video+	prefs
+wewnątrz	wewnątrz+	prefa
+wibro	wibro+	prefa
+wibro	wibro+	prefs
+wice	wice+	prefs
+wideo	wideo+	prefa
+wideo	wideo+	prefs
+wokoło	wokoło+	prefa
+wokół	wokół+	prefa
+współ	współ+	prefa
+współ	współ+	prefs
+współ	współ+	prefv
+wszech	wszech+	prefa
+wszech	wszech+	prefs
+wszystko	wszystko+	prefa
+wszystko	wszystko+	prefs
+w	w+	prefv
+we	we+	prefv
+wy	wy+	prefv
+za	za+	prefa
+za	za+	prefs
+za	za+	prefv
+z	z+	prefv
+za	za+	prefv
+ze	ze+	prefv
+latek	+latek	subst:sg:nom:m1	pospolita	
+latkach	+latek	subst:pl:loc:m1	pospolita	
+latka	+latek	subst:sg:acc:m1	pospolita	
+latka	+latek	subst:sg:gen:m1	pospolita	
+latkami	+latek	subst:pl:inst:m1	pospolita	
+latki	+latek	depr:pl:nom:m2	pospolita	
+latki	+latek	depr:pl:voc:m2	pospolita	
+latkiem	+latek	subst:sg:inst:m1	pospolita	
+latkom	+latek	subst:pl:dat:m1	pospolita	
+latkowi	+latek	subst:sg:dat:m1	pospolita	
+latkowie	+latek	subst:pl:nom:m1	pospolita	
+latkowie	+latek	subst:pl:voc:m1	pospolita	
+latków	+latek	subst:pl:acc:m1	pospolita	
+latków	+latek	subst:pl:gen:m1	pospolita	
+latku	+latek	subst:sg:loc:m1	pospolita	
+latku	+latek	subst:sg:voc:m1	pospolita
+latka	+latka	subst:sg:nom:f	pospolita	
+latkach	+latka	subst:pl:loc:f	pospolita	
+latkę	+latka	subst:sg:acc:f	pospolita	
+latki	+latka	subst:sg:gen:f	pospolita	
+latkami	+latka	subst:pl:inst:f	pospolita	
+latką	+latka	subst:sg:inst:f	pospolita	
+latkom	+latka	subst:pl:dat:f	pospolita	
+latce	+latka	subst:sg:dat:f	pospolita	
+latki	+latka	subst:pl:nom:f	pospolita	
+latki	+latka	subst:pl:voc:f	pospolita	
+latki	+latka	subst:pl:acc:f	pospolita	
+latek	+latka	subst:pl:gen:f	pospolita	
+latce	+latka	subst:sg:loc:f	pospolita	
+latko	+latka	subst:sg:voc:f	pospolita	
+krotnościach	+krotność	subst:pl:loc:f	pospolita	
+krotnościami	+krotność	subst:pl:inst:f	pospolita	
+krotnością	+krotność	subst:sg:inst:f	pospolita	
+krotności	+krotność	subst:pl:acc:f	pospolita	
+krotności	+krotność	subst:pl:gen:f	pospolita	
+krotności	+krotność	subst:pl:nom:f	pospolita	
+krotności	+krotność	subst:pl:voc:f	pospolita	
+krotności	+krotność	subst:sg:dat:f	pospolita	
+krotności	+krotność	subst:sg:gen:f	pospolita	
+krotności	+krotność	subst:sg:loc:f	pospolita	
+krotności	+krotność	subst:sg:voc:f	pospolita	
+krotnościom	+krotność	subst:pl:dat:f	pospolita	
+krotność	+krotność	subst:sg:acc:f	pospolita	
+krotność	+krotność	subst:sg:nom:f	pospolita
+ci	ty	adj:pl:nom.voc:m1.p1:pos		
+ta	ty	adj:sg:nom.voc:f:pos		
+tą	ty	adj:sg:acc:f:pos		
+tą	ty	adj:sg:inst:f:pos		
+tego	ty	adj:sg:acc:m1.m2:pos		
+tego	ty	adj:sg:gen:m1.m2.m3.n1.n2:pos		
+tej	ty	adj:sg:dat:f:pos		
+tej	ty	adj:sg:gen:f:pos		
+tej	ty	adj:sg:loc:f:pos		
+temu	ty	adj:sg:dat:m1.m2.m3.n1.n2:pos		
+te	ty	adj:pl:acc:m2.m3.f.n1.n2.p2.p3:pos		
+te	ty	adj:pl:nom.voc:m2.m3.f.n1.n2.p2.p3:pos		
+te	ty	adj:sg:acc:n1.n2:pos		
+te	ty	adj:sg:nom.voc:n1.n2:pos		
+tych	ty	adj:pl:acc:m1.p1:pos		
+tych	ty	adj:pl:gen:m1.m2.m3.f.n1.n2.p1.p2.p3:pos		
+tych	ty	adj:pl:loc:m1.m2.m3.f.n1.n2.p1.p2.p3:pos		
+tymi	ty	adj:pl:inst:m1.m2.m3.f.n1.n2.p1.p2.p3:pos		
+tym	ty	adj:pl:dat:m1.m2.m3.f.n1.n2.p1.p2.p3:pos		
+tym	ty	adj:sg:inst:m1.m2.m3.n1.n2:pos		
+tym	ty	adj:sg:loc:m1.m2.m3.n1.n2:pos		
+ty	ty	adj:sg:acc:m3:pos		
+ty	ty	adj:sg:nom.voc:m1.m2.m3:pos		
+a	y	adj:sg:nom.voc:f:pos		
+ą	y	adj:sg:acc:f:pos		
+ą	y	adj:sg:inst:f:pos		
+ego	y	adj:sg:acc:m1.m2:pos		
+ego	y	adj:sg:gen:m1.m2.m3.n1.n2:pos		
+ej	y	adj:sg:dat:f:pos		
+ej	y	adj:sg:gen:f:pos		
+ej	y	adj:sg:loc:f:pos		
+emu	y	adj:sg:dat:m1.m2.m3.n1.n2:pos		
+e	y	adj:pl:acc:m2.m3.f.n1.n2.p2.p3:pos		
+e	y	adj:pl:nom.voc:m2.m3.f.n1.n2.p2.p3:pos		
+e	y	adj:sg:acc:n1.n2:pos		
+e	y	adj:sg:nom.voc:n1.n2:pos		
+ych	y	adj:pl:acc:m1.p1:pos		
+ych	y	adj:pl:gen:m1.m2.m3.f.n1.n2.p1.p2.p3:pos		
+ych	y	adj:pl:loc:m1.m2.m3.f.n1.n2.p1.p2.p3:pos		
+ymi	y	adj:pl:inst:m1.m2.m3.f.n1.n2.p1.p2.p3:pos		
+ym	y	adj:pl:dat:m1.m2.m3.f.n1.n2.p1.p2.p3:pos		
+ym	y	adj:sg:inst:m1.m2.m3.n1.n2:pos		
+ym	y	adj:sg:loc:m1.m2.m3.n1.n2:pos		
+y	y	adj:sg:acc:m3:pos		
+y	y	adj:sg:nom.voc:m1.m2.m3:pos		
