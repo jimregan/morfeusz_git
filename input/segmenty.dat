@@ -311,6 +311,15 @@ moze_interp(tym adj_com) !weak
 # ‹na pewno› zapisane łącznie
 moze_interp(prep_na pewno) !weak
 
+[generator combinations]
+
+subst
+prefs> subst
+prefs> dywiz> subst
+pref_dyw> subst
+adj_pos
+prefa> adj_pos
+
 [segment types]
 naj
 nie
@@ -568,6 +577,7 @@ my	my:ppron12:pl:nom:%
 wy	wy:ppron12:pl:nom:%
 pref_dyw	e-+:prefa
 pref_dyw	e-+:prefs
+
 [separator chars]
 # ,
 44

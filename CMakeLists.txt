@@ -42,7 +42,7 @@ endif ()
 
 # INPUT_TAGSET
 if ("${INPUT_TAGSET}" STREQUAL "")
-   set (INPUT_TAGSET ${PROJECT_SOURCE_DIR}/input/polimorf.tagset)
+   set (INPUT_TAGSET ${PROJECT_SOURCE_DIR}/input/sgjp-morfeusz.tagset)
 endif ()
 
 # SEGMENT_RULES_FILE
