@@ -76,6 +76,7 @@ def _processLine(lineNum, line, defines, filename):
 def preprocess(inputLines, defs, filename):
     defines = {}
     ifdefsStack = []
+    wasElse = False
     for lineNum, line in inputLines:
         if line.startswith('#define'):
             parsedDefine = list(pyparseString(define, lineNum, line, filename))
@@ -92,8 +93,13 @@ def preprocess(inputLines, defs, filename):
             name = pyparseString(ifdef, lineNum, line, filename)[0]
 #             name = ifdef.parseString(line)[0]
             ifdefsStack.append(name)
-        elif line.startswith('#endif'):
+        elif line.startswith('#else'):
             ifdefsStack.pop()
+            wasElse = True
+        elif line.startswith('#endif'):
+            if not wasElse:
+                ifdefsStack.pop()
+            wasElse = False
         elif line.startswith('#'):
             yield lineNum, line
         elif len(ifdefsStack) == 0 or all(map(lambda name: name in defs, ifdefsStack)):
