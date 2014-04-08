@@ -76,7 +76,6 @@ def _processLine(lineNum, line, defines, filename):
 def preprocess(inputLines, defs, filename):
     defines = {}
     ifdefsStack = []
-    wasElse = False
     for lineNum, line in inputLines:
         if line.startswith('#define'):
             parsedDefine = list(pyparseString(define, lineNum, line, filename))
@@ -91,17 +90,18 @@ def preprocess(inputLines, defs, filename):
                 defines[name] = ArgDefine(name, arg, val)
         elif line.startswith('#ifdef'):
             name = pyparseString(ifdef, lineNum, line, filename)[0]
-#             name = ifdef.parseString(line)[0]
-            ifdefsStack.append(name)
+            ifdefsStack.append((name, True))
         elif line.startswith('#else'):
-            ifdefsStack.pop()
-            wasElse = True
+            name, isActive = ifdefsStack[-1]
+            assert isActive
+            ifdefsStack[-1] = name, False
+#             ifdefsStack.pop()
         elif line.startswith('#endif'):
-            if not wasElse:
-                ifdefsStack.pop()
-            wasElse = False
+            ifdefsStack.pop()
         elif line.startswith('#'):
             yield lineNum, line
-        elif len(ifdefsStack) == 0 or all(map(lambda name: name in defs, ifdefsStack)):
+        elif len(ifdefsStack) == 0 or \
+            (all(map(lambda (name, isActive): name in defs and isActive, ifdefsStack))
+                and not any(map(lambda (name, isActive): name in defs and not isActive, ifdefsStack))):
             yield lineNum, _processLine(lineNum, line, defines, filename)
         
