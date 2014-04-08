@@ -94,14 +94,12 @@ def preprocess(inputLines, defs, filename):
         elif line.startswith('#else'):
             name, isActive = ifdefsStack[-1]
             assert isActive
-            ifdefsStack[-1] = name, False
+            ifdefsStack[-1] = (name, False)
 #             ifdefsStack.pop()
         elif line.startswith('#endif'):
             ifdefsStack.pop()
         elif line.startswith('#'):
             yield lineNum, line
-        elif len(ifdefsStack) == 0 or \
-            (all(map(lambda (name, isActive): name in defs and isActive, ifdefsStack))
-                and not any(map(lambda (name, isActive): name in defs and not isActive, ifdefsStack))):
+        elif len(ifdefsStack) == 0 or all(map(lambda (name, isActive): (name in defs and isActive) or (name not in defs and not isActive), ifdefsStack)):
             yield lineNum, _processLine(lineNum, line, defines, filename)
         
