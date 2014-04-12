@@ -41,8 +41,9 @@ class FSA(object):
         self.n += 1
         
         # debug
-        if self.n == 1 or self.n % 10000 == 0:
+        if self.n < 10 or (self.n < 10000 and self.n % 1000 == 0) or self.n % 10000 == 0:
             logging.info(u'%d %s' % (self.n, word))
+#             logging.info(str(self.register.getStatesNum()))
 #             logging.info(str(self.register.getStatesNum()))
     #             allWords.append(word)
         for label in encodedWord:
@@ -114,12 +115,6 @@ class FSA(object):
     
     def calculateOffsets(self, sizeCounter):
         self.initialState.calculateOffsets(sizeCounter)
-#         currReverseOffset = 0
-#         for state in self.initialState.dfs(set()):
-#             currReverseOffset += sizeCounter(state)
-#             state.reverseOffset = currReverseOffset
-#         for state in self.initialState.dfs(set()):
-#             state.offset = currReverseOffset - state.reverseOffset
     
     def debug(self):
         for state in self.initialState.dfs(set()):

@@ -4,13 +4,10 @@ Created on 24 sty 2014
 @author: mlenart
 '''
 
+import copy
 from morfeuszbuilder.segrules.rulesNFA import RulesNFAState
 
 class SegmentRule(object):
-    '''
-    classdocs
-    '''
-
 
     def __init__(self, linenum):
         
@@ -28,6 +25,15 @@ class SegmentRule(object):
         raise NotImplementedError()
     
     def _doAddToNFA(self, startStates, endState):
+        raise NotImplementedError()
+    
+    def transformToGeneratorVersion(self):
+        raise NotImplementedError()
+    
+    def isSinkRule(self):
+        return False
+    
+    def isShiftOrthRule(self):
         raise NotImplementedError()
 
 class TagRule(SegmentRule):
@@ -49,19 +55,34 @@ class TagRule(SegmentRule):
         return False
     
     def __str__(self):
-        return u'%s(%d)' % (self.segtype, self.segnum)
+        res = self.segtype
+        if self.shiftOrth:
+            res += '>'
+        return res
+#         return u'%s(%d)' % (self.segtype, self.segnum)
+    
+    def transformToGeneratorVersion(self):
+        return copy.deepcopy(self)
+    
+    def isShiftOrthRule(self):
+        return self.shiftOrth
 
 class UnaryRule(SegmentRule):
     
     def __init__(self, child, linenum):
         self.child = child
         self.linenum = linenum
+        assert not child.isSinkRule()
+    
+    def isShiftOrthRule(self):
+        return self.child.isShiftOrthRule()
 
 class ComplexRule(SegmentRule):
     
     def __init__(self, children, linenum):
         self.children = children
         self.linenum = linenum
+        assert not any(map(lambda c: c.isSinkRule(), children))
     
     def addToNFA(self, fsa):
         endState = RulesNFAState(self, final=True, weak=self.weak)
@@ -89,6 +110,23 @@ class ConcatRule(ComplexRule):
     def __str__(self):
         return u' '.join(map(lambda c: str(c), self.children))
     
+    def isShiftOrthRule(self):
+        return all(map(lambda c: c.isShiftOrthRule(), self.children))
+    
+    def transformToGeneratorVersion(self):
+        newChildren = [child.transformToGeneratorVersion() for child in self.children if not child.allowsEmptySequence() or child.isShiftOrthRule()]
+        if newChildren == []:
+            return SinkRule()
+        hasNonOptionalNonShiftingRule = False
+        for child in newChildren:
+#             print 'child=', child
+            if child.isSinkRule() or hasNonOptionalNonShiftingRule:
+                return SinkRule()
+            elif not child.isShiftOrthRule():
+                hasNonOptionalNonShiftingRule = True
+#                 print 'got nonshifting'
+        return ConcatRule(newChildren, self.linenum)
+    
 class OrRule(ComplexRule):
     
     def __init__(self, children, linenum):
@@ -107,6 +145,17 @@ class OrRule(ComplexRule):
     
     def __str__(self):
         return u'|'.join(map(lambda c: str(c), self.children))
+    
+    def isShiftOrthRule(self):
+        return all(map(lambda c: c.isShiftOrthRule(), self.children))
+    
+    def transformToGeneratorVersion(self):
+        newChildren = [child.transformToGeneratorVersion() for child in self.children if not child.allowsEmptySequence() or child.isShiftOrthRule()]
+        newChildren = filter(lambda c: not c.isSinkRule(), newChildren)
+        if newChildren == []:
+            return SinkRule()
+        else:
+            return OrRule(newChildren, self.linenum)
     
 class ZeroOrMoreRule(UnaryRule):
     
@@ -129,6 +178,12 @@ class ZeroOrMoreRule(UnaryRule):
     
     def allowsEmptySequence(self):
         return True
+    
+    def transformToGeneratorVersion(self):
+        if self.isShiftOrthRule():
+            return copy.deepcopy(self)
+        else:
+            return SinkRule()
     
     def __str__(self):
         return u'(' + str(self.child) + ')*'
@@ -154,6 +209,34 @@ class OptionalRule(UnaryRule):
     def allowsEmptySequence(self):
         return True
     
+    def transformToGeneratorVersion(self):
+        if self.isShiftOrthRule():
+            return copy.deepcopy(self)
+        else:
+            return self.child.transformToGeneratorVersion()
+    
     def __str__(self):
         return u'(' + str(self.child) + ')?'
+
+class SinkRule(SegmentRule):
     
+    def __init__(self):
+        super(SinkRule, self).__init__(None)
+    
+    def addToNFA(self, fsa):
+        return
+    
+    def allowsEmptySequence(self):
+        return False
+    
+    def _doAddToNFA(self, startStates, endState):
+        return
+    
+    def transformToGeneratorVersion(self):
+        return self
+    
+    def isSinkRule(self):
+        return True
+    
+    def __str__(self):
+        return '<<REMOVED>>'

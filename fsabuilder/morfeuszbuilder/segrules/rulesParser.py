@@ -59,7 +59,7 @@ class RulesParser(object):
         firstNFA = None
         for idx, defs in enumerate(itertools.product(*key2Defs.values())):
             key2Def = dict([(def2Key[define], define) for define in defs])
-#             print key2Def
+            print key2Def
             nfa = rulesNFA.RulesNFA()
             if not firstNFA:
                 firstNFA = nfa
@@ -92,7 +92,8 @@ class RulesParser(object):
     def _doParse(self, combinationEnumeratedLines, segtypesHelper, filename):
         for lineNum, line in combinationEnumeratedLines:
             if not line.startswith('#'):
-                yield self._doParseOneLine(lineNum, line, segtypesHelper, filename)
+                rule = self._doParseOneLine(lineNum, line, segtypesHelper, filename)
+                yield rule
     
     def _createNewTagRule(self, segtype, shiftOrth, lineNum, line, segtypesHelper):
         if not segtypesHelper.hasSegtype(segtype):
@@ -164,4 +165,5 @@ class RulesParser(object):
         concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(toks, lineNum))
         rule.setParseAction(lambda string, loc, toks: toks[0].setWeak(len(toks) == 2))
         parsedRule = pyparseString.pyparseString(rule, lineNum, line, filename)[0]
+#         print parsedRule, '-->', parsedRule.transformToGeneratorVersion()
         return parsedRule
