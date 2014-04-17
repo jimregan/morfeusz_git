@@ -5,8 +5,8 @@ echo
 echo '[TAGS]'
 echo
 echo $'0\tign'
-cat input/sgjp-hom.tab input/dodatki.tab input/PoliMorf-0.6.7.tab | cut -d$'\t' -f3 | sort -u | cat -n | sed -r 's/^\s+//g'
+cat input/sgjp-hom.tab input/dodatki.tab | cut -d$'\t' -f3 | sort -u | cat -n | sed -r 's/^\s+//g'
 echo
 echo '[NAMES]'
 echo $'0\t'
-cat input/sgjp-hom.tab input/dodatki.tab input/PoliMorf-0.6.7.tab | cut -d$'\t' -f4 | egrep '.' | sort -u | cat -n | sed -r 's/^\s+//g'
+cat input/sgjp-hom.tab input/dodatki.tab | cut -d$'\t' -f4 | egrep '.' | sort -u | cat -n | sed -r 's/^\s+//g'

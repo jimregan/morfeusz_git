@@ -7,7 +7,15 @@ praet=split composite
 
 #define moze_interp(segmenty) wsz_interp segmenty wsz_interp
 
-# Tu będzie wyrażenie regularne łapiące liczby rzymskie.
+#define rzymskie_jednosci ( (rom_v? rom_i{1,3}) | (rom_i? rom_v) | (rom_i rom_x) )
+
+#define rzymskie_dziesiatki ( (rom_l? rom_x{1,3}) | (rom_x? rom_l) | (rom_x rom_c) )
+
+#define rzymskie_setki ( (rom_m? rom_c{1,3}) | (rom_c? rom_m) | (rom_c rom_m) )
+
+#define rzymskie_tysiace ( rom_m{1,3} )
+
+#define roman_num ((rzymskie_tysiace)? rzymskie_setki? rzymskie_dziesiatki? rzymskie_jednosci)
 
 #define rzeczowniki (subst|ger|depr)
 
@@ -30,14 +38,6 @@ moze_interp(interp|kropka|przecinek|dywiz)
 # sobie
 samotny
 
-# przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
-moze_interp(praet_sg_na)
-
-# przeszlik pojedynczy w formie niezróżnicowanej aglutynacyjnie, np. „moze”:
-moze_interp(praet_sg)
-
-# przeszlik mnogi, np. „czytali”:
-moze_interp(praet_pl)
 
 # partykuła „by”:
 moze_interp(by)
@@ -72,26 +72,42 @@ adja
 # np. „gniotł·am”
 moze_interp( praet_sg_agl (aglsg1_wok|aglsg2_wok) )
 # np. „czytał·em”
-moze_interp(praet_sg (aglsg1_wok|aglsg2_wok))
+moze_interp(praet_sg_masc (aglsg1_wok|aglsg2_wok))
+# np. czytała·ś, czytało·ś
+moze_interp(praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok))
 # np. „czytali·ście”
 moze_interp(praet_pl (aglpl1_nwok|aglpl2_nwok))
 
+# przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
+moze_interp(praet_sg_nagl)
+
+# przeszlik pojedynczy w formie niezróżnicowanej aglutynacyjnie, np. „moze”:
+moze_interp(praet_sg)
+
+# przeszlik mnogi, np. „czytali”:
+moze_interp(praet_pl)
+
 # Tryb warunkowy:
 # np. „gniótł·by”
-moze_interp(praet_sg_na by)
+moze_interp(praet_sg_nagl by)
 # np. „czytało·by”
 moze_interp(praet_sg by)
 # np. „gnietli·by”
 moze_interp(praet_pl by)
 # np. „gniótł·by·ś”
-moze_interp(praet_sg_na by (aglsg1_nwok|aglsg2_nwok))
+moze_interp(praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok))
 # np. „czytał·by·m”
 moze_interp(praet_sg by (aglsg1_nwok|aglsg2_nwok))
 # np. „gnietli·by·śmy”
 moze_interp(praet_pl by (aglpl1_nwok|aglpl2_nwok))
 #else
-# moze_interp(praetcond)
+moze_interp(praetcond)
+moze_interp(praetaglt)
+moze_interp(praet_sg) !weak
+moze_interp(praet_pl) !weak
 #endif
+
+
 # np. „by·ś”
 moze_interp(by (aglsg1_nwok|aglsg2_nwok))
 # np. „by·ście”
@@ -154,6 +170,15 @@ moze_interp( dig>* dig )
 # Liczba rzymska zapisana jako ciąg cyfr rzymskich:
 # (kiepskie, trzeba poprawić wyrażeniem regularnym)
 # moze_interp( roman_num )
+# roman_num
+# rzymskie_jednosci
+# rzymskie_dziesiatki
+# rzymskie_setki
+# rzymskie_tysiace
+# moze_interp( rzymskie_jednosci )
+# moze_interp( rzymskie_dziesiatki )
+# moze_interp( rzymskie_setki )
+# moze_interp( rzymskie_tysiace )
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
@@ -202,7 +227,7 @@ moze_interp( praet_sg dywiz li)
 moze_interp( praet_sg aglsg dywiz li)
 moze_interp( praet_pl dywiz li)
 moze_interp( praet_pl aglpl dywiz li)
-moze_interp( praet_sg_na dywiz li)
+moze_interp( praet_sg_nagl dywiz li)
 moze_interp( fin_perf)
 moze_interp( fin_imperf)
 moze_interp( (fin_perf|fin_imperf) dywiz li)
@@ -210,7 +235,7 @@ moze_interp( (fin_perf|fin_imperf) dywiz li)
 # i bez dywizu --- czy bez dywizu jest sens łapać?
 # moze_interp( praet_sg li)
 # moze_interp( praet_pl li)
-# moze_interp( praet_sg_na li)
+# moze_interp( praet_sg_nagl li)
 # moze_interp( (fin_perf|fin_imperf) li)
 
 # reguła z partykułą ‹+że› przy trybie rozkazującym
@@ -245,8 +270,6 @@ moze_interp( ( pol_zloz>|num_zloz> ) (subst|depr) ) !weak
 
 # wykluczenie ze złożeń przymiotników: ten, ów, ki, si itp.
 moze_interp(adj_anty_zloz)
-
-# wykluczenie ze złożeń rzeczowników: co.
 moze_interp(subst_anty_zloz)
 
 # złożenia adja+adj/adv bez dywizu, np. średniopienny, sierściowłosy
@@ -263,6 +286,10 @@ moze_interp((prep_n|prep_na) n)
 # predykatywy (typ pred jest używany w regułach dla zapisów niepoprawnych poniżej)
 moze_interp(pred)
 
+# REGUŁY EKSPERYMENTALNE
+# formy złoż. rzeczowników i sufiksoidów rzeczownikowych
+# moze_interp( substa> sufs ) !weak
+
 # złożenia imiesłowów przymiotnikowych czynnych:
 # trzeba poczekać na formy złoż. imiesłowów.
 
@@ -276,13 +303,11 @@ moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
 # liczba rzymska z formą przymiotnikową: XIX-wieczny
 # moze_interp( roman_num> dywiz> (adj_pos|adv_pos) )
 
-# formy złoż. z sufiksami rzeczownikowymi przyłączającymi 
-# formy złoż. liczebników:
+# formy złoż. z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
 moze_interp( num_zloz>+ suf_num ) !weak
 moze_interp(num_zloz>+ i> pol_zloz> suf_num ) !weak
 
-# złożenia liczbowe z sufiksami rzeczownikowymi przyłączającymi 
-# formy złoż. liczebników:
+# złożenia liczbowe z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
 moze_interp( dig>+ dywiz> suf_num )
 
 # interpretacja znaków interpunkcyjnych
@@ -311,15 +336,6 @@ moze_interp(tym adj_com) !weak
 # ‹na pewno› zapisane łącznie
 moze_interp(prep_na pewno) !weak
 
-[generator combinations]
-
-subst
-prefs> subst
-prefs> dywiz> subst
-pref_dyw> subst
-adj_pos
-prefa> adj_pos
-
 [segment types]
 naj
 nie
@@ -330,6 +346,8 @@ pref_dyw
 prefppas
 ppas
 li
+substa
+sufs
 suf_num
 suf_ord
 dywiz
@@ -380,9 +398,10 @@ ty
 my
 wy
 by
+praetaglt
 praetcond
 praet_sg_agl
-praet_sg_na
+praet_sg_nagl
 praet_sg_masc
 praet_sg_nmasc
 praet_pl
@@ -418,6 +437,7 @@ prefa	prefa
 prefppas	prefppas
 dig	dig
 adja	adja
+# substa	substa
 adj_pos	adj:%:pos
 adv_pos	adv:pos
 adj_sup	adj:%:sup
@@ -428,7 +448,7 @@ negat	ger:%:neg
 negat	pact:%:neg
 negat	ppas:%:neg
 samotny	brev:pun
-samotny	brev:npun
+# samotny	brev:npun
 # samotny	interj
 samotny	emoticon
 interp	interp
@@ -440,16 +460,23 @@ aglsg2_wok	aglt:sg:sec:%:wok
 aglpl2_wok	aglt:pl:sec:%:wok
 aglsg2_nwok	aglt:sg:sec:%:nwok
 aglpl2_nwok	aglt:pl:sec:%:nwok
+praetaglt	praet:%:pri:%
+praetaglt	praet:%:sec:%
+praetaglt	praet:%:ter:%
 praet_sg_agl	praet:sg:%:agl
-praet_sg_na	praet:sg:%:nagl
+praet_sg_nagl	praet:sg:%:nagl
 praet_sg_masc	praet:sg:m1.m2.m3:%
 praet_sg_nmasc	praet:sg:f:%
 praet_sg_nmasc	praet:sg:n1.n2:%
 praet_pl	praet:pl:%
+praetaglt	winien:%:pri:%
+praetaglt	winien:%:sec:%
+praetaglt	winien:%:ter:%
 praet_sg_masc	winien:sg:m1.m2.m3:%
 praet_sg_nmasc	winien:sg:f:%
 praet_sg_nmasc	winien:sg:n1.n2:%
 praet_pl	winien:pl:%
+praetcond	cond:%
 fin_perf	fin:%:perf
 fin_imperf	fin:%:imperf
 subst		subst:%
@@ -548,6 +575,67 @@ adj_anty_zloz	rany:adj:%
 adj_anty_zloz	taki:adj:%
 adj_anty_zloz	pop:adj:%
 subst_anty_zloz	co:subst:%
+subst_anty_zloz	ar:subst:%:m3
+subst_anty_zloz	as:subst:%:m2
+subst_anty_zloz	as:subst:%:m1
+subst_anty_zloz	as:subst:%:m2
+subst_anty_zloz	as:subst:%:m3
+subst_anty_zloz	as:subst:%:n2
+subst_anty_zloz	at:subst:%:n2
+subst_anty_zloz	at:subst:%:m2
+subst_anty_zloz	az:subst:%:m1
+subst_anty_zloz	be:subst:%:n2
+subst_anty_zloz	bp:subst:%:m1
+subst_anty_zloz	ce:subst:%:n2
+subst_anty_zloz	de:subst:%:n2
+subst_anty_zloz	do:subst:%:n2
+subst_anty_zloz	dr:subst:%:m1
+subst_anty_zloz	ef:subst:%:n2
+subst_anty_zloz	el:subst:%:n2
+subst_anty_zloz	em:subst:%:n2
+subst_anty_zloz	en:subst:%:n2
+subst_anty_zloz	er:subst:%:n2
+subst_anty_zloz	es:subst:%:m3
+subst_anty_zloz	es:subst:%:n2
+subst_anty_zloz	fa:subst:%:n2
+subst_anty_zloz	go:subst:%:n2
+subst_anty_zloz	ha:subst:%:n2
+subst_anty_zloz	id:subst:%:m3
+subst_anty_zloz	id:subst:%:n2
+subst_anty_zloz	in:subst:%:n2
+subst_anty_zloz	ka:subst:%:n2
+subst_anty_zloz	kb:subst:%:m3
+subst_anty_zloz	km:subst:%:m3
+subst_anty_zloz	ku:subst:%:n2
+subst_anty_zloz	la:subst:%:n2
+subst_anty_zloz	li:subst:%:n2
+subst_anty_zloz	li:subst:%:f
+subst_anty_zloz	mi:subst:%:n2
+subst_anty_zloz	ni:subst:%:n2
+subst_anty_zloz	no:subst:%:n2
+subst_anty_zloz	nr:subst:%:m3
+subst_anty_zloz	om:subst:%:m3
+subst_anty_zloz	oz:subst:%:m3
+subst_anty_zloz	pe:subst:%:n2
+subst_anty_zloz	pi:subst:%:n2
+subst_anty_zloz	re:subst:%:n2
+subst_anty_zloz	rh:subst:%:n2
+subst_anty_zloz	ro:subst:%:n2
+subst_anty_zloz	si:subst:%:n2
+subst_anty_zloz	su:subst:%:n2
+subst_anty_zloz	te:subst:%:n2
+subst_anty_zloz	tv:subst:%:f
+subst_anty_zloz	ud:subst:%:m3
+subst_anty_zloz	uf:subst:%:m3
+subst_anty_zloz	ul:subst:%:m3
+subst_anty_zloz	um:subst:%:m3
+subst_anty_zloz	ut:subst:%:n2
+subst_anty_zloz	vw:subst:%:m3
+subst_anty_zloz	vw:subst:%:n2
+subst_anty_zloz	wc:subst:%:n2
+subst_anty_zloz	we:subst:%:n2
+subst_anty_zloz	wf:subst:%:m3
+subst_anty_zloz	wu:subst:%:n2
 prep_na		na:prep:%
 prep_n		do:prep:%
 prep_n		dla:prep:%
@@ -558,6 +646,13 @@ prep_n		poza:prep:%
 prep_n		spoza:prep:%
 prep_n		za:prep:%
 prep_n		zza:prep:%
+sufs	+znawca:subst:%
+sufs	+dawca:subst:%
+sufs	+biorca:subst:%
+sufs	+żerca:subst:%
+sufs	+maniak:subst:%
+sufs	+logia:subst:%
+sufs	+log:subst:%
 suf_num	+latek:subst:%
 suf_num	+latka:subst:%
 suf_num	+lecie:subst:%
@@ -587,3 +682,5 @@ pref_dyw	e-+:prefs
 
 # ;
 59
+
+[generator combinations]

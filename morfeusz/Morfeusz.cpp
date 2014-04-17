@@ -73,9 +73,9 @@ void Morfeusz::processOneWord(
     InflexionGraph graph;
     const char* currInput = inputStart;
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
-
+    
     doProcessOneWord(env, currInput, inputEnd, segrulesFSA.initialState, accum, graph);
-
+    
     if (!graph.empty()) {
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
@@ -168,22 +168,16 @@ void Morfeusz::doProcessOneWord(
             vector<InterpsGroup> val(state.getValue());
             for (unsigned int i = 0; i < val.size(); i++) {
                 InterpsGroup& ig = val[i];
-                //                vector<bool> casePattern;
-                //                env.getCasePatternHelper().skipCasePattern(ig.ptr);
-                //                const unsigned char* casePatternPtr = ig.ptr;
-                //                env.getCasePatternHelper().deserializeCasePattern(casePatternPtr, casePattern);
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
-                //                if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, originalCodepoints, casePattern)) {
-                //                cerr << "accept at '" << currInput << "' type=" << (int) ig.type << endl;
                 set<SegrulesState> newSegrulesStates;
                 env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
                 if (this->options.debug && newSegrulesStates.empty()) {
                     cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
                 }
                 if (!newSegrulesStates.empty() && env.getCasePatternHelper().checkInterpsGroupCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
-                    
+
                     for (
                             set<SegrulesState>::iterator it = newSegrulesStates.begin();
                             it != newSegrulesStates.end();
