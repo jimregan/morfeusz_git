@@ -49,6 +49,7 @@ class RulesManager(object):
             res.extend(self._serializeDFA(dfa))
         res.extend(self._serializeOptionsMap(self.defaultOptions))
         logging.info('segmentation rules size: %s bytes', len(res))
+#         logging.info([int(x) for x in res])
         return res
     
     def _serializeSeparatorsList(self):

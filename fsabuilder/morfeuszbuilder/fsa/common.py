@@ -41,6 +41,11 @@ class EncodedForm4Generator(object):
         self.cutLength = bestEncodedForm.cutLength
         self.suffixToAdd = bestEncodedForm.suffixToAdd
         self.prefixToAdd = targetWord[:bestPrefixLength]
+        
+#         if fromWord == 'BC':
+#             print self.cutLength
+#             print self.suffixToAdd
+#             print self.prefixToAdd, len(self.prefixToAdd)
 
 class Interpretation4Analyzer(object):
     

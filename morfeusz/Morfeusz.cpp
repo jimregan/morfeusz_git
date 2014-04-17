@@ -18,6 +18,7 @@
 #include "charset/CaseConverter.hpp"
 #include "segrules/segrules.hpp"
 #include "const.hpp"
+#include "deserializationUtils.hpp"
 #include "charset/utf8.h"
 
 // TODO - konstruktor kopiujący działający Tak-Jak-Trzeba
@@ -38,6 +39,20 @@ generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
 options(createDefaultOptions()) {
     analyzerEnv.setCaseSensitive(options.caseSensitive);
     generatorEnv.setCaseSensitive(false);
+}
+
+inline const unsigned char* getInterpretationsPtr(const Environment& env, const InterpsGroup& ig) {
+    if (env.getProcessorType() == ANALYZER) {
+        const unsigned char* currPtr = ig.ptr;
+        unsigned char casePatternsNum = *currPtr++;
+        for (unsigned int i = 0; i < casePatternsNum; i++) {
+            env.getCasePatternHelper().deserializeOneCasePattern(currPtr);
+        }
+        return currPtr;
+    }
+    else {
+        return ig.ptr;
+    }
 }
 
 void Morfeusz::setAnalyzerFile(const string& filename) {
@@ -183,7 +198,7 @@ void Morfeusz::doProcessOneWord(
                             it != newSegrulesStates.end();
                             ++it) {
                         SegrulesState newSegrulesState = *it;
-                        const unsigned char* interpsPtr = env.getCasePatternHelper().getInterpretationsPtr(ig);
+                        const unsigned char* interpsPtr = getInterpretationsPtr(env, ig);
                         const unsigned char* interpsEndPtr = ig.ptr + ig.size;
                         InterpretedChunk ic = {
                             ig.type,

@@ -40,18 +40,6 @@ public:
 
 protected:
 
-    EncodedInterpretation deserializeInterp(const unsigned char*& ptr) const {
-        EncodedInterpretation interp;
-        interp.orthCasePattern = this->env.getCasePatternHelper().deserializeOneCasePattern(ptr);
-        deserializeEncodedForm(ptr, interp.value);
-        interp.tag = readInt16(ptr);
-        interp.nameClassifier = *ptr++;
-        interp.qualifiers = readInt16(ptr);
-        return interp;
-    }
-
-    virtual void deserializeEncodedForm(const unsigned char*& ptr, EncodedForm& encodedForm) const = 0;
-
     const Environment& env;
 };
 
@@ -105,6 +93,16 @@ protected:
         ptr += strlen((const char*) ptr) + 1;
         assert(encodedForm.casePattern.size() == 0);
         encodedForm.casePattern = env.getCasePatternHelper().deserializeOneCasePattern(ptr);
+    }
+    
+    EncodedInterpretation deserializeInterp(const unsigned char*& ptr) const {
+        EncodedInterpretation interp;
+        interp.orthCasePattern = this->env.getCasePatternHelper().deserializeOneCasePattern(ptr);
+        deserializeEncodedForm(ptr, interp.value);
+        interp.tag = readInt16(ptr);
+        interp.nameClassifier = *ptr++;
+        interp.qualifiers = readInt16(ptr);
+        return interp;
     }
 private:
 
@@ -176,7 +174,7 @@ public:
         const unsigned char* currPtr = interpretedChunk.interpsPtr;
         while (currPtr < interpretedChunk.interpsEndPtr) {
             MorphInterpretation mi = this->decodeMorphInterpretation(startNode, endNode, orthPrefix, lemma, interpretedChunk, currPtr);
-            //            cerr << mi.toString(false) << endl;
+//                        cerr << mi.toString(false) << endl;
             //            cerr << "required='" << interpretedChunk.requiredHomonymId << "' morphInterp='" << mi.getHomonymId() << "'" << endl;
             if (interpretedChunk.requiredHomonymId.empty() || mi.getHomonymId() == interpretedChunk.requiredHomonymId) {
                 out.push_back(mi);
@@ -203,15 +201,12 @@ private:
             const InterpretedChunk& chunk,
             const unsigned char*& ptr) const {
         string orth = orthPrefix;
-        string homonymId = (const char*) ptr;
-        ptr += strlen((const char*) ptr) + 1;
         EncodedInterpretation ei = this->deserializeInterp(ptr);
         this->decodeForm(chunk.originalCodepoints, ei.value, orth);
-        //        string realLemma = homonymId.empty() ? lemma : (lemma + ":" + homonymId);
         return MorphInterpretation(
                 startNode, endNode,
                 orth, lemma,
-                homonymId,
+                ei.homonymId,
                 ei.tag,
                 ei.nameClassifier,
                 ei.qualifiers,
@@ -233,14 +228,17 @@ private:
             env.getCharsetConverter().append(cp, res);
         }
     }
-
-    void deserializeEncodedForm(const unsigned char*& ptr, EncodedForm& encodedForm) const {
-        encodedForm.prefixToAdd = (const char*) ptr;
-        ptr += strlen((const char*) ptr) + 1;
-        encodedForm.suffixToCut = *ptr;
-        ptr++;
-        encodedForm.suffixToAdd = (const char*) ptr;
-        ptr += strlen((const char*) ptr) + 1;
+    
+    EncodedInterpretation deserializeInterp(const unsigned char*& ptr) const {
+        EncodedInterpretation interp;
+        interp.homonymId = readString(ptr);
+        interp.value.prefixToAdd = readString(ptr);
+        interp.value.suffixToCut = readInt8(ptr);
+        interp.value.suffixToAdd = readString(ptr);
+        interp.tag = readInt16(ptr);
+        interp.nameClassifier = readInt8(ptr);
+        interp.qualifiers = readInt16(ptr);
+        return interp;
     }
 };
 

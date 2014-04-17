@@ -105,7 +105,7 @@
           <buildCommandWorkingDir>build</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>build/morfeusz/morfeusz_analyzer</executablePath>
+          <executablePath>build/morfeusz/morfeusz_generator</executablePath>
         </makeTool>
       </makefileType>
       <item path="../default_fsa.cpp" ex="false" tool="1" flavor2="4">
@@ -311,7 +311,7 @@
         <ccTool>
           <incDir>
             <pElem>morfeusz</pElem>
-            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
+            <pElem>/usr/lib/jvm/default-java/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>libjmorfeusz_EXPORTS</Elem>

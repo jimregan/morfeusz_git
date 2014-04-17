@@ -56,6 +56,7 @@ class TagRule(SegmentRule):
     
     def __str__(self):
         res = self.segtype
+        res += '(' + str(self.segnum) + ')'
         if self.shiftOrth:
             res += '>'
         return res
@@ -70,8 +71,8 @@ class TagRule(SegmentRule):
 class UnaryRule(SegmentRule):
     
     def __init__(self, child, linenum):
+        super(UnaryRule, self).__init__(linenum)
         self.child = child
-        self.linenum = linenum
         assert not child.isSinkRule()
     
     def isShiftOrthRule(self):
@@ -80,8 +81,8 @@ class UnaryRule(SegmentRule):
 class ComplexRule(SegmentRule):
     
     def __init__(self, children, linenum):
+        super(ComplexRule, self).__init__(linenum)
         self.children = children
-        self.linenum = linenum
         assert not any(map(lambda c: c.isSinkRule(), children))
     
     def addToNFA(self, fsa):

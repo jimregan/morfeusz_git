@@ -9,7 +9,8 @@
 #define	SEGRULESFSA_HPP
 
 #include <set>
-#include "../endianness.hpp"
+#include <iostream>
+#include "../deserializationUtils.hpp"
 
 struct SegrulesState {
     uint16_t offset;
@@ -37,8 +38,7 @@ public:
         
         const unsigned char* currPtr = ptr + state.offset;
         currPtr++;
-        const unsigned char transitionsNum = *currPtr;
-        currPtr++;
+        const unsigned char transitionsNum = *currPtr++;
         for (unsigned int i = 0; i < transitionsNum; i++) {
             if (*currPtr == segnum) {
                 newStates.insert(newStates.begin(), this->transition2State(currPtr));
@@ -58,9 +58,8 @@ private:
         unsigned char WEAK_FLAG = 2;
         SegrulesState res;
         transitionPtr++;
-        res.shiftOrthFromPrevious = *transitionPtr;
-        transitionPtr++;
-        res.offset = htons(*reinterpret_cast<const uint16_t*>(transitionPtr));
+        res.shiftOrthFromPrevious = *transitionPtr++;
+        res.offset = readInt16(transitionPtr);
         res.accepting = *(ptr + res.offset) & ACCEPTING_FLAG;
         res.weak = *(ptr + res.offset) & WEAK_FLAG;
         return res;

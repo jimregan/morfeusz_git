@@ -63,8 +63,8 @@ class RulesParser(object):
             nfa = rulesNFA.RulesNFA()
             if not firstNFA:
                 firstNFA = nfa
-            section = 'combinations' if self.rulesType == RulesParser.PARSE4ANALYZER else 'generator combinations'
-            combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection(section, ignoreComments=False)
+#             section = 'combinations' if self.rulesType == RulesParser.PARSE4ANALYZER else 'generator combinations'
+            combinationEnumeratedLines = segtypesConfigFile.enumerateLinesInSection('combinations', ignoreComments=False)
             combinationEnumeratedLines = list(preprocessor.preprocess(combinationEnumeratedLines, defs, filename))
             for rule in self._doParse(combinationEnumeratedLines, segtypesHelper, filename):
                 if rule.allowsEmptySequence():
@@ -72,8 +72,11 @@ class RulesParser(object):
                                                      filename, 
                                                      rule.linenum, 
                                                      'This rule allows empty segments sequence to be accepted')
-                rule.addToNFA(nfa)
-#                 nfa.debug()
+                if self.rulesType == RulesParser.PARSE4GENERATOR:
+                    rule = rule.transformToGeneratorVersion()
+                if not rule.isSinkRule():
+                    rule.addToNFA(nfa)
+#             nfa.debug()
             try:
                 dfa = nfa.convertToDFA()
                 res.addDFA(key2Def, dfa)
@@ -146,10 +149,11 @@ class RulesParser(object):
         unaryRule = atomicRule ^ zeroOrMoreRule ^ oneOrMoreRule ^ optionalRule ^ quantRule1 ^ quantRule2 ^ quantRule3
         oneOfRule = delimitedList(unaryRule, delim='|')
         complexRule = unaryRule ^ oneOfRule
-        if self.rulesType == RulesParser.PARSE4ANALYZER:
-            concatRule = OneOrMore(complexRule)
-        else:
-            concatRule = ZeroOrMore(shiftOrthRule) + tagRule
+        concatRule = OneOrMore(complexRule)
+#         if self.rulesType == RulesParser.PARSE4ANALYZER:
+#             concatRule = OneOrMore(complexRule)
+#         else:
+#             concatRule = ZeroOrMore(shiftOrthRule) + tagRule
         rule << concatRule + Optional(CaselessLiteral('!weak'))
         
         tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], False, lineNum, line, segtypesHelper))

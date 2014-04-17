@@ -20,7 +20,6 @@ qualifiers() {
     readTags(currPtr, _dupa);
     _dupa.clear();
     readTags(currPtr, _dupa);
-    
     uint16_t allCombinationsSize = readInt16(currPtr);
     this->qualifiers.reserve(allCombinationsSize);
     for (unsigned int i = 0; i < allCombinationsSize; i++) {

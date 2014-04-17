@@ -55,8 +55,8 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     list (APPEND PACKAGE_DEPENDS package-python-win-installer)
     
     #~ add_custom_target (buildfsa-exec ALL
-    #~ COMMAND pyinstaller --noconfirm --onefile --console --strip --distpath="${DIST_PATH}" --clean fsa/morfeusz_builder
-#~ )
+        #~ COMMAND pyinstaller --noconfirm --onefile --console --strip --distpath="${DIST_PATH}" --clean fsa/morfeusz_builder
+    #~ )
 #~ 
 #~ add_executable (morfeusz_builder IMPORTED)
 #~ add_dependencies (morfeusz_builder buildfsa-exec)

@@ -62,15 +62,6 @@ public:
         }
     }
     
-    const unsigned char* getInterpretationsPtr(const InterpsGroup& ig) const {
-        const unsigned char* currPtr = ig.ptr;
-        unsigned char casePatternsNum = *currPtr++;
-        for (unsigned int i = 0; i < casePatternsNum; i++) {
-            deserializeOneCasePattern(currPtr);
-        }
-        return currPtr;
-    }
-    
     std::vector<bool> deserializeOneCasePattern(const unsigned char*& ptr) const {
         std::vector<bool> res;
         uint8_t casePatternType = *ptr;
@@ -103,26 +94,6 @@ public:
         }
         return res;
     }
-
-//    bool checkCasePattern(const std::vector<InterpretedChunk>& chunks) const {
-//        if (this->caseSensitive) {
-//            for (unsigned int i = 0; i < chunks.size(); i++) {
-//                const InterpretedChunk& ic = chunks[i];
-//                const unsigned char* casePatternPtr = ic.interpsGroup.ptr;
-//                std::vector<bool> casePattern;
-//                deserializeCasePattern(casePatternPtr, casePattern);
-//                if (!checkCasePattern(ic, casePattern)) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-
-//    void skipCasePattern(const unsigned char*& ptr) const {
-//        vector<bool> _dupa;
-//        deserializeCasePattern(ptr, _dupa);
-//    }
 private:
     bool caseSensitive;
     

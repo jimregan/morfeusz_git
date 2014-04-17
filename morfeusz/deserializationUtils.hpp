@@ -11,14 +11,24 @@
 #include "endianness.hpp"
 #include <iostream>
 
+inline unsigned char readInt8(const unsigned char*& currPtr) {
+    return *currPtr++;
+}
+
 inline uint16_t readInt16(const unsigned char*& currPtr) {
-    uint16_t res = htons(*reinterpret_cast<const uint16_t*>(currPtr));
+    uint16_t res = htons(*reinterpret_cast<const uint16_t*> (currPtr));
     currPtr += 2;
     return res;
 }
 
+inline uint32_t readInt32(const unsigned char*& currPtr) {
+    uint32_t res = htonl(*reinterpret_cast<const uint32_t*> (currPtr));
+    currPtr += 4;
+    return res;
+}
+
 inline std::string readString(const unsigned char*& currPtr) {
-    std::string res(reinterpret_cast<const char*>(currPtr));
+    std::string res((const char*) currPtr);
     currPtr += res.length();
     currPtr++;
     return res;

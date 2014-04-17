@@ -2,25 +2,12 @@
 #include "segrules.hpp"
 #include "../fsa/fsa.hpp"
 #include "../fsa/const.hpp"
+#include "../deserializationUtils.hpp"
 
 using namespace std;
 
-static inline uint32_t deserializeUint32(const unsigned char*& ptr) {
-    uint32_t res = *reinterpret_cast<const uint32_t*>(ptr);
-    res = htonl(res);
-    ptr += 4;
-    return res;
-}
-
-static inline string deserializeString(const unsigned char*& ptr) {
-    string res(reinterpret_cast<const char*>(ptr));
-    ptr += res.length() + 1;
-    return res;
-}
-
 static inline void skipSeparatorsList(const unsigned char*& ptr) {
-    uint16_t listSize = ntohs(*reinterpret_cast<const uint16_t*>(ptr));
-    ptr += 2;
+    uint16_t listSize = readInt16(ptr);
     ptr += 4 * listSize;
 }
 
@@ -28,7 +15,7 @@ static inline const unsigned char* getSeparatorsListPtr(const unsigned char* ptr
     const unsigned char* additionalDataPtr = ptr 
         + FSA_DATA_OFFSET 
         + ntohl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
-    const unsigned char* res = additionalDataPtr + deserializeUint32(additionalDataPtr) + 4;
+    const unsigned char* res = additionalDataPtr + readInt32(additionalDataPtr) + 4;
     return res;
 }
 
@@ -47,14 +34,14 @@ static inline SegrulesOptions deserializeOptions(const unsigned char*& ptr) {
     unsigned char optsNum = *ptr;
     ptr++;
     for (unsigned char i = 0; i < optsNum; i++) {
-        string key = deserializeString(ptr);
-        res[key] = deserializeString(ptr);
+        string key = readString(ptr);
+        res[key] = readString(ptr);
     }
     return res;
 }
 
 static inline SegrulesFSA* deserializeFSA(const unsigned char*& ptr) {
-    uint32_t fsaSize = deserializeUint32(ptr);
+    uint32_t fsaSize = readInt32(ptr);
 //    static SegrulesDeserializer deserializer;
     SegrulesFSA* res = new SegrulesFSA(ptr);
     ptr += fsaSize;

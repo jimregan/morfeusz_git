@@ -6,7 +6,7 @@ Created on Oct 23, 2013
 
 import logging
 import itertools
-from morfeuszbuilder.utils import serializationUtils
+from morfeuszbuilder.utils.serializationUtils import *
 
 class Encoder(object):
     '''
@@ -44,19 +44,6 @@ class Encoder(object):
         assert typenum >= 0 and typenum < 256
         return bytearray([typenum])
     
-    def _encodeEncodedForm(self, form, withCasePattern, withPrefix):
-        res = bytearray()
-        assert form.cutLength < 256 and form.cutLength >= 0
-        if withPrefix:
-            res.extend(self.encodeWord(form.prefixToAdd, lowercase=False))
-            res.append(0)
-        res.append(form.cutLength)
-        res.extend(self.encodeWord(form.suffixToAdd, lowercase=False))
-        res.append(0)
-        if withCasePattern:
-            res.extend(self._encodeCasePattern(form.casePattern))
-        return res
-    
     def _encodeCasePattern(self, casePattern):
         res = bytearray()
         if True not in casePattern:
@@ -84,7 +71,7 @@ class Encoder(object):
             n = len(self.qualifiersMap)
             self.qualifiersMap[key] = n
         assert n < 500
-        res.extend(serializationUtils.htons(n))
+        res.extend(htons(n))
         return res
     
     def _hasUpperPrefix(self, casePattern):
@@ -102,11 +89,9 @@ class Encoder(object):
     
     def _encodeTagNum(self, tagnum):
         res = bytearray()
-#         logging.info((tagnum & 0xFF00) >> 8)
         assert tagnum < 65536 and tagnum >= 0
         res.append((tagnum & 0xFF00) >> 8)
         res.append(tagnum & 0x00FF)
-#         logging.info('%d %s %s' % (tagnum, hex(res[0]), hex(res[1])))
         return res
     
     def _encodeNameNum(self, namenum):
@@ -129,31 +114,37 @@ class Encoder(object):
                 res.append(list(interp.orthCasePattern))
         return res
     
-    def _encodeInterps4Type(self, typenum, interpsList, withCasePattern, withPrefix, withHomonymId):
+    def _encodeInterps4Type(self, typenum, interpsList, isAnalyzer):
         res = bytearray()
         res.extend(self._encodeTypeNum(typenum))
         encodedInterpsList = bytearray()
-        if withCasePattern:
+        if isAnalyzer:
             casePatterns = self._getOrthCasePatterns(interpsList)
             encodedInterpsList.append(len(casePatterns))
             for casePattern in casePatterns:
                 encodedInterpsList.extend(self._encodeCasePattern(casePattern))
         for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-            if withHomonymId:
-                encodedInterpsList.extend(self.encodeWord(interp.homonymId, lowercase=False))
-                encodedInterpsList.append(0)
-            if withCasePattern:
+            if isAnalyzer:
                 encodedInterpsList.extend(self._encodeCasePattern(interp.orthCasePattern))
-            encodedInterpsList.extend(self._encodeEncodedForm(interp.encodedForm, withCasePattern=withCasePattern, withPrefix=withPrefix))
-            encodedInterpsList.extend(self._encodeTagNum(interp.tagnum))
-            encodedInterpsList.extend(self._encodeNameNum(interp.namenum))
+            else:
+                serializeString(interp.homonymId, encodedInterpsList)
+                serializeString(interp.encodedForm.prefixToAdd, encodedInterpsList)
+            encodedInterpsList.append(interp.encodedForm.cutLength)
+            serializeString(interp.encodedForm.suffixToAdd, encodedInterpsList)
+            if isAnalyzer:
+                encodedInterpsList.extend(self._encodeCasePattern(interp.encodedForm.casePattern))
+            encodedInterpsList.extend(htons(interp.tagnum))
+            encodedInterpsList.append(interp.namenum)
             encodedInterpsList.extend(self._encodeQualifiers(interp.qualifiers))
+            
+            if interp.encodedForm.suffixToAdd == 'bc':
+                print len(interpsList), interp.encodedForm.suffixToAdd, [int(x) for x in encodedInterpsList]
         
-        res.extend(serializationUtils.htons(len(encodedInterpsList)))
+        res.extend(htons(len(encodedInterpsList)))
         res.extend(encodedInterpsList)
         return res
     
-    def _doEncodeData(self, interpsList, withCasePattern, withPrefix, withHomonymId):
+    def _doEncodeData(self, interpsList, isAnalyzer):
         
         assert type(interpsList) == frozenset
         
@@ -167,7 +158,7 @@ class Encoder(object):
         res.append(firstByte)
         
         for typenum, interpsList in segnum2Interps.iteritems():
-            res.extend(self._encodeInterps4Type(typenum, interpsList, withCasePattern, withPrefix, withHomonymId))
+            res.extend(self._encodeInterps4Type(typenum, interpsList, isAnalyzer))
         del interpsList
         
         return res
@@ -181,7 +172,7 @@ class MorphEncoder(Encoder):
         self.LEMMA_MIXED_CASE = 2
     
     def encodeData(self, interpsList):
-        return self._doEncodeData(interpsList, withCasePattern=True, withPrefix=False, withHomonymId=False)
+        return self._doEncodeData(interpsList, isAnalyzer=True)
 
 class Encoder4Generator(Encoder):
     
@@ -189,4 +180,4 @@ class Encoder4Generator(Encoder):
         super(Encoder4Generator, self).__init__(False, encoding)
     
     def encodeData(self, interpsList):
-        return self._doEncodeData(interpsList, withCasePattern=False, withPrefix=True, withHomonymId=True)
+        return self._doEncodeData(interpsList, isAnalyzer=False)
