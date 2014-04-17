@@ -22,7 +22,7 @@ function build {
     mkdir -p $buildDir
     mkdir -p $targetDir
     cd $buildDir
-    cmake -D CMAKE_TOOLCHAIN_FILE=$toolchain -D TARGET_DIR=$targetDir -D INPUT_DICTIONARIES=$srcDir/input/PoliMorfSmall.tab,$srcDir/input/dodatki.tab $srcDir
+    cmake -D CMAKE_TOOLCHAIN_FILE=$toolchain -D TARGET_DIR=$targetDir $srcDir
     echo "building $toolchain" >&2
     make -j2
     make $targets
