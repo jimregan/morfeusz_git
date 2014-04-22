@@ -127,18 +127,15 @@ class Encoder(object):
             if isAnalyzer:
                 encodedInterpsList.extend(self._encodeCasePattern(interp.orthCasePattern))
             else:
-                serializeString(interp.homonymId, encodedInterpsList)
-                serializeString(interp.encodedForm.prefixToAdd, encodedInterpsList)
+                encodedInterpsList.extend(serializeString(interp.homonymId))
+                encodedInterpsList.extend(serializeString(interp.encodedForm.prefixToAdd))
             encodedInterpsList.append(interp.encodedForm.cutLength)
-            serializeString(interp.encodedForm.suffixToAdd, encodedInterpsList)
+            encodedInterpsList.extend(serializeString(interp.encodedForm.suffixToAdd))
             if isAnalyzer:
                 encodedInterpsList.extend(self._encodeCasePattern(interp.encodedForm.casePattern))
             encodedInterpsList.extend(htons(interp.tagnum))
             encodedInterpsList.append(interp.namenum)
             encodedInterpsList.extend(self._encodeQualifiers(interp.qualifiers))
-            
-            if interp.encodedForm.suffixToAdd == 'bc':
-                print len(interpsList), interp.encodedForm.suffixToAdd, [int(x) for x in encodedInterpsList]
         
         res.extend(htons(len(encodedInterpsList)))
         res.extend(encodedInterpsList)

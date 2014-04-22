@@ -23,6 +23,8 @@ def htonl(n):
     res.append(n & 0x000000FF)
     return res
 
-def serializeString(string, out):
+def serializeString(string):
+    out = bytearray()
     out.extend(string.encode('utf8'))
     out.append(0)
+    return out

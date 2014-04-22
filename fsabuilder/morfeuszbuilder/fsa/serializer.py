@@ -271,16 +271,21 @@ class VLengthSerializer1(Serializer):
         return self.useArrays and state.serializeAsArray
      
     def stateData2bytearray(self, state):
-        assert state.transitionsNum < 64
+#         assert state.transitionsNum < 64
         res = bytearray()
         firstByte = 0
         if state.isAccepting():
             firstByte |= self.ACCEPTING_FLAG
         if self.stateShouldBeAnArray(state):
             firstByte |= self.ARRAY_FLAG
-        firstByte |= state.transitionsNum
-        assert firstByte < 256 and firstByte > 0
-        res.append(firstByte)
+        if state.transitionsNum < 63:
+            firstByte |= state.transitionsNum
+            res.append(firstByte)
+        else:
+            firstByte |= 63
+            res.append(firstByte)
+            res.append(state.transitionsNum)
+        
         if state.isAccepting():
             res.extend(state.encodedData)
         return res

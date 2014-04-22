@@ -9,7 +9,7 @@
 using namespace std;
 
 Tagset::Tagset(const unsigned char* ptr) {
-    uint32_t fsaSize = htonl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
+    uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
     const unsigned char* currPtr = ptr + FSA_DATA_OFFSET + fsaSize + 4;
     readTags(currPtr, this->tags);
     readTags(currPtr, this->names);

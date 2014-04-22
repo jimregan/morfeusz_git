@@ -9,7 +9,7 @@ add_custom_command (
 )
 add_custom_command (
         OUTPUT "${INPUT_SYNTH_DICTIONARY_CPP}"
-        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --generator --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_SYNTH_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=SIMPLE
+        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --generator --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_SYNTH_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
         DEPENDS "${INPUT_DICTIONARY}"
         COMMENT "Building default dictionary C++ file"
 )

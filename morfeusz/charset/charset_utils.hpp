@@ -48,10 +48,9 @@ static inline std::vector<uint32_t> initializeWhitespaces() {
     return res;
 }
 
-inline bool isEndOfWord(uint32_t codepoint) {
+inline bool isWhitespace(uint32_t codepoint) {
     static std::vector<uint32_t> whitespaces(initializeWhitespaces());
     return std::binary_search(whitespaces.begin(), whitespaces.end(), codepoint);
-    //    return whitespaces.count(codepoint);
 }
 
 template <class StateClass>

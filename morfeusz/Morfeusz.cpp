@@ -74,7 +74,7 @@ void Morfeusz::processOneWord(
         std::vector<MorphInterpretation>& results,
         bool insideIgnHandler) const {
     while (inputStart != inputEnd
-            && isEndOfWord(env.getCharsetConverter().peek(inputStart, inputEnd))) {
+            && isWhitespace(env.getCharsetConverter().peek(inputStart, inputEnd))) {
         env.getCharsetConverter().next(inputStart, inputEnd);
     }
     vector<InterpretedChunk> accum;
@@ -154,7 +154,7 @@ void Morfeusz::doProcessOneWord(
 
     StateType state = env.getFSA().getInitialState();
 
-    while (!isEndOfWord(codepoint)) {
+    while (!isWhitespace(codepoint)) {
         uint32_t normalizedCodepoint = env.getProcessorType() == ANALYZER
                 ? env.getCaseConverter().toLower(codepoint)
                 : codepoint;
@@ -210,14 +210,14 @@ void Morfeusz::doProcessOneWord(
                             doShiftOrth(accum.back(), ic);
                         }
                         accum.push_back(ic);
-                        if (isEndOfWord(codepoint)
+                        if (isWhitespace(codepoint)
                                 && newSegrulesState.accepting) {
                             if (this->options.debug) {
                                 cerr << "ACCEPTING " << debugAccum(accum) << endl;
                             }
                             graph.addPath(accum, newSegrulesState.weak);
                         }
-                        else if (!isEndOfWord(codepoint)) {
+                        else if (!isWhitespace(codepoint)) {
                             //                        cerr << "will process " << currInput << endl;
                             const char* newCurrInput = currInput;
                             doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState, accum, graph);
@@ -227,7 +227,7 @@ void Morfeusz::doProcessOneWord(
                 }
             }
         }
-        codepoint = currInput == inputEnd || isEndOfWord(codepoint) ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
+        codepoint = currInput == inputEnd || isWhitespace(codepoint) ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     }
     inputData = currInput;
 }
