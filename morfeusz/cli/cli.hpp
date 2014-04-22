@@ -8,14 +8,9 @@
 #ifndef CLI_HPP
 #define	CLI_HPP
 
-#ifdef _WIN64
+#if defined(_WIN64) || defined(_WIN32)
 #define TMPDUPA_IN IN
 #define IN  IN
-#else
-#ifdef _WIN32
-#define TMPDUPA_IN IN
-#define IN  IN
-#endif
 #endif
 
 #include <iostream>
@@ -40,12 +35,8 @@ void initializeMorfeusz(ez::ezOptionParser& opt, Morfeusz& morfeusz);
 
 #pragma GCC diagnostic pop
 
-#ifdef _WIN64
+#if defined(_WIN64) || defined(_WIN32)
 #define IN  TMPDUPA_IN
-#else
-#ifdef _WIN32
-#define IN  TMPDUPA_IN
-#endif
 #endif
 
 #endif	/* CLI_HPP */

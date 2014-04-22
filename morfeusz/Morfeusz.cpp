@@ -66,13 +66,6 @@ void Morfeusz::setGeneratorFile(const string& filename) {
 Morfeusz::~Morfeusz() {
 }
 
-string Morfeusz::prepareStringToProcess(const std::string& str) const {
-    string res;
-    res.reserve(str.size());
-    utf8::replace_invalid(str.begin(), str.end(), back_inserter(res));
-    return res;
-}
-
 void Morfeusz::processOneWord(
         const Environment& env,
         const char*& inputStart,
@@ -88,9 +81,9 @@ void Morfeusz::processOneWord(
     InflexionGraph graph;
     const char* currInput = inputStart;
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
-    
+
     doProcessOneWord(env, currInput, inputEnd, segrulesFSA.initialState, accum, graph);
-    
+
     if (!graph.empty()) {
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
@@ -148,10 +141,10 @@ void Morfeusz::doProcessOneWord(
         SegrulesState segrulesState,
         vector<InterpretedChunk>& accum,
         InflexionGraph& graph) const {
-    //    if (this->options.debug) {
-    //        cerr << "----------" << endl;
-    //        cerr << "PROCESS: '" << inputData << "', already recognized: " << debugAccum(accum) << endl;
-    //    }
+    if (this->options.debug) {
+        cerr << "----------" << endl;
+        cerr << "PROCESS: '" << inputData << "', already recognized: " << debugAccum(accum) << endl;
+    }
     //    cerr << "doAnalyzeOneWord " << inputData << endl;
     const char* inputStart = inputData;
     const char* currInput = inputData;
@@ -303,9 +296,8 @@ ResultsIterator Morfeusz::analyze(const string& text) const {
 }
 
 void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results) const {
-    string preparedText = this->prepareStringToProcess(text);
-    const char* input = preparedText.c_str();
-    const char* inputEnd = input + preparedText.length();
+    const char* input = text.c_str();
+    const char* inputEnd = input + text.length();
     while (input != inputEnd) {
         int startNode = results.empty() ? 0 : results.back().getEndNode();
         this->processOneWord(this->analyzerEnv, input, inputEnd, startNode, results);
@@ -324,8 +316,7 @@ ResultsIterator Morfeusz::generate(const string& text, int tagnum) const {
     return ResultsIterator(res);
 }
 
-void Morfeusz::generate(const string& text, vector<MorphInterpretation>& results) const {
-    string lemma = this->prepareStringToProcess(text);
+void Morfeusz::generate(const string& lemma, vector<MorphInterpretation>& results) const {
     const char* input = lemma.c_str();
     const char* inputEnd = input + lemma.length();
     int startNode = 0;

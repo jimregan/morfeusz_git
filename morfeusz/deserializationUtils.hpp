@@ -27,6 +27,11 @@ inline uint32_t readInt32(const unsigned char*& currPtr) {
     return res;
 }
 
+inline uint32_t readInt32Const(const unsigned char* const currPtr) {
+    uint32_t res = htonl(*reinterpret_cast<const uint32_t*> (currPtr));
+    return res;
+}
+
 inline std::string readString(const unsigned char*& currPtr) {
     std::string res((const char*) currPtr);
     currPtr += res.length();

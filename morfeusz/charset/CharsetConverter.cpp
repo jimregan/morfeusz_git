@@ -11,7 +11,7 @@
 
 using namespace std;
 
-const char DEFAULT_UNDEFINED_CHAR = static_cast<char>(0xF7);
+const char DEFAULT_UNDEFINED_CHAR = static_cast<char> (0xF7);
 
 string CharsetConverter::toString(const vector<uint32_t>& codepoints) const {
     string res;
@@ -22,22 +22,31 @@ string CharsetConverter::toString(const vector<uint32_t>& codepoints) const {
 }
 
 CharsetConverter::~CharsetConverter() {
-    
+
 }
 
-uint32_t UTF8CharsetConverter::peek(const char*& it, const char* end) const {
-    return utf8::unchecked::peek_next(it);
+uint32_t CharsetConverter::peek(const char* it, const char* end) const {
+    return this->next(it, end);
+}
+
+static inline void iterateThroughInvalidUtf8Sequence(const char*& it, const char* end) {
+    uint32_t _dupa;
+    while (it != end && utf8::internal::validate_next(it, end, _dupa) != utf8::internal::UTF8_OK) {
+        it++;
+    }
 }
 
 uint32_t UTF8CharsetConverter::next(const char*& it, const char* end) const {
-    return utf8::unchecked::next(it);
-//    catch (utf8::exception ex) {
-//        cerr << "WARNING: Replacing invalid character: " << hex << (uint16_t) *it << dec << " with replacement char: 0xFFFD" << endl;
-//        while (it != end && peek(it, end) == 0xFFFD) {
-//            utf8::unchecked::next(it);
-//        }
-//        return 0xFFFD;
-//    }
+    uint32_t cp = 0;
+    utf8::internal::utf_error err_code = utf8::internal::validate_next(it, end, cp);
+    if (err_code == utf8::internal::UTF8_OK) {
+        return cp;
+    }
+    else {
+        cerr << "WARNING: Replacing invalid sequence with replacement char: 0xFFFD" << endl;
+        iterateThroughInvalidUtf8Sequence(it, end);
+        return 0xFFFD;
+    }
 }
 
 void UTF8CharsetConverter::append(uint32_t cp, string& result) const {
@@ -52,7 +61,8 @@ static vector<char> reverseArray(const uint32_t* array) {
         res.resize(max(static_cast<uint32_t> (res.size()), codepoint + 1), DEFAULT_UNDEFINED_CHAR);
         res[codepoint] = static_cast<char> (c);
         c++;
-    }    while (c != 255);
+    }
+    while (c != 255);
     return res;
 }
 
@@ -63,18 +73,15 @@ codepoint2Char(reverseArray(array)) {
 
 // TODO - sprawdzanie zakresu
 
-uint32_t OneByteCharsetConverter::peek(const char*& it, const char* end) const {
-    return this->array[static_cast<unsigned char> (*it)];
-}
-
 uint32_t OneByteCharsetConverter::next(const char*& it, const char* end) const {
-    return this->array[static_cast<unsigned char> (*(it++))];
+    return this->array[static_cast<unsigned char> (*it++)];
 }
 
 void OneByteCharsetConverter::append(uint32_t cp, std::string& result) const {
     if (cp < this->codepoint2Char.size()) {
         result.push_back(this->codepoint2Char[cp]);
-    } else {
+    }
+    else {
         result.push_back(DEFAULT_UNDEFINED_CHAR);
     }
 }

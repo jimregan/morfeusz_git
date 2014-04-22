@@ -14,16 +14,12 @@ static inline void skipSeparatorsList(const unsigned char*& ptr) {
 static inline const unsigned char* getSeparatorsListPtr(const unsigned char* ptr) {
     const unsigned char* additionalDataPtr = ptr 
         + FSA_DATA_OFFSET 
-        + ntohl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
-    const unsigned char* res = additionalDataPtr + readInt32(additionalDataPtr) + 4;
+        + readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
+    const unsigned char* res = additionalDataPtr + readInt32Const(additionalDataPtr) + 4;
     return res;
 }
 
 static inline const unsigned char* getFSAsMapPtr(const unsigned char* ptr) {
-//    const unsigned char* additionalDataPtr = ptr 
-//        + FSA_DATA_OFFSET 
-//        + ntohl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
-//    const unsigned char* res = additionalDataPtr + deserializeUint32(additionalDataPtr) + 4;
     const unsigned char* res = getSeparatorsListPtr(ptr);
     skipSeparatorsList(res);
     return res;
@@ -84,11 +80,9 @@ SegrulesFSA* getDefaultSegrulesFSA(
 vector<uint32_t> getSeparatorsList(const unsigned char* ptr) {
     ptr = getSeparatorsListPtr(ptr);
     vector<uint32_t> res;
-    uint16_t listSize = ntohs(*reinterpret_cast<const uint16_t*>(ptr));
-    ptr += 2;
+    uint16_t listSize = readInt16(ptr);
     for (unsigned int i = 0; i < listSize; i++) {
-        res.push_back(ntohl(*reinterpret_cast<const uint32_t*>(ptr)));
-        ptr += 4;
+        res.push_back(readInt32(ptr));
     }
     return res;
 }

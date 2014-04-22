@@ -5,7 +5,7 @@ project (Morfeusz)
 set (Morfeusz_VERSION_MAJOR 2)
 set (Morfeusz_VERSION_MINOR 0)
 set (Morfeusz_VERSION_PATCH 0)
-#~ set (CMAKE_BUILD_TYPE "Release")
+#~ set (CMAKE_BUILD_TYPE "Debug")
 
 enable_testing()
 

@@ -14,7 +14,7 @@ using namespace std;
 
 Qualifiers::Qualifiers(const unsigned char* ptr):
 qualifiers() {
-    uint32_t fsaSize = htonl(*reinterpret_cast<const uint32_t*>(ptr + FSA_DATA_SIZE_OFFSET));
+    uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
     const unsigned char* currPtr = ptr + FSA_DATA_OFFSET + fsaSize + 4;
     vector<string> _dupa;
     readTags(currPtr, _dupa);
@@ -23,7 +23,7 @@ qualifiers() {
     uint16_t allCombinationsSize = readInt16(currPtr);
     this->qualifiers.reserve(allCombinationsSize);
     for (unsigned int i = 0; i < allCombinationsSize; i++) {
-        unsigned char qualsNum = *currPtr++;
+        unsigned char qualsNum = readInt8(currPtr);
         vector<string> quals;
         for (unsigned int j = 0; j < qualsNum; j++) {
             quals.push_back(readString(currPtr));

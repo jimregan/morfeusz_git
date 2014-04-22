@@ -11,6 +11,7 @@
 #include "MorphDeserializer.hpp"
 #include "EncodedInterpretation.hpp"
 #include "InterpsGroup.hpp"
+#include "deserializationUtils.hpp"
 
 //const uint8_t LEMMA_ONLY_LOWER = 0;
 //const uint8_t LEMMA_UPPER_PREFIX = 1;
@@ -25,16 +26,13 @@ MorphDeserializer::~MorphDeserializer() {
 
 long MorphDeserializer::deserialize(const unsigned char* ptr, vector<InterpsGroup>& interps) const {
     const unsigned char* currPtr = ptr;
-    uint8_t interpTypesNum = *currPtr;
-    currPtr++;
+    uint8_t interpTypesNum = readInt8(currPtr);
     interps.clear();
     interps.reserve(interpTypesNum);
     for (unsigned int i = 0; i < interpTypesNum; i++) {
         InterpsGroup ig;
-        ig.type = *currPtr;
-        currPtr++;
-        ig.size = ntohs(*(reinterpret_cast<const uint16_t*>(currPtr)));
-        currPtr += 2;
+        ig.type = readInt8(currPtr);
+        ig.size = readInt16(currPtr);
         ig.ptr = currPtr;
         currPtr += ig.size;
         interps.push_back(ig);

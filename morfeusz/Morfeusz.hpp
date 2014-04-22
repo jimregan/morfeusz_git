@@ -158,8 +158,6 @@ public:
     friend class ResultsIterator;
 private:
     
-    std::string prepareStringToProcess(const std::string& input) const;
-
     void processOneWord(
             const Environment& env,
             const char*& inputData,

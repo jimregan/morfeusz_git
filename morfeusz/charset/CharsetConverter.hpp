@@ -15,7 +15,7 @@
 
 class CharsetConverter {
 public:
-    virtual uint32_t peek(const char*& it, const char* end) const = 0;
+    uint32_t peek(const char* it, const char* end) const;
     virtual uint32_t next(const char*& it, const char* end) const = 0;
     virtual void append(uint32_t cp, std::string& result) const = 0;
     virtual std::string fromUTF8(const std::string& input) const;
@@ -28,7 +28,6 @@ private:
 
 class UTF8CharsetConverter : public CharsetConverter {
 public:
-    uint32_t peek(const char*& it, const char* end) const;
     uint32_t next(const char*& it, const char* end) const;
     void append(uint32_t cp, std::string& result) const;
     //    std::string fromUTF8(const std::string& input) const;
@@ -41,7 +40,6 @@ private:
 class OneByteCharsetConverter : public CharsetConverter {
 public:
     explicit OneByteCharsetConverter(const uint32_t* array);
-    uint32_t peek(const char*& it, const char* end) const;
     uint32_t next(const char*& it, const char* end) const;
     void append(uint32_t cp, std::string& result) const;
 private:

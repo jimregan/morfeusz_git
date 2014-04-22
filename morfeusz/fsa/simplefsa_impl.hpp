@@ -63,7 +63,6 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
             break;
         }
     }
-    //    const_cast<Counter*>(&counter)->increment(foundTransition - transitionsStart + 1);
     if (!found) {
         state.setNextAsSink();
     }

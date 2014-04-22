@@ -78,8 +78,6 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
     
     uint8_t implementationNum = *(ptr + IMPLEMENTATION_NUM_OFFSET);
     
-//    uint32_t additionalDataSize = ntohl(*(reinterpret_cast<const uint32_t*>(ptr + ADDITIONAL_DATA_SIZE_OFFSET)));
-    
     const unsigned char* startPtr = ptr + FSA_DATA_OFFSET;
     switch (implementationNum) {
         case 0:
