@@ -150,7 +150,7 @@ class MorphEncoder(Encoder):
         return not any(map(lambda cp: cp and True in cp, casePatterns))
     
     def _casePatternsAreOnlyTitles(self, casePatterns):
-        return all(map(lambda cp: cp and cp[0] == True and not False in cp[1:], casePatterns))
+        return all(map(lambda cp: cp and cp[0] == True and not True in cp[1:], casePatterns))
     
     def _casePatternsAreEncodedInCompressByte(self, casePatterns):
         return self._casePatternsHaveOnlyLowercase(casePatterns) or self._casePatternsAreOnlyTitles(casePatterns)

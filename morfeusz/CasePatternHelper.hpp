@@ -44,18 +44,19 @@ public:
             const InterpsGroup& ig) const {
         const unsigned char* currPtr = ig.ptr;
         unsigned char compressionByte = *currPtr++;
-        if (isOrthOnlyLower(compressionByte)) {
+        if (!this->caseSensitive) {
             return true;
-        } 
-        else if (isOrthOnlyTitle(compressionByte)) {
-            return lowercaseCodepoints[0] == originalCodepoints[0];
         }
-        else {
+        else if (isOrthOnlyLower(compressionByte)) {
+            return true;
+        }
+        else if (isOrthOnlyTitle(compressionByte)) {
+            return lowercaseCodepoints[0] != originalCodepoints[0];
+        } else {
             unsigned char casePatternsNum = *currPtr++;
             if (casePatternsNum == 0) {
                 return true;
-            } 
-            else {
+            } else {
                 for (unsigned int i = 0; i < casePatternsNum; i++) {
                     if (checkCasePattern(
                             lowercaseCodepoints,

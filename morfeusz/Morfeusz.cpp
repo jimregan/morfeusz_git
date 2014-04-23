@@ -187,9 +187,6 @@ void Morfeusz::doProcessOneWord(
                 }
                 set<SegrulesState> newSegrulesStates;
                 env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
-                if (this->options.debug && newSegrulesStates.empty()) {
-                    cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
-                }
                 if (!newSegrulesStates.empty() && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
 
                     for (
@@ -231,6 +228,10 @@ void Morfeusz::doProcessOneWord(
                         }
                         accum.pop_back();
                     }
+                }
+                else if (this->options.debug) {
+                    cerr << !newSegrulesStates.empty() << env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig) << endl;
+                    cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
                 }
             }
         }
