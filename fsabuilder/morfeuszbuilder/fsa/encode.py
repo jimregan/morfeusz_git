@@ -44,24 +44,6 @@ class Encoder(object):
         assert typenum >= 0 and typenum < 256
         return bytearray([typenum])
     
-    def _encodeCasePattern(self, casePattern):
-        res = bytearray()
-        if True not in casePattern:
-            res.append(self.LEMMA_ONLY_LOWER)
-            return res
-        elif self._hasUpperPrefix(casePattern):
-            res.append(self.LEMMA_UPPER_PREFIX)
-            res.append(self._getUpperPrefixLength(casePattern))
-            return res
-        else:
-            assert len(casePattern) < 256
-            res.append(self.LEMMA_MIXED_CASE)
-            res.append(len([c for c in casePattern if c]))
-            for idx in range(len(casePattern)):
-                if casePattern[idx]:
-                    res.append(idx)
-            return res
-    
     def _encodeQualifiers(self, qualifiers):
         res = bytearray()
         key = frozenset(qualifiers)
@@ -105,43 +87,7 @@ class Encoder(object):
             res[interp.typenum].append(interp)
         return res
     
-    def _getOrthCasePatterns(self, interpsList):
-        res = []
-        for interp in interpsList:
-            if not True in interp.orthCasePattern:
-                return []
-            else:
-                res.append(list(interp.orthCasePattern))
-        return res
-    
-    def _encodeInterps4Type(self, typenum, interpsList, isAnalyzer):
-        res = bytearray()
-        res.extend(self._encodeTypeNum(typenum))
-        encodedInterpsList = bytearray()
-        if isAnalyzer:
-            casePatterns = self._getOrthCasePatterns(interpsList)
-            encodedInterpsList.append(len(casePatterns))
-            for casePattern in casePatterns:
-                encodedInterpsList.extend(self._encodeCasePattern(casePattern))
-        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
-            if isAnalyzer:
-                encodedInterpsList.extend(self._encodeCasePattern(interp.orthCasePattern))
-            else:
-                encodedInterpsList.extend(serializeString(interp.homonymId))
-                encodedInterpsList.extend(serializeString(interp.encodedForm.prefixToAdd))
-            encodedInterpsList.append(interp.encodedForm.cutLength)
-            encodedInterpsList.extend(serializeString(interp.encodedForm.suffixToAdd))
-            if isAnalyzer:
-                encodedInterpsList.extend(self._encodeCasePattern(interp.encodedForm.casePattern))
-            encodedInterpsList.extend(htons(interp.tagnum))
-            encodedInterpsList.append(interp.namenum)
-            encodedInterpsList.extend(self._encodeQualifiers(interp.qualifiers))
-        
-        res.extend(htons(len(encodedInterpsList)))
-        res.extend(encodedInterpsList)
-        return res
-    
-    def _doEncodeData(self, interpsList, isAnalyzer):
+    def _doEncodeData(self, interpsList):
         
         assert type(interpsList) == frozenset
         
@@ -155,7 +101,7 @@ class Encoder(object):
         res.append(firstByte)
         
         for typenum, interpsList in segnum2Interps.iteritems():
-            res.extend(self._encodeInterps4Type(typenum, interpsList, isAnalyzer))
+            res.extend(self._encodeInterps4Type(typenum, interpsList))
         del interpsList
         
         return res
@@ -164,12 +110,113 @@ class MorphEncoder(Encoder):
     
     def __init__(self, encoding='utf8'):
         super(MorphEncoder, self).__init__(True, encoding)
-        self.LEMMA_ONLY_LOWER = 0
-        self.LEMMA_UPPER_PREFIX = 1
-        self.LEMMA_MIXED_CASE = 2
     
     def encodeData(self, interpsList):
-        return self._doEncodeData(interpsList, isAnalyzer=True)
+        return self._doEncodeData(interpsList)
+    
+    def _getMinOrthCasePatterns(self, interpsList):
+        res = []
+        for interp in interpsList:
+            if not True in interp.orthCasePattern:
+                return []
+            else:
+                res.append(list(interp.orthCasePattern))
+        return res
+    
+    def _encodeCasePattern(self, casePattern):
+        
+        LEMMA_ONLY_LOWER = 0
+        LEMMA_UPPER_PREFIX = 1
+        LEMMA_MIXED_CASE = 2
+        
+        res = bytearray()
+        if True not in casePattern:
+            res.append(LEMMA_ONLY_LOWER)
+            return res
+        elif self._hasUpperPrefix(casePattern):
+            res.append(LEMMA_UPPER_PREFIX)
+            res.append(self._getUpperPrefixLength(casePattern))
+            return res
+        else:
+            assert len(casePattern) < 256
+            res.append(LEMMA_MIXED_CASE)
+            res.append(len([c for c in casePattern if c]))
+            for idx in range(len(casePattern)):
+                if casePattern[idx]:
+                    res.append(idx)
+            return res
+    
+    def _casePatternsHaveOnlyLowercase(self, casePatterns):
+        return not any(map(lambda cp: cp and True in cp, casePatterns))
+    
+    def _casePatternsAreOnlyTitles(self, casePatterns):
+        return all(map(lambda cp: cp and cp[0] == True and not False in cp[1:], casePatterns))
+    
+    def _casePatternsAreEncodedInCompressByte(self, casePatterns):
+        return self._casePatternsHaveOnlyLowercase(casePatterns) or self._casePatternsAreOnlyTitles(casePatterns)
+    
+    def _prefixCutsAreEncodedInCompressByte(self, prefixCuts):
+        return len(prefixCuts) == 1 and list(prefixCuts)[0] < 15
+    
+    def _encodeCompressByte(self, orthCasePatterns, lemmaCasePatterns, prefixCuts):
+        ORTH_ONLY_LOWER = 128
+        ORTH_ONLY_TITLE = 64
+        LEMMA_ONLY_LOWER = 32
+        LEMMA_ONLY_TITLE = 16
+        PREFIX_CUT_MASK = 15
+        res = 0
+        if self._casePatternsHaveOnlyLowercase(orthCasePatterns):
+            res |= ORTH_ONLY_LOWER
+        elif self._casePatternsAreOnlyTitles(orthCasePatterns):
+            res |= ORTH_ONLY_TITLE
+        if self._casePatternsHaveOnlyLowercase(lemmaCasePatterns):
+            res |= LEMMA_ONLY_LOWER
+        elif self._casePatternsAreOnlyTitles(lemmaCasePatterns):
+            res |= LEMMA_ONLY_TITLE
+        
+        if self._prefixCutsAreEncodedInCompressByte(prefixCuts):
+            res |= list(prefixCuts)[0]
+        else:
+            res |= PREFIX_CUT_MASK
+        
+        return res
+    
+    def _encodeInterps4Type(self, typenum, interpsList):
+        res = bytearray()
+        res.extend(self._encodeTypeNum(typenum))
+        
+        encodedInterpsList = bytearray()
+        
+        orthCasePatterns = set([tuple(interp.orthCasePattern) for interp in interpsList])
+        lemmaCasePatterns = set([tuple(interp.encodedForm.casePattern) for interp in interpsList])
+        prefixCuts = set([interp.encodedForm.prefixCutLength for interp in interpsList])
+        
+#         print orthCasePatterns, lemmaCasePatterns, prefixCuts
+        
+        encodedInterpsList.append(self._encodeCompressByte(orthCasePatterns, lemmaCasePatterns, prefixCuts))
+        
+        if not self._casePatternsAreEncodedInCompressByte(orthCasePatterns):
+            minOrthCasePatterns = self._getMinOrthCasePatterns(interpsList)
+            encodedInterpsList.append(len(minOrthCasePatterns))
+            for casePattern in minOrthCasePatterns:
+                encodedInterpsList.extend(self._encodeCasePattern(casePattern))
+        
+        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+            if not self._casePatternsAreEncodedInCompressByte(orthCasePatterns):
+                encodedInterpsList.extend(self._encodeCasePattern(interp.orthCasePattern))
+            if not self._prefixCutsAreEncodedInCompressByte(prefixCuts):
+                encodedInterpsList.append(interp.encodedForm.prefixCutLength)
+            encodedInterpsList.append(interp.encodedForm.cutLength)
+            encodedInterpsList.extend(serializeString(interp.encodedForm.suffixToAdd))
+            if not self._casePatternsAreEncodedInCompressByte(lemmaCasePatterns):
+                encodedInterpsList.extend(self._encodeCasePattern(interp.encodedForm.casePattern))
+            encodedInterpsList.extend(htons(interp.tagnum))
+            encodedInterpsList.append(interp.namenum)
+            encodedInterpsList.extend(self._encodeQualifiers(interp.qualifiers))
+        
+        res.extend(htons(len(encodedInterpsList)))
+        res.extend(encodedInterpsList)
+        return res
 
 class Encoder4Generator(Encoder):
     
@@ -177,4 +224,21 @@ class Encoder4Generator(Encoder):
         super(Encoder4Generator, self).__init__(False, encoding)
     
     def encodeData(self, interpsList):
-        return self._doEncodeData(interpsList, isAnalyzer=False)
+        return self._doEncodeData(interpsList)
+    
+    def _encodeInterps4Type(self, typenum, interpsList):
+        res = bytearray()
+        res.extend(self._encodeTypeNum(typenum))
+        encodedInterpsList = bytearray()
+        for interp in sorted(interpsList, key=lambda i: i.getSortKey()):
+            encodedInterpsList.extend(serializeString(interp.homonymId))
+            encodedInterpsList.extend(serializeString(interp.encodedForm.prefixToAdd))
+            encodedInterpsList.append(interp.encodedForm.cutLength)
+            encodedInterpsList.extend(serializeString(interp.encodedForm.suffixToAdd))
+            encodedInterpsList.extend(htons(interp.tagnum))
+            encodedInterpsList.append(interp.namenum)
+            encodedInterpsList.extend(self._encodeQualifiers(interp.qualifiers))
+        
+        res.extend(htons(len(encodedInterpsList)))
+        res.extend(encodedInterpsList)
+        return res

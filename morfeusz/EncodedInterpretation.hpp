@@ -17,7 +17,8 @@
  * Lemma in a compressed format (as in an automaton)
  */
 struct EncodedForm {
-    int suffixToCut;
+    unsigned char prefixToCut;
+    unsigned char suffixToCut;
     std::string suffixToAdd;
     std::vector<bool> casePattern;
     std::string prefixToAdd;

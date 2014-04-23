@@ -20,6 +20,7 @@
 #include "const.hpp"
 #include "deserializationUtils.hpp"
 #include "charset/utf8.h"
+#include "compressionByteUtils.hpp"
 
 // TODO - konstruktor kopiujący działający Tak-Jak-Trzeba
 
@@ -43,12 +44,17 @@ options(createDefaultOptions()) {
 
 inline const unsigned char* getInterpretationsPtr(const Environment& env, const InterpsGroup& ig) {
     if (env.getProcessorType() == ANALYZER) {
-        const unsigned char* currPtr = ig.ptr;
-        unsigned char casePatternsNum = *currPtr++;
-        for (unsigned int i = 0; i < casePatternsNum; i++) {
-            env.getCasePatternHelper().deserializeOneCasePattern(currPtr);
+        if (hasCompressedOrthCasePatterns(*ig.ptr)) {
+            return ig.ptr + 1;
         }
-        return currPtr;
+        else {
+            const unsigned char* currPtr = ig.ptr + 1;
+            unsigned char casePatternsNum = readInt8(currPtr);
+            for (unsigned int i = 0; i < casePatternsNum; i++) {
+                env.getCasePatternHelper().deserializeOneCasePattern(currPtr);
+            }
+            return currPtr;
+        }
     }
     else {
         return ig.ptr;
@@ -184,7 +190,7 @@ void Morfeusz::doProcessOneWord(
                 if (this->options.debug && newSegrulesStates.empty()) {
                     cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
                 }
-                if (!newSegrulesStates.empty() && env.getCasePatternHelper().checkInterpsGroupCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
+                if (!newSegrulesStates.empty() && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
 
                     for (
                             set<SegrulesState>::iterator it = newSegrulesStates.begin();
@@ -199,6 +205,7 @@ void Morfeusz::doProcessOneWord(
                             currInput,
                             originalCodepoints,
                             normalizedCodepoints,
+                            ig.ptr,
                             interpsPtr,
                             interpsEndPtr,
                             newSegrulesState.shiftOrthFromPrevious,

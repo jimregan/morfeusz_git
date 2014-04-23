@@ -21,6 +21,7 @@
 #include "MorphInterpretation.hpp"
 #include "CasePatternHelper.hpp"
 #include "deserializationUtils.hpp"
+#include "compressionByteUtils.hpp"
 
 class InterpretedChunksDecoder {
 public:
@@ -86,19 +87,38 @@ protected:
         }
     }
 
-    void deserializeEncodedForm(const unsigned char*& ptr, EncodedForm& encodedForm) const {
-        encodedForm.suffixToCut = *ptr;
-        ptr++;
-        encodedForm.suffixToAdd = (const char*) ptr;
-        ptr += strlen((const char*) ptr) + 1;
+    void deserializeEncodedForm(const unsigned char*& ptr, unsigned char compressionByte, EncodedForm& encodedForm) const {
+        encodedForm.prefixToCut = hasCompressedPrefixCut(compressionByte) 
+                ? getPrefixCutLength(compressionByte) 
+                : readInt8(ptr);
+        encodedForm.suffixToCut = readInt8(ptr);
+        encodedForm.suffixToAdd = readString(ptr);
         assert(encodedForm.casePattern.size() == 0);
-        encodedForm.casePattern = env.getCasePatternHelper().deserializeOneCasePattern(ptr);
+        if (isLemmaOnlyLower(compressionByte)) {
+            encodedForm.casePattern = std::vector<bool>();
+        }
+        else if (isLemmaOnlyTitle(compressionByte)) {
+            encodedForm.casePattern = std::vector<bool>();
+            encodedForm.casePattern.push_back(true);
+        }
+        else {
+            encodedForm.casePattern = env.getCasePatternHelper().deserializeOneCasePattern(ptr);
+        }
     }
     
-    EncodedInterpretation deserializeInterp(const unsigned char*& ptr) const {
+    EncodedInterpretation deserializeInterp(const unsigned char*& ptr, unsigned char compressionByte) const {
         EncodedInterpretation interp;
-        interp.orthCasePattern = this->env.getCasePatternHelper().deserializeOneCasePattern(ptr);
-        deserializeEncodedForm(ptr, interp.value);
+        if (isOrthOnlyLower(compressionByte)) {
+            interp.orthCasePattern = std::vector<bool>();
+        }
+        else if (isOrthOnlyTitle(compressionByte)) {
+            interp.orthCasePattern = std::vector<bool>();
+            interp.orthCasePattern.push_back(true);
+        }
+        else {
+            interp.orthCasePattern = this->env.getCasePatternHelper().deserializeOneCasePattern(ptr);
+        }
+        deserializeEncodedForm(ptr, compressionByte, interp.value);
         interp.tag = readInt16(ptr);
         interp.nameClassifier = *ptr++;
         interp.qualifiers = readInt16(ptr);
@@ -123,7 +143,7 @@ private:
             const unsigned char*& ptr,
             std::vector<MorphInterpretation>& out) const {
         string lemma = lemmaPrefix;
-        EncodedInterpretation ei = this->deserializeInterp(ptr);
+        EncodedInterpretation ei = this->deserializeInterp(ptr, *chunk.interpsGroupPtr);
         this->decodeForm(chunk.lowercaseCodepoints, ei.value, lemma);
         if (env.getCasePatternHelper().checkCasePattern(chunk.lowercaseCodepoints, chunk.originalCodepoints, ei.orthCasePattern)) {
             pair<string, string> lemmaHomonymId = getLemmaHomonymIdPair(lemma);

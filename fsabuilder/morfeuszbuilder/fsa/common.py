@@ -21,6 +21,7 @@ class EncodedForm(object):
         self.cutLength = len(fromWord) - len(root)
         self.suffixToAdd = targetWord[len(root):]
         self.casePattern = [c == c.upper() and c != c.lower() for c in root]
+        self.prefixCutLength = 0
 #         print fromWord.encode('utf8'), targetWord.encode('utf8'), self.casePattern
 
 class EncodedForm4Generator(object):

@@ -10,10 +10,8 @@
 
 #include <vector>
 #include "InterpsGroup.hpp"
-
-const uint8_t LEMMA_ONLY_LOWER = 0;
-const uint8_t LEMMA_UPPER_PREFIX = 1;
-const uint8_t LEMMA_MIXED_CASE = 2;
+#include "CasePatternHelper.hpp"
+#include "compressionByteUtils.hpp"
 
 class CasePatternHelper {
 public:
@@ -27,9 +25,9 @@ public:
     }
 
     bool checkCasePattern(
-        const std::vector<uint32_t>& lowercaseCodepoints, 
-        const std::vector<uint32_t>& originalCodepoints, 
-        const std::vector<bool>& casePattern) const {
+            const std::vector<uint32_t>& lowercaseCodepoints,
+            const std::vector<uint32_t>& originalCodepoints,
+            const std::vector<bool>& casePattern) const {
         if (this->caseSensitive) {
             for (unsigned int i = 0; i < casePattern.size(); i++) {
                 if (casePattern[i] && lowercaseCodepoints[i] == originalCodepoints[i]) {
@@ -39,29 +37,38 @@ public:
         }
         return true;
     }
-    
-    bool checkInterpsGroupCasePatterns(
-        const std::vector<uint32_t>& lowercaseCodepoints, 
-        const std::vector<uint32_t>& originalCodepoints,
-        const InterpsGroup& ig) const {
+
+    bool checkInterpsGroupOrthCasePatterns(
+            const std::vector<uint32_t>& lowercaseCodepoints,
+            const std::vector<uint32_t>& originalCodepoints,
+            const InterpsGroup& ig) const {
         const unsigned char* currPtr = ig.ptr;
-        unsigned char casePatternsNum = *currPtr++;
-        if (casePatternsNum == 0) {
+        unsigned char compressionByte = *currPtr++;
+        if (isOrthOnlyLower(compressionByte)) {
             return true;
+        } 
+        else if (isOrthOnlyTitle(compressionByte)) {
+            return lowercaseCodepoints[0] == originalCodepoints[0];
         }
         else {
-            for (unsigned int i = 0; i < casePatternsNum; i++) {
-                if (checkCasePattern(
-                        lowercaseCodepoints, 
-                        originalCodepoints, 
-                        deserializeOneCasePattern(currPtr))) {
-                    return true;
+            unsigned char casePatternsNum = *currPtr++;
+            if (casePatternsNum == 0) {
+                return true;
+            } 
+            else {
+                for (unsigned int i = 0; i < casePatternsNum; i++) {
+                    if (checkCasePattern(
+                            lowercaseCodepoints,
+                            originalCodepoints,
+                            deserializeOneCasePattern(currPtr))) {
+                        return true;
+                    }
                 }
+                return false;
             }
-            return false;
         }
     }
-    
+
     std::vector<bool> deserializeOneCasePattern(const unsigned char*& ptr) const {
         std::vector<bool> res;
         uint8_t casePatternType = *ptr;
@@ -96,7 +103,10 @@ public:
     }
 private:
     bool caseSensitive;
-    
+
+    static const uint8_t LEMMA_ONLY_LOWER = 0;
+    static const uint8_t LEMMA_UPPER_PREFIX = 1;
+    static const uint8_t LEMMA_MIXED_CASE = 2;
 };
 
 #endif	/* CASEPATTERNHELPER_HPP */
