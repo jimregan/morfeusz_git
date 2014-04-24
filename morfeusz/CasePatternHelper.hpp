@@ -52,11 +52,13 @@ public:
         }
         else if (isOrthOnlyTitle(compressionByte)) {
             return lowercaseCodepoints[0] != originalCodepoints[0];
-        } else {
+        } 
+        else {
             unsigned char casePatternsNum = *currPtr++;
             if (casePatternsNum == 0) {
                 return true;
-            } else {
+            } 
+            else {
                 for (unsigned int i = 0; i < casePatternsNum; i++) {
                     if (checkCasePattern(
                             lowercaseCodepoints,
