@@ -8,7 +8,7 @@
 #ifndef ENDIANNESS_HPP
 #define	ENDIANNESS_HPP
 
-#if defined(_WIN64) || defined(_WIN32)
+#if defined _WIN64 || defined _WIN32
 #include <winsock2.h>
 #else
 #include <netinet/in.h>

@@ -48,11 +48,11 @@ if (${UNIX})
         list (APPEND PACKAGE_DEPENDS package-builder-deb)
     endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    add_custom_target (package-python-win-installer
-        COMMAND python ${SETUP_PY} bdist_wininst -d ${TARGET_DIR} --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
-        DEPENDS builder-setup
-    )
-    list (APPEND PACKAGE_DEPENDS package-python-win-installer)
+    #~ add_custom_target (package-python-win-installer
+        #~ COMMAND python ${SETUP_PY} bdist_wininst -d ${TARGET_DIR} --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
+        #~ DEPENDS builder-setup
+    #~ )
+    #~ list (APPEND PACKAGE_DEPENDS package-python-win-installer)
     
     #~ add_custom_target (buildfsa-exec ALL
         #~ COMMAND pyinstaller --noconfirm --onefile --console --strip --distpath="${DIST_PATH}" --clean fsa/morfeusz_builder
