@@ -13,9 +13,15 @@ For cross compiling:
 
 sudo apt-get install g++-multilib g++-mingw-w64 nsis
 
+For cross compiling using buildAll.sh script:
+---------------------------------------------
+
+sudo apt-get install g++-multilib g++-mingw-w64 nsis moreutils
+
 For Java and Python bindings:
 -----------------------------
 sudo apt-get install default-jdk swig
+
 
 Java and Python bindings with cross-compilation support:
 --------------------------------------------------------
@@ -98,11 +104,35 @@ Copy Java JDK and Python libraries from target platform. Set JAVA_ROOT and PYTHO
 
 Create separate build directory, for example build-darwin.
 
-Run:
-cmake -DCMAKE_TOOLCHAIN_FILE=../morfeusz/Toolchain-xxx.cmake ..
+Run cross-compilation:
+----------------------
+
+cmake -D CROSSMORFEUSZ_ROOT=<path_to_crossmorfeusz_dir> -DCMAKE_TOOLCHAIN_FILE=../morfeusz/Toolchain-xxx.cmake ..
 make
 make package package-java package-python
 
+Layout of crossmorfeusz directory:
+----------------------------------
+
+crossmorfeusz
+  darwin64
+    Python.framework
+    JavaVM.framework
+    x86_64-apple-darwin9
+  windows32
+    Java
+    Python27
+  windows64
+    Java
+    Python27
+  linux32
+    jdk1.7.0_45
+    python  
+
+Notes on Mac OS X cross-compilation:
+------------------
+Very special, very magic and ancient version of gcc OSX compiler is required (Apple is evil and does not support cross-compilation anymore). The best way to obtain it is to personally ask the authors (michal.lenart@ipipan.waw.pl, wolinski@ipipan.waw.pl). Once you get it, the compiler directory (x86_64-apple-darwin9) must be copied into /usr directory.
+ 
 
 *************
 Mac OS X
