@@ -8,8 +8,8 @@ set (CMAKE_CXX_FLAGS "-m32")
 
 set (CMAKE_SYSTEM_PROCESSOR "x86")
 
-set (JAVA_ROOT /mnt/storage/crossmorfeusz/linux32/jdk1.7.0_45)
-set (PYTHON_ROOT /mnt/storage/crossmorfeusz/linux32/python)
+set (JAVA_ROOT ${CROSSMORFEUSZ_ROOT}/linux32/jdk1.7.0_45)
+set (PYTHON_ROOT ${CROSSMORFEUSZ_ROOT}/linux32/python)
 
 # here is the target environment located
 set (CMAKE_FIND_ROOT_PATH  ${JAVA_ROOT} ${PYTHON_ROOT})

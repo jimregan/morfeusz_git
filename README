@@ -11,12 +11,12 @@ sudo pip install pyinstaller
 For cross compiling:
 --------------------
 
-sudo apt-get install g++-multilib g++-mingw-w64 nsis
+sudo apt-get install g++-multilib g++-mingw-w64 nsis libssl.0.9.8:i386
 
 For cross compiling using buildAll.sh script:
 ---------------------------------------------
 
-sudo apt-get install g++-multilib g++-mingw-w64 nsis moreutils
+sudo apt-get install g++-multilib g++-mingw-w64 nsis libssl.0.9.8:i386 moreutils
 
 For Java and Python bindings:
 -----------------------------

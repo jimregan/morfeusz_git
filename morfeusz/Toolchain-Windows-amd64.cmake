@@ -8,7 +8,7 @@ set (CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
 set (CMAKE_SYSTEM_PROCESSOR "x86_64")
 
 # here is the target environment located
-set (WIN64_ROOT /mnt/storage/crossmorfeusz/windows64)
+set (WIN64_ROOT ${CROSSMORFEUSZ_ROOT}/windows64)
 set (PYTHON_ROOT ${WIN64_ROOT}/Python27)
 set (JAVA_ROOT ${WIN64_ROOT}/Java/jdk1.7.0_45)
 set (CMAKE_FIND_ROOT_PATH  /usr/x86_64-w64-mingw32 ${JAVA_ROOT} ${PYTHON_ROOT})
