@@ -19,7 +19,7 @@ praet=split composite
 
 #define rzeczowniki (subst|ger|depr)
 
-#define	adj (adj_pos|adv_pos|adj_com|adv_com|adj_sup)
+#define	adj (adj_pos|adv_pos|adj_com|adv_com)
 
 #define aglsg (aglsg1_wok|aglsg1_nwok|aglsg2_wok|aglsg2_nwok)
 #define aglpl (aglpl1_wok|aglpl1_nwok|aglpl2_wok|aglpl2_nwok)
@@ -153,10 +153,11 @@ moze_interp( (adja dywiz)+ adj )
 # np. „nie·grzeczniejszy”, „nie·grzeczniej”
 moze_interp( adj_com )
 moze_interp( nie> adj_com )
+moze_interp( nie> adv_com )
 
 # Formy „zanegowane” gerundiów i imiesłowów:
 # np. „nie·czytanie”, „nie·przeczytany”, „nie·czytający”:
-moze_interp( nie> negat )
+moze_interp( negat )
 
 # Przyimki akceptujące krótką formę „-ń”
 # moze_interp(z_on_agl)
@@ -219,7 +220,7 @@ moze_interp((dig>* dig) dywiz (dig>* dig))
 
 # Stopień najwyższy:
 # np. „naj·zieleńszy”, „naj·mądrzej”
-moze_interp( naj> adj_sup )
+moze_interp( adj_sup )
 
 
 # Cząstka li przy osobowych formach czasownika oddzielona dywizem: znasz-li ten kraj
@@ -288,27 +289,27 @@ moze_interp(pred)
 
 # REGUŁY EKSPERYMENTALNE
 # formy złoż. rzeczowników i sufiksoidów rzeczownikowych
-moze_interp( substa> sufs ) !weak
+# moze_interp( substa> sufs ) !weak
 
 # złożenia imiesłowów przymiotnikowych czynnych:
 # trzeba poczekać na formy złoż. imiesłowów.
 
 # liczba arabska z formą przymiotnikową lub przysłówkową: 22-letni, 
 # 1-majowy, 3-krotnie
-moze_interp( dig>+ dywiz> (adj_pos|adv_pos) )
+# moze_interp( dig>+ dywiz> (adj_pos|adv_pos) )
 
 # wersja z ułamkiem dziesiętnym, np. 6,5-metrowy, 8,5-procentowy
-moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
+# moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
 
 # liczba rzymska z formą przymiotnikową: XIX-wieczny
 # moze_interp( roman_num> dywiz> (adj_pos|adv_pos) )
 
 # formy złoż. z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
-moze_interp( num_zloz>+ suf_num ) !weak
-moze_interp(num_zloz>+ i> pol_zloz> suf_num ) !weak
+# moze_interp( num_zloz>+ suf_num ) !weak
+# moze_interp(num_zloz>+ i> pol_zloz> suf_num ) !weak
 
 # złożenia liczbowe z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
-moze_interp( dig>+ dywiz> suf_num )
+# moze_interp( dig>+ dywiz> suf_num )
 
 # interpretacja znaków interpunkcyjnych
 # moze_interp(samodz interp)
@@ -316,28 +317,27 @@ moze_interp( dig>+ dywiz> suf_num )
 # REGUŁY DLA ZAPISÓW NIEPOPRAWNYCH
 
 # ‹by› z predykatywami łącznie
-moze_interp(pred by) !weak
+# moze_interp(pred by) !weak
 
 # Stopień najwyższy z ‹nie›:
 # np. „nie·naj·zieleńszy”, „nie·naj·mądrzej”
-moze_interp( nie> naj> adj_sup ) !weak
+# moze_interp( nie> naj> adj_sup ) !weak
 
 # zapis typu: 50-tych, 20-te
-moze_interp(dig>+ dywiz> suf_ord)
+# moze_interp(dig>+ dywiz> suf_ord)
 
 # zapis łączny: tymbardziej, tymładniej
-moze_interp(tym)
-moze_interp(bardziej)
-moze_interp(niemniej)
-moze_interp(tym bardziej)
-moze_interp(tym niemniej)
-moze_interp(tym adj_com) !weak
+# moze_interp(tym)
+# moze_interp(bardziej)
+# moze_interp(niemniej)
+# moze_interp(tym bardziej)
+# moze_interp(tym niemniej)
+# moze_interp(tym adj_com) !weak
 
 # ‹na pewno› zapisane łącznie
-moze_interp(prep_na pewno) !weak
+# moze_interp(prep_na pewno) !weak
 
 [segment types]
-naj
 nie
 prefs
 prefv
@@ -429,7 +429,6 @@ samodz
 
 
 [tags]
-naj	naj
 nie	nie
 prefs	prefs
 prefv	prefv
@@ -682,3 +681,4 @@ pref_dyw	e-+:prefs
 
 # ;
 59
+

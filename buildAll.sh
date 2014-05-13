@@ -24,7 +24,7 @@ function build {
     cd $buildDir
     cmake -D CROSSMORFEUSZ_ROOT=/home/mlenart/opt/crossmorfeusz -D CMAKE_TOOLCHAIN_FILE=$toolchain -D TARGET_DIR=$targetDir $srcDir
     echo "building $toolchain" >&2
-    make -j2
+    make
     make $targets
 
     for f in `find "$targetDir" -name "*-Linux-*.deb"`

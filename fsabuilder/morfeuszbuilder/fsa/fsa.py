@@ -41,7 +41,7 @@ class FSA(object):
         self.n += 1
         
         # debug
-        if self.n < 10 or (self.n < 10000 and self.n % 1000 == 0) or self.n % 10000 == 0:
+        if self.n < 10 or (self.n < 10000 and self.n % 1000 == 0) or self.n % 10000 == 0 or word.startswith('naj'):
             logging.info(u'%d %s' % (self.n, word))
         for label in encodedWord:
             self.label2Freq[label] = self.label2Freq.get(label, 0) + 1

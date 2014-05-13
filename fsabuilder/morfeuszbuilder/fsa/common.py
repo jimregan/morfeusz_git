@@ -7,7 +7,7 @@ Created on Nov 7, 2013
 import codecs
 import logging
 
-class EncodedForm(object):
+class EncodedFormWithoutPrefix(object):
     
     def __init__(self, fromWord, targetWord, lowercase):
         assert type(fromWord) == unicode
@@ -21,8 +21,7 @@ class EncodedForm(object):
         self.cutLength = len(fromWord) - len(root)
         self.suffixToAdd = targetWord[len(root):]
         self.casePattern = [c == c.upper() and c != c.lower() for c in root]
-        self.prefixCutLength = 0
-#         print fromWord.encode('utf8'), targetWord.encode('utf8'), self.casePattern
+#         self.prefixCutLength = 0
 
 class EncodedForm4Generator(object):
     
@@ -32,7 +31,7 @@ class EncodedForm4Generator(object):
         bestEncodedForm = None
         bestPrefixLength = -1
         for prefixLength in range(min(len(targetWord), 5)):
-            encodedForm = EncodedForm(fromWord, targetWord[prefixLength:], lowercase=False)
+            encodedForm = EncodedFormWithoutPrefix(fromWord, targetWord[prefixLength:], lowercase=False)
             if not bestEncodedForm \
             or len(encodedForm.suffixToAdd) + prefixLength < len(bestEncodedForm.suffixToAdd) + bestPrefixLength:
                 bestEncodedForm = encodedForm
@@ -42,16 +41,34 @@ class EncodedForm4Generator(object):
         self.cutLength = bestEncodedForm.cutLength
         self.suffixToAdd = bestEncodedForm.suffixToAdd
         self.prefixToAdd = targetWord[:bestPrefixLength]
+
+class EncodedForm4Analyzer(object):
+    
+    def __init__(self, fromWord, targetWord):
+        assert type(fromWord) == unicode
+        assert type(targetWord) == unicode
+        bestEncodedForm = None
+        bestPrefixCutLength = -1
+        for prefixCutLength in range(min(len(fromWord), 5)):
+            encodedForm = EncodedFormWithoutPrefix(fromWord[prefixCutLength:], targetWord, lowercase=True)
+            if not bestEncodedForm \
+            or len(encodedForm.suffixToAdd) + prefixCutLength < len(bestEncodedForm.suffixToAdd):
+                bestEncodedForm = encodedForm
+                bestPrefixCutLength = prefixCutLength
+        assert bestPrefixCutLength >= 0
         
-#         if fromWord == 'BC':
-#             print self.cutLength
-#             print self.suffixToAdd
-#             print self.prefixToAdd, len(self.prefixToAdd)
+        self.prefixCutLength = bestPrefixCutLength
+        self.cutLength = bestEncodedForm.cutLength
+        self.suffixToAdd = bestEncodedForm.suffixToAdd
+        self.casePattern = bestEncodedForm.casePattern
+        
+        if bestPrefixCutLength != 0:
+            print bestPrefixCutLength, fromWord.encode('utf8'), targetWord.encode('utf8')
 
 class Interpretation4Analyzer(object):
     
     def __init__(self, orth, base, tagnum, namenum, typenum, qualifiers):
-        self.encodedForm = EncodedForm(orth, base, lowercase=True)
+        self.encodedForm = EncodedForm4Analyzer(orth, base)
         self.orthCasePattern = [c == c.upper() and c != c.lower() for c in orth[:len(orth) - self.encodedForm.cutLength]]
         self.tagnum = tagnum
         self.namenum = namenum
@@ -60,7 +77,8 @@ class Interpretation4Analyzer(object):
     
     def getSortKey(self):
         return (
-                self.encodedForm.cutLength, 
+                self.encodedForm.cutLength,
+                self.encodedForm.prefixCutLength,
                 tuple(self.encodedForm.suffixToAdd), 
                 tuple(self.encodedForm.casePattern),
                 tuple(self.orthCasePattern),

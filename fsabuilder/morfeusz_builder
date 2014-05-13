@@ -66,7 +66,7 @@ def _parseOptions():
                         dest='trimSupneg',
                         default=False,
                         action='store_true',
-                        help='trim "naj" and "nie" prefixes from words tagged as "%:sup" and "%:neg" respectively. Valid only for analysis.')
+                        help='this option is ignored and exists only for backwards compatibility')
     parser.add_option('-o', '--output-file',
                         dest='outputFile',
                         metavar='FILE',
@@ -151,9 +151,9 @@ def _concatFiles(inputFiles):
                     else:
                         logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % line.strip().decode('utf8'))
 
-def _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager, trimSupneg):
+def _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager):
     logging.info('reading analyzer data from %s', str(inputFiles))
-    for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8', segmentRulesManager, trimSupneg).convert(_concatFiles(inputFiles)):
+    for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8', segmentRulesManager).convert(_concatFiles(inputFiles)):
         yield entry
 
 def _readPolimorfInput4Generator(inputFiles, tagset, encoder, segmentRulesManager):
@@ -183,10 +183,10 @@ def _printStats(fsa):
     logging.info('sink states num: '+str(sinkNum))
     logging.info('array states num: '+str(arrayNum))
 
-def buildAnalyzerFromPoliMorf(inputFiles, tagset, segmentRulesManager, trimSupneg):
+def buildAnalyzerFromPoliMorf(inputFiles, tagset, segmentRulesManager):
     encoder = encode.MorphEncoder()
     fsa = FSA(encoder, tagset)
-    for word, data in _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager, trimSupneg):
+    for word, data in _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager):
 #         print word, data
         fsa.addEntry(word, data)
     fsa.close()
@@ -227,7 +227,7 @@ def main(opts):
     segmentationRulesData = segmentRulesManager.serialize()
     
     if opts.analyzer:
-        fsa, qualifiersMap = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager, opts.trimSupneg)
+        fsa, qualifiersMap = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
     else:
         fsa, qualifiersMap = buildGeneratorFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
     if opts.trainFile:
