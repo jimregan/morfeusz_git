@@ -72,7 +72,7 @@ protected:
             const vector<uint32_t>& orth,
             const EncodedForm& lemma,
             string& res) const {
-        for (unsigned int i = 0; i < orth.size() - lemma.suffixToCut; i++) {
+        for (unsigned int i = lemma.prefixToCut; i < orth.size() - lemma.suffixToCut; i++) {
             uint32_t cp =
                     (i < lemma.casePattern.size() && lemma.casePattern[i])
                     ? env.getCaseConverter().toTitle(orth[i])
@@ -106,7 +106,7 @@ protected:
         }
     }
     
-    EncodedInterpretation deserializeInterp(const unsigned char*& ptr, unsigned char compressionByte) const {
+    EncodedInterpretation deserializeEncodedInterp(const unsigned char*& ptr, unsigned char compressionByte) const {
         EncodedInterpretation interp;
         if (isOrthOnlyLower(compressionByte)) {
             interp.orthCasePattern = std::vector<bool>();
@@ -143,7 +143,7 @@ private:
             const unsigned char*& ptr,
             std::vector<MorphInterpretation>& out) const {
         string lemma = lemmaPrefix;
-        EncodedInterpretation ei = this->deserializeInterp(ptr, *chunk.interpsGroupPtr);
+        EncodedInterpretation ei = this->deserializeEncodedInterp(ptr, *chunk.interpsGroupPtr);
         this->decodeForm(chunk.lowercaseCodepoints, ei.value, lemma);
         if (env.getCasePatternHelper().checkCasePattern(chunk.lowercaseCodepoints, chunk.originalCodepoints, ei.orthCasePattern)) {
             pair<string, string> lemmaHomonymId = getLemmaHomonymIdPair(lemma);
