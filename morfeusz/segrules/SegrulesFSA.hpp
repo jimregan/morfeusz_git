@@ -34,14 +34,14 @@ public:
     void proceedToNext(
         const unsigned char segnum,
         const SegrulesState state,
-        std::set<SegrulesState>& newStates) const {
+        std::vector<SegrulesState>& newStates) const {
         
         const unsigned char* currPtr = ptr + state.offset;
         currPtr++;
         const unsigned char transitionsNum = *currPtr++;
         for (unsigned int i = 0; i < transitionsNum; i++) {
             if (*currPtr == segnum) {
-                newStates.insert(newStates.begin(), this->transition2State(currPtr));
+                newStates.push_back(this->transition2State(currPtr));
             }
             currPtr += 4;
         }

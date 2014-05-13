@@ -30,7 +30,7 @@ class UTF8CharsetConverter : public CharsetConverter {
 public:
     uint32_t next(const char*& it, const char* end) const;
     void append(uint32_t cp, std::string& result) const;
-    //    std::string fromUTF8(const std::string& input) const;
+    std::string fromUTF8(const std::string& input) const;
 private:
 };
 

@@ -21,7 +21,7 @@ public:
             int endNode,
             const std::string& orth,
             const std::string& lemma,
-            const std::string& homonymId,
+//            const std::string& homonymId,
             int tagnum,
             int namenum,
             int qualifiersNum,
@@ -32,7 +32,8 @@ public:
     int getEndNode() const;
     const std::string& getOrth() const;
     const std::string& getLemma() const;
-    const std::string& getHomonymId() const;
+//    const std::string& getHomonymId() const;
+    bool hasHomonym(const string& homonymId) const;
     int getTagnum() const;
     int getNamenum() const;
     const std::string& getTag() const;
@@ -49,7 +50,7 @@ private:
     int endNode;
     std::string orth;
     std::string lemma;
-    std::string homonymId;
+//    std::string homonymId;
     int tagnum;
     int namenum;
     std::string tag;

@@ -217,3 +217,8 @@ void InflexionGraph::repairLastNodeNumbers() {
         }
     }
 }
+
+void InflexionGraph::clear() {
+    graph.clear();
+    node2ChunkStartPtr.clear();
+}

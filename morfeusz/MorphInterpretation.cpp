@@ -9,6 +9,7 @@
 #include <sstream>
 #include "MorphInterpretation.hpp"
 #include "EncodedInterpretation.hpp"
+#include "const.hpp"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ MorphInterpretation::MorphInterpretation(
         int endNode,
         const string& orth,
         const string& lemma,
-        const string& homonymId,
+        //        const string& homonymId,
         int tagnum,
         int namenum,
         int qualifiersNum,
@@ -26,14 +27,14 @@ MorphInterpretation::MorphInterpretation(
 endNode(endNode),
 orth(orth),
 lemma(lemma),
-homonymId(homonymId),
+//homonymId(homonymId),
 tagnum(tagnum),
 namenum(namenum),
 tag(env.getTagset().getTag(tagnum, env.getCharsetConverter())),
 name(env.getTagset().getName(namenum, env.getCharsetConverter())),
 qualifiers(env.getQualifiersHelper().getQualifiers(qualifiersNum)) {
 
-    
+
 }
 
 MorphInterpretation::MorphInterpretation(
@@ -44,7 +45,7 @@ MorphInterpretation::MorphInterpretation(
 endNode(startNode + 1),
 orth(orth),
 lemma(orth),
-homonymId(""),
+//homonymId(""),
 tagnum(0),
 namenum(0),
 //        qualifiersNum(0),
@@ -74,9 +75,25 @@ const std::string& MorphInterpretation::getLemma() const {
     return this->lemma;
 }
 
-const std::string& MorphInterpretation::getHomonymId() const {
-    return this->homonymId;
+static inline bool hasEnding(const string &fullString, const string &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    }
+    else {
+        return false;
+    }
 }
+
+bool MorphInterpretation::hasHomonym(const string& homonymId) const {
+    size_t homonymSeparatorIdx = this->lemma.length() - homonymId.length() - 1;
+    return homonymSeparatorIdx > 0 
+            && this->lemma[homonymSeparatorIdx] == HOMONYM_SEPARATOR 
+            && hasEnding(this->lemma, homonymId);
+}
+
+//const std::string& MorphInterpretation::getHomonymId() const {
+//    return this->homonymId;
+//}
 
 int MorphInterpretation::getTagnum() const {
     return this->tagnum;
@@ -117,9 +134,9 @@ std::string MorphInterpretation::toString(bool includeNodeNumbers) const {
     res << orth << ",";
 
     res << lemma;
-    if (!this->homonymId.empty()) {
-        res << ":" << homonymId;
-    }
+//    if (!this->homonymId.empty()) {
+//        res << ":" << homonymId;
+//    }
     res << ",";
 
     res << tag;

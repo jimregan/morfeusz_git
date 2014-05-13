@@ -37,7 +37,9 @@ static MorfeuszOptions createDefaultOptions() {
 Morfeusz::Morfeusz()
 : analyzerEnv(DEFAULT_MORFEUSZ_CHARSET, ANALYZER, DEFAULT_FSA),
 generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
-options(createDefaultOptions()) {
+options(createDefaultOptions()),
+accum(),
+graph(){
     analyzerEnv.setCaseSensitive(options.caseSensitive);
     generatorEnv.setCaseSensitive(false);
 }
@@ -83,8 +85,10 @@ void Morfeusz::processOneWord(
             && isWhitespace(env.getCharsetConverter().peek(inputStart, inputEnd))) {
         env.getCharsetConverter().next(inputStart, inputEnd);
     }
-    vector<InterpretedChunk> accum;
-    InflexionGraph graph;
+    
+    accum.clear();
+    graph.clear();
+    
     const char* currInput = inputStart;
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
 
@@ -94,9 +98,9 @@ void Morfeusz::processOneWord(
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
         for (unsigned int i = 0; i < graph.getTheGraph().size(); i++) {
-            vector<InflexionGraph::Edge>& edges = graph.getTheGraph()[i];
+            const vector<InflexionGraph::Edge>& edges = graph.getTheGraph()[i];
             for (unsigned int j = 0; j < edges.size(); j++) {
-                InflexionGraph::Edge& e = edges[j];
+                const InflexionGraph::Edge& e = edges[j];
                 int targetNode = startNodeNum + e.nextNode;
                 interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, results);
             }
@@ -155,12 +159,16 @@ void Morfeusz::doProcessOneWord(
     const char* inputStart = inputData;
     const char* currInput = inputData;
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
+    bool currCodepointIsWhitespace = isWhitespace(codepoint);
     vector<uint32_t> originalCodepoints;
     vector<uint32_t> normalizedCodepoints;
+    
+    originalCodepoints.reserve(16);
+    normalizedCodepoints.reserve(16);
 
     StateType state = env.getFSA().getInitialState();
 
-    while (!isWhitespace(codepoint)) {
+    while (!currCodepointIsWhitespace) {
         uint32_t normalizedCodepoint = env.getProcessorType() == ANALYZER
                 ? env.getCaseConverter().toLower(codepoint)
                 : codepoint;
@@ -168,6 +176,7 @@ void Morfeusz::doProcessOneWord(
         normalizedCodepoints.push_back(normalizedCodepoint);
         feedState(state, normalizedCodepoint, UTF8CharsetConverter());
         codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().peek(currInput, inputEnd);
+        currCodepointIsWhitespace = isWhitespace(codepoint);
         string homonymId;
         if (env.getProcessorType() == GENERATOR && codepoint == 0x3A && currInput + 1 != inputEnd) {
             if (originalCodepoints.size() == 1) {
@@ -177,6 +186,7 @@ void Morfeusz::doProcessOneWord(
             //            cerr << "homonym " << homonymId << endl;
             currInput = inputEnd;
             codepoint = 0x00;
+            currCodepointIsWhitespace = true;
         }
         if (state.isAccepting()) {
             vector<InterpsGroup> val(state.getValue());
@@ -185,12 +195,13 @@ void Morfeusz::doProcessOneWord(
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
-                set<SegrulesState> newSegrulesStates;
+                vector<SegrulesState> newSegrulesStates;
                 env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
-                if (!newSegrulesStates.empty() && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
+                if (!newSegrulesStates.empty() 
+                        && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
 
                     for (
-                            set<SegrulesState>::iterator it = newSegrulesStates.begin();
+                            vector<SegrulesState>::iterator it = newSegrulesStates.begin();
                             it != newSegrulesStates.end();
                             ++it) {
                         SegrulesState newSegrulesState = *it;
@@ -214,14 +225,14 @@ void Morfeusz::doProcessOneWord(
                             doShiftOrth(accum.back(), ic);
                         }
                         accum.push_back(ic);
-                        if (isWhitespace(codepoint)
+                        if (currCodepointIsWhitespace
                                 && newSegrulesState.accepting) {
                             if (this->options.debug) {
                                 cerr << "ACCEPTING " << debugAccum(accum) << endl;
                             }
                             graph.addPath(accum, newSegrulesState.weak);
                         }
-                        else if (!isWhitespace(codepoint)) {
+                        else if (!currCodepointIsWhitespace) {
                             //                        cerr << "will process " << currInput << endl;
                             const char* newCurrInput = currInput;
                             doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState, accum, graph);
@@ -235,7 +246,7 @@ void Morfeusz::doProcessOneWord(
                 }
             }
         }
-        codepoint = currInput == inputEnd || isWhitespace(codepoint) ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
+        codepoint = currInput == inputEnd || currCodepointIsWhitespace ? 0x00 : env.getCharsetConverter().next(currInput, inputEnd);
     }
     inputData = currInput;
 }
@@ -248,7 +259,7 @@ void Morfeusz::handleIgnChunk(
         std::vector<MorphInterpretation>& results) const {
     const char* currInput = inputStart;
     const char* prevInput;
-    uint32_t codepoint;
+    uint32_t codepoint = 0x00;
     bool separatorFound = false;
     while (currInput != inputEnd) {
         prevInput = currInput;

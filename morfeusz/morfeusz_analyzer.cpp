@@ -26,9 +26,10 @@ int main(int argc, const char** argv) {
 //    Morfeusz morfeusz(getMorfeuszFromCLI(argc, argv, "Morfeusz analyzer"));
     
     string line;
+    vector<MorphInterpretation> res;
     while (getline(cin, line)) {
         //        printf("%s\n", line.c_str());
-        vector<MorphInterpretation> res;
+        res.clear();
         morfeusz.analyze(line, res);
         int prevStart = -1;
         int prevEnd = -1;

@@ -108,3 +108,7 @@ string CharsetConverter::fromUTF8(const string& input) const {
     }
     return res;
 }
+
+string UTF8CharsetConverter::fromUTF8(const string& input) const {
+    return input;
+}

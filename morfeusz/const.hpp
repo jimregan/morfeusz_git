@@ -27,5 +27,7 @@ extern const MorfeuszCharset DEFAULT_MORFEUSZ_CHARSET;
 
 extern const unsigned char SHIFT_ORTH_NODE;
 
+extern const char HOMONYM_SEPARATOR;
+
 #endif	/* CONST_HPP */
 

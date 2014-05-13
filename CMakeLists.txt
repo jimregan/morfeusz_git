@@ -5,7 +5,6 @@ project (Morfeusz)
 set (Morfeusz_VERSION_MAJOR 2)
 set (Morfeusz_VERSION_MINOR 0)
 set (Morfeusz_VERSION_PATCH 0)
-#~ set (CMAKE_BUILD_TYPE "Debug")
 
 enable_testing()
 
@@ -61,9 +60,6 @@ endif ()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
-    #~ if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
-        #~ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
-    #~ endif ()
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -O2")
     set (CMAKE_SHARED_LIBRARY_PREFIX "")

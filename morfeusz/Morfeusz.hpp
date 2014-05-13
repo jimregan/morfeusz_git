@@ -190,6 +190,8 @@ private:
     Environment analyzerEnv;
     Environment generatorEnv;
     MorfeuszOptions options;
+    mutable vector<InterpretedChunk> accum;
+    mutable InflexionGraph graph;
 };
 
 class ResultsIterator {
