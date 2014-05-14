@@ -62,9 +62,6 @@ class EncodedForm4Analyzer(object):
         self.suffixToAdd = bestEncodedForm.suffixToAdd
         self.casePattern = bestEncodedForm.casePattern
         
-        if bestPrefixCutLength != 0:
-            print bestPrefixCutLength, fromWord.encode('utf8'), targetWord.encode('utf8')
-
 class Interpretation4Analyzer(object):
     
     def __init__(self, orth, base, tagnum, namenum, typenum, qualifiers):
