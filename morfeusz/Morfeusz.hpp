@@ -170,9 +170,7 @@ private:
             const Environment& env,
             const char*& inputData,
             const char* inputEnd,
-            SegrulesState segrulesState,
-            std::vector<InterpretedChunk>& accum,
-            InflexionGraph& graph) const;
+            SegrulesState segrulesState) const;
     
     void handleIgnChunk(
         const Environment& env,

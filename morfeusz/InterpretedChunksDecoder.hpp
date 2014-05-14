@@ -62,7 +62,7 @@ public:
             orth += this->env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
             const unsigned char* currPtr = interpretedChunk.interpsPtr;
             while (currPtr < interpretedChunk.interpsEndPtr) {
-                this->decodeMorphInterpretation(startNode, endNode, orth, lemmaPrefix, interpretedChunk, currPtr, out);
+                this->decodeMorphInterpretation(startNode, endNode, orth, lemmaPrefix, interpretedChunk, false, currPtr, out);
             }
         }
     }
@@ -72,6 +72,7 @@ protected:
     void decodeForm(
             const vector<uint32_t>& orth,
             const EncodedForm& lemma,
+            bool forPrefix,
             string& res) const {
         for (unsigned int i = lemma.prefixToCut; i < orth.size() - lemma.suffixToCut; i++) {
             uint32_t cp =
@@ -80,11 +81,13 @@ protected:
                     : orth[i];
             env.getCharsetConverter().append(cp, res);
         }
-        const char* suffixPtr = lemma.suffixToAdd.c_str();
-        const char* suffixEnd = suffixPtr + lemma.suffixToAdd.length();
-        while (suffixPtr != suffixEnd) {
-            uint32_t cp = UTF8CharsetConverter().next(suffixPtr, suffixEnd);
-            env.getCharsetConverter().append(cp, res);
+        if (!forPrefix) {
+            const char* suffixPtr = lemma.suffixToAdd.c_str();
+            const char* suffixEnd = suffixPtr + lemma.suffixToAdd.length();
+            while (suffixPtr != suffixEnd) {
+                uint32_t cp = UTF8CharsetConverter::getInstance().next(suffixPtr, suffixEnd);
+                env.getCharsetConverter().append(cp, res);
+            }
         }
     }
 
@@ -97,12 +100,10 @@ protected:
         assert(encodedForm.casePattern.size() == 0);
         if (isLemmaOnlyLower(compressionByte)) {
             encodedForm.casePattern = std::vector<bool>();
-        }
-        else if (isLemmaOnlyTitle(compressionByte)) {
+        } else if (isLemmaOnlyTitle(compressionByte)) {
             encodedForm.casePattern = std::vector<bool>();
             encodedForm.casePattern.push_back(true);
-        }
-        else {
+        } else {
             encodedForm.casePattern = env.getCasePatternHelper().deserializeOneCasePattern(ptr);
         }
     }
@@ -110,11 +111,9 @@ protected:
     EncodedInterpretation deserializeEncodedInterp(const unsigned char*& ptr, unsigned char compressionByte) const {
         EncodedInterpretation interp;
         if (isOrthOnlyLower(compressionByte)) {
-        }
-        else if (isOrthOnlyTitle(compressionByte)) {
+        } else if (isOrthOnlyTitle(compressionByte)) {
             interp.orthCasePattern.push_back(true);
-        }
-        else {
+        } else {
             interp.orthCasePattern = this->env.getCasePatternHelper().deserializeOneCasePattern(ptr);
         }
         deserializeEncodedForm(ptr, compressionByte, interp.value);
@@ -129,8 +128,7 @@ private:
         vector<string> splitRes(split(lemma, ':'));
         if (splitRes.size() == 2) {
             return make_pair(splitRes[0], splitRes[1]);
-        }
-        else {
+        } else {
             return make_pair(lemma, "");
         }
     }
@@ -140,17 +138,18 @@ private:
             const string& orth,
             const string& lemmaPrefix,
             const InterpretedChunk& chunk,
+            bool forPrefix,
             const unsigned char*& ptr,
             std::vector<MorphInterpretation>& out) const {
         string lemma = lemmaPrefix;
         EncodedInterpretation ei = this->deserializeEncodedInterp(ptr, *chunk.interpsGroupPtr);
-        this->decodeForm(chunk.lowercaseCodepoints, ei.value, lemma);
+        this->decodeForm(chunk.lowercaseCodepoints, ei.value, forPrefix, lemma);
         if (env.getCasePatternHelper().checkCasePattern(chunk.lowercaseCodepoints, chunk.originalCodepoints, ei.orthCasePattern)) {
             //            pair<string, string> lemmaHomonymId = getLemmaHomonymIdPair(lemma);
             out.push_back(MorphInterpretation(
                     startNode, endNode,
                     orth, lemma,
-//                    "",
+                    //                    "",
                     ei.tag,
                     ei.nameClassifier,
                     ei.qualifiers,
@@ -165,11 +164,10 @@ private:
             const unsigned char* ptr = prefixChunk.interpsPtr;
             std::vector<MorphInterpretation> mi;
             //            env.getCasePatternHelper().skipCasePattern(ptr);
-            this->decodeMorphInterpretation(0, 0, orth, string(""), prefixChunk, ptr, mi);
+            this->decodeMorphInterpretation(0, 0, orth, string(""), prefixChunk, true, ptr, mi);
             if (!mi.empty()) {
                 lemmaPrefix += mi[0].getLemma();
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -227,7 +225,7 @@ private:
         return MorphInterpretation(
                 startNode, endNode,
                 orth, lemma + HOMONYM_SEPARATOR + ei.homonymId,
-//                ei.homonymId,
+                //                ei.homonymId,
                 ei.tag,
                 ei.nameClassifier,
                 ei.qualifiers,
@@ -245,7 +243,7 @@ private:
         const char* suffixPtr = orth.suffixToAdd.c_str();
         const char* suffixEnd = suffixPtr + orth.suffixToAdd.length();
         while (suffixPtr != suffixEnd) {
-            uint32_t cp = UTF8CharsetConverter().next(suffixPtr, suffixEnd);
+            uint32_t cp = UTF8CharsetConverter::getInstance().next(suffixPtr, suffixEnd);
             env.getCharsetConverter().append(cp, res);
         }
     }

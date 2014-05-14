@@ -36,6 +36,13 @@ static inline void iterateThroughInvalidUtf8Sequence(const char*& it, const char
     }
 }
 
+const UTF8CharsetConverter& UTF8CharsetConverter::getInstance() {
+    static UTF8CharsetConverter instance;
+    return instance;
+}
+
+UTF8CharsetConverter::UTF8CharsetConverter() {}
+
 uint32_t UTF8CharsetConverter::next(const char*& it, const char* end) const {
     uint32_t cp = 0;
     utf8::internal::utf_error err_code = utf8::internal::validate_next(it, end, cp);
@@ -86,12 +93,27 @@ void OneByteCharsetConverter::append(uint32_t cp, std::string& result) const {
     }
 }
 
+const ISO8859_2_CharsetConverter& ISO8859_2_CharsetConverter::getInstance() {
+    static ISO8859_2_CharsetConverter instance;
+    return instance;
+}
+
 ISO8859_2_CharsetConverter::ISO8859_2_CharsetConverter()
 : OneByteCharsetConverter(ISO_8859_2_TO_CODEPOINT) {
 }
 
+const Windows_1250_CharsetConverter& Windows_1250_CharsetConverter::getInstance() {
+    static Windows_1250_CharsetConverter instance;
+    return instance;
+}
+
 Windows_1250_CharsetConverter::Windows_1250_CharsetConverter()
 : OneByteCharsetConverter(WINDOWS_1250_TO_CODEPOINT) {
+}
+
+const CP852_CharsetConverter& CP852_CharsetConverter::getInstance() {
+    static CP852_CharsetConverter instance;
+    return instance;
 }
 
 CP852_CharsetConverter::CP852_CharsetConverter()

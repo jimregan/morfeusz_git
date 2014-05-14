@@ -53,17 +53,5 @@ inline bool isWhitespace(uint32_t codepoint) {
     return std::binary_search(whitespaces.begin(), whitespaces.end(), codepoint);
 }
 
-template <class StateClass>
-void feedState(
-        StateClass& state,
-        int codepoint,
-        const CharsetConverter& charsetConverter) {
-    std::string chars;
-    charsetConverter.append(codepoint, chars);
-    for (unsigned int i = 0; i < chars.length(); i++) {
-        state.proceedToNext(chars[i]);
-    }
-}
-
 #endif	/* CHARSET_UTILS_HPP */
 

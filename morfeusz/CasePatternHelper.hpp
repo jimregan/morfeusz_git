@@ -74,29 +74,20 @@ public:
 
     std::vector<bool> deserializeOneCasePattern(const unsigned char*& ptr) const {
         std::vector<bool> res;
-        uint8_t casePatternType = *ptr;
-        ptr++;
+        uint8_t casePatternType = *ptr++;
         uint8_t prefixLength;
         uint8_t patternLength;
         switch (casePatternType) {
             case LEMMA_ONLY_LOWER:
                 break;
             case LEMMA_UPPER_PREFIX:
-                prefixLength = *ptr;
-                ptr++;
-                for (unsigned int i = 0; i < prefixLength; i++) {
-                    //                lemma.casePattern[i] = true;
-                    res.push_back(true);
-                }
-                //            lemma.casePattern.resize(prefixLength, true);
+                prefixLength = *ptr++;
+                res.resize(prefixLength, true);
                 break;
             case LEMMA_MIXED_CASE:
-                patternLength = *ptr;
-                ptr++;
+                patternLength = *ptr++;
                 for (unsigned int i = 0; i < patternLength; i++) {
-                    uint8_t idx = *ptr;
-                    ptr++;
-                    //                lemma.casePattern[idx] = true;
+                    uint8_t idx = *ptr++;
                     res.resize(idx + 1, false);
                     res[idx] = true;
                 }

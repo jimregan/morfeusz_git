@@ -65,10 +65,6 @@ public:
     virtual ~Environment();
 private:
     const CharsetConverter* currentCharsetConverter;
-    const UTF8CharsetConverter utf8CharsetConverter;
-    const ISO8859_2_CharsetConverter isoCharsetConverter;
-    const Windows_1250_CharsetConverter cp1250CharsetConverter;
-    const CP852_CharsetConverter cp852CharsetConverter;
     const CaseConverter caseConverter;
     Tagset tagset;
     Qualifiers qualifiers;

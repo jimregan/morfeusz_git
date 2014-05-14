@@ -38,10 +38,6 @@ Environment::Environment(
         MorfeuszProcessorType processorType,
         const unsigned char* fsaFileStartPtr)
 : currentCharsetConverter(getCharsetConverter(charset)),
-utf8CharsetConverter(),
-isoCharsetConverter(),
-cp1250CharsetConverter(),
-cp852CharsetConverter(),
 caseConverter(),
 tagset(fsaFileStartPtr),
 qualifiers(fsaFileStartPtr),
@@ -63,13 +59,13 @@ casePatternHelper() {
 const CharsetConverter* Environment::getCharsetConverter(MorfeuszCharset charset) const {
     switch (charset) {
         case UTF8:
-            return &this->utf8CharsetConverter;
+            return &UTF8CharsetConverter::getInstance();
         case ISO8859_2:
-            return &this->isoCharsetConverter;
+            return &ISO8859_2_CharsetConverter::getInstance();
         case CP1250:
-            return &this->cp1250CharsetConverter;
+            return &Windows_1250_CharsetConverter::getInstance();
         case CP852:
-            return &this->cp852CharsetConverter;
+            return &CP852_CharsetConverter::getInstance();
         default:
             throw MorfeuszException("invalid charset");
     }

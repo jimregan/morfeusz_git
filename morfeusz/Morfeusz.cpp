@@ -39,7 +39,7 @@ Morfeusz::Morfeusz()
 generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
 options(createDefaultOptions()),
 accum(),
-graph(){
+graph() {
     analyzerEnv.setCaseSensitive(options.caseSensitive);
     generatorEnv.setCaseSensitive(false);
 }
@@ -85,14 +85,14 @@ void Morfeusz::processOneWord(
             && isWhitespace(env.getCharsetConverter().peek(inputStart, inputEnd))) {
         env.getCharsetConverter().next(inputStart, inputEnd);
     }
-    
+
     accum.clear();
     graph.clear();
-    
+
     const char* currInput = inputStart;
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
 
-    doProcessOneWord(env, currInput, inputEnd, segrulesFSA.initialState, accum, graph);
+    doProcessOneWord(env, currInput, inputEnd, segrulesFSA.initialState);
 
     if (!graph.empty()) {
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
@@ -111,7 +111,6 @@ void Morfeusz::processOneWord(
             && env.getProcessorType() == ANALYZER
             && !insideIgnHandler) {
         this->handleIgnChunk(env, inputStart, currInput, startNodeNum, results);
-        //        this->appendIgnotiumToResults(env, string(inputStart, currInput), startNodeNum, results);
     }
     else if (inputStart != inputEnd) {
         this->appendIgnotiumToResults(env, string(inputStart, currInput), startNodeNum, results);
@@ -144,25 +143,44 @@ static inline string debugAccum(vector<InterpretedChunk>& accum) {
     return res.str();
 }
 
+static inline void feedStateDirectly(
+        StateType& state,
+        const char* inputStart,
+        const char* inputEnd) {
+    const char* currInput = inputStart;
+    while (currInput != inputEnd && !state.isSink()) {
+        state.proceedToNext(*currInput++);
+    }
+}
+
+static inline void feedState(
+        StateType& state,
+        int codepoint) {
+    std::string chars;
+    UTF8CharsetConverter::getInstance().append(codepoint, chars);
+    for (unsigned int i = 0; i < chars.length() && !state.isSink(); i++) {
+        state.proceedToNext(chars[i]);
+    }
+}
+
 void Morfeusz::doProcessOneWord(
         const Environment& env,
         const char*& inputData,
         const char* inputEnd,
-        SegrulesState segrulesState,
-        vector<InterpretedChunk>& accum,
-        InflexionGraph& graph) const {
+        SegrulesState segrulesState) const {
     if (this->options.debug) {
         cerr << "----------" << endl;
         cerr << "PROCESS: '" << inputData << "', already recognized: " << debugAccum(accum) << endl;
     }
     //    cerr << "doAnalyzeOneWord " << inputData << endl;
     const char* inputStart = inputData;
+    const char* prevInput = inputData;
     const char* currInput = inputData;
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     bool currCodepointIsWhitespace = isWhitespace(codepoint);
     vector<uint32_t> originalCodepoints;
     vector<uint32_t> normalizedCodepoints;
-    
+
     originalCodepoints.reserve(16);
     normalizedCodepoints.reserve(16);
 
@@ -174,7 +192,13 @@ void Morfeusz::doProcessOneWord(
                 : codepoint;
         originalCodepoints.push_back(codepoint);
         normalizedCodepoints.push_back(normalizedCodepoint);
-        feedState(state, normalizedCodepoint, UTF8CharsetConverter());
+        if (codepoint == normalizedCodepoint && &env.getCharsetConverter() == &UTF8CharsetConverter::getInstance()) {
+            feedStateDirectly(state, prevInput, currInput);
+        }
+        else {
+            feedState(state, normalizedCodepoint);
+        }
+
         codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().peek(currInput, inputEnd);
         currCodepointIsWhitespace = isWhitespace(codepoint);
         string homonymId;
@@ -184,6 +208,7 @@ void Morfeusz::doProcessOneWord(
             }
             homonymId = string(currInput + 1, inputEnd);
             //            cerr << "homonym " << homonymId << endl;
+            prevInput = currInput;
             currInput = inputEnd;
             codepoint = 0x00;
             currCodepointIsWhitespace = true;
@@ -195,9 +220,8 @@ void Morfeusz::doProcessOneWord(
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
-                vector<SegrulesState> newSegrulesStates;
-                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, newSegrulesStates);
-                if (!newSegrulesStates.empty() 
+                vector<SegrulesState> newSegrulesStates = env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, currCodepointIsWhitespace);
+                if (!newSegrulesStates.empty()
                         && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
 
                     for (
@@ -225,17 +249,18 @@ void Morfeusz::doProcessOneWord(
                             doShiftOrth(accum.back(), ic);
                         }
                         accum.push_back(ic);
-                        if (currCodepointIsWhitespace
-                                && newSegrulesState.accepting) {
+                        if (currCodepointIsWhitespace) {
+                            assert(newSegrulesState.accepting);
                             if (this->options.debug) {
                                 cerr << "ACCEPTING " << debugAccum(accum) << endl;
                             }
                             graph.addPath(accum, newSegrulesState.weak);
                         }
-                        else if (!currCodepointIsWhitespace) {
+                        else {
+                            assert(!newSegrulesState.sink);
                             //                        cerr << "will process " << currInput << endl;
                             const char* newCurrInput = currInput;
-                            doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState, accum, graph);
+                            doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState);
                         }
                         accum.pop_back();
                     }
@@ -246,6 +271,7 @@ void Morfeusz::doProcessOneWord(
                 }
             }
         }
+        prevInput = currInput;
         codepoint = currInput == inputEnd || currCodepointIsWhitespace ? 0x00 : env.getCharsetConverter().next(currInput, inputEnd);
     }
     inputData = currInput;
