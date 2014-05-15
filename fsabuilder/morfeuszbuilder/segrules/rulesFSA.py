@@ -48,7 +48,7 @@ class RulesFSA(object):
     def transitionsData2bytearray(self, state):
         res = bytearray()
 #         logging.debug('next')
-        for (segnum, shiftOrth), nextState in state.transitionsMap.iteritems():
+        for (segnum, shiftOrth), nextState in sorted(state.transitionsMap.iteritems()):
             res.append(segnum)
             if shiftOrth:
                 res.append(1)

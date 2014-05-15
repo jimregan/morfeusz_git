@@ -9,6 +9,9 @@
 #define	MORPHINTERPRETATION_HPP
 
 #include <string>
+
+class Environment;
+
 #include "Tagset.hpp"
 #include "EncodedInterpretation.hpp"
 #include "charset/CharsetConverter.hpp"

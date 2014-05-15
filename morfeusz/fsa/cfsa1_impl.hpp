@@ -77,10 +77,11 @@ void CompressedFSA1<T>::reallyDoProceed(
     const unsigned char* currPtr = statePtr;
     const StateData2 sd = readStateData(currPtr);
     if (sd.isAccepting) {
-        T object;
-        long size = this->deserializer.deserialize(currPtr, object);
+        state.valueSize = this->deserializer.deserialize(currPtr, state.value);
+        //        long size = this->deserializer.deserialize(currPtr, object);
         //        long size = this->deserializer.deserialize(statePtr + 1, object);
-        state.setNext(statePtr - this->initialStatePtr, object, size);
+        state.setNext(statePtr - this->initialStatePtr);
+        state.accepting = true;
     }
     else {
         state.setNext(statePtr - this->initialStatePtr);
@@ -88,21 +89,20 @@ void CompressedFSA1<T>::reallyDoProceed(
 }
 
 template <class T>
-void CompressedFSA1<T>::doProceedToNextByList(
-        const char c,
-        const unsigned char shortLabel,
-        const unsigned char* ptr,
-        const unsigned int transitionsNum,
-        State<T>& state) const {
-    const unsigned char* currPtr = ptr;
-    //    TransitionData* foundTransition = (TransitionData*) (fromPointer + transitionsTableOffset);
+void CompressedFSA1<T>::proceedToNext(const char c, State<T>& state) const {
+    const unsigned char* currPtr = this->initialStatePtr + state.getOffset();
+    unsigned char shortLabel = this->label2ShortLabel[(const unsigned char) c];
+    const StateData2 sd = readStateData(currPtr);
+    if (state.isAccepting()) {
+        currPtr += state.getValueSize();
+    }
     bool found = false;
     TransitionData2 td;
-    for (unsigned int i = 0; i < transitionsNum; i++) {
+    for (unsigned int i = 0; i < sd.transitionsNum; i++) {
         td = readTransitionFirstByte(currPtr);
         if (td.shortLabel == shortLabel) {
             if (shortLabel == 0) {
-                char label = static_cast<char>(readInt8(currPtr));
+                char label = static_cast<char> (readInt8(currPtr));
                 if (label == c) {
                     found = true;
                     break;
@@ -139,60 +139,13 @@ void CompressedFSA1<T>::doProceedToNextByList(
                 offset = readInt16(currPtr);
                 break;
             case 3:
-               offset = readInt16(currPtr);
-               offset <<= 8;
-               offset += readInt8(currPtr);
-               break;
+                offset = readInt16(currPtr);
+                offset <<= 8;
+                offset += readInt8(currPtr);
+                break;
         }
         currPtr += offset;
         reallyDoProceed(currPtr, state);
-    }
-}
-
-template <class T>
-void CompressedFSA1<T>::doProceedToNextByArray(
-        const unsigned char shortLabel,
-        const uint32_t* ptr,
-        State<T>& state) const {
-    uint32_t offset = ntohl(ptr[shortLabel]);
-    if (offset != 0) {
-        const unsigned char* currPtr = this->initialStatePtr + offset;
-        reallyDoProceed(currPtr, state);
-    }
-    else {
-        state.setNextAsSink();
-    }
-}
-
-template <class T>
-void CompressedFSA1<T>::proceedToNext(const char c, State<T>& state) const {
-    const unsigned char* currPtr = this->initialStatePtr + state.getOffset();
-    unsigned char shortLabel = this->label2ShortLabel[(const unsigned char) c];
-    //    unsigned long transitionsTableOffset = 1;
-    const StateData2 sd = readStateData(currPtr);
-    if (state.isAccepting()) {
-        currPtr += state.getValueSize();
-    }
-
-    if (sd.isArray) {
-        if (shortLabel > 0) {
-            this->doProceedToNextByArray(
-                    shortLabel,
-                    reinterpret_cast<const uint32_t*> (currPtr),
-                    state);
-        }
-        else {
-            reallyDoProceed(currPtr + 256, state);
-            proceedToNext(c, state);
-        }
-    }
-    else {
-        this->doProceedToNextByList(
-                c,
-                shortLabel,
-                currPtr,
-                sd.transitionsNum,
-                state);
     }
 }
 

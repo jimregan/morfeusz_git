@@ -66,11 +66,5 @@ inline T* readFile(const char* fname) {
     return memblock;
 }
 
-//template<>
-//unsigned char* readFile<unsigned char>(const char* fname);
-//
-//template<>
-//char* readFile<char>(const char* fname);
-
 #endif	/* UTILS_HPP */
 

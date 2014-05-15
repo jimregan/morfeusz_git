@@ -25,7 +25,9 @@ void InterpretedChunksDecoder4Analyzer::decode(
         orth.insert(orth.end(), interpretedChunk.textStartPtr, interpretedChunk.textEndPtr);
         const unsigned char* currPtr = interpretedChunk.interpsPtr;
         while (currPtr < interpretedChunk.interpsEndPtr) {
-            this->decodeMorphInterpretation(startNode, endNode, orth, lemmaPrefix, interpretedChunk, false, currPtr, out);
+            DecodeMorphInterpParams params = {startNode, endNode, orth, lemmaPrefix, interpretedChunk, false};
+            this->decodeMorphInterpretation(params, currPtr, out);
+//            this->decodeMorphInterpretation(startNode, endNode, orth, lemmaPrefix, interpretedChunk, false, currPtr, out);
         }
     }
 }
@@ -88,31 +90,57 @@ EncodedInterpretation InterpretedChunksDecoder4Analyzer::deserializeEncodedInter
     return interp;
 }
 
+//void InterpretedChunksDecoder4Analyzer::decodeMorphInterpretation(
+//        unsigned int startNode, unsigned int endNode,
+//        const string& orth,
+//        const string& lemmaPrefix,
+//        const InterpretedChunk& chunk,
+//        bool forPrefix,
+//        const unsigned char*& ptr,
+//        std::vector<MorphInterpretation>& out) const {
+//    orthCodepoints.clear();
+//    normalizedCodepoints.clear();
+//    const char* currPtr = chunk.textStartPtr;
+//    while (currPtr != chunk.textEndPtr) {
+//        uint32_t cp = env.getCharsetConverter().next(currPtr, chunk.textEndPtr);
+//        orthCodepoints.push_back(cp);
+//        normalizedCodepoints.push_back(env.getCaseConverter().toLower(cp));
+//    }
+//    EncodedInterpretation ei = this->deserializeEncodedInterp(ptr, *chunk.interpsGroupPtr);
+//    if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
+//        string lemma(lemmaPrefix);
+//        lemma.reserve(lemma.size() + 2 * normalizedCodepoints.size());
+//        this->decodeLemma(normalizedCodepoints, ei.value, forPrefix, lemma);
+//        out.push_back(MorphInterpretation(
+//                startNode, endNode,
+//                orth, lemma,
+//                ei.tag,
+//                ei.nameClassifier,
+//                ei.qualifiers,
+//                env));
+//    }
+//}
+
 void InterpretedChunksDecoder4Analyzer::decodeMorphInterpretation(
-        unsigned int startNode, unsigned int endNode,
-        const string& orth,
-        const string& lemmaPrefix,
-        const InterpretedChunk& chunk,
-        bool forPrefix,
-        const unsigned char*& ptr,
+        const DecodeMorphInterpParams& params, 
+        const unsigned char*& ptr, 
         std::vector<MorphInterpretation>& out) const {
-    string lemma(lemmaPrefix);
     orthCodepoints.clear();
     normalizedCodepoints.clear();
-    const char* currPtr = chunk.textStartPtr;
-    while (currPtr != chunk.textEndPtr) {
-        uint32_t cp = env.getCharsetConverter().next(currPtr, chunk.textEndPtr);
+    const char* currPtr = params.chunk.textStartPtr;
+    while (currPtr != params.chunk.textEndPtr) {
+        uint32_t cp = env.getCharsetConverter().next(currPtr, params.chunk.textEndPtr);
         orthCodepoints.push_back(cp);
         normalizedCodepoints.push_back(env.getCaseConverter().toLower(cp));
     }
-    EncodedInterpretation ei = this->deserializeEncodedInterp(ptr, *chunk.interpsGroupPtr);
+    EncodedInterpretation ei = this->deserializeEncodedInterp(ptr, *params.chunk.interpsGroupPtr);
     if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
-        this->decodeLemma(normalizedCodepoints, ei.value, forPrefix, lemma);
-        //            pair<string, string> lemmaHomonymId = getLemmaHomonymIdPair(lemma);
+        string lemma(params.lemmaPrefix);
+        lemma.reserve(lemma.size() + 2 * normalizedCodepoints.size());
+        this->decodeLemma(normalizedCodepoints, ei.value, params.forPrefix, lemma);
         out.push_back(MorphInterpretation(
-                startNode, endNode,
-                orth, lemma,
-                //                    "",
+                params.startNode, params.endNode,
+                params.orth, lemma,
                 ei.tag,
                 ei.nameClassifier,
                 ei.qualifiers,
@@ -126,7 +154,9 @@ bool InterpretedChunksDecoder4Analyzer::convertPrefixes(const InterpretedChunk& 
         orth.insert(orth.end(), prefixChunk.textStartPtr, prefixChunk.textEndPtr);
         const unsigned char* ptr = prefixChunk.interpsPtr;
         std::vector<MorphInterpretation> mi;
-        this->decodeMorphInterpretation(0, 0, orth, string(""), prefixChunk, true, ptr, mi);
+        DecodeMorphInterpParams params = {0, 0, orth, string(""), prefixChunk, true};
+        this->decodeMorphInterpretation(params, ptr, mi);
+//        this->decodeMorphInterpretation(0, 0, orth, string(""), prefixChunk, true, ptr, mi);
         if (!mi.empty()) {
             lemmaPrefix += mi[0].getLemma();
         }

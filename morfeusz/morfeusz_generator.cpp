@@ -13,6 +13,7 @@
 #include "Morfeusz.hpp"
 #include "const.hpp"
 #include "cli/cli.hpp"
+#include "outputUtils.hpp"
 
 using namespace std;
 
@@ -25,15 +26,7 @@ int main(int argc, const char** argv) {
         //        printf("%s\n", line.c_str());
         vector<MorphInterpretation> res;
         morfeusz.generate(line, res);
-        printf("[");
-        for (unsigned int i = 0; i < res.size(); i++) {
-            if (i > 0) {
-                printf("; ");
-            }
-            MorphInterpretation& mi = res[i];
-            printf("%s", mi.toString(false).c_str());
-        }
-        printf("]\n");
+        printMorphResults(res, false);
     }
     printf("\n");
     delete &opt;

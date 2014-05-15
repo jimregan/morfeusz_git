@@ -10,6 +10,15 @@
 
 #include "InterpretedChunksDecoder.hpp"
 
+struct DecodeMorphInterpParams {
+    unsigned int startNode;
+    unsigned int endNode;
+    const string& orth;
+    const string& lemmaPrefix;
+    const InterpretedChunk& chunk;
+    bool forPrefix;
+};
+
 class InterpretedChunksDecoder4Analyzer : public InterpretedChunksDecoder {
 public:
 
@@ -33,14 +42,7 @@ private:
 
     EncodedInterpretation deserializeEncodedInterp(const unsigned char*& ptr, unsigned char compressionByte) const;
 
-    void decodeMorphInterpretation(
-            unsigned int startNode, unsigned int endNode,
-            const string& orth,
-            const string& lemmaPrefix,
-            const InterpretedChunk& chunk,
-            bool forPrefix,
-            const unsigned char*& ptr,
-            std::vector<MorphInterpretation>& out) const;
+    void decodeMorphInterpretation(const DecodeMorphInterpParams& params, const unsigned char*& ptr, std::vector<MorphInterpretation>& out) const;
 
     bool convertPrefixes(const InterpretedChunk& interpretedChunk, std::string& orth, std::string& lemmaPrefix) const;
     

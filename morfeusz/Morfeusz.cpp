@@ -179,6 +179,7 @@ void Morfeusz::doProcessOneWord(
     const char* currInput = inputData;
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     bool currCodepointIsWhitespace = isWhitespace(codepoint);
+    vector<SegrulesState> newSegrulesStates;
 
     StateType state = env.getFSA().getInitialState();
 
@@ -204,13 +205,13 @@ void Morfeusz::doProcessOneWord(
             currCodepointIsWhitespace = true;
         }
         if (state.isAccepting()) {
-//            vector<InterpsGroup> val(state.getValue());
             for (unsigned int i = 0; i < state.getValue().size(); i++) {
                 const InterpsGroup& ig = state.getValue()[i];
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
-                const vector<SegrulesState> newSegrulesStates = env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, currCodepointIsWhitespace);
+                newSegrulesStates.clear();
+                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, currCodepointIsWhitespace, newSegrulesStates);
                 if (!newSegrulesStates.empty()
                         && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, inputStart, currInput, ig)) {
                     for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {

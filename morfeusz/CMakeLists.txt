@@ -38,6 +38,7 @@ set(SRC_FILES
     charset/conversion_tables.cpp
     cli/cli.cpp
     segrules/segrules.cpp
+    segrules/SegrulesFSA.cpp
     CasePatternHelper.cpp
     decoder/InterpretedChunksDecoder4Analyzer.cpp
     decoder/InterpretedChunksDecoder4Generator.cpp

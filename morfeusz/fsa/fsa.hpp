@@ -189,6 +189,8 @@ public:
     explicit State(const FSA<T>& fsa);
 
     virtual ~State();
+    
+    friend class CompressedFSA1<T>;
 private:
     const FSA<T>& fsa;
     unsigned long offset;

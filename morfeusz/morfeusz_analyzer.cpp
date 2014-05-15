@@ -15,6 +15,7 @@
 #include "const.hpp"
 
 #include "cli/cli.hpp"
+#include "outputUtils.hpp"
 
 using namespace std;
 
@@ -31,36 +32,7 @@ int main(int argc, const char** argv) {
         //        printf("%s\n", line.c_str());
         res.clear();
         morfeusz.analyze(line, res);
-        int prevStart = -1;
-        int prevEnd = -1;
-        printf("[");
-        for (unsigned int i = 0; i < res.size(); i++) {
-            MorphInterpretation& mi = res[i];
-            if (prevStart != -1
-                    && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
-                printf("]\n[");
-            }
-            else if (prevStart != -1) {
-                printf("; ");
-            }
-//            printf("%s", mi.toString(true).c_str());
-            printf("%d,%d,%s,%s,%s",
-                    mi.getStartNode(), mi.getEndNode(),
-                    mi.getOrth().c_str(), mi.getLemma().c_str(),
-                    mi.getTag().c_str());
-            if (!mi.getName().empty()) {
-                printf(",%s", mi.getName().c_str());
-            }
-            if (!mi.getQualifiers().empty()) {
-                printf(",%s", mi.getQualifiers()[0].c_str());
-                for (unsigned int i = 1; i < mi.getQualifiers().size(); i++) {
-                    printf("|%s", mi.getQualifiers()[i].c_str());
-                }
-            }
-            prevStart = mi.getStartNode();
-            prevEnd = mi.getEndNode();
-        }
-        printf("]\n");
+        printMorphResults(res, true);
     }
     printf("\n");
     delete &opt;
