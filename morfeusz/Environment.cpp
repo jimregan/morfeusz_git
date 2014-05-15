@@ -8,9 +8,11 @@
 #include <vector>
 #include <algorithm>
 #include "Environment.hpp"
-#include "InterpretedChunksDecoder.hpp"
+#include "decoder/InterpretedChunksDecoder.hpp"
 #include "MorphDeserializer.hpp"
 #include "exceptions.hpp"
+#include "decoder/InterpretedChunksDecoder4Analyzer.hpp"
+#include "decoder/InterpretedChunksDecoder4Generator.hpp"
 
 //class InterpretedChunksDecoder4Analyzer;
 //class InterpretedChunksDecoder4Generator;
@@ -53,7 +55,7 @@ processorType == ANALYZER
 ? (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Analyzer(*this)
 : (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Generator(*this)),
 processorType(processorType),
-casePatternHelper() {
+casePatternHelper(new CasePatternHelper()) {
 }
 
 const CharsetConverter* Environment::getCharsetConverter(MorfeuszCharset charset) const {
@@ -78,6 +80,7 @@ Environment::~Environment() {
         delete this->fsaFileStartPtr;
     }
     delete this->chunksDecoder;
+    delete this->casePatternHelper;
 }
 
 void Environment::setCharset(MorfeuszCharset charset) {
@@ -146,11 +149,11 @@ MorfeuszProcessorType Environment::getProcessorType() const {
 }
 
 void Environment::setCaseSensitive(bool caseSensitive) {
-    this->casePatternHelper.setCaseSensitive(caseSensitive);
+    this->casePatternHelper->setCaseSensitive(caseSensitive);
 }
 
 const CasePatternHelper& Environment::getCasePatternHelper() const {
-    return this->casePatternHelper;
+    return *this->casePatternHelper;
 }
 
 const Qualifiers& Environment::getQualifiersHelper() const {

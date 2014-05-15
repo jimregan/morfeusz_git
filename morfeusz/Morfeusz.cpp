@@ -12,7 +12,7 @@
 #include "data/default_fsa.hpp"
 #include "Morfeusz.hpp"
 #include "MorphDeserializer.hpp"
-#include "InterpretedChunksDecoder.hpp"
+#include "decoder/InterpretedChunksDecoder.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
 #include "charset/CaseConverter.hpp"
@@ -32,6 +32,51 @@ static MorfeuszOptions createDefaultOptions() {
     res.encoding = UTF8;
     res.debug = false;
     return res;
+}
+
+static void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
+    to.prefixChunks.insert(
+            to.prefixChunks.begin(),
+            from.prefixChunks.begin(),
+            from.prefixChunks.end());
+    to.prefixChunks.push_back(from);
+    to.textStartPtr = from.textStartPtr;
+    from.orthWasShifted = true;
+}
+
+static string debugInterpsGroup(unsigned char type, const char* startPtr, const char* endPtr) {
+    stringstream res;
+    res << "(" << (int) type << ", " << string(startPtr, endPtr) << "), ";
+    return res.str();
+}
+
+static string debugAccum(vector<InterpretedChunk>& accum) {
+    stringstream res;
+    for (unsigned int i = 0; i < accum.size(); i++) {
+        res << debugInterpsGroup(accum[i].segmentType, accum[i].textStartPtr, accum[i].textEndPtr);
+        //        res << "(" << (int) accum[i].interpsGroup.type << ", " << string(accum[i].chunkStartPtr, accum[i].chunkStartPtr) << "), ";
+    }
+    return res.str();
+}
+
+static void feedStateDirectly(
+        StateType& state,
+        const char* inputStart,
+        const char* inputEnd) {
+    const char* currInput = inputStart;
+    while (currInput != inputEnd && !state.isSink()) {
+        state.proceedToNext(*currInput++);
+    }
+}
+
+static void feedState(
+        StateType& state,
+        int codepoint) {
+    std::string chars;
+    UTF8CharsetConverter::getInstance().append(codepoint, chars);
+    for (unsigned int i = 0; i < chars.length() && !state.isSink(); i++) {
+        state.proceedToNext(chars[i]);
+    }
 }
 
 Morfeusz::Morfeusz()
@@ -97,11 +142,12 @@ void Morfeusz::processOneWord(
     if (!graph.empty()) {
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
-        for (unsigned int i = 0; i < graph.getTheGraph().size(); i++) {
-            const vector<InflexionGraph::Edge>& edges = graph.getTheGraph()[i];
+        const std::vector< std::vector<InflexionGraph::Edge> >& theGraph = graph.getTheGraph();
+        for (unsigned int i = 0; i < theGraph.size(); i++) {
+            const vector<InflexionGraph::Edge>& edges = theGraph[i];
             for (unsigned int j = 0; j < edges.size(); j++) {
                 const InflexionGraph::Edge& e = edges[j];
-                int targetNode = startNodeNum + e.nextNode;
+                unsigned long targetNode = startNodeNum + e.nextNode;
                 interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, results);
             }
             srcNode++;
@@ -118,56 +164,11 @@ void Morfeusz::processOneWord(
     inputStart = currInput;
 }
 
-static inline void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
-    to.prefixChunks.insert(
-            to.prefixChunks.begin(),
-            from.prefixChunks.begin(),
-            from.prefixChunks.end());
-    to.prefixChunks.push_back(from);
-    from.orthWasShifted = true;
-    to.textStartPtr = from.textStartPtr;
-}
-
-static inline string debugInterpsGroup(unsigned char type, const char* startPtr, const char* endPtr) {
-    stringstream res;
-    res << "(" << (int) type << ", " << string(startPtr, endPtr) << "), ";
-    return res.str();
-}
-
-static inline string debugAccum(vector<InterpretedChunk>& accum) {
-    stringstream res;
-    for (unsigned int i = 0; i < accum.size(); i++) {
-        res << debugInterpsGroup(accum[i].segmentType, accum[i].textStartPtr, accum[i].textEndPtr);
-        //        res << "(" << (int) accum[i].interpsGroup.type << ", " << string(accum[i].chunkStartPtr, accum[i].chunkStartPtr) << "), ";
-    }
-    return res.str();
-}
-
-static inline void feedStateDirectly(
-        StateType& state,
-        const char* inputStart,
-        const char* inputEnd) {
-    const char* currInput = inputStart;
-    while (currInput != inputEnd && !state.isSink()) {
-        state.proceedToNext(*currInput++);
-    }
-}
-
-static inline void feedState(
-        StateType& state,
-        int codepoint) {
-    std::string chars;
-    UTF8CharsetConverter::getInstance().append(codepoint, chars);
-    for (unsigned int i = 0; i < chars.length() && !state.isSink(); i++) {
-        state.proceedToNext(chars[i]);
-    }
-}
-
 void Morfeusz::doProcessOneWord(
         const Environment& env,
         const char*& inputData,
         const char* inputEnd,
-        SegrulesState segrulesState) const {
+        const SegrulesState& segrulesState) const {
     if (this->options.debug) {
         cerr << "----------" << endl;
         cerr << "PROCESS: '" << inputData << "', already recognized: " << debugAccum(accum) << endl;
@@ -178,11 +179,6 @@ void Morfeusz::doProcessOneWord(
     const char* currInput = inputData;
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     bool currCodepointIsWhitespace = isWhitespace(codepoint);
-    vector<uint32_t> originalCodepoints;
-    vector<uint32_t> normalizedCodepoints;
-
-    originalCodepoints.reserve(16);
-    normalizedCodepoints.reserve(16);
 
     StateType state = env.getFSA().getInitialState();
 
@@ -190,8 +186,6 @@ void Morfeusz::doProcessOneWord(
         uint32_t normalizedCodepoint = env.getProcessorType() == ANALYZER
                 ? env.getCaseConverter().toLower(codepoint)
                 : codepoint;
-        originalCodepoints.push_back(codepoint);
-        normalizedCodepoints.push_back(normalizedCodepoint);
         if (codepoint == normalizedCodepoint && &env.getCharsetConverter() == &UTF8CharsetConverter::getInstance()) {
             feedStateDirectly(state, prevInput, currInput);
         }
@@ -203,48 +197,37 @@ void Morfeusz::doProcessOneWord(
         currCodepointIsWhitespace = isWhitespace(codepoint);
         string homonymId;
         if (env.getProcessorType() == GENERATOR && codepoint == 0x3A && currInput + 1 != inputEnd) {
-            if (originalCodepoints.size() == 1) {
-                throw MorfeuszException("Lemma of length > 1 cannot start with a colon");
-            }
             homonymId = string(currInput + 1, inputEnd);
-            //            cerr << "homonym " << homonymId << endl;
             prevInput = currInput;
             currInput = inputEnd;
             codepoint = 0x00;
             currCodepointIsWhitespace = true;
         }
         if (state.isAccepting()) {
-            vector<InterpsGroup> val(state.getValue());
-            for (unsigned int i = 0; i < val.size(); i++) {
-                InterpsGroup& ig = val[i];
+//            vector<InterpsGroup> val(state.getValue());
+            for (unsigned int i = 0; i < state.getValue().size(); i++) {
+                const InterpsGroup& ig = state.getValue()[i];
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
-                vector<SegrulesState> newSegrulesStates = env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, currCodepointIsWhitespace);
+                const vector<SegrulesState> newSegrulesStates = env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, currCodepointIsWhitespace);
                 if (!newSegrulesStates.empty()
-                        && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig)) {
-
-                    for (
-                            vector<SegrulesState>::iterator it = newSegrulesStates.begin();
-                            it != newSegrulesStates.end();
-                            ++it) {
-                        SegrulesState newSegrulesState = *it;
+                        && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, inputStart, currInput, ig)) {
+                    for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
+                        const SegrulesState& newSegrulesState = newSegrulesStates[i];
                         const unsigned char* interpsPtr = getInterpretationsPtr(env, ig);
                         const unsigned char* interpsEndPtr = ig.ptr + ig.size;
-                        InterpretedChunk ic = {
-                            ig.type,
-                            inputStart,
-                            currInput,
-                            originalCodepoints,
-                            normalizedCodepoints,
-                            ig.ptr,
-                            interpsPtr,
-                            interpsEndPtr,
-                            newSegrulesState.shiftOrthFromPrevious,
-                            false,
-                            vector<InterpretedChunk>(),
-                            homonymId
-                        };
+                        InterpretedChunk ic;
+                        ic.segmentType = ig.type;
+                        ic.textStartPtr = inputStart;
+                        ic.textEndPtr = currInput;
+                        ic.interpsGroupPtr = ig.ptr;
+                        ic.interpsPtr = interpsPtr;
+                        ic.interpsEndPtr = interpsEndPtr;
+                        ic.shiftOrth = newSegrulesState.shiftOrthFromPrevious;
+                        ic.orthWasShifted = false;
+                        ic.requiredHomonymId = homonymId;
+                        
                         if (!accum.empty() && accum.back().shiftOrth) {
                             doShiftOrth(accum.back(), ic);
                         }
@@ -266,7 +249,7 @@ void Morfeusz::doProcessOneWord(
                     }
                 }
                 else if (this->options.debug) {
-                    cerr << !newSegrulesStates.empty() << env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig) << endl;
+//                    cerr << !newSegrulesStates.empty() << env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig) << endl;
                     cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
                 }
             }

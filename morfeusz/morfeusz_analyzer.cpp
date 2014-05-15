@@ -43,11 +43,20 @@ int main(int argc, const char** argv) {
             else if (prevStart != -1) {
                 printf("; ");
             }
-            printf("%s", mi.toString(true).c_str());
-//            printf("%d,%d,%s,%s,%s,%s",
-//                    mi.getStartNode(), mi.getEndNode(),
-//                    mi.getOrth().c_str(), lemmaToShow.c_str(),
-//                    mi.getTag().c_str(), lemmaToShow.c_str());
+//            printf("%s", mi.toString(true).c_str());
+            printf("%d,%d,%s,%s,%s",
+                    mi.getStartNode(), mi.getEndNode(),
+                    mi.getOrth().c_str(), mi.getLemma().c_str(),
+                    mi.getTag().c_str());
+            if (!mi.getName().empty()) {
+                printf(",%s", mi.getName().c_str());
+            }
+            if (!mi.getQualifiers().empty()) {
+                printf(",%s", mi.getQualifiers()[0].c_str());
+                for (unsigned int i = 1; i < mi.getQualifiers().size(); i++) {
+                    printf("|%s", mi.getQualifiers()[i].c_str());
+                }
+            }
             prevStart = mi.getStartNode();
             prevEnd = mi.getEndNode();
         }

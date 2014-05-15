@@ -34,12 +34,12 @@ public:
 
     std::vector<SegrulesState> proceedToNext(
             const unsigned char segnum,
-            const SegrulesState state,
+            const SegrulesState& state,
             bool atEndOfWord) const {
         std::vector<SegrulesState> res;
         const unsigned char* currPtr = ptr + state.offset + 1;
         const unsigned char transitionsNum = *currPtr++;
-        for (unsigned int i = 0; i < transitionsNum; i++) {
+        for (int i = 0; i < transitionsNum; i++) {
             if (*currPtr == segnum) {
                 SegrulesState newState = this->transition2State(currPtr);
                 if ((atEndOfWord && newState.accepting) 

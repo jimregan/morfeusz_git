@@ -15,8 +15,6 @@ struct InterpretedChunk {
     unsigned char segmentType;
     const char* textStartPtr;
     const char* textEndPtr;
-    std::vector<uint32_t> originalCodepoints;
-    std::vector<uint32_t> lowercaseCodepoints;
     const unsigned char* interpsGroupPtr;
     const unsigned char* interpsPtr;
     const unsigned char* interpsEndPtr;

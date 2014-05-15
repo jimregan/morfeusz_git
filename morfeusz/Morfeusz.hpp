@@ -170,7 +170,7 @@ private:
             const Environment& env,
             const char*& inputData,
             const char* inputEnd,
-            SegrulesState segrulesState) const;
+            const SegrulesState& segrulesState) const;
     
     void handleIgnChunk(
         const Environment& env,

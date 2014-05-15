@@ -11,6 +11,7 @@
 #include <vector>
 
 class InterpretedChunksDecoder;
+class CasePatternHelper;
 
 #include "charset/CaseConverter.hpp"
 #include "charset/CharsetConverter.hpp"
@@ -79,7 +80,7 @@ private:
     
     const InterpretedChunksDecoder* chunksDecoder;
     MorfeuszProcessorType processorType;
-    CasePatternHelper casePatternHelper;
+    CasePatternHelper* casePatternHelper;
     
     const CharsetConverter* getCharsetConverter(MorfeuszCharset charset) const;
 };

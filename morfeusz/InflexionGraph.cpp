@@ -78,7 +78,7 @@ void InflexionGraph::addPath(const std::vector<InterpretedChunk>& path, bool wea
                 this->addMiddleEdge((unsigned int) this->graph.size(), e);
             }
             else {
-                Edge e = {chunk, (int) this->graph.size() + 1};
+                Edge e = {chunk, (unsigned long) this->graph.size() + 1};
                 this->addMiddleEdge((unsigned int) this->graph.size(), e);
             }
         }
@@ -117,7 +117,8 @@ static bool containsEqualEdge(const vector<InflexionGraph::Edge>& edges, const I
     for (unsigned int i = 0; i < edges.size(); i++) {
         const InflexionGraph::Edge& e1 = edges[i];
         if (e1.chunk.textStartPtr == e.chunk.textStartPtr
-                && e1.chunk.lowercaseCodepoints == e.chunk.lowercaseCodepoints
+                && e1.chunk.textStartPtr == e.chunk.textStartPtr
+                && e1.chunk.textEndPtr == e.chunk.textEndPtr
                 && e1.chunk.segmentType == e.chunk.segmentType
                 && e1.nextNode == e.nextNode) {
             return true;

@@ -46,7 +46,7 @@ unsigned long State<T>::getOffset() const {
 }
 
 template <class T>
-T State<T>::getValue() const {
+const T& State<T>::getValue() const {
     assert(this->isAccepting());
     return this->value;
 }

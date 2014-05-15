@@ -167,7 +167,7 @@ public:
      * Makes sense only for accepting states.
      * For non-accepting states is throws an exception.
      */
-    T getValue() const;
+    const T& getValue() const;
     
     unsigned char getLastTransitionValue() const;
     
