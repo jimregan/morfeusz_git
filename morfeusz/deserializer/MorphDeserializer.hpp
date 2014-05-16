@@ -2,23 +2,23 @@
  * File:   MorphDeserializer.hpp
  * Author: mlenart
  *
- * Created on 12 listopad 2013, 15:31
+ * Created on 16 maj 2014, 12:46
  */
 
 #ifndef MORPHDESERIALIZER_HPP
 #define	MORPHDESERIALIZER_HPP
 
-#include <vector>
-#include "fsa/fsa.hpp"
-#include "InterpsGroup.hpp"
+#include "../fsa/fsa.hpp"
+#include "../InterpsGroup.hpp"
+#include "InterpsGroupsReader.hpp"
 
-class MorphDeserializer: public Deserializer< std::vector<InterpsGroup> > {
+class MorphDeserializer: public Deserializer< InterpsGroupsReader > {
 public:
     MorphDeserializer();
     virtual ~MorphDeserializer();
     long deserialize(
         const unsigned char* ptr, 
-        std::vector<InterpsGroup>& interps) const;
+        InterpsGroupsReader& res) const;
 private:
 
 };

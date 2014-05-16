@@ -71,10 +71,10 @@ class RulesManager(object):
     
     def _serializeDFA(self, dfa):
         res = bytearray()
-#         serializer = SimpleSerializer(dfa, serializeTransitionsData=True)
         dfaBytearray = dfa.serialize()
         res.extend(htonl(len(dfaBytearray)))
         res.extend(dfaBytearray)
+#         print [x for x in dfaBytearray]
         return res
     
     def _serializeString(self, string):

@@ -29,7 +29,7 @@ int main(int argc, const char** argv) {
     string line;
     vector<MorphInterpretation> res;
     while (getline(cin, line)) {
-        //        printf("%s\n", line.c_str());
+//        printf("%s\n", line.c_str());
         res.clear();
         morfeusz.analyze(line, res);
         printMorphResults(res, true);

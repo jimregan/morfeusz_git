@@ -95,14 +95,16 @@ class Encoder(object):
         
         
         res = bytearray()
-        firstByte = len(segnum2Interps)
-        assert firstByte < 256
-        assert firstByte > 0
-        res.append(firstByte)
+#         firstByte = len(segnum2Interps)
+#         assert firstByte < 256
+#         assert firstByte > 0
+#         res.append(firstByte)
         
         for typenum, interpsList in segnum2Interps.iteritems():
             res.extend(self._encodeInterps4Type(typenum, interpsList))
         del interpsList
+        
+        res = htons(len(res)) + res
         
         return res
 

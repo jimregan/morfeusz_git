@@ -10,7 +10,6 @@
 #include <iostream>
 #include "EncodedInterpretation.hpp"
 #include "utils.hpp"
-#include "MorphDeserializer.hpp"
 #include "Morfeusz.hpp"
 #include "MorphInterpretation.hpp"
 

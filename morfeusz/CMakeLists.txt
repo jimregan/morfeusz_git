@@ -25,7 +25,6 @@ set(SRC_FILES
     ${INPUT_DICTIONARY_CPP}
     ${INPUT_SYNTH_DICTIONARY_CPP}
     Environment.cpp
-    MorphDeserializer.cpp
     Tagset.cpp
     Qualifiers.cpp
     fsa/const.cpp 
@@ -42,6 +41,8 @@ set(SRC_FILES
     CasePatternHelper.cpp
     decoder/InterpretedChunksDecoder4Analyzer.cpp
     decoder/InterpretedChunksDecoder4Generator.cpp
+    deserializer/InterpsGroupsReader.cpp
+    deserializer/MorphDeserializer.cpp
 )
 
 set(INCLUDE_FILES 

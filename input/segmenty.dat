@@ -38,7 +38,6 @@ moze_interp(interp|kropka|przecinek|dywiz)
 # sobie
 samotny
 
-
 # partykuła „by”:
 moze_interp(by)
 
@@ -321,7 +320,7 @@ moze_interp(pred)
 
 # Stopień najwyższy z ‹nie›:
 # np. „nie·naj·zieleńszy”, „nie·naj·mądrzej”
-# moze_interp( nie> naj> adj_sup ) !weak
+# moze_interp( nie> adj_sup ) !weak
 
 # zapis typu: 50-tych, 20-te
 # moze_interp(dig>+ dywiz> suf_ord)

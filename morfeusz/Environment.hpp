@@ -23,9 +23,11 @@ class CasePatternHelper;
 #include "InterpsGroup.hpp"
 #include "CasePatternHelper.hpp"
 #include "Qualifiers.hpp"
+#include "deserializer/InterpsGroupsReader.hpp"
 
 struct InterpsGroup;
-typedef FSA< std::vector<InterpsGroup > > FSAType;
+typedef FSA<InterpsGroupsReader> FSAType;
+//typedef FSA< std::vector<InterpsGroup > > FSAType;
 
 class Environment {
 public:

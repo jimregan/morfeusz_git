@@ -11,7 +11,6 @@
 #include "utils.hpp"
 #include "data/default_fsa.hpp"
 #include "Morfeusz.hpp"
-#include "MorphDeserializer.hpp"
 #include "decoder/InterpretedChunksDecoder.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
@@ -35,10 +34,6 @@ static MorfeuszOptions createDefaultOptions() {
 }
 
 static void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
-    to.prefixChunks.insert(
-            to.prefixChunks.begin(),
-            from.prefixChunks.begin(),
-            from.prefixChunks.end());
     to.prefixChunks.push_back(from);
     to.textStartPtr = from.textStartPtr;
     from.orthWasShifted = true;
@@ -147,7 +142,7 @@ void Morfeusz::processOneWord(
             const vector<InflexionGraph::Edge>& edges = theGraph[i];
             for (unsigned int j = 0; j < edges.size(); j++) {
                 const InflexionGraph::Edge& e = edges[j];
-                unsigned long targetNode = startNodeNum + e.nextNode;
+                unsigned int targetNode = startNodeNum + e.nextNode;
                 interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, results);
             }
             srcNode++;
@@ -180,6 +175,7 @@ void Morfeusz::doProcessOneWord(
     uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
     bool currCodepointIsWhitespace = isWhitespace(codepoint);
     vector<SegrulesState> newSegrulesStates;
+    int codepointsNum = 0;
 
     StateType state = env.getFSA().getInitialState();
 
@@ -193,6 +189,7 @@ void Morfeusz::doProcessOneWord(
         else {
             feedState(state, normalizedCodepoint);
         }
+        codepointsNum++;
 
         codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().peek(currInput, inputEnd);
         currCodepointIsWhitespace = isWhitespace(codepoint);
@@ -205,8 +202,11 @@ void Morfeusz::doProcessOneWord(
             currCodepointIsWhitespace = true;
         }
         if (state.isAccepting()) {
-            for (unsigned int i = 0; i < state.getValue().size(); i++) {
-                const InterpsGroup& ig = state.getValue()[i];
+            InterpsGroupsReader& reader = const_cast<InterpsGroupsReader&>(state.getValue());
+//            for (unsigned int i = 0; i < state.getValue().size(); i++) {
+            while (reader.hasNext()) {
+//                const InterpsGroup& ig = state.getValue()[i];
+                const InterpsGroup& ig = reader.getNext();
                 if (this->options.debug) {
                     cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
                 }
@@ -228,6 +228,7 @@ void Morfeusz::doProcessOneWord(
                         ic.shiftOrth = newSegrulesState.shiftOrthFromPrevious;
                         ic.orthWasShifted = false;
                         ic.requiredHomonymId = homonymId;
+                        ic.codepointsNum = codepointsNum;
                         
                         if (!accum.empty() && accum.back().shiftOrth) {
                             doShiftOrth(accum.back(), ic);

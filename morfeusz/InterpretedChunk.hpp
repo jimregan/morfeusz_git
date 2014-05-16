@@ -20,6 +20,7 @@ struct InterpretedChunk {
     const unsigned char* interpsEndPtr;
     bool shiftOrth;
     bool orthWasShifted;
+    int codepointsNum;
     std::vector<InterpretedChunk> prefixChunks;
     std::string requiredHomonymId;
 };

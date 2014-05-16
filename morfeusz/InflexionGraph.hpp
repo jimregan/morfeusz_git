@@ -22,7 +22,7 @@ public:
 
     struct Edge {
         InterpretedChunk chunk;
-        unsigned long nextNode;
+        unsigned int nextNode;
     };
 
     void addPath(const std::vector<InterpretedChunk>& path, bool weak);

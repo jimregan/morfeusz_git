@@ -14,9 +14,8 @@ struct DecodeMorphInterpParams {
     unsigned int startNode;
     unsigned int endNode;
     const string& orth;
-    const string& lemmaPrefix;
+    const string& lemma4Prefixes;
     const InterpretedChunk& chunk;
-    bool forPrefix;
 };
 
 class InterpretedChunksDecoder4Analyzer : public InterpretedChunksDecoder {
@@ -33,18 +32,20 @@ public:
 private:
 
     void decodeLemma(
-            const vector<uint32_t>& orth,
             const EncodedForm& lemma,
+            int realOrthCodepointsNum,
             bool forPrefix,
             string& res) const;
 
-    void deserializeEncodedForm(const unsigned char*& ptr, unsigned char compressionByte, EncodedForm& encodedForm) const;
+    void decodeEncodedForm(const unsigned char*& ptr, unsigned char compressionByte, EncodedForm& encodedForm) const;
 
-    EncodedInterpretation deserializeEncodedInterp(const unsigned char*& ptr, unsigned char compressionByte) const;
+    EncodedInterpretation decodeEncodedInterp(const unsigned char*& ptr, unsigned char compressionByte) const;
 
     void decodeMorphInterpretation(const DecodeMorphInterpParams& params, const unsigned char*& ptr, std::vector<MorphInterpretation>& out) const;
 
-    bool convertPrefixes(const InterpretedChunk& interpretedChunk, std::string& orth, std::string& lemmaPrefix) const;
+    bool tryToGetLemma4Prefixes(const InterpretedChunk& interpretedChunk, std::string& lemma4Prefixes) const;
+    
+    bool tryToGetLemma4OnePrefix(const InterpretedChunk& prefixChunk, std::string& lemma4Prefixes) const;
     
     mutable std::vector<uint32_t> orthCodepoints;
     mutable std::vector<uint32_t> normalizedCodepoints;

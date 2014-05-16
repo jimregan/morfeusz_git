@@ -29,10 +29,13 @@
 #include "segrules/segrules.hpp"
 #include "segrules/SegrulesFSA.hpp"
 
+#include "deserializer/InterpsGroupsReader.hpp"
+#include "deserializer/MorphDeserializer.hpp"
+
 class Morfeusz;
 class ResultsIterator;
 
-typedef State< std::vector<InterpsGroup > > StateType;
+typedef State<InterpsGroupsReader> StateType;
 
 /**
  * Performs morphological analysis (analyze methods) and syntesis (generate methods).

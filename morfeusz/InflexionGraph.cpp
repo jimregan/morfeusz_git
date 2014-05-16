@@ -78,7 +78,7 @@ void InflexionGraph::addPath(const std::vector<InterpretedChunk>& path, bool wea
                 this->addMiddleEdge((unsigned int) this->graph.size(), e);
             }
             else {
-                Edge e = {chunk, (unsigned long) this->graph.size() + 1};
+                Edge e = {chunk, (unsigned int) this->graph.size() + 1};
                 this->addMiddleEdge((unsigned int) this->graph.size(), e);
             }
         }
@@ -184,7 +184,7 @@ void InflexionGraph::doMergeNodes(unsigned int node1, unsigned int node2) {
 
 bool InflexionGraph::tryToMergeTwoNodes() {
     for (unsigned int node1 = 0; node1 < this->graph.size(); node1++) {
-        for (unsigned int node2 = this->graph.size() - 1; node2 > node1; node2--) {
+        for (unsigned int node2 = (unsigned int) this->graph.size() - 1; node2 > node1; node2--) {
             if (this->canMergeNodes(node1, node2)) {
                 this->doMergeNodes(node1, node2);
                 return true;
@@ -213,7 +213,7 @@ void InflexionGraph::repairLastNodeNumbers() {
         for (unsigned int j = 0; j < edges.size(); j++) {
             Edge& e = edges[j];
             if (e.nextNode == UINT_MAX) {
-                e.nextNode = this->graph.size();
+                e.nextNode = (unsigned int) this->graph.size();
             }
         }
     }

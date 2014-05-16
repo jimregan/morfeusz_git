@@ -10,6 +10,7 @@
 
 #include "endianness.hpp"
 #include <iostream>
+#include <vector>
 
 inline unsigned char readInt8(const unsigned char*& currPtr) {
     return *currPtr++;

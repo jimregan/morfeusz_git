@@ -9,7 +9,7 @@
 #include <algorithm>
 #include "Environment.hpp"
 #include "decoder/InterpretedChunksDecoder.hpp"
-#include "MorphDeserializer.hpp"
+#include "deserializer/MorphDeserializer.hpp"
 #include "exceptions.hpp"
 #include "decoder/InterpretedChunksDecoder4Analyzer.hpp"
 #include "decoder/InterpretedChunksDecoder4Generator.hpp"
@@ -17,10 +17,10 @@
 //class InterpretedChunksDecoder4Analyzer;
 //class InterpretedChunksDecoder4Generator;
 
-static Deserializer<vector<InterpsGroup> >& initializeDeserializer(MorfeuszProcessorType processorType) {
-    static Deserializer < vector < InterpsGroup > > *analyzerDeserializer
+static Deserializer<InterpsGroupsReader>& initializeDeserializer(MorfeuszProcessorType processorType) {
+    static Deserializer<InterpsGroupsReader> *analyzerDeserializer
             = new MorphDeserializer();
-    static Deserializer < vector < InterpsGroup > > *generatorDeserializer
+    static Deserializer<InterpsGroupsReader> *generatorDeserializer
             = new MorphDeserializer();
     return *(processorType == ANALYZER ? analyzerDeserializer : generatorDeserializer);
 }
@@ -110,7 +110,7 @@ void Environment::setFSAFile(const std::string& filename) {
         delete this->fsaFileStartPtr;
     }
     this->fsaFileStartPtr = readFile<unsigned char>(filename.c_str());
-    this->fsa = FSA< vector<InterpsGroup> > ::getFSA(fsaFileStartPtr, initializeDeserializer(this->processorType));
+    this->fsa = FSA< InterpsGroupsReader > ::getFSA(fsaFileStartPtr, initializeDeserializer(this->processorType));
     this->separatorsList = getSeparatorsList(fsaFileStartPtr);
     this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
     this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
