@@ -39,7 +39,7 @@ void InterpretedChunksDecoder4Analyzer::decodeLemma(
     unsigned int prefixSegmentsOrthLength = forPrefix
         ? 0
         : (unsigned int) normalizedCodepoints.size() - nonPrefixCodepointsNum;
-    unsigned int endIdx = forPrefix
+    size_t endIdx = forPrefix
         ? normalizedCodepoints.size()
         : normalizedCodepoints.size() - lemma.suffixToCut;
     for (unsigned int i = prefixSegmentsOrthLength + lemma.prefixToCut; i < endIdx; i++) {

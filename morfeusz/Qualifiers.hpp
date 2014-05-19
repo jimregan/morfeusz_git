@@ -16,7 +16,7 @@ class Qualifiers {
 public:
     explicit Qualifiers(const unsigned char* ptr);
     std::vector<std::string> getQualifiers(int n) const;
-    int getQualifiersNum() const;
+    unsigned int getQualifiersNum() const;
     virtual ~Qualifiers();
 private:
     std::vector< std::vector<std::string> > qualifiers;

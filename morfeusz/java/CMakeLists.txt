@@ -53,7 +53,7 @@ endif ()
 # build jmorfeusz
 file(GLOB_RECURSE JAVA_SOURCES ${JAVA_SRC_DIR} "*.java")
 add_jar (jmorfeusz
-    SOURCES "${JAVA_SOURCES}"
+    SOURCES "${JAVA_SOURCES}" "pl/waw/ipipan/morfeusz/app/App.java"
     DEPENDS libjmorfeusz)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")

@@ -37,6 +37,20 @@ qualifiers(env.getQualifiersHelper().getQualifiers(qualifiersNum)) {
 
 }
 
+MorphInterpretation::MorphInterpretation() 
+: startNode(),
+endNode(),
+orth(),
+lemma(),
+//homonymId(homonymId),
+tagnum(),
+namenum(),
+tag(),
+name(),
+qualifiers(){
+    
+}
+
 MorphInterpretation::MorphInterpretation(
         int startNode,
         const std::string& orth,

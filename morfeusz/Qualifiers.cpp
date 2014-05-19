@@ -36,8 +36,8 @@ vector<string> Qualifiers::getQualifiers(int n) const {
     return this->qualifiers.at(n);
 }
 
-int Qualifiers::getQualifiersNum() const {
-    return this->qualifiers.size();
+unsigned int Qualifiers::getQualifiersNum() const {
+    return (unsigned int) this->qualifiers.size();
 }
 
 Qualifiers::~Qualifiers() {

@@ -10,7 +10,7 @@ import pl.waw.ipipan.morfeusz.ResultsIterator;
 public class App {
 
     public static void main(String[] args) {
-        System.err.println("Working Directory = " +
+        System.err.println("Working Directory=" +
               System.getProperty("user.dir"));
         System.err.println("java.library.path="+System.getProperty("java.library.path"));
         Morfeusz morfeusz = new Morfeusz();

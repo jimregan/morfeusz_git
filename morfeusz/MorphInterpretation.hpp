@@ -29,6 +29,7 @@ public:
             int namenum,
             int qualifiersNum,
             const Environment& env);
+    MorphInterpretation();
     static MorphInterpretation createIgn(int startNode, const std::string& orth, const Environment& env);
 //    virtual ~MorphInterpretation();
     int getStartNode() const;

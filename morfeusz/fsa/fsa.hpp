@@ -20,7 +20,7 @@
 template <class T> class State;
 template <class T> class FSA;
 template <class T> class Deserializer;
-class FSAException;
+class FileFormatException;
 
 template <class T>
 class Deserializer {
@@ -201,11 +201,11 @@ private:
     unsigned char lastTransitionValue;
 };
 
-class FSAException : public std::exception {
+class FileFormatException : public std::exception {
 public:
-    FSAException(const char* what): msg(what) {}
-    FSAException(const std::string& what): msg(what.c_str()) {}
-    virtual ~FSAException() throw() {}
+    FileFormatException(const char* what): msg(what) {}
+    FileFormatException(const std::string& what): msg(what.c_str()) {}
+    virtual ~FileFormatException() throw() {}
     virtual const char* what() const throw () {
         return this->msg.c_str();
     }

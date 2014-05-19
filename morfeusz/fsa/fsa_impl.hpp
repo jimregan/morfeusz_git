@@ -66,14 +66,14 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
     
     uint32_t magicNumber = ntohl(*((const uint32_t*) ptr));
     if (magicNumber != MAGIC_NUMBER) {
-        throw FSAException("Invalid file format");
+        throw FileFormatException("Invalid file format");
     }
     
     uint8_t versionNum = *(ptr + VERSION_NUM_OFFSET);
     if (versionNum != VERSION_NUM) {
         std::ostringstream oss;
         oss << "Invalid file format version number: " << (int) versionNum << ", should be: " << (int) VERSION_NUM;
-        throw FSAException(oss.str());
+        throw FileFormatException(oss.str());
     }
     
     uint8_t implementationNum = *(ptr + IMPLEMENTATION_NUM_OFFSET);
@@ -89,7 +89,7 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
         default:
             std::ostringstream oss;
             oss << "Invalid implementation number: " << versionNum << ", should be: " << VERSION_NUM;
-            throw FSAException(oss.str());
+            throw FileFormatException(oss.str());
     }
 }
 

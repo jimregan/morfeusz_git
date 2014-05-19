@@ -86,6 +86,7 @@ endif ()
 
 add_subdirectory (java)
 add_subdirectory (python)
+add_subdirectory (perl)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_custom_target (morfeusz-repair-library

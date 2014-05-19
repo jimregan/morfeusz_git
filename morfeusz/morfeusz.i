@@ -18,8 +18,48 @@
 
 %include "std_vector.i"
 %include "std_string.i"
+%include "exception.i"
+
+%exception
+{
+    try{
+        $action
+    }
+    catch(const FileFormatException& e) {
+        SWIG_exception(SWIG_IOError, const_cast<char*>(e.what()));
+    }
+    catch(const std::exception& e) {
+        SWIG_exception(SWIG_RuntimeError, const_cast<char*>(e.what()));
+    }
+}
 
 #ifdef SWIGJAVA
+
+%typemap(javaimports) Morfeusz %{
+import java.io.IOException;
+%}
+
+%javaexception("java.io.IOException") Morfeusz::setAnalyzerFile {
+    try {
+        $action
+    }
+    catch(FileFormatException & e) {
+        jclass clazz = jenv->FindClass("java/io/IOException");
+        jenv->ThrowNew(clazz, "Invalid file format");
+        return $null;
+    }
+}
+
+%javaexception("java.io.IOException") Morfeusz::setGeneratorFile {
+    try {
+        $action
+    }
+    catch(FileFormatException & e) {
+        jclass clazz = jenv->FindClass("java/io/IOException");
+        jenv->ThrowNew(clazz, "Invalid file format");
+        return $null;
+    }
+}
 
 %include "enums.swg"
 

@@ -48,7 +48,7 @@ mkdir -p log
 #} | xargs --null | 
 
 parallel -j4 bash -c -- \
-	"build Linux amd64 package package-java package-python package-builder &> log/linux-amd64.out" \
+	"build Linux amd64 package package-java package-python package-builder package-perl &> log/linux-amd64.out" \
 	"LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 package package-java package-builder &> log/linux-i386.out" \
 	"build Windows amd64 package package-java package-builder &> log/windows-amd64.out" \
 	"build Windows i386 package package-java package-builder &> log/windows-i386.out" \
