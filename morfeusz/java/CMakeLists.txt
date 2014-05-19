@@ -1,8 +1,10 @@
 # SWIG
 #set(CMAKE_SWIG_OUTDIR swig)
-#FIND_PACKAGE(SWIG REQUIRED)
+find_package (SWIG REQUIRED)
+include (${SWIG_USE_FILE})
 set (JMORFEUSZ_VERSION "0.1.0")
 find_package(JNI REQUIRED)
+#find_package(JavaLibs REQUIRED)
 #INCLUDE(${SWIG_USE_FILE})
 include(UseJava)
 find_package(Java REQUIRED)
@@ -13,9 +15,11 @@ include_directories (${JAVA_INCLUDE_PATH2})
 include_directories (..)
 
 set (SWIG_JAVA_OUTFILE swigJAVA.cpp)
-set (JAVA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/pl/waw/ipipan/morfeusz")
-add_custom_command ( 
-    OUTPUT ${SWIG_JAVA_OUTFILE}
+file (COPY pl DESTINATION .)
+set (JAVA_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}/pl/waw/ipipan/morfeusz")
+add_custom_target (
+    libjmorfeusz_cxx
+#    OUTPUT ${SWIG_JAVA_OUTFILE}
     COMMAND swig -java -c++ -package pl.waw.ipipan.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${JAVA_SRC_DIR} ${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i
     DEPENDS libmorfeusz
 )
@@ -23,7 +27,11 @@ add_custom_command (
 add_library (libjmorfeusz SHARED ${SWIG_JAVA_OUTFILE})
 set_target_properties (libjmorfeusz PROPERTIES OUTPUT_NAME "jmorfeusz")
 target_link_libraries (libjmorfeusz ${JAVA_LIBRARIES} libmorfeusz)
-add_dependencies (libjmorfeusz ${SWIG_JAVA_OUTFILE})
+add_dependencies (libjmorfeusz libjmorfeusz_cxx)
+
+if ( CMAKE_COMPILER_IS_GNUCC )
+    set_property( TARGET libjmorfeusz APPEND_STRING PROPERTY COMPILE_FLAGS -w )
+endif ( CMAKE_COMPILER_IS_GNUCC )
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set (CMAKE_SHARED_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc -D_JNI_IMPLEMENTATION_ -Wl,--kill-at")
@@ -53,7 +61,7 @@ endif ()
 # build jmorfeusz
 file(GLOB_RECURSE JAVA_SOURCES ${JAVA_SRC_DIR} "*.java")
 add_jar (jmorfeusz
-    SOURCES "${JAVA_SOURCES}" "pl/waw/ipipan/morfeusz/app/App.java"
+    SOURCES "${JAVA_SOURCES}"
     DEPENDS libjmorfeusz)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
