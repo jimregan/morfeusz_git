@@ -48,7 +48,6 @@ set(SRC_FILES
 set(INCLUDE_FILES 
     const.hpp 
     data/default_fsa.hpp
-    MorphDeserializer.hpp
     Tagset.hpp
     Qualifiers.hpp
     fsa/const.hpp 
@@ -61,6 +60,7 @@ set(INCLUDE_FILES
     charset/conversion_tables.hpp
     cli/cli.hpp
     segrules/segrules.hpp
+    deserializer/MorphDeserializer.cpp
 )
 
 add_library (libmorfeusz SHARED ${SRC_FILES})

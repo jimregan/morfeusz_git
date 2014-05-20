@@ -1,15 +1,9 @@
-# SWIG
-#set(CMAKE_SWIG_OUTDIR swig)
-find_package (SWIG REQUIRED)
-include (${SWIG_USE_FILE})
+
 set (JMORFEUSZ_VERSION "0.1.0")
 find_package(JNI REQUIRED)
-#find_package(JavaLibs REQUIRED)
-#INCLUDE(${SWIG_USE_FILE})
 include(UseJava)
 find_package(Java REQUIRED)
 
-# SWIG Java
 include_directories (${JAVA_INCLUDE_PATH})
 include_directories (${JAVA_INCLUDE_PATH2})
 include_directories (..)
@@ -53,9 +47,6 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         COMMAND ${INSTALL_NAME_TOOL} -id libjmorfeusz.jnilib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
         DEPENDS libjmorfeusz jmorfeusz-repair-libmorfeusz-link)
 endif ()
-#~ add_custom_target (jmorfeusz-repair-library
-    #~ COMMAND ${DARWIN64_ROOT}/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-install_name_tool -change /home/mlenart/xxx/morfeusz/buildall/build-Darwin-amd64/morfeusz/libmorfeusz2.dylib morfeusz2 ${PROJECT_BINARY_DIR}/morfeusz/java/libjmorfeusz.jnilib
-    #~ DEPENDS libjmorfeusz)
 
 # build jmorfeusz
 file(GLOB_RECURSE JAVA_SOURCES ${JAVA_SRC_DIR} "*.java")
