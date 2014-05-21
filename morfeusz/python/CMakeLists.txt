@@ -11,16 +11,19 @@ set (PYMORFEUSZ_VERSION "0.1.0")
 INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
 INCLUDE_DIRECTORIES (..)
 
-set (SWIG_PYTHON_OUTFILE swigPYTHON.cpp)
+set (SWIG_PYTHON_OUTFILE_CXX "${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.cpp")
+set (SWIG_PYTHON_OUTFILE_PY "${CMAKE_CURRENT_BINARY_DIR}/morfeusz2.py")
 add_custom_command ( 
-    OUTPUT ${SWIG_PYTHON_OUTFILE} morfeusz2.py
-    COMMAND swig -python -c++ -o ${SWIG_PYTHON_OUTFILE} ${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i
+    OUTPUT "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}"
+    COMMAND swig -python -c++ -o "${SWIG_PYTHON_OUTFILE_CXX}" ${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i
     DEPENDS libmorfeusz
 )
+add_custom_target (generate_python_wrapper ALL
+        DEPENDS "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}")
 
 set (SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
 set (SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
-set (DEPS        "${CMAKE_CURRENT_BINARY_DIR}/morfeusz2.py" "${SWIG_PYTHON_OUTFILE}")
+set (DEPS        "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}")
 set (OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build")
 
 configure_file (${SETUP_PY_IN} ${SETUP_PY})
@@ -28,14 +31,17 @@ configure_file (${SETUP_PY_IN} ${SETUP_PY})
 add_custom_command (OUTPUT ${SETUP_PY}
                        COMMAND python
                        ARGS setup.py build
-                       DEPENDS ${DEPS} ${SETUP_PY_IN})
+                       DEPENDS generate_python_wrapper ${SETUP_PY_IN})
+add_custom_target (generate_python_setup_file ALL
+        DEPENDS ${SETUP_PY})
 
-add_custom_target (pymorfeusz DEPENDS ${SETUP_PY} libmorfeusz)
+add_custom_target (pymorfeusz ALL
+        DEPENDS generate_python_wrapper generate_python_setup_file libmorfeusz)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_custom_target (install-python
         COMMAND python ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX}
-        DEPENDS ${pymorfeusz}
+        DEPENDS pymorfeusz
     )
     add_custom_target (package-python-bin
         COMMAND python ${SETUP_PY} bdist_egg -d "${TARGET_DIR}" --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"

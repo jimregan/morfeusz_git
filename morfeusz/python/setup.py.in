@@ -5,7 +5,7 @@ morfeusz2 = Extension('_morfeusz2',
                     libraries=['morfeusz2'],
                     library_dirs=['${CMAKE_CURRENT_BINARY_DIR}/..'],
                     include_dirs=['${CMAKE_CURRENT_SOURCE_DIR}/..'],
-                    sources=['${CMAKE_CURRENT_BINARY_DIR}/${SWIG_PYTHON_OUTFILE}'])
+                    sources=['${SWIG_PYTHON_OUTFILE_CXX}'])
 
 if __name__ == '__main__':
     setup(name='morfeusz2',
