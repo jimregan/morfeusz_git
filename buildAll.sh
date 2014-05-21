@@ -47,8 +47,8 @@ mkdir -p log
 #    echo "build Darwin amd64 package package-builder package-java &> log/darwin-amd64.out"
 #} | xargs --null | 
 
-parallel -j4 bash -c -- \
-	"build Linux amd64 package package-java package-python package-builder package-perl &> log/linux-amd64.out" \
+parallel -j5 bash -c -- \
+	"build Linux amd64 package package-java package-python package-builder &> log/linux-amd64.out" \
 	"LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 package package-java package-builder &> log/linux-i386.out" \
 	"build Windows amd64 package package-java package-builder &> log/windows-amd64.out" \
 	"build Windows i386 package package-java package-builder &> log/windows-i386.out" \
