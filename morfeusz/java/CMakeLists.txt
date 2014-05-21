@@ -16,9 +16,10 @@ add_custom_command (
     COMMAND swig -java -c++ -package pl.waw.ipipan.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${JAVA_SRC_DIR} ${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i
     DEPENDS libmorfeusz
 )
-
+add_custom_target(generate_java_wrapper ALL
+    DEPENDS ${SWIG_JAVA_OUTFILE})
 add_library (libjmorfeusz SHARED ${SWIG_JAVA_OUTFILE})
-add_dependencies (libjmorfeusz libjmorfeusz_cxx)
+add_dependencies (libjmorfeusz generate_java_wrapper)
 set_target_properties (libjmorfeusz PROPERTIES OUTPUT_NAME "jmorfeusz")
 target_link_libraries (libjmorfeusz ${JAVA_LIBRARIES} libmorfeusz)
 
@@ -52,7 +53,7 @@ endif ()
 file(GLOB_RECURSE JAVA_SOURCES ${JAVA_SRC_DIR} "*.java")
 add_jar (jmorfeusz
     SOURCES "${JAVA_SOURCES}"
-    DEPENDS libjmorfeusz)
+    DEPENDS libjmorfeusz generate_java_wrapper)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_dependencies(jmorfeusz jmorfeusz-repair-libmorfeusz-link jmorfeusz-repair-libjmorfeusz-id)
