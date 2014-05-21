@@ -21,7 +21,7 @@ void printMorphResults(const std::vector<MorphInterpretation>& res, bool printNo
             printf("]\n[");
         }
         else if (prevStart != -1) {
-            printf(";\n");
+            printf(";\n ");
         }
         //            printf("%s", mi.toString(true).c_str());
         if (printNodeNumbers) {
