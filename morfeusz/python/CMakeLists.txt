@@ -11,6 +11,7 @@ set (PYMORFEUSZ_VERSION "0.1.0")
 INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
 INCLUDE_DIRECTORIES (..)
 
+
 set (SWIG_PYTHON_OUTFILE_CXX "${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.cpp")
 set (SWIG_PYTHON_OUTFILE_PY "${CMAKE_CURRENT_BINARY_DIR}/morfeusz2.py")
 add_custom_command ( 
@@ -22,21 +23,26 @@ add_custom_target (generate_python_wrapper ALL
         DEPENDS "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}")
 
 set (SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
+set (SETUP_PY_TMP    "${CMAKE_CURRENT_BINARY_DIR}/setupTmp.py")
 set (SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
 set (DEPS        "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}")
 set (OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build")
 
 configure_file (${SETUP_PY_IN} ${SETUP_PY})
 
-add_custom_command (OUTPUT ${SETUP_PY}
-                       COMMAND python
-                       ARGS setup.py build
-                       DEPENDS generate_python_wrapper ${SETUP_PY_IN})
 add_custom_target (generate_python_setup_file ALL
         DEPENDS ${SETUP_PY})
 
+add_custom_command (OUTPUT ${OUTPUT}
+                       COMMAND python
+                       ARGS ${SETUP_PY} build
+                       DEPENDS generate_python_wrapper generate_python_setup_file)
+
+add_custom_target (build_python_wrapper ALL
+        DEPENDS ${OUTPUT})
+
 add_custom_target (pymorfeusz ALL
-        DEPENDS generate_python_wrapper generate_python_setup_file libmorfeusz)
+        DEPENDS generate_python_wrapper generate_python_setup_file libmorfeusz build_python_wrapper)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_custom_target (install-python
