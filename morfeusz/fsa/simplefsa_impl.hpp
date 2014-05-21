@@ -78,9 +78,6 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
         else {
             state.setNext(offset);
         }
-        if (isTransducer) {
-            state.setLastTransitionValue(*(foundTransition + 4));
-        }
     }
 }
 

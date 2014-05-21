@@ -20,17 +20,17 @@ State<T>::State(const FSA<T>& fsa)
 }
 
 template <class T>
-bool State<T>::isSink() const {
+inline bool State<T>::isSink() const {
     return this->sink;
 }
 
 template <class T>
-bool State<T>::isAccepting() const {
+inline bool State<T>::isAccepting() const {
     return this->accepting;
 }
 
 template <class T>
-void State<T>::proceedToNext(const char c) {
+inline void State<T>::proceedToNext(const char c) {
     if (this->sink) {
         return;
     }
@@ -46,25 +46,15 @@ unsigned long State<T>::getOffset() const {
 }
 
 template <class T>
-const T& State<T>::getValue() const {
+inline const T& State<T>::getValue() const {
     assert(this->isAccepting());
     return this->value;
 }
 
 template <class T>
-unsigned long State<T>::getValueSize() const {
+inline unsigned long State<T>::getValueSize() const {
     assert(this->isAccepting());
     return this->valueSize;
-}
-
-template <class T>
-unsigned char State<T>::getLastTransitionValue() const {
-    return this->lastTransitionValue;
-}
-
-template <class T>
-void State<T>::setLastTransitionValue(unsigned char val) {
-    this->lastTransitionValue = val;
 }
 
 template <class T>
@@ -74,14 +64,16 @@ State<T>::~State() {
 
 template <class T>
 void State<T>::setNext(const unsigned long offset) {
-//    assert(!this->isSink());
+    assert(!this->isSink());
+//    this->sink = false;
     this->offset = offset;
     this->accepting = false;
 }
 
 template <class T>
 void State<T>::setNext(const unsigned long offset, const T& value, const unsigned long valueSize) {
-//    assert(!this->isSink());
+    assert(!this->isSink());
+//    this->sink = false;
     this->offset = offset;
     this->accepting = true;
     this->value = value;

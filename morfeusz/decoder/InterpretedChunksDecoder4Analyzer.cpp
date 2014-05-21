@@ -31,27 +31,27 @@ void InterpretedChunksDecoder4Analyzer::decode(
 }
 
 void InterpretedChunksDecoder4Analyzer::decodeLemma(
-        const EncodedForm& lemma,
+        const EncodedForm& encodedLemma,
         int nonPrefixCodepointsNum,
         bool forPrefix,
         string& res) const {
-    assert(nonPrefixCodepointsNum > orth.size());
+//    assert(nonPrefixCodepointsNum > orth.size());
     unsigned int prefixSegmentsOrthLength = forPrefix
         ? 0
         : (unsigned int) normalizedCodepoints.size() - nonPrefixCodepointsNum;
     size_t endIdx = forPrefix
         ? normalizedCodepoints.size()
-        : normalizedCodepoints.size() - lemma.suffixToCut;
-    for (unsigned int i = prefixSegmentsOrthLength + lemma.prefixToCut; i < endIdx; i++) {
+        : normalizedCodepoints.size() - encodedLemma.suffixToCut;
+    for (unsigned int i = prefixSegmentsOrthLength + encodedLemma.prefixToCut; i < endIdx; i++) {
         uint32_t cp =
-                (i < lemma.casePattern.size() && lemma.casePattern[i])
+                (i < encodedLemma.casePattern.size() && encodedLemma.casePattern[i])
                 ? env.getCaseConverter().toTitle(normalizedCodepoints[i])
                 : normalizedCodepoints[i];
         env.getCharsetConverter().append(cp, res);
     }
     if (!forPrefix) {
-        const char* suffixPtr = lemma.suffixToAdd.c_str();
-        const char* suffixEnd = suffixPtr + lemma.suffixToAdd.length();
+        const char* suffixPtr = encodedLemma.suffixToAdd.c_str();
+        const char* suffixEnd = suffixPtr + encodedLemma.suffixToAdd.length();
         while (suffixPtr != suffixEnd) {
             uint32_t cp = UTF8CharsetConverter::getInstance().next(suffixPtr, suffixEnd);
             env.getCharsetConverter().append(cp, res);

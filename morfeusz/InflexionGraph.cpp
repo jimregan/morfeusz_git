@@ -52,7 +52,7 @@ static inline bool chunkIsTheOnlyOne(
 }
 
 void InflexionGraph::addPath(const std::vector<InterpretedChunk>& path, bool weak) {
-    //    debugPath(path);
+//    cerr << path.size() << " " << weak << endl;
     //    debugGraph(this->graph);
     if (weak && !this->empty() && !this->onlyWeakPaths) {
         return;
@@ -222,4 +222,5 @@ void InflexionGraph::repairLastNodeNumbers() {
 void InflexionGraph::clear() {
     graph.clear();
     node2ChunkStartPtr.clear();
+    onlyWeakPaths = true;
 }

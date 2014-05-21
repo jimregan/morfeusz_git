@@ -152,6 +152,7 @@ namespace utf8
                 throw invalid_utf8(*it);
             case internal::INVALID_CODE_POINT :
                 throw invalid_code_point(cp);
+                break;
         }
         return cp;
     }

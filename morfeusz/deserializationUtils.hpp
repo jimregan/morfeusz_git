@@ -22,6 +22,12 @@ inline uint16_t readInt16(const unsigned char*& currPtr) {
     return res;
 }
 
+inline unsigned int readInt24(const unsigned char*& currPtr) {
+    unsigned int res = currPtr[0] << 16 | currPtr[1] << 8 | currPtr[2];
+    currPtr += 3;
+    return res;
+}
+
 inline uint32_t readInt32(const unsigned char*& currPtr) {
     uint32_t res = htonl(*reinterpret_cast<const uint32_t*> (currPtr));
     currPtr += 4;

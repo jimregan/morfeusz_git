@@ -102,4 +102,3 @@ def preprocess(inputLines, defs, filename):
             yield lineNum, line
         elif len(ifdefsStack) == 0 or all(map(lambda (name, isActive): (name in defs and isActive) or (name not in defs and not isActive), ifdefsStack)):
             yield lineNum, _processLine(lineNum, line, defines, filename)
-        

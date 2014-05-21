@@ -150,37 +150,33 @@ public:
     /**
      * Is this a "sink" state - non-accepting state without outgoing transitions
      */
-    bool isSink() const;
+    inline bool isSink() const;
 
     /**
      * Is this an accepting state
      */
-    bool isAccepting() const;
+    inline bool isAccepting() const;
 
     /**
      * Get next state proceeding a transition for given character.
      */
-    void proceedToNext(const char c);
+    inline void proceedToNext(const char c);
 
     /**
      * Get value of this state.
      * Makes sense only for accepting states.
      * For non-accepting states is throws an exception.
      */
-    const T& getValue() const;
-    
-    unsigned char getLastTransitionValue() const;
-    
-    void setLastTransitionValue(unsigned char val);
+    inline const T& getValue() const;
 
     /**
      * Get the size (in bytes) of this state's value.
      * Makes sense only for accepting states.
      * For non-accepting states is throws an exception.
      */
-    unsigned long getValueSize() const;
+    inline unsigned long getValueSize() const;
 
-    unsigned long getOffset() const;
+    inline unsigned long getOffset() const;
 
     void setNext(const unsigned long offset);
     void setNext(const unsigned long offset, const T& value, const unsigned long valueSize);

@@ -25,7 +25,7 @@ static const unsigned int CFSA1_INITIAL_ARRAY_STATE_OFFSET = 257;
 
 struct StateData2 {
     unsigned int transitionsNum;
-    bool isArray;
+//    bool isArray;
     bool isAccepting;
 };
 
@@ -37,7 +37,7 @@ struct TransitionData2 {
 static inline StateData2 readStateData(const unsigned char*& ptr) {
     StateData2 res;
     unsigned char firstByte = readInt8(ptr);
-    res.isArray = firstByte & CFSA1_ARRAY_FLAG;
+//    res.isArray = firstByte & CFSA1_ARRAY_FLAG;
     res.isAccepting = firstByte & CFSA1_ACCEPTING_FLAG;
     res.transitionsNum = firstByte & CFSA1_TRANSITIONS_NUM_MASK;
     if (res.transitionsNum == CFSA1_TRANSITIONS_NUM_MASK) {
@@ -77,11 +77,9 @@ void CompressedFSA1<T>::reallyDoProceed(
     const unsigned char* currPtr = statePtr;
     const StateData2 sd = readStateData(currPtr);
     if (sd.isAccepting) {
-        state.valueSize = this->deserializer.deserialize(currPtr, state.value);
-        //        long size = this->deserializer.deserialize(currPtr, object);
-        //        long size = this->deserializer.deserialize(statePtr + 1, object);
-        state.setNext(statePtr - this->initialStatePtr);
-        state.accepting = true;
+        T value;
+        long valueSize = this->deserializer.deserialize(currPtr, value);
+        state.setNext(statePtr - this->initialStatePtr, value, valueSize);
     }
     else {
         state.setNext(statePtr - this->initialStatePtr);
@@ -139,10 +137,11 @@ void CompressedFSA1<T>::proceedToNext(const char c, State<T>& state) const {
                 offset = readInt16(currPtr);
                 break;
             case 3:
-                offset = readInt16(currPtr);
-                offset <<= 8;
-                offset += readInt8(currPtr);
+                offset = readInt24(currPtr);
                 break;
+            default:
+                cerr << "Offset size = " << td.offsetSize << endl;
+                throw FileFormatException("Invalid file format");
         }
         currPtr += offset;
         reallyDoProceed(currPtr, state);
