@@ -18,6 +18,7 @@
 
 %include "std_vector.i"
 %include "std_string.i"
+%include "std_except.i"
 %include "exception.i"
 
 %exception
@@ -30,6 +31,9 @@
     }
     catch(const std::exception& e) {
         SWIG_exception(SWIG_RuntimeError, const_cast<char*>(e.what()));
+    }
+    catch(...) {
+        SWIG_exception(SWIG_RuntimeError, "Unknown exception");
     }
 }
 
