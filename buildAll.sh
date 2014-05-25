@@ -22,7 +22,11 @@ function build {
     mkdir -p $buildDir
     mkdir -p $targetDir
     cd $buildDir
-    cmake -D CROSSMORFEUSZ_ROOT=/mnt/storage/crossmorfeusz -D CMAKE_TOOLCHAIN_FILE=$toolchain -D TARGET_DIR=$targetDir $srcDir
+    cmake -D CROSSMORFEUSZ_ROOT=/home/mlenart/opt/crossmorfeusz \
+	-D CMAKE_TOOLCHAIN_FILE=$toolchain \
+	-D TARGET_DIR=$targetDir \
+	-D INPUT_DICTIONARIES=/home/jszejko/morfeusz/morfeusz/input/dodatki.tab,/home/jszejko/morfeusz/morfeusz/input/PoliMorfSmall.tab \
+	$srcDir
     echo "building $toolchain" >&2
     make
     make $targets
@@ -47,11 +51,11 @@ mkdir -p log
 #    echo "build Darwin amd64 package package-builder package-java &> log/darwin-amd64.out"
 #} | xargs --null | 
 
-parallel -j2 bash -c -- \
-	"build Linux amd64 package package-java package-python package-builder &> log/linux-amd64.out" \
-	"LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 package package-java package-builder &> log/linux-i386.out" \
-	"build Windows amd64 package package-java package-builder &> log/windows-amd64.out" \
-	"build Windows i386 package package-java package-builder &> log/windows-i386.out" \
-	"build Darwin amd64 package package-builder package-java &> log/darwin-amd64.out"
+parallel -j5 bash -c -- \
+	"build Linux amd64 package package-java package-python package-builder 2>&1 | tee log/linux-amd64.out" \
+	"LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 package package-java package-builder 2>&1 | tee log/linux-i386.out" \
+	"build Windows amd64 package package-java package-builder 2>&1 | tee log/windows-amd64.out" \
+	"build Windows i386 package package-java package-builder 2>&1 | tee log/windows-i386.out" \
+	"build Darwin amd64 package package-builder package-java 2>&1 | tee log/darwin-amd64.out"
 
 
