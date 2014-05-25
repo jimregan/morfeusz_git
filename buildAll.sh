@@ -2,6 +2,9 @@
 
 set -e -o pipefail
 
+CROSSMORFEUSZ_ROOT="$1"
+INPUT_DICTIONARIES="$2"
+
 function build {
     set -e -o pipefail
     os=$1
@@ -22,10 +25,10 @@ function build {
     mkdir -p $buildDir
     mkdir -p $targetDir
     cd $buildDir
-    cmake -D CROSSMORFEUSZ_ROOT=/home/mlenart/opt/crossmorfeusz \
+    cmake -D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
 	-D CMAKE_TOOLCHAIN_FILE=$toolchain \
 	-D TARGET_DIR=$targetDir \
-	-D INPUT_DICTIONARIES=/home/jszejko/morfeusz/morfeusz/input/dodatki.tab,/home/jszejko/morfeusz/morfeusz/input/PoliMorfSmall.tab \
+	-D INPUT_DICTIONARIES=$INPUT_DICTIONARIES \
 	$srcDir
     echo "building $toolchain" >&2
     make

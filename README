@@ -132,7 +132,11 @@ crossmorfeusz
 Notes on Mac OS X cross-compilation:
 ------------------
 Very special, very magic and ancient version of gcc OSX compiler is required (Apple is evil and does not support cross-compilation anymore). The best way to obtain it is to personally ask the authors (michal.lenart@ipipan.waw.pl, wolinski@ipipan.waw.pl). Once you get it, the compiler directory (x86_64-apple-darwin9) must be copied into /usr directory.
- 
+
+
+buildAll.sh script:
+-------------------
+./buildAll.sh /path/to/crossmorfeusz /path/to/dictionary1,/path/to/dictionary2,...
 
 *************
 Mac OS X
