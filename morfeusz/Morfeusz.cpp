@@ -84,25 +84,6 @@ graph() {
     generatorEnv.setCaseSensitive(false);
 }
 
-inline const unsigned char* getInterpretationsPtr(const Environment& env, const InterpsGroup& ig) {
-    if (env.getProcessorType() == ANALYZER) {
-        if (hasCompressedOrthCasePatterns(*ig.ptr)) {
-            return ig.ptr + 1;
-        }
-        else {
-            const unsigned char* currPtr = ig.ptr + 1;
-            unsigned char casePatternsNum = readInt8(currPtr);
-            for (unsigned int i = 0; i < casePatternsNum; i++) {
-                env.getCasePatternHelper().deserializeOneCasePattern(currPtr);
-            }
-            return currPtr;
-        }
-    }
-    else {
-        return ig.ptr;
-    }
-}
-
 void Morfeusz::setAnalyzerFile(const string& filename) {
     this->analyzerEnv.setFSAFile(filename);
 }
@@ -216,14 +197,14 @@ void Morfeusz::doProcessOneWord(
                         && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, inputStart, currInput, ig)) {
                     for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
                         const SegrulesState& newSegrulesState = newSegrulesStates[i];
-                        const unsigned char* interpsPtr = getInterpretationsPtr(env, ig);
+//                        const unsigned char* interpsPtr = getInterpretationsPtr(env, ig);
                         const unsigned char* interpsEndPtr = ig.ptr + ig.size;
                         InterpretedChunk ic;
                         ic.segmentType = ig.type;
                         ic.textStartPtr = inputStart;
                         ic.textEndPtr = currInput;
                         ic.interpsGroupPtr = ig.ptr;
-                        ic.interpsPtr = interpsPtr;
+//                        ic.interpsPtr = interpsPtr;
                         ic.interpsEndPtr = interpsEndPtr;
                         ic.shiftOrth = newSegrulesState.shiftOrthFromPrevious;
                         ic.orthWasShifted = false;

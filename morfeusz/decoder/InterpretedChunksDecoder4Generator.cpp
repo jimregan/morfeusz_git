@@ -24,7 +24,7 @@ void InterpretedChunksDecoder4Generator::decode(
     convertPrefixes(interpretedChunk, orthPrefix, lemma);
     //        lemma += env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
     lemma.insert(lemma.end(), interpretedChunk.textStartPtr, interpretedChunk.textEndPtr);
-    const unsigned char* currPtr = interpretedChunk.interpsPtr;
+    const unsigned char* currPtr = getInterpretationsPtr(interpretedChunk.interpsGroupPtr);
     while (currPtr < interpretedChunk.interpsEndPtr) {
         MorphInterpretation mi = this->decodeMorphInterpretation(startNode, endNode, orthPrefix, lemma, interpretedChunk, currPtr);
         //                        cerr << mi.toString(false) << endl;
@@ -39,7 +39,7 @@ void InterpretedChunksDecoder4Generator::convertPrefixes(const InterpretedChunk&
     for (unsigned int i = 0; i < interpretedChunk.prefixChunks.size(); i++) {
         const InterpretedChunk& prefixChunk = interpretedChunk.prefixChunks[i];
         lemma.insert(lemma.end(), prefixChunk.textStartPtr, prefixChunk.textEndPtr);
-        const unsigned char* ptr = prefixChunk.interpsPtr;
+        const unsigned char* ptr = getInterpretationsPtr(interpretedChunk.interpsGroupPtr);
         MorphInterpretation mi = this->decodeMorphInterpretation(0, 0, orthPrefix, string(""), prefixChunk, ptr);
         orthPrefix += mi.getOrth();
     }

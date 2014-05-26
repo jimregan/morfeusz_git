@@ -29,11 +29,7 @@ public:
 
     //    void getResults(const Tagset& tagset, const CharsetConverter& charsetConverter, std::vector<MorphInterpretation>& results);
 
-    const std::vector< std::vector<InflexionGraph::Edge> >& getTheGraph() {
-        minimizeGraph();
-        repairLastNodeNumbers();
-        return this->graph;
-    }
+    const std::vector< std::vector<InflexionGraph::Edge> >& getTheGraph();
 
     bool empty() const;
     

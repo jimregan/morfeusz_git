@@ -30,7 +30,7 @@ void InflexionGraph::addMiddleEdge(unsigned int startNode, const Edge& e) {
 }
 
 static inline bool chunkIsAtFront(
-        const InterpretedChunk& chunk, 
+        const InterpretedChunk& chunk,
         const std::vector<InterpretedChunk>& path) {
     unsigned int i;
     for (i = 0; i < path.size() - 1 && path[i].orthWasShifted; i++) {
@@ -40,19 +40,19 @@ static inline bool chunkIsAtFront(
 }
 
 static inline bool chunkIsAtBack(
-        const InterpretedChunk& chunk, 
+        const InterpretedChunk& chunk,
         const std::vector<InterpretedChunk>& path) {
     return &chunk == &(path.back());
 }
 
 static inline bool chunkIsTheOnlyOne(
-        const InterpretedChunk& chunk, 
+        const InterpretedChunk& chunk,
         const std::vector<InterpretedChunk>& path) {
     return chunkIsAtFront(chunk, path) && chunkIsAtBack(chunk, path);
 }
 
 void InflexionGraph::addPath(const std::vector<InterpretedChunk>& path, bool weak) {
-//    cerr << path.size() << " " << weak << endl;
+    //    cerr << path.size() << " " << weak << endl;
     //    debugGraph(this->graph);
     if (weak && !this->empty() && !this->onlyWeakPaths) {
         return;
@@ -93,7 +93,8 @@ bool InflexionGraph::canMergeNodes(unsigned int node1, unsigned int node2) {
 set<InflexionGraph::Path> InflexionGraph::getPossiblePaths(unsigned int node) {
     if (node == UINT_MAX || node == this->graph.size() - 1) {
         return set<InflexionGraph::Path>();
-    } else {
+    }
+    else {
         set<InflexionGraph::Path> res;
         vector<Edge>& edges = this->graph.at(node);
         for (unsigned int i = 0; i < edges.size(); i++) {
@@ -139,11 +140,13 @@ void InflexionGraph::redirectEdges(unsigned int fromNode, unsigned int toNode) {
                     // if newEdge is not in edges, redirect edgeEdge
                     // so it becomes newEdge
                     oldEdge.nextNode = toNode;
-                } else {
+                }
+                else {
                     // if newEdge is already there, just remove old edge
                     edges.erase(edgesIt);
                 }
-            } else {
+            }
+            else {
                 ++edgesIt;
             }
         }
@@ -163,7 +166,8 @@ void InflexionGraph::doRemoveNode(unsigned int node) {
 void InflexionGraph::doMergeNodes(unsigned int node1, unsigned int node2) {
     if (node1 > node2) {
         doMergeNodes(node2, node1);
-    } else {
+    }
+    else {
         // node1 < node2
         for (unsigned int i = 0; i < this->graph[node2].size(); i++) {
             Edge& e = this->graph[node2][i];
@@ -217,6 +221,12 @@ void InflexionGraph::repairLastNodeNumbers() {
             }
         }
     }
+}
+
+const vector< vector<InflexionGraph::Edge> >& InflexionGraph::getTheGraph() {
+    minimizeGraph();
+    repairLastNodeNumbers();
+    return this->graph;
 }
 
 void InflexionGraph::clear() {

@@ -16,7 +16,6 @@ struct InterpretedChunk {
     const char* textStartPtr;
     const char* textEndPtr;
     const unsigned char* interpsGroupPtr;
-    const unsigned char* interpsPtr;
     const unsigned char* interpsEndPtr;
     bool shiftOrth;
     bool orthWasShifted;

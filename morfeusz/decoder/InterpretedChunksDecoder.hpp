@@ -27,7 +27,7 @@
 class InterpretedChunksDecoder {
 public:
 
-    InterpretedChunksDecoder(const Environment& env): env(env) {
+    InterpretedChunksDecoder(const Environment& env) : env(env) {
     }
 
     virtual ~InterpretedChunksDecoder() {
@@ -40,6 +40,8 @@ public:
             std::vector<MorphInterpretation>& out) const = 0;
 
 protected:
+
+    const unsigned char* getInterpretationsPtr(const unsigned char* igPtr) const;
 
     const Environment& env;
 };

@@ -38,6 +38,7 @@ moze_interp(interp|kropka|przecinek|dywiz)
 # sobie
 samotny
 
+
 # partykuła „by”:
 moze_interp(by)
 
@@ -67,15 +68,15 @@ adja
 # Połączenia z aglutynantami:
 #
 #ifdef split
-# Czas przeszły:
+# Czas przeszły (z uwzględnieniem prefiksów):
 # np. „gniotł·am”
-moze_interp( praet_sg_agl (aglsg1_wok|aglsg2_wok) )
+moze_interp( prefv>? praet_sg_agl (aglsg1_wok|aglsg2_wok) )
 # np. „czytał·em”
-moze_interp(praet_sg_masc (aglsg1_wok|aglsg2_wok))
+moze_interp(prefv>? praet_sg_masc (aglsg1_wok|aglsg2_wok))
 # np. czytała·ś, czytało·ś
-moze_interp(praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok))
+moze_interp(prefv>? praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok))
 # np. „czytali·ście”
-moze_interp(praet_pl (aglpl1_nwok|aglpl2_nwok))
+moze_interp(prefv>? praet_pl (aglpl1_nwok|aglpl2_nwok))
 
 # przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
 moze_interp(praet_sg_nagl)
@@ -88,17 +89,17 @@ moze_interp(praet_pl)
 
 # Tryb warunkowy:
 # np. „gniótł·by”
-moze_interp(praet_sg_nagl by)
+moze_interp(prefv>? praet_sg_nagl by)
 # np. „czytało·by”
-moze_interp(praet_sg by)
+moze_interp(prefv>? praet_sg by)
 # np. „gnietli·by”
-moze_interp(praet_pl by)
+moze_interp(prefv>? praet_pl by)
 # np. „gniótł·by·ś”
-moze_interp(praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok))
+moze_interp(prefv>? praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok))
 # np. „czytał·by·m”
-moze_interp(praet_sg by (aglsg1_nwok|aglsg2_nwok))
+moze_interp(prefv>? praet_sg by (aglsg1_nwok|aglsg2_nwok))
 # np. „gnietli·by·śmy”
-moze_interp(praet_pl by (aglpl1_nwok|aglpl2_nwok))
+moze_interp(prefv>? praet_pl by (aglpl1_nwok|aglpl2_nwok))
 #else
 moze_interp(praetcond)
 moze_interp(praetaglt)
@@ -119,8 +120,8 @@ moze_interp((z_aglt_by|z_aglt_nwok) (aglsg1_nwok|aglsg2_nwok))
 moze_interp(z_aglt (aglpl1_wok|aglpl2_wok))
 moze_interp((z_aglt_by|z_aglt_nwok) (aglpl1_nwok|aglpl2_nwok))
 # oraz wersje z by, np. chybabym
-moze_interp(z_aglt by (aglsg1_nwok|aglsg2_nwok))
-moze_interp(z_aglt by (aglpl1_nwok|aglpl2_nwok))
+moze_interp((z_aglt|z_aglt_nwok) by (aglsg1_nwok|aglsg2_nwok))
+moze_interp((z_aglt|z_aglt_nwok) by (aglpl1_nwok|aglpl2_nwok))
 
 # Aglutynant przy przymiotnikach i rzeczownikach: 
 # ładni·śmy, świnia·ś
@@ -158,6 +159,16 @@ moze_interp( nie> adv_com )
 # np. „nie·czytanie”, „nie·przeczytany”, „nie·czytający”:
 moze_interp( negat )
 
+# Formy zanegowane rzeczowników: nie·apostoł, nie·krzesło.
+# Może reguła powinna być „słaba”, żeby wykluczyć z niej
+# subst homonimiczne z ger (nie·mieszkanie)?
+moze_interp( nie > subst )
+
+# Wersja z dywizem: nie·-·Polak — niestety nie kontrolujemy 
+# wielkości litery początkowej w rzeczowniku, więc akceptowane 
+# jest również nie·-·krzesło. 
+moze_interp( nie > dywiz > subst )
+
 # Przyimki akceptujące krótką formę „-ń”
 # moze_interp(z_on_agl)
 # np. „do·ń”
@@ -192,7 +203,7 @@ moze_interp( prefs> dywiz> rzeczowniki ) !weak
 moze_interp( pref_dyw> rzeczowniki ) !weak
 # czasownikowe np. „po·nakapywać”
 moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|impt_sg_perf|impt_pl_perf)
-moze_interp( prefv> (inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
+moze_interp( prefv> (inf_imperf by? |praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
 # przymiotnikowe np. „do·żylny”, „euro·sodomski”, „bez·argumentowy”
 moze_interp(ppas|adv_pos|pact)
 # moze_interp(prefa> adj)
@@ -272,7 +283,7 @@ moze_interp( ( pol_zloz>|num_zloz> ) (subst|depr) ) !weak
 moze_interp(adj_anty_zloz)
 moze_interp(subst_anty_zloz)
 
-# złożenia adja+adj/adv bez dywizu, np. średniopienny, sierściowłosy
+# złożenia adja+adj/adv bez dywizu, np. średniopienny
 moze_interp(adja>+ (adj_pos|adv_pos)) !weak
 
 # formy złoż. z samym dywizem w wyrażeniach takich jak:
@@ -295,10 +306,10 @@ moze_interp(pred)
 
 # liczba arabska z formą przymiotnikową lub przysłówkową: 22-letni, 
 # 1-majowy, 3-krotnie
-# moze_interp( dig>+ dywiz> (adj_pos|adv_pos) )
+moze_interp( dig>+ dywiz> (adj_pos|adv_pos) )
 
 # wersja z ułamkiem dziesiętnym, np. 6,5-metrowy, 8,5-procentowy
-# moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
+moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
 
 # liczba rzymska z formą przymiotnikową: XIX-wieczny
 # moze_interp( roman_num> dywiz> (adj_pos|adv_pos) )
@@ -308,7 +319,7 @@ moze_interp(pred)
 # moze_interp(num_zloz>+ i> pol_zloz> suf_num ) !weak
 
 # złożenia liczbowe z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
-# moze_interp( dig>+ dywiz> suf_num )
+moze_interp( dig>+ dywiz> suf_num )
 
 # interpretacja znaków interpunkcyjnych
 # moze_interp(samodz interp)
@@ -320,15 +331,15 @@ moze_interp(pred)
 
 # Stopień najwyższy z ‹nie›:
 # np. „nie·naj·zieleńszy”, „nie·naj·mądrzej”
-# moze_interp( nie> adj_sup ) !weak
+# moze_interp( nie> naj> adj_sup ) !weak
 
 # zapis typu: 50-tych, 20-te
 # moze_interp(dig>+ dywiz> suf_ord)
 
 # zapis łączny: tymbardziej, tymładniej
-# moze_interp(tym)
-# moze_interp(bardziej)
-# moze_interp(niemniej)
+moze_interp(tym)
+moze_interp(bardziej)
+moze_interp(niemniej)
 # moze_interp(tym bardziej)
 # moze_interp(tym niemniej)
 # moze_interp(tym adj_com) !weak

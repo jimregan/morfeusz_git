@@ -39,6 +39,7 @@ set(SRC_FILES
     segrules/segrules.cpp
     segrules/SegrulesFSA.cpp
     CasePatternHelper.cpp
+    decoder/InterpretedChunksDecoder.cpp
     decoder/InterpretedChunksDecoder4Analyzer.cpp
     decoder/InterpretedChunksDecoder4Generator.cpp
     deserializer/InterpsGroupsReader.cpp

@@ -22,7 +22,7 @@ void InterpretedChunksDecoder4Analyzer::decode(
     string lemma4Prefixes;
     if (tryToGetLemma4Prefixes(interpretedChunk, lemma4Prefixes)) {
         orth.insert(orth.end(), interpretedChunk.textStartPtr, interpretedChunk.textEndPtr);
-        const unsigned char* currPtr = interpretedChunk.interpsPtr;
+        const unsigned char* currPtr = getInterpretationsPtr(interpretedChunk.interpsGroupPtr);
         while (currPtr < interpretedChunk.interpsEndPtr) {
             DecodeMorphInterpParams params = {startNode, endNode, orth, lemma4Prefixes, interpretedChunk};
             this->decodeMorphInterpretation(params, currPtr, out);
@@ -141,7 +141,7 @@ bool InterpretedChunksDecoder4Analyzer::tryToGetLemma4OnePrefix(const Interprete
         orthCodepoints.push_back(cp);
         normalizedCodepoints.push_back(env.getCaseConverter().toLower(cp));
     }
-    const unsigned char* currPtr = prefixChunk.interpsPtr;
+    const unsigned char* currPtr = getInterpretationsPtr(prefixChunk.interpsGroupPtr);
     EncodedInterpretation ei = this->decodeEncodedInterp(currPtr, *prefixChunk.interpsGroupPtr);
     if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
         this->decodeLemma(ei.value, prefixChunk.codepointsNum, true, lemma4Prefixes);
