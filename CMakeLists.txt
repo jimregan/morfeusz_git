@@ -5,7 +5,15 @@ project (Morfeusz)
 set (Morfeusz_VERSION_MAJOR 2)
 set (Morfeusz_VERSION_MINOR 0)
 set (Morfeusz_VERSION_PATCH 0)
+set (Morfeusz_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
+if (NOT ${VERSION_SUFFIX} STREQUAL "")
+    set (Morfeusz_VERSION_TWEAK "${VERSION_SUFFIX}")
+    set (Morfeusz_VERSION "${Morfeusz_VERSION}_${Morfeusz_VERSION_TWEAK}")
+endif ()
 set (CMAKE_BUILD_TYPE Release)
+set (CMAKE_SKIP_RPATH ON)
+
+message ("Version=${Morfeusz_VERSION}")
 
 enable_testing()
 
@@ -25,7 +33,7 @@ else ()
 endif ()
 
 # PROJECT_VERSION
-set (PROJECT_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
+#~ set (PROJECT_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
 
 ### USER DEFINED VARIABLES
 
@@ -103,7 +111,7 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 ########## Configure CPack ##########
 
 # general
-set (CPACK_PACKAGE_FILE_NAME "morfeusz2-${PROJECT_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}")
+set (CPACK_PACKAGE_FILE_NAME "morfeusz2-${Morfeusz_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}")
 set (CPACK_PACKAGE_VENDOR "Michał Lenart")
 set (CPACK_PACKAGE_CONTACT "michal.lenart@ipipan.waw.pl")
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Morphological analyzer for the Polish language.")

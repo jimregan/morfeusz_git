@@ -16,7 +16,7 @@ set (SWIG_PYTHON_OUTFILE_CXX "${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.cpp")
 set (SWIG_PYTHON_OUTFILE_PY "${CMAKE_CURRENT_BINARY_DIR}/morfeusz2.py")
 add_custom_command ( 
     OUTPUT "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}"
-    COMMAND swig -python -c++ -o "${SWIG_PYTHON_OUTFILE_CXX}" ${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i
+    COMMAND swig -python -c++ -o "${SWIG_PYTHON_OUTFILE_CXX}" "${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i"
     DEPENDS libmorfeusz
 )
 add_custom_target (generate_python_wrapper
@@ -56,7 +56,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (PACKAGE_DEPENDS "package-python-bin")
     
     add_custom_target (package-python-deb-sdist
-        COMMAND python ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}"
+        COMMAND python ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"
         DEPENDS pymorfeusz
     )
     add_custom_target (package-python-deb-build
