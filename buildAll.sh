@@ -2,8 +2,8 @@
 
 set -e -o pipefail
 
-CROSSMORFEUSZ_ROOT="$1"
-INPUT_DICTIONARIES="$2"
+export CROSSMORFEUSZ_ROOT="$1"
+export INPUT_DICTIONARIES="$2"
 
 function build {
     set -e -o pipefail
