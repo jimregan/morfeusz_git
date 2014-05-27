@@ -27,6 +27,7 @@
         <in>cli.cpp</in>
       </df>
       <df name="decoder">
+        <in>InterpretedChunksDecoder.cpp</in>
         <in>InterpretedChunksDecoder4Analyzer.cpp</in>
         <in>InterpretedChunksDecoder4Generator.cpp</in>
       </df>
@@ -148,6 +149,8 @@
         </ccTool>
       </item>
       <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
       </item>
       <item path="build/morfeusz/morfeuszJAVA_wrap.cxx"
             ex="false"
@@ -219,8 +222,6 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="0">
-        </ccTool>
       </item>
       <item path="build1/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
       </item>
@@ -424,6 +425,8 @@
             flavor2="4">
       </item>
       <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="2">
@@ -432,15 +435,26 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="morfeusz/decoder/InterpretedChunksDecoder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
+      </item>
       <item path="morfeusz/decoder/InterpretedChunksDecoder4Analyzer.cpp"
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
       </item>
       <item path="morfeusz/decoder/InterpretedChunksDecoder4Generator.cpp"
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
       </item>
       <item path="morfeusz/deserializer/InterpsGroupsReader.cpp"
             ex="false"
@@ -451,6 +465,8 @@
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
       </item>
       <item path="morfeusz/fsa/const.cpp" ex="false" tool="1" flavor2="4">
       </item>
@@ -490,20 +506,24 @@
         </ccTool>
       </item>
       <item path="morfeusz/morfeusz_analyzer.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/morfeusz_generator.cpp" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="morfeusz/segrules/SegrulesFSA.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
+      </item>
+      <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
+      </item>
+      <item path="morfeusz/test_recognize_dict.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="morfeusz/segrules/SegrulesFSA.cpp" ex="false" tool="1" flavor2="4">
-      </item>
-      <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
-      </item>
-      <item path="morfeusz/test_recognize_dict.cpp" ex="false" tool="1" flavor2="4">
-      </item>
       <item path="morfeusz/test_result_equals.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
     </conf>
   </confs>

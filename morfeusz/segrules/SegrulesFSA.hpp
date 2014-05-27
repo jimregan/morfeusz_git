@@ -27,9 +27,10 @@ inline bool operator<(const SegrulesState& s1, const SegrulesState& s2) {
 class SegrulesFSA {
 public:
 
-    SegrulesFSA(const unsigned char* ptr) : initialState(), ptr(ptr) {
+    SegrulesFSA(const unsigned char* ptr) : initialState(), ptr(ptr), initialTransitions() {
         SegrulesState state = {0, false, false, false, false};
         initialState = state;
+        initialTransitions = createInitialTransitionsVector();
     }
 
     void proceedToNext(
@@ -44,8 +45,11 @@ public:
     SegrulesState initialState;
 private:
     const unsigned char* ptr;
+    std::vector< std::vector<SegrulesState> > initialTransitions;
 
     SegrulesState transition2State(const unsigned char* transitionPtr) const;
+    
+    std::vector< std::vector<SegrulesState> > createInitialTransitionsVector();
 };
 
 #endif	/* SEGRULESFSA_HPP */

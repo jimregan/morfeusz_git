@@ -188,6 +188,7 @@ public:
     
     friend class CompressedFSA1<T>;
 private:
+    
     const FSA<T>& fsa;
     unsigned long offset;
     bool accepting;
