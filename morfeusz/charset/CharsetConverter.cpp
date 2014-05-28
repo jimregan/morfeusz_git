@@ -25,9 +25,9 @@ CharsetConverter::~CharsetConverter() {
 
 }
 
-uint32_t CharsetConverter::peek(const char* it, const char* end) const {
-    return this->next(it, end);
-}
+//uint32_t CharsetConverter::peek(const char* it, const char* end) const {
+//    return this->next(it, end);
+//}
 
 static inline void iterateThroughInvalidUtf8Sequence(const char*& it, const char* end) {
     uint32_t _dupa;
@@ -44,6 +44,7 @@ const UTF8CharsetConverter& UTF8CharsetConverter::getInstance() {
 UTF8CharsetConverter::UTF8CharsetConverter() {}
 
 uint32_t UTF8CharsetConverter::next(const char*& it, const char* end) const {
+//    return utf8::unchecked::next(it);
     uint32_t cp = 0;
     utf8::internal::utf_error err_code = utf8::internal::validate_next(it, end, cp);
     if (err_code == utf8::internal::UTF8_OK) {
@@ -57,7 +58,7 @@ uint32_t UTF8CharsetConverter::next(const char*& it, const char* end) const {
 }
 
 void UTF8CharsetConverter::append(uint32_t cp, string& result) const {
-    utf8::append(cp, back_inserter(result));
+    utf8::unchecked::append(cp, back_inserter(result));
 }
 
 static vector<char> reverseArray(const uint32_t* array) {

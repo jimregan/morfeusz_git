@@ -31,6 +31,7 @@ set(SRC_FILES
     MorphInterpretation.cpp 
     Morfeusz.cpp
     InflexionGraph.cpp
+    charset/TextReader.cpp
     charset/CharsetConverter.cpp
     charset/CaseConverter.cpp
     charset/caseconv.cpp
@@ -56,6 +57,7 @@ set(INCLUDE_FILES
     Morfeusz.hpp
     InflexionGraph.hpp
     charset/CharsetConverter.hpp
+    charset/TextReader.hpp
     charset/CaseConverter.hpp
     charset/caseconv.hpp
     charset/conversion_tables.hpp

@@ -41,7 +41,7 @@ static void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
 
 static string debugInterpsGroup(unsigned char type, const char* startPtr, const char* endPtr) {
     stringstream res;
-    res << "(" << (int) type << ", " << string(startPtr, endPtr) << "), ";
+    res << "(" << (int) type << ", " << (long) startPtr << " " << (long) endPtr << string(startPtr, endPtr) << "), ";
     return res.str();
 }
 
@@ -55,23 +55,56 @@ static string debugAccum(vector<InterpretedChunk>& accum) {
 }
 
 static void feedStateDirectly(
+        const FSAType& fsa,
         StateType& state,
         const char* inputStart,
         const char* inputEnd) {
     const char* currInput = inputStart;
     while (currInput != inputEnd && !state.isSink()) {
-        state.proceedToNext(*currInput++);
+        state.proceedToNext(fsa, *currInput++);
+    }
+}
+
+static void feedStateIndirectly(
+        const FSAType& fsa,
+        StateType& state,
+        uint32_t codepoint) {
+    std::string chars;
+    UTF8CharsetConverter::getInstance().append(codepoint, chars);
+    for (unsigned int i = 0; i < chars.length() && !state.isSink(); i++) {
+        state.proceedToNext(fsa, chars[i]);
     }
 }
 
 static void feedState(
+        const FSAType& fsa,
         StateType& state,
-        int codepoint) {
-    std::string chars;
-    UTF8CharsetConverter::getInstance().append(codepoint, chars);
-    for (unsigned int i = 0; i < chars.length() && !state.isSink(); i++) {
-        state.proceedToNext(chars[i]);
+        TextReader& reader) {
+    if (reader.peek() == reader.normalizedPeek()) {
+        feedStateDirectly(fsa, state, reader.getCurrPtr(), reader.getNextPtr());
     }
+    else {
+        feedStateIndirectly(fsa, state, reader.normalizedPeek());
+    }
+}
+
+static InterpretedChunk createChunk(
+        const InterpsGroup& ig,
+        const TextReader& reader,
+        bool shiftOrth,
+        const string& homonymId) {
+    const unsigned char* interpsEndPtr = ig.ptr + ig.size;
+    InterpretedChunk ic;
+    ic.segmentType = ig.type;
+    ic.textStartPtr = reader.getWordStartPtr();
+    ic.textEndPtr = reader.getCurrPtr();
+    ic.interpsGroupPtr = ig.ptr;
+    ic.interpsEndPtr = interpsEndPtr;
+    ic.shiftOrth = shiftOrth;
+    ic.orthWasShifted = false;
+    ic.requiredHomonymId = homonymId;
+    ic.codepointsNum = reader.getCodepointsRead();
+    return ic;
 }
 
 Morfeusz::Morfeusz()
@@ -97,23 +130,23 @@ Morfeusz::~Morfeusz() {
 
 void Morfeusz::processOneWord(
         const Environment& env,
-        const char*& inputStart,
-        const char* inputEnd,
+        TextReader& reader,
         int startNodeNum,
         std::vector<MorphInterpretation>& results,
         bool insideIgnHandler) const {
-    while (inputStart != inputEnd
-            && isWhitespace(env.getCharsetConverter().peek(inputStart, inputEnd))) {
-        env.getCharsetConverter().next(inputStart, inputEnd);
-    }
 
+    reader.skipWhitespaces();
+
+    if (reader.isAtEnd()) {
+        return;
+    }
     accum.clear();
     graph.clear();
 
-    const char* currInput = inputStart;
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
 
-    doProcessOneWord(env, currInput, inputEnd, segrulesFSA.initialState);
+    reader.markWordStartsHere();
+    doProcessOneWord(env, reader, segrulesFSA.initialState);
 
     if (!graph.empty()) {
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
@@ -129,93 +162,59 @@ void Morfeusz::processOneWord(
             srcNode++;
         }
     }
-    else if (inputStart != inputEnd
-            && env.getProcessorType() == ANALYZER
+    else if (env.getProcessorType() == ANALYZER
             && !insideIgnHandler) {
-        this->handleIgnChunk(env, inputStart, currInput, startNodeNum, results);
+        this->handleIgnChunk(env, reader.getWordStartPtr(), reader.getCurrPtr(), startNodeNum, results);
     }
-    else if (inputStart != inputEnd) {
-        this->appendIgnotiumToResults(env, string(inputStart, currInput), startNodeNum, results);
+    else {
+        this->appendIgnotiumToResults(env, string(reader.getWordStartPtr(), reader.getCurrPtr()), startNodeNum, results);
     }
-    inputStart = currInput;
 }
 
 void Morfeusz::doProcessOneWord(
         const Environment& env,
-        const char*& inputData,
-        const char* inputEnd,
+        TextReader& reader,
         const SegrulesState& segrulesState) const {
     if (this->options.debug) {
         cerr << "----------" << endl;
-        cerr << "PROCESS: '" << inputData << "', already recognized: " << debugAccum(accum) << endl;
+        cerr << "PROCESS: '" << reader.getCurrPtr() << "', already recognized: " << debugAccum(accum) << endl;
     }
-    //    cerr << "doAnalyzeOneWord " << inputData << endl;
-    const char* inputStart = inputData;
-    const char* prevInput = inputData;
-    const char* currInput = inputData;
-    uint32_t codepoint = inputData == inputEnd ? 0 : env.getCharsetConverter().next(currInput, inputEnd);
-    bool currCodepointIsWhitespace = isWhitespace(codepoint);
     vector<SegrulesState> newSegrulesStates;
-    int codepointsNum = 0;
 
     StateType state = env.getFSA().getInitialState();
 
-    while (!currCodepointIsWhitespace) {
-        uint32_t normalizedCodepoint = env.getProcessorType() == ANALYZER
-                ? env.getCaseConverter().toLower(codepoint)
-                : codepoint;
-        if (codepoint == normalizedCodepoint && &env.getCharsetConverter() == &UTF8CharsetConverter::getInstance()) {
-            feedStateDirectly(state, prevInput, currInput);
+    while (!reader.isAtWhitespace()) {
+        string homonymId;
+        if (env.getProcessorType() == GENERATOR && reader.peek() == 0x3A && reader.getCurrPtr() + 1 != reader.getEndPtr()) {
+            homonymId = string(reader.getCurrPtr() + 1, reader.getEndPtr());
+            reader.proceedToEnd();
         }
         else {
-            feedState(state, normalizedCodepoint);
-        }
-        codepointsNum++;
-
-        codepoint = currInput == inputEnd ? 0 : env.getCharsetConverter().peek(currInput, inputEnd);
-        currCodepointIsWhitespace = isWhitespace(codepoint);
-        string homonymId;
-        if (env.getProcessorType() == GENERATOR && codepoint == 0x3A && currInput + 1 != inputEnd) {
-            homonymId = string(currInput + 1, inputEnd);
-            prevInput = currInput;
-            currInput = inputEnd;
-            codepoint = 0x00;
-            currCodepointIsWhitespace = true;
+            feedState(env.getFSA(), state, reader);
+            reader.next();
         }
         if (state.isAccepting()) {
-            InterpsGroupsReader& reader = const_cast<InterpsGroupsReader&>(state.getValue());
-//            for (unsigned int i = 0; i < state.getValue().size(); i++) {
-            while (reader.hasNext()) {
-//                const InterpsGroup& ig = state.getValue()[i];
-                const InterpsGroup& ig = reader.getNext();
+            InterpsGroupsReader& igReader = const_cast<InterpsGroupsReader&> (state.getValue());
+            while (igReader.hasNext()) {
+                const InterpsGroup& ig = igReader.getNext();
                 if (this->options.debug) {
-                    cerr << "recognized: " << debugInterpsGroup(ig.type, inputStart, currInput) << " at: '" << inputStart << "'" << endl;
+                    cerr << "recognized: " << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << " at: '" << reader.getWordStartPtr() << "'" << endl;
                 }
                 newSegrulesStates.clear();
-                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, currCodepointIsWhitespace, newSegrulesStates);
+                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, reader.isAtWhitespace(), newSegrulesStates);
                 if (!newSegrulesStates.empty()
-                        && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, inputStart, currInput, ig)) {
+                        && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig)) {
                     for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
                         const SegrulesState& newSegrulesState = newSegrulesStates[i];
-//                        const unsigned char* interpsPtr = getInterpretationsPtr(env, ig);
-                        const unsigned char* interpsEndPtr = ig.ptr + ig.size;
-                        InterpretedChunk ic;
-                        ic.segmentType = ig.type;
-                        ic.textStartPtr = inputStart;
-                        ic.textEndPtr = currInput;
-                        ic.interpsGroupPtr = ig.ptr;
-//                        ic.interpsPtr = interpsPtr;
-                        ic.interpsEndPtr = interpsEndPtr;
-                        ic.shiftOrth = newSegrulesState.shiftOrthFromPrevious;
-                        ic.orthWasShifted = false;
-                        ic.requiredHomonymId = homonymId;
-                        ic.codepointsNum = codepointsNum;
-                        
+
+                        InterpretedChunk ic(
+                                createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
+
                         if (!accum.empty() && accum.back().shiftOrth) {
                             doShiftOrth(accum.back(), ic);
                         }
                         accum.push_back(ic);
-                        if (currCodepointIsWhitespace) {
+                        if (reader.isAtWhitespace()) {
                             assert(newSegrulesState.accepting);
                             if (this->options.debug) {
                                 cerr << "ACCEPTING " << debugAccum(accum) << endl;
@@ -225,22 +224,19 @@ void Morfeusz::doProcessOneWord(
                         else {
                             assert(!newSegrulesState.sink);
                             //                        cerr << "will process " << currInput << endl;
-                            const char* newCurrInput = currInput;
-                            doProcessOneWord(env, newCurrInput, inputEnd, newSegrulesState);
+                            TextReader newReader(reader.getCurrPtr(), reader.getEndPtr(), env);
+                            doProcessOneWord(env, newReader, newSegrulesState);
                         }
                         accum.pop_back();
                     }
                 }
                 else if (this->options.debug) {
-//                    cerr << !newSegrulesStates.empty() << env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig) << endl;
-                    cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, inputStart, currInput) << endl;
+                    //                    cerr << !newSegrulesStates.empty() << env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig) << endl;
+                    cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << endl;
                 }
             }
         }
-        prevInput = currInput;
-        codepoint = currInput == inputEnd || currCodepointIsWhitespace ? 0x00 : env.getCharsetConverter().next(currInput, inputEnd);
     }
-    inputData = currInput;
 }
 
 void Morfeusz::handleIgnChunk(
@@ -267,14 +263,19 @@ void Morfeusz::handleIgnChunk(
         if (env.isSeparator(codepoint)) {
             separatorFound = true;
             if (nonSeparatorInputEnd != prevInput) {
+
                 int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
-                this->processOneWord(env, prevInput, nonSeparatorInputEnd, startNode, results, true);
+                TextReader newReader1(prevInput, nonSeparatorInputEnd, env);
+                this->processOneWord(env, newReader1, startNode, results, true);
+
                 startNode = results.empty() ? startNodeNum : results.back().getEndNode();
-                this->processOneWord(env, nonSeparatorInputEnd, currInput, startNode, results, true);
+                TextReader newReader2(nonSeparatorInputEnd, currInput, env);
+                this->processOneWord(env, newReader2, startNode, results, true);
             }
             else {
                 int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
-                this->processOneWord(env, prevInput, currInput, startNode, results, true);
+                TextReader newReader3(prevInput, currInput, env);
+                this->processOneWord(env, newReader3, startNode, results, true);
             }
         }
     }
@@ -283,7 +284,8 @@ void Morfeusz::handleIgnChunk(
     if (!env.isSeparator(codepoint)) {
         if (separatorFound) {
             int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
-            this->processOneWord(env, prevInput, inputEnd, startNode, results, true);
+            TextReader newReader4(prevInput, inputEnd, env);
+            this->processOneWord(env, newReader4, startNode, results, true);
         }
         else {
             this->appendIgnotiumToResults(env, string(inputStart, inputEnd), startNodeNum, results);
@@ -309,9 +311,10 @@ ResultsIterator Morfeusz::analyze(const string& text) const {
 void Morfeusz::analyze(const string& text, vector<MorphInterpretation>& results) const {
     const char* input = text.c_str();
     const char* inputEnd = input + text.length();
-    while (input != inputEnd) {
+    TextReader reader(input, inputEnd, this->analyzerEnv);
+    while (!reader.isAtEnd()) {
         int startNode = results.empty() ? 0 : results.back().getEndNode();
-        this->processOneWord(this->analyzerEnv, input, inputEnd, startNode, results);
+        this->processOneWord(this->analyzerEnv, reader, startNode, results);
     }
 }
 
@@ -331,7 +334,8 @@ void Morfeusz::generate(const string& lemma, vector<MorphInterpretation>& result
     const char* input = lemma.c_str();
     const char* inputEnd = input + lemma.length();
     int startNode = 0;
-    this->processOneWord(this->generatorEnv, input, inputEnd, startNode, results);
+    TextReader reader(input, inputEnd, this->generatorEnv);
+    this->processOneWord(this->generatorEnv, reader, startNode, results);
     if (input != inputEnd) {
         throw MorfeuszException("Input contains more than one word");
     }

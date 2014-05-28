@@ -20,6 +20,7 @@
       <df name="charset">
         <in>CaseConverter.cpp</in>
         <in>CharsetConverter.cpp</in>
+        <in>TextReader.cpp</in>
         <in>caseconv.cpp</in>
         <in>conversion_tables.cpp</in>
       </df>
@@ -100,8 +101,8 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-g -O2 -fPIC"/>
-        <element flagsID="1" commonFlags="-std=c++98 -O3"/>
+        <element flagsID="0" commonFlags="-O2 -std=c++98"/>
+        <element flagsID="1" commonFlags="-O2 -std=c++98 -fPIC"/>
         <element flagsID="2" commonFlags="-std=c++98 -O3 -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
@@ -112,11 +113,6 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>build/morfeusz/morfeusz_analyzer</executablePath>
-          <ccTool flags="2">
-            <preprocessorList>
-              <Elem>NDEBUG</Elem>
-            </preprocessorList>
-          </ccTool>
         </makeTool>
       </makefileType>
       <item path="build/default_fsa.cpp" ex="false" tool="1" flavor2="4">
@@ -124,7 +120,7 @@
       <item path="build/default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="build/morfeusz/default_fsa.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>build</pElem>
             <pElem>morfeusz</pElem>
@@ -138,7 +134,7 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>build</pElem>
             <pElem>morfeusz</pElem>
@@ -165,6 +161,7 @@
             <pElem>build/morfeusz/java</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
@@ -181,7 +178,7 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>build</pElem>
             <pElem>morfeusz</pElem>
@@ -206,6 +203,7 @@
             <pElem>build/morfeusz/python</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
@@ -234,6 +232,7 @@
             <pElem>morfeusz/build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -247,6 +246,7 @@
             <pElem>morfeusz/build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -310,6 +310,7 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
@@ -329,6 +330,7 @@
             <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>libjmorfeusz_EXPORTS</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -342,6 +344,7 @@
             <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>libjmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -352,31 +355,34 @@
             <pElem>morfeusz</pElem>
             <pElem>/usr/include/python2.7</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <item path="morfeusz/CasePatternHelper.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/Environment.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/InflexionGraph.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -385,51 +391,65 @@
       <item path="morfeusz/MorphDeserializer.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="2">
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/MorphInterpretation.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/Qualifiers.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/Tagset.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/charset/CaseConverter.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/charset/CharsetConverter.cpp"
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="2">
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="morfeusz/charset/TextReader.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/charset/caseconv.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/charset/conversion_tables.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-      </item>
-      <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
+      </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <preprocessorList>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -439,33 +459,29 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
-        </ccTool>
       </item>
       <item path="morfeusz/decoder/InterpretedChunksDecoder4Analyzer.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
-        </ccTool>
       </item>
       <item path="morfeusz/decoder/InterpretedChunksDecoder4Generator.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
-        </ccTool>
       </item>
       <item path="morfeusz/deserializer/InterpsGroupsReader.cpp"
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/deserializer/MorphDeserializer.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/fsa/const.cpp" ex="false" tool="1" flavor2="4">
@@ -478,6 +494,9 @@
           <incDir>
             <pElem>build/fsa</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/fsa/test_recognize.cpp" ex="false" tool="1" flavor2="8">
@@ -485,6 +504,9 @@
           <incDir>
             <pElem>build/fsa</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/fsa/test_speed.cpp" ex="false" tool="1" flavor2="8">
@@ -492,11 +514,15 @@
           <incDir>
             <pElem>build/fsa</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/main.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -510,20 +536,16 @@
       <item path="morfeusz/morfeusz_generator.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="morfeusz/segrules/SegrulesFSA.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/test_recognize_dict.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/test_result_equals.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
     </conf>
   </confs>

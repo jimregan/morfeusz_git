@@ -99,7 +99,14 @@ protected:
 private:
     const std::vector<unsigned char> label2ShortLabel;
     
+    std::vector< char > hasTransition;
+    std::vector< State<T> > initialTransitions;
+    
     static std::vector<unsigned char> initializeChar2PopularCharIdx(const unsigned char* ptr);
+    
+    void initializeInitialTransitions();
+    
+    void doProceedToNext(const char c, State<T>& state, bool initial) const;
     
     void doProceedToNextByList(
         const char c,
@@ -160,7 +167,7 @@ public:
     /**
      * Get next state proceeding a transition for given character.
      */
-    inline void proceedToNext(const char c);
+    inline void proceedToNext(const FSA<T>& fsa, const char c);
 
     /**
      * Get value of this state.
@@ -182,20 +189,21 @@ public:
     void setNext(const unsigned long offset, const T& value, const unsigned long valueSize);
     void setNextAsSink();
 
-    explicit State(const FSA<T>& fsa);
+    State();
+    
+    static State<T> getSink();
 
     virtual ~State();
     
     friend class CompressedFSA1<T>;
 private:
     
-    const FSA<T>& fsa;
+//    const FSA<T>& fsa;
     unsigned long offset;
     bool accepting;
     bool sink;
     T value;
     long valueSize;
-    unsigned char lastTransitionValue;
 };
 
 class FileFormatException : public std::exception {

@@ -10,28 +10,45 @@ void SegrulesFSA::proceedToNext(
         const SegrulesState& state,
         bool atEndOfWord,
         vector<SegrulesState>& res) const {
-    if (&state == &initialState) {
-        for (unsigned int j = 0; j < initialTransitions[segnum].size(); j++) {
-            const SegrulesState& newState = initialTransitions[segnum][j];
+    if (state.offset == 0) {
+        doProceedFromInitialState(segnum, atEndOfWord, res);
+    }
+    else {
+        doProceedFromNonInitialState(segnum, state, atEndOfWord, res);
+    }
+}
+
+void SegrulesFSA::doProceedFromInitialState(
+        const unsigned char segnum,
+        bool atEndOfWord,
+        vector<SegrulesState>& res) const {
+    const vector<SegrulesState>& newStates = initialTransitions[segnum];
+    vector<SegrulesState>::const_iterator it = newStates.begin();
+    while (it != newStates.end()) {
+        const SegrulesState& newState = *it++;
+        if ((atEndOfWord && newState.accepting)
+                || (!atEndOfWord && !newState.sink)) {
+            res.push_back(newState);
+        }
+    }
+}
+
+void SegrulesFSA::doProceedFromNonInitialState(
+        const unsigned char segnum,
+        const SegrulesState& state,
+        bool atEndOfWord,
+        std::vector<SegrulesState>& res) const {
+    const unsigned char* currPtr = ptr + state.offset + 1;
+    const unsigned char transitionsNum = *currPtr++;
+    for (int i = 0; i < transitionsNum; i++) {
+        if (*currPtr == segnum) {
+            SegrulesState newState = this->transition2State(currPtr);
             if ((atEndOfWord && newState.accepting)
                     || (!atEndOfWord && !newState.sink)) {
                 res.push_back(newState);
             }
         }
-    }
-    else {
-        const unsigned char* currPtr = ptr + state.offset + 1;
-        const unsigned char transitionsNum = *currPtr++;
-        for (int i = 0; i < transitionsNum; i++) {
-            if (*currPtr == segnum) {
-                SegrulesState newState = this->transition2State(currPtr);
-                if ((atEndOfWord && newState.accepting)
-                        || (!atEndOfWord && !newState.sink)) {
-                    res.push_back(newState);
-                }
-            }
-            currPtr += 4;
-        }
+        currPtr += 4;
     }
 }
 

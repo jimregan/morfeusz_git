@@ -30,7 +30,7 @@ bool FSA<T>::tryToRecognize(const char* input, T& value) const {
 #ifdef DEBUG_BUILD
         cerr << "proceed to next " << input[i] << endl;
 #endif
-        currState.proceedToNext(input[i]);
+        currState.proceedToNext(this, input[i]);
         i++;
     }
     // input[i] == '\0'
@@ -53,7 +53,7 @@ FSA<T>::FSA(const unsigned char* initialStatePtr, const Deserializer<T>& deseria
 
 template <class T>
 State<T> FSA<T>::getInitialState() const {
-    return State<T>(*this);
+    return State<T>();
 }
 
 template <class T>

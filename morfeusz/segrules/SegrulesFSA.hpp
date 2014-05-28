@@ -50,6 +50,17 @@ private:
     SegrulesState transition2State(const unsigned char* transitionPtr) const;
     
     std::vector< std::vector<SegrulesState> > createInitialTransitionsVector();
+    
+    void doProceedFromInitialState(
+            const unsigned char segnum,
+            bool atEndOfWord,
+            std::vector<SegrulesState>& res) const;
+    
+    void doProceedFromNonInitialState(
+            const unsigned char segnum,
+            const SegrulesState& state,
+            bool atEndOfWord,
+            std::vector<SegrulesState>& res) const;
 };
 
 #endif	/* SEGRULESFSA_HPP */

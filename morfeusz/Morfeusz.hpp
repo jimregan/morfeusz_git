@@ -19,6 +19,7 @@
 #include "InterpsGroup.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/CaseConverter.hpp"
+#include "charset/TextReader.hpp"
 #include "InterpretedChunk.hpp"
 #include "InflexionGraph.hpp"
 #include "MorfeuszOptions.hpp"
@@ -163,16 +164,14 @@ private:
     
     void processOneWord(
             const Environment& env,
-            const char*& inputData,
-            const char* inputEnd,
+            TextReader& reader,
             int startNodeNum,
             std::vector<MorphInterpretation>& result,
             bool insideIgnHandler=false) const;
 
     void doProcessOneWord(
             const Environment& env,
-            const char*& inputData,
-            const char* inputEnd,
+            TextReader& reader,
             const SegrulesState& segrulesState) const;
     
     void handleIgnChunk(

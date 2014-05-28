@@ -15,8 +15,15 @@
 using namespace std;
 
 template <class T>
-State<T>::State(const FSA<T>& fsa)
-: fsa(fsa), offset(0), accepting(false), sink(false), value(), valueSize(0) {
+State<T>::State()
+: offset(0), accepting(false), sink(false), value(), valueSize(0) {
+}
+
+template <class T>
+State<T> State<T>::getSink() {
+    State<T> res;
+    res.setNextAsSink();
+    return res;
 }
 
 template <class T>
@@ -30,12 +37,12 @@ inline bool State<T>::isAccepting() const {
 }
 
 template <class T>
-inline void State<T>::proceedToNext(const char c) {
+inline void State<T>::proceedToNext(const FSA<T>& fsa, const char c) {
     if (this->sink) {
         return;
     }
     else {
-        this->fsa.proceedToNext(c, *this);
+        fsa.proceedToNext(c, *this);
     }
 }
 
