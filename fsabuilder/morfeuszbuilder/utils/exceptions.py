@@ -15,6 +15,10 @@ class FSABuilderException(Exception):
     def __str__(self):
         return 'Failed to create Morfeusz files: ' + self.msg
 
+def validate(predicate, msg):
+    if not predicate:
+        raise FSABuilderException(msg)
+
 class SegtypesException(FSABuilderException):
     
     def __init__(self, msg):
@@ -35,3 +39,4 @@ class ConfigFileException(FSABuilderException):
             return u'%s:%d - %s' % (self.filename, self.lineNum, self.msg)
         else:
             return u'%s - %s' % (self.filename, self.msg)
+

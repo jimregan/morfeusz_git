@@ -4,11 +4,8 @@ ParserElement.enablePackrat()
 from morfeuszbuilder.tagset import segtypes
 from morfeuszbuilder.utils import configFile, exceptions
 from morfeuszbuilder.segrules import preprocessor, rules, rulesManager, pyparseString, separatorChars
-import codecs
-import re
 
 import itertools
-import logging
 from morfeuszbuilder.segrules import rulesNFA
 
 class RulesParser(object):

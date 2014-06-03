@@ -4,9 +4,10 @@ Created on Oct 23, 2013
 @author: mlenart
 '''
 
-import logging
-import itertools
-from morfeuszbuilder.utils.serializationUtils import *
+from morfeuszbuilder.utils.serializationUtils import htons, serializeString
+from morfeuszbuilder.utils import limits, exceptions
+
+MAX_QUALIFIERS_COMBINATIONS = 1024
 
 class Encoder(object):
     '''
@@ -41,7 +42,9 @@ class Encoder(object):
         return normalizedWord.encode(self.encoding)
     
     def _encodeTypeNum(self, typenum):
-        assert typenum >= 0 and typenum < 256
+        exceptions.validate(
+                            typenum <= limits.MAX_SEGMENT_TYPES,
+                            u'Too many segment types. The limit is %d' % limits.MAX_SEGMENT_TYPES)
         return bytearray([typenum])
     
     def _encodeQualifiers(self, qualifiers):
@@ -52,7 +55,9 @@ class Encoder(object):
         else:
             n = len(self.qualifiersMap)
             self.qualifiersMap[key] = n
-        assert n < 500
+        exceptions.validate(
+                            n <= limits.MAX_QUALIFIERS_COMBINATIONS, 
+                            u'Too many qualifiers combinations. The limit is %d' % limits.MAX_QUALIFIERS_COMBINATIONS)
         res.extend(htons(n))
         return res
     
@@ -71,13 +76,13 @@ class Encoder(object):
     
     def _encodeTagNum(self, tagnum):
         res = bytearray()
-        assert tagnum < 65536 and tagnum >= 0
+        exceptions.validate(tagnum <= limits.MAX_TAGS, u'Too many tags. The limit is %d' % limits.MAX_TAGS)
         res.append((tagnum & 0xFF00) >> 8)
         res.append(tagnum & 0x00FF)
         return res
     
     def _encodeNameNum(self, namenum):
-        assert namenum < 256 and namenum >= 0
+        exceptions.validate(namenum <= limits.MAX_NAMES, u'Too many named entity types. The limit is %d' % limits.MAX_NAMES)
         return bytearray([namenum])
     
     def _groupInterpsByType(self, interpsList):
@@ -95,10 +100,6 @@ class Encoder(object):
         
         
         res = bytearray()
-#         firstByte = len(segnum2Interps)
-#         assert firstByte < 256
-#         assert firstByte > 0
-#         res.append(firstByte)
         
         for typenum, interpsList in segnum2Interps.iteritems():
             res.extend(self._encodeInterps4Type(typenum, interpsList))
@@ -192,8 +193,6 @@ class MorphEncoder(Encoder):
         orthCasePatterns = set([tuple(interp.orthCasePattern) for interp in interpsList])
         lemmaCasePatterns = set([tuple(interp.encodedForm.casePattern) for interp in interpsList])
         prefixCuts = set([interp.encodedForm.prefixCutLength for interp in interpsList])
-        
-#         print orthCasePatterns, lemmaCasePatterns, prefixCuts
         
         encodedInterpsList.append(self._encodeCompressByte(orthCasePatterns, lemmaCasePatterns, prefixCuts))
         

@@ -6,6 +6,7 @@ Created on 20 lut 2014
 import logging
 from morfeuszbuilder.utils.serializationUtils import htons, htonl
 from morfeuszbuilder.utils import serializationUtils
+from morfeuszbuilder.utils import exceptions
 
 class RulesManager(object):
     
@@ -41,7 +42,9 @@ class RulesManager(object):
         res = bytearray()
         res.extend(self._serializeSeparatorsList())
         dfasNum = len(self.options2DFA)
-        assert dfasNum > 0 and dfasNum < 256
+        exceptions.validate(
+                            dfasNum > 0 and dfasNum < 256,
+                            u'Too many segmentation rules variants')
         res.append(dfasNum)
         for key, dfa in self.options2DFA.iteritems():
             optionsMap = self._key2Options(key)

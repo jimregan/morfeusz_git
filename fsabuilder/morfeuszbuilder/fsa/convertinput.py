@@ -52,14 +52,8 @@ class PolimorfConverter4Analyzer(object):
             line = line.decode(self.inputEncoding).strip('\n')
             orth, base, tag, name, qualifier = _parseLine(line)
             
-#             if self.trimSupneg and orth.startswith(u'nie') and tag.endswith(':neg'):
-#                 orth = orth[3:]
-#             elif self.trimSupneg and orth.startswith(u'naj') and tag.endswith(':sup'):
-#                 orth = orth[3:]
-            
             tagnum = self.tagset.getTagnum4Tag(tag)
             namenum = self.tagset.getNamenum4Name(name)
-#             typenum = tag2typenum.get(tag, 0)
             typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
             yield '\t'.join((
                         orth.encode(self.inputEncoding),

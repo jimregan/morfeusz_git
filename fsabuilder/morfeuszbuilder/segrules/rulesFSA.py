@@ -6,6 +6,9 @@ Created on 12 mar 2014
 import logging
 from morfeuszbuilder.fsa import state
 from morfeuszbuilder.utils.serializationUtils import htons
+from morfeuszbuilder.utils import exceptions
+
+MAX_FSA_SIZE = 65535
 
 class RulesState(state.State):
     
@@ -36,11 +39,9 @@ class RulesFSA(object):
             firstByte |= self.ACCEPTING_FLAG
         if state.weak:
             firstByte |= self.WEAK_FLAG
-        assert firstByte < 256 and firstByte >= 0
         res.append(firstByte)
         
         secondByte = len(state.transitionsMap)
-        assert secondByte < 256 and secondByte >= 0
         res.append(secondByte)
         
         return res
@@ -55,8 +56,10 @@ class RulesFSA(object):
             else:
                 res.append(0)
             offset = nextState.offset
-            assert offset < 65536
-#             res.append((offset & 0xFF0000) >> 16)
+            exceptions.validate(offset <= MAX_FSA_SIZE,
+                                u'Segmentation rules are too big and complicated' \
+                                + u'- the resulting automaton would exceed its max size which is %d' \
+                                % MAX_FSA_SIZE)
             res.extend(htons(offset))
         return res
     

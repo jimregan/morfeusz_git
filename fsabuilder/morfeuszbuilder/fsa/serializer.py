@@ -6,6 +6,7 @@ Created on Oct 20, 2013
 
 import logging
 from state import State
+from morfeuszbuilder.utils import limits, exceptions
 from morfeuszbuilder.utils.serializationUtils import *
 
 class SerializationMethod(object):
@@ -326,9 +327,11 @@ class VLengthSerializer1(Serializer):
                     offsetSize += 1
                 if offset >= 256 * 256:
                     offsetSize += 1
-                assert offset < 256 * 256 * 256  # TODO - przerobic na jakis porzadny wyjatek
+                exceptions.validate(
+                                    offset < 256 * 256 * 256,
+                                    u'Cannot build the automaton - it would exceed its max size which is %d' % (256 * 256 * 256))
+#                 assert offset < 256 * 256 * 256  # TODO - przerobic na jakis porzadny wyjatek
                 assert offsetSize <= 3
-                assert offsetSize > 0 or isNext
                 firstByte |= offsetSize
                 
                 transitionBytes.append(firstByte)
