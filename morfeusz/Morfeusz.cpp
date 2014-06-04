@@ -77,14 +77,14 @@ static void feedStateIndirectly(
 }
 
 static void feedState(
-        const FSAType& fsa,
+        const Environment& env,
         StateType& state,
         TextReader& reader) {
-    if (reader.peek() == reader.normalizedPeek()) {
-        feedStateDirectly(fsa, state, reader.getCurrPtr(), reader.getNextPtr());
+    if (reader.peek() == reader.normalizedPeek() && &env.getCharsetConverter() == &UTF8CharsetConverter::getInstance()) {
+        feedStateDirectly(env.getFSA(), state, reader.getCurrPtr(), reader.getNextPtr());
     }
     else {
-        feedStateIndirectly(fsa, state, reader.normalizedPeek());
+        feedStateIndirectly(env.getFSA(), state, reader.normalizedPeek());
     }
 }
 
@@ -190,7 +190,7 @@ void Morfeusz::doProcessOneWord(
             reader.proceedToEnd();
         }
         else {
-            feedState(env.getFSA(), state, reader);
+            feedState(env, state, reader);
             reader.next();
         }
         if (state.isAccepting()) {

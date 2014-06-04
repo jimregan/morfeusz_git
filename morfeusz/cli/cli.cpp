@@ -69,6 +69,17 @@ ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType pr
             "--praet" // Flag token.
             );
     
+    opt.add(
+            "", // Default.
+            0, // Required?
+            1, // Number of args expected.
+            0, // Delimiter if expecting multiple args.
+            "input/output charset", // Help description.
+            "-c", // Flag token. 
+            "-charset", // Flag token.
+            "--charset" // Flag token.
+            );
+    
     if (processorType == ANALYZER) {
         opt.add(
             "", // Default.
@@ -112,6 +123,21 @@ ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType pr
     return &opt;
 }
 
+static MorfeuszCharset getCharset(const string& encodingStr) {
+    if (encodingStr == "UTF8")
+        return UTF8;
+    else if (encodingStr == "ISO8859_2")
+        return ISO8859_2;
+    else if (encodingStr == "CP1250")
+        return CP1250;
+    else if (encodingStr == "CP852")
+        return CP852;
+    else {
+        cerr << "Invalid encoding: '" << encodingStr << "'. Must be one of: UTF8, ISO8859_2, WINDOWS1250" << endl;
+        throw "Invalid encoding";
+    }
+}
+
 void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
     if (opt.isSet("-i")) {
         string analyzerFile;
@@ -138,6 +164,12 @@ void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
     if (opt.isSet("-case-insensitive")) {
         cerr << "setting case sensitive to FALSE" << endl;
         morfeusz.setCaseSensitive(false);
+    }
+    if (opt.isSet("-c")) {
+        string charset;
+        opt.get("-c")->getString(charset);
+        cerr << "setting charset to " << charset << endl;
+        morfeusz.setCharset(getCharset(charset));
     }
 #if defined(_WIN64) || defined(_WIN32)
     morfeusz.setCharset(CP852);
