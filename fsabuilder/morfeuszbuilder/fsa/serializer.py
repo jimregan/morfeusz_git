@@ -42,7 +42,7 @@ class Serializer(object):
     
     # get the Morfeusz file format version that is being encoded
     def getVersion(self):
-        return 17
+        return 18
     
     def serialize2CppFile(self, fname, isGenerator, headerFilename="data/default_fsa.hpp"):
         res = []
@@ -236,7 +236,7 @@ class VLengthSerializer1(Serializer):
         self.label2ShortLabel = None
         
         self.ACCEPTING_FLAG = 0b10000000
-        self.ARRAY_FLAG = 0b01000000
+#         self.ARRAY_FLAG = 0b01000000
     
     def getImplementationCode(self):
         return 1
@@ -277,13 +277,13 @@ class VLengthSerializer1(Serializer):
         firstByte = 0
         if state.isAccepting():
             firstByte |= self.ACCEPTING_FLAG
-        if self.stateShouldBeAnArray(state):
-            firstByte |= self.ARRAY_FLAG
-        if state.transitionsNum < 63:
+#         if self.stateShouldBeAnArray(state):
+#             firstByte |= self.ARRAY_FLAG
+        if state.transitionsNum < 127:
             firstByte |= state.transitionsNum
             res.append(firstByte)
         else:
-            firstByte |= 63
+            firstByte |= 127
             res.append(firstByte)
             res.append(state.transitionsNum)
         

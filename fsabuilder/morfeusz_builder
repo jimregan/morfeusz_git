@@ -258,9 +258,9 @@ if __name__ == '__main__':
     opts = _parseOptions()
     try:
         main(opts)
-#     except Exception as ex:
-#         print >> sys.stderr, unicode(ex).encode('utf8')
-#         sys.exit(1)
+    except Exception as ex:
+        print >> sys.stderr, unicode(ex).encode('utf8')
+        sys.exit(1)
     finally:
         pass
 

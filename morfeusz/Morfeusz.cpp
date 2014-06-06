@@ -223,7 +223,6 @@ void Morfeusz::doProcessOneWord(
                         }
                         else {
                             assert(!newSegrulesState.sink);
-                            //                        cerr << "will process " << currInput << endl;
                             TextReader newReader(reader.getCurrPtr(), reader.getEndPtr(), env);
                             doProcessOneWord(env, newReader, newSegrulesState);
                         }

@@ -15,8 +15,8 @@
 #include "../deserializationUtils.hpp"
 
 static const unsigned char CFSA1_ACCEPTING_FLAG = 128;
-static const unsigned char CFSA1_ARRAY_FLAG = 64;
-static const unsigned char CFSA1_TRANSITIONS_NUM_MASK = 63;
+//static const unsigned char CFSA1_ARRAY_FLAG = 64;
+static const unsigned char CFSA1_TRANSITIONS_NUM_MASK = 127;
 
 static const unsigned char CFSA1_OFFSET_SIZE_MASK = 3;
 
@@ -136,14 +136,17 @@ void CompressedFSA1<T>::doProceedToNext(const char c, State<T>& state, bool init
                 if (label == c) {
                     found = true;
                     break;
-                } else {
+                }
+                else {
                     currPtr += td.offsetSize;
                 }
-            } else {
+            } 
+            else {
                 found = true;
                 break;
             }
-        } else {
+        }
+        else {
             if (td.shortLabel == 0) {
                 currPtr++;
             }
@@ -152,7 +155,8 @@ void CompressedFSA1<T>::doProceedToNext(const char c, State<T>& state, bool init
     }
     if (!found) {
         state.setNextAsSink();
-    } else {
+    } 
+    else {
         uint32_t offset;
         switch (td.offsetSize) {
             case 0:

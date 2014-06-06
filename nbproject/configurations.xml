@@ -103,7 +103,8 @@
       <flagsDictionary>
         <element flagsID="0" commonFlags="-O2 -std=c++98"/>
         <element flagsID="1" commonFlags="-O2 -std=c++98 -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++98 -O3 -fPIC"/>
+        <element flagsID="2" commonFlags="-std=c++98 -O3"/>
+        <element flagsID="3" commonFlags="-std=c++98 -O3 -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -145,7 +146,7 @@
         </ccTool>
       </item>
       <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="build/morfeusz/morfeuszJAVA_wrap.cxx"
@@ -382,14 +383,15 @@
         </ccTool>
       </item>
       <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="3">
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/MorphDeserializer.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="3">
           <preprocessorList>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
@@ -425,7 +427,7 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="3">
           <preprocessorList>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
@@ -532,6 +534,11 @@
         </ccTool>
       </item>
       <item path="morfeusz/morfeusz_analyzer.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="2">
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
       </item>
       <item path="morfeusz/morfeusz_generator.cpp" ex="false" tool="1" flavor2="4">
       </item>

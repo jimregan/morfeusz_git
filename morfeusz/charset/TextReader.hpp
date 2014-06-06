@@ -1,5 +1,5 @@
 /* 
- * File:   StatefulCharsetConverter.hpp
+ * File:   TextReader.hpp
  * Author: lennyn
  *
  * Created on May 28, 2014, 11:43 AM
