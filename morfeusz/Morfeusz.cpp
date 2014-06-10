@@ -41,7 +41,7 @@ static void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
 
 static string debugInterpsGroup(unsigned char type, const char* startPtr, const char* endPtr) {
     stringstream res;
-    res << "(" << (int) type << ", " << (long) startPtr << " " << (long) endPtr << string(startPtr, endPtr) << "), ";
+    res << "(" << (int) type << ", " << string(startPtr, endPtr) << "), ";
     return res.str();
 }
 
