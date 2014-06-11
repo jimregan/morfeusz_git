@@ -5,6 +5,19 @@ set -e -o pipefail
 export CROSSMORFEUSZ_ROOT="$1"
 export INPUT_DICTIONARIES="$2"
 export VERSION_SUFFIX="$3"
+export CPP_DICTIONARIES_DIR=`mktemp -d`
+
+function buildDictionaries {
+    buildDir=`mktemp -d`
+    srcDir=`pwd`
+    cd $buildDir
+    cmake -D INPUT_DICTIONARIES=$INPUT_DICTIONARIES \
+        -D CPP_DICTIONARIES_DIR=$CPP_DICTIONARIES_DIR \
+        $srcDir
+    make -j2 dictionaries
+    cd $srcDir
+    rm -r $buildDir
+}
 
 function build {
     set -e -o pipefail
@@ -31,6 +44,8 @@ function build {
         -D TARGET_DIR=$targetDir \
         -D INPUT_DICTIONARIES=$INPUT_DICTIONARIES \
         -D VERSION_SUFFIX=$VERSION_SUFFIX \
+        -D CPP_DICTIONARIES_DIR=$CPP_DICTIONARIES_DIR \
+        -D SKIP_DICTIONARY_BUILDING=1 \
         $srcDir 2>&1
     echo "building $toolchain" >&2
     make
@@ -56,11 +71,14 @@ export -f log
 rm -rf log
 mkdir -p log
 
-parallel -j5 bash -c -- \
-    "build Linux amd64 package package-java package-python package-builder 2>&1 | log Linux amd64" \
-    "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 package package-java 2>&1 | log Linux i386" \
-    "build Windows amd64 package package-java 2>&1 | log Windows amd64" \
-    "build Windows i386 package package-java 2>&1 | log Windows i386" \
-    "build Darwin amd64 package package-java 2>&1 | log Darwin amd64"
+buildDictionaries 2>&1 | log All all
+
+{
+    echo "build Linux amd64 package package-java package-python package-builder 2>&1 | log Linux amd64"
+    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 package package-java 2>&1 | log Linux i386"
+    echo "build Windows amd64 package package-java 2>&1 | log Windows amd64"
+    echo "build Windows i386 package package-java 2>&1 | log Windows i386"
+    echo "build Darwin amd64 package package-java 2>&1 | log Darwin amd64"
+} | xargs -n1 -P8 -d$'\n' bash -c
 
 

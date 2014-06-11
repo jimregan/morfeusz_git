@@ -1,18 +1,27 @@
 
 
 ########## generate default dictionary data #################
-add_custom_command (
-        OUTPUT "${INPUT_DICTIONARY_CPP}"
-        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --analyzer --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1 --trim-supneg
-        DEPENDS "${INPUT_DICTIONARY}"
-        COMMENT "Building default dictionary C++ file"
-)
-add_custom_command (
-        OUTPUT "${INPUT_SYNTH_DICTIONARY_CPP}"
-        COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --generator --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_SYNTH_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
-        DEPENDS "${INPUT_DICTIONARY}"
-        COMMENT "Building default dictionary C++ file"
-)
+
+if (SKIP_DICTIONARY_BUILDING)
+    message ("SKIPPING dictionary building")
+else ()
+    add_custom_command (
+            OUTPUT "${INPUT_DICTIONARY_CPP}"
+            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --analyzer --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
+            DEPENDS "${INPUT_DICTIONARY}"
+            COMMENT "Building default dictionary C++ file"
+    )
+    add_custom_command (
+            OUTPUT "${INPUT_SYNTH_DICTIONARY_CPP}"
+            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --generator --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_SYNTH_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
+            DEPENDS "${INPUT_DICTIONARY}"
+            COMMENT "Building default dictionary C++ file"
+    )
+endif()
+
+add_custom_target ( analyzer-dictionary DEPENDS "${INPUT_DICTIONARY_CPP}")
+add_custom_target ( generator-dictionary DEPENDS "${INPUT_SYNTH_DICTIONARY_CPP}")
+add_custom_target ( dictionaries DEPENDS analyzer-dictionary generator-dictionary)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
@@ -68,6 +77,7 @@ set(INCLUDE_FILES
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
 set_source_files_properties ( SOURCE "${INPUT_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
+set_source_files_properties ( SOURCE "${INPUT_SYNTH_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
 set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz2")
 
 add_executable (morfeusz_analyzer morfeusz_analyzer.cpp)

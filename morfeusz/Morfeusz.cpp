@@ -335,7 +335,7 @@ void Morfeusz::generate(const string& lemma, vector<MorphInterpretation>& result
     int startNode = 0;
     TextReader reader(input, inputEnd, this->generatorEnv);
     this->processOneWord(this->generatorEnv, reader, startNode, results);
-    if (input != inputEnd) {
+    if (reader.getCurrPtr() != reader.getEndPtr()) {
         throw MorfeuszException("Input contains more than one word");
     }
 }

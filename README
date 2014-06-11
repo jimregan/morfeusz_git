@@ -84,6 +84,8 @@ INPUT_TAGSET - tagset file
 INPUT_DICTIONARIES - comma-separated list of dictionary files (can use empty one from input/empty.txt)
 SEGMENT_RULES_FILE - segmentation rules file
 TARGET_DIR - a dir where packages built by CMake are put in
+CPP_DICTIONARIES_DIR - a dir where analyzer and generator embedded C++ dictionary files a read/written to
+SKIP_DICTIONARY_BUILDING - if set, the dictionary-building part of the build process is skipped
 
 Execute like following:
 cmake -D INPUT_TAGSET=<file1> -D INPUT_DICTIONARIES="<dict_file1>,<dict_file2>" ..

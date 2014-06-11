@@ -175,10 +175,3 @@ void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
     morfeusz.setCharset(CP852);
 #endif
 }
-//
-//Morfeusz getMorfeuszFromCLI(int argc, const char** argv, const std::string& titleText) {
-//    ezOptionParser opt = getOptions(argc, argv, titleText);
-//    Morfeusz morfeusz;
-//    initializeMorfeusz(opt, morfeusz);
-//    return morfeusz;
-//}
