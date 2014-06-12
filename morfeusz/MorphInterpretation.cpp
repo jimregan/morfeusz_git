@@ -8,7 +8,6 @@
 #include <string>
 #include <sstream>
 #include "MorphInterpretation.hpp"
-#include "EncodedInterpretation.hpp"
 #include "const.hpp"
 
 using namespace std;
@@ -32,10 +31,12 @@ tagnum(tagnum),
 namenum(namenum),
 tag(env.getTagset().getTag(tagnum, env.getCharsetConverter())),
 name(env.getTagset().getName(namenum, env.getCharsetConverter())),
-qualifiers(env.getQualifiersHelper().getQualifiers(qualifiersNum)) {
+qualifiers(&env.getQualifiersHelper().getQualifiers(qualifiersNum)) {
 
 
 }
+
+static const vector<std::string> emptyQualifiers;
 
 MorphInterpretation::MorphInterpretation() 
 : startNode(),
@@ -47,7 +48,7 @@ tagnum(),
 namenum(),
 tag(),
 name(),
-qualifiers(){
+qualifiers(&emptyQualifiers){
     
 }
 
@@ -65,7 +66,7 @@ namenum(0),
 //        qualifiersNum(0),
 tag(env.getTagset().getTag(0, env.getCharsetConverter())),
 name(env.getTagset().getName(0, env.getCharsetConverter())),
-qualifiers() {
+qualifiers(&emptyQualifiers) {
 
 }
 
@@ -126,7 +127,7 @@ const std::string& MorphInterpretation::getName() const {
 }
 
 const vector<string>& MorphInterpretation::getQualifiers() const {
-    return this->qualifiers;
+    return *this->qualifiers;
 }
 
 static inline string getQualifiersStr(const MorphInterpretation& mi) {
@@ -157,7 +158,7 @@ std::string MorphInterpretation::toString(bool includeNodeNumbers) const {
     if (!name.empty()) {
         res << "," << name;
     }
-    if (!qualifiers.empty()) {
+    if (!qualifiers->empty()) {
         res << "," << getQualifiersStr(*this);
     }
     return res.str();

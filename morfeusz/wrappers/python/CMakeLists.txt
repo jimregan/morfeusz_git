@@ -9,14 +9,14 @@ set (PYMORFEUSZ_VERSION "0.1.0")
 
 # SWIG Java
 INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
-INCLUDE_DIRECTORIES (..)
+INCLUDE_DIRECTORIES (../..)
 
 
 set (SWIG_PYTHON_OUTFILE_CXX "${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.cpp")
 set (SWIG_PYTHON_OUTFILE_PY "${CMAKE_CURRENT_BINARY_DIR}/morfeusz2.py")
 add_custom_command ( 
     OUTPUT "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}"
-    COMMAND swig -python -c++ -o "${SWIG_PYTHON_OUTFILE_CXX}" "${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i"
+    COMMAND swig -python -c++ -o "${SWIG_PYTHON_OUTFILE_CXX}" "${CMAKE_SOURCE_DIR}/morfeusz/wrappers/morfeusz.i"
     DEPENDS libmorfeusz
 )
 add_custom_target (generate_python_wrapper

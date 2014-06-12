@@ -8,7 +8,7 @@
 #ifndef TEXTREADER_HPP
 #define	TEXTREADER_HPP
 
-#include "../Environment.hpp"
+#include "Environment.hpp"
 
 class TextReader {
 public:

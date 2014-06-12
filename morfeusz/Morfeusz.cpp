@@ -11,15 +11,13 @@
 #include "utils.hpp"
 #include "data/default_fsa.hpp"
 #include "Morfeusz.hpp"
-#include "decoder/InterpretedChunksDecoder.hpp"
+#include "deserialization/morphInterps/InterpretedChunksDecoder.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
-#include "charset/CaseConverter.hpp"
+#include "case/CaseConverter.hpp"
 #include "segrules/segrules.hpp"
 #include "const.hpp"
-#include "deserializationUtils.hpp"
 #include "charset/utf8.h"
-#include "compressionByteUtils.hpp"
 
 // TODO - konstruktor kopiujący działający Tak-Jak-Trzeba
 

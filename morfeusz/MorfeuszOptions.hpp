@@ -10,6 +10,9 @@
 
 #include "const.hpp"
 
+/**
+ * Represents options for Morfeusz analyzer/generator.
+ */
 struct MorfeuszOptions {
     bool caseSensitive;
     MorfeuszCharset encoding;

@@ -30,12 +30,12 @@ function build {
     srcDir=`pwd`
     buildDir=buildall/$os-$arch
     targetDir=$srcDir/target
-    toolchain=$srcDir/morfeusz/Toolchain-$os-$arch.cmake
+    toolchain=$srcDir/toolchains/Toolchain-$os-$arch.cmake
     
     echo "Will use $toolchain toolchain"
 
     rm -rf $buildDir
-    rm -rf $targetDir
+    #~ rm -rf $targetDir
     mkdir -p $buildDir
     mkdir -p $targetDir
     cd $buildDir
@@ -68,7 +68,7 @@ function log {
 export -f build
 export -f log
 
-rm -rf log
+rm -rf log target
 mkdir -p log
 
 buildDictionaries 2>&1 | log All all
@@ -79,6 +79,6 @@ buildDictionaries 2>&1 | log All all
     echo "build Windows amd64 package package-java 2>&1 | log Windows amd64"
     echo "build Windows i386 package package-java 2>&1 | log Windows i386"
     echo "build Darwin amd64 package package-java 2>&1 | log Darwin amd64"
-} | xargs -n1 -P8 -d$'\n' bash -c
+} | xargs -n1 -P5 -d$'\n' bash -c
 
 

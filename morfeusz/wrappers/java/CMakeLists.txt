@@ -6,14 +6,14 @@ find_package(Java REQUIRED)
 
 include_directories (${JAVA_INCLUDE_PATH})
 include_directories (${JAVA_INCLUDE_PATH2})
-include_directories (..)
+include_directories (${CMAKE_SOURCE_DIR}/morfeusz)
 
 set (SWIG_JAVA_OUTFILE "${CMAKE_CURRENT_BINARY_DIR}/swigJAVA.cpp")
 file (COPY pl DESTINATION .)
 set (JAVA_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}/pl/waw/ipipan/morfeusz")
 add_custom_command (
     OUTPUT ${SWIG_JAVA_OUTFILE}
-    COMMAND swig -java -c++ -package pl.waw.ipipan.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${JAVA_SRC_DIR} ${CMAKE_SOURCE_DIR}/morfeusz/morfeusz.i
+    COMMAND swig -java -c++ -package pl.waw.ipipan.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${JAVA_SRC_DIR} ${CMAKE_SOURCE_DIR}/morfeusz/wrappers/morfeusz.i
     DEPENDS libmorfeusz
 )
 add_custom_target(generate_java_wrapper ALL

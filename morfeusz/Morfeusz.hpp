@@ -13,12 +13,11 @@
 #include <vector>
 #include <map>
 #include <set>
-#include "EncodedInterpretation.hpp"
 #include "fsa/fsa.hpp"
 #include "MorphInterpretation.hpp"
 #include "InterpsGroup.hpp"
+#include "case/CaseConverter.hpp"
 #include "charset/CharsetConverter.hpp"
-#include "charset/CaseConverter.hpp"
 #include "charset/TextReader.hpp"
 #include "InterpretedChunk.hpp"
 #include "InflexionGraph.hpp"
@@ -30,8 +29,8 @@
 #include "segrules/segrules.hpp"
 #include "segrules/SegrulesFSA.hpp"
 
-#include "deserializer/InterpsGroupsReader.hpp"
-#include "deserializer/MorphDeserializer.hpp"
+#include "deserialization/InterpsGroupsReader.hpp"
+#include "deserialization/MorphDeserializer.hpp"
 
 class Morfeusz;
 class ResultsIterator;

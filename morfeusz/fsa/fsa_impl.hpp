@@ -17,7 +17,7 @@
 #include <sstream>
 #include "const.hpp"
 #include "../utils.hpp"
-#include "../endianness.hpp"
+#include "../deserialization/endianness.hpp"
 
 //using namespace std;
 //static const unsigned int FSA_OFFSET = 6;

@@ -6,7 +6,7 @@
  */
 
 #include "InterpsGroupsReader.hpp"
-#include "../deserializationUtils.hpp"
+#include "deserialization/deserializationUtils.hpp"
 
 InterpsGroupsReader::InterpsGroupsReader()
 : currPtr(NULL), endPtr(NULL) {

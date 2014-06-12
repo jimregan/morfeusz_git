@@ -6,7 +6,7 @@ if (NOT CMAKE_CROSSCOMPILING)
 
     find_package (PerlLibs REQUIRED)
     include_directories (${PERL_INCLUDE_PATH})
-    include_directories (..)
+    include_directories (../..)
 
     set (CMAKE_SWIG_FLAGS "")
 

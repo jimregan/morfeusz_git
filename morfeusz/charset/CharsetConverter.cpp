@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <inttypes.h>
 #include <iostream>
-#include "../endianness.hpp"
+#include "deserialization/endianness.hpp"
 #include "utf8.h"
 #include "CharsetConverter.hpp"
 #include "conversion_tables.hpp"

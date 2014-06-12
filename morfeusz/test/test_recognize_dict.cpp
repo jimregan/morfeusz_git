@@ -8,7 +8,6 @@
 //#include <cstdlib>
 #include <sstream>
 #include <iostream>
-#include "EncodedInterpretation.hpp"
 #include "utils.hpp"
 #include "Morfeusz.hpp"
 #include "MorphInterpretation.hpp"

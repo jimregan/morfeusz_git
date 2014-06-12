@@ -8,6 +8,10 @@
 #ifndef CASECONV_HPP
 #define	CASECONV_HPP
 
+/*
+ * Case conversion tables
+ */
+
 extern const unsigned int TO_LOWERCASE_TABLE_SIZE;
 extern const unsigned int EXT_TO_LOWERCASE_TABLE_SIZE;
 extern const uint32_t TO_LOWERCASE_TABLE[];

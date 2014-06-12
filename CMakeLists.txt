@@ -6,7 +6,7 @@ set (Morfeusz_VERSION_MAJOR 2)
 set (Morfeusz_VERSION_MINOR 0)
 set (Morfeusz_VERSION_PATCH 0)
 set (Morfeusz_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
-if (NOT ${VERSION_SUFFIX} STREQUAL "")
+if (VERSION_SUFFIX)
     set (Morfeusz_VERSION_TWEAK "${VERSION_SUFFIX}")
     set (Morfeusz_VERSION "${Morfeusz_VERSION}_${Morfeusz_VERSION_TWEAK}")
 endif ()
@@ -148,13 +148,11 @@ include (CPack)
 file (COPY fsabuilder testfiles input DESTINATION .)
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/morfeusz/MorfeuszConfig.hpp.in"
-  "${PROJECT_BINARY_DIR}/morfeusz/MorfeuszConfig.hpp"
+  "${PROJECT_SOURCE_DIR}/morfeusz/MorfeuszVersion.hpp.in"
+  "${PROJECT_BINARY_DIR}/MorfeuszVersion.hpp"
 )
-
-###### add main sources ########
-
 include_directories("${PROJECT_BINARY_DIR}" )
+###### add main sources ########
 
 add_subdirectory (morfeusz)
 add_subdirectory (fsabuilder)

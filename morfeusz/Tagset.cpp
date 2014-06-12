@@ -3,8 +3,7 @@
 #include "Tagset.hpp"
 #include "fsa/const.hpp"
 #include "utils.hpp"
-#include "endianness.hpp"
-#include "deserializationUtils.hpp"
+#include "deserialization/deserializationUtils.hpp"
 
 using namespace std;
 

@@ -12,14 +12,16 @@
 #include "fsa/fsa.hpp"
 #include "Tagset.hpp"
 #include "Morfeusz.hpp"
+#include "MorfeuszVersion.hpp"
 #include "const.hpp"
 
 #include "cli/cli.hpp"
-#include "outputUtils.hpp"
+#include "cli/outputUtils.hpp"
 
 using namespace std;
 
 int main(int argc, const char** argv) {
+    cerr << "Morfeusz analyzer, version: " << MORFEUSZ_VERSION << endl;
     ez::ezOptionParser& opt = *getOptions(argc, argv, ANALYZER);
     Morfeusz morfeusz;
     initializeMorfeusz(opt, morfeusz);

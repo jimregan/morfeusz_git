@@ -16,11 +16,10 @@
 #include "EncodedInterpretation.hpp"
 #include "InterpretedChunk.hpp"
 #include "EncodedInterpretation.hpp"
-#include "charset/CaseConverter.hpp"
+#include "case/CaseConverter.hpp"
 #include "Environment.hpp"
 #include "MorphInterpretation.hpp"
-#include "CasePatternHelper.hpp"
-#include "deserializationUtils.hpp"
+#include "case/CasePatternHelper.hpp"
 #include "compressionByteUtils.hpp"
 #include "const.hpp"
 

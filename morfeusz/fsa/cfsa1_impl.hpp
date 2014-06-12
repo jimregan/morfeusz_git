@@ -12,7 +12,7 @@
 #include <climits>
 
 #include "fsa.hpp"
-#include "../deserializationUtils.hpp"
+#include "../deserialization/deserializationUtils.hpp"
 
 static const unsigned char CFSA1_ACCEPTING_FLAG = 128;
 //static const unsigned char CFSA1_ARRAY_FLAG = 64;

@@ -109,7 +109,7 @@ Create separate build directory, for example build-darwin.
 Run cross-compilation:
 ----------------------
 
-cmake -D CROSSMORFEUSZ_ROOT=<path_to_crossmorfeusz_dir> -DCMAKE_TOOLCHAIN_FILE=../morfeusz/Toolchain-xxx.cmake ..
+cmake -D CROSSMORFEUSZ_ROOT=<path_to_crossmorfeusz_dir> -DCMAKE_TOOLCHAIN_FILE=../toolchains/Toolchain-xxx.cmake ..
 make
 make package package-java package-python
 

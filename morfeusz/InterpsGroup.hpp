@@ -10,6 +10,10 @@
 
 #include <stdint.h>
 
+/**
+ * A structure representing one segment
+ * with pointer to its interpretations, case patterns etc.
+ */
 struct InterpsGroup {
     unsigned char type;
     uint16_t size;

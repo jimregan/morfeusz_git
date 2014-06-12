@@ -8,14 +8,11 @@
 #include <vector>
 #include <algorithm>
 #include "Environment.hpp"
-#include "decoder/InterpretedChunksDecoder.hpp"
-#include "deserializer/MorphDeserializer.hpp"
+#include "deserialization/MorphDeserializer.hpp"
 #include "exceptions.hpp"
-#include "decoder/InterpretedChunksDecoder4Analyzer.hpp"
-#include "decoder/InterpretedChunksDecoder4Generator.hpp"
-
-//class InterpretedChunksDecoder4Analyzer;
-//class InterpretedChunksDecoder4Generator;
+#include "deserialization/morphInterps/InterpretedChunksDecoder.hpp"
+#include "deserialization/morphInterps/InterpretedChunksDecoder4Analyzer.hpp"
+#include "deserialization/morphInterps/InterpretedChunksDecoder4Generator.hpp"
 
 static Deserializer<InterpsGroupsReader>& initializeDeserializer(MorfeuszProcessorType processorType) {
     static Deserializer<InterpsGroupsReader> *analyzerDeserializer

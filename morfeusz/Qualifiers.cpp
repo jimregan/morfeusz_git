@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include "Qualifiers.hpp"
-#include "deserializationUtils.hpp"
+#include "deserialization/deserializationUtils.hpp"
 #include "fsa/const.hpp"
 
 using namespace std;
@@ -32,12 +32,8 @@ qualifiers() {
     }
 }
 
-vector<string> Qualifiers::getQualifiers(int n) const {
+const vector<string>& Qualifiers::getQualifiers(int n) const {
     return this->qualifiers.at(n);
-}
-
-unsigned int Qualifiers::getQualifiersNum() const {
-    return (unsigned int) this->qualifiers.size();
 }
 
 Qualifiers::~Qualifiers() {

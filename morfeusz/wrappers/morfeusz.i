@@ -91,10 +91,10 @@ import java.io.IOException;
 
 %ignore Tagset::Tagset(const unsigned char* fsaData);
 
-%include "Morfeusz.hpp"
-%include "MorphInterpretation.hpp"
-%include "const.hpp"
-%include "exceptions.hpp"
+%include "../Morfeusz.hpp"
+%include "../MorphInterpretation.hpp"
+%include "../const.hpp"
+%include "../exceptions.hpp"
 
 // instantiate vector of interpretations
 namespace std {

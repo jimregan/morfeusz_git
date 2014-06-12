@@ -25,8 +25,6 @@ add_custom_target ( dictionaries DEPENDS analyzer-dictionary generator-dictionar
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
-# add_custom_target (dupa DEPENDS "${INPUT_DICTIONARY_CPP}")
-
 #### build #####
 
 set(SRC_FILES 
@@ -42,37 +40,39 @@ set(SRC_FILES
     InflexionGraph.cpp
     charset/TextReader.cpp
     charset/CharsetConverter.cpp
-    charset/CaseConverter.cpp
-    charset/caseconv.cpp
+    case/CaseConverter.cpp
+    case/caseconv.cpp
     charset/conversion_tables.cpp
     cli/cli.cpp
     segrules/segrules.cpp
     segrules/SegrulesFSA.cpp
-    CasePatternHelper.cpp
-    decoder/InterpretedChunksDecoder.cpp
-    decoder/InterpretedChunksDecoder4Analyzer.cpp
-    decoder/InterpretedChunksDecoder4Generator.cpp
-    deserializer/InterpsGroupsReader.cpp
-    deserializer/MorphDeserializer.cpp
+    case/CasePatternHelper.cpp
+    deserialization/morphInterps/InterpretedChunksDecoder.cpp
+    deserialization/morphInterps/InterpretedChunksDecoder4Analyzer.cpp
+    deserialization/morphInterps/InterpretedChunksDecoder4Generator.cpp
+    deserialization/InterpsGroupsReader.cpp
+    deserialization/MorphDeserializer.cpp
 )
 
 set(INCLUDE_FILES 
     const.hpp 
     data/default_fsa.hpp
+    Environment.hpp
     Tagset.hpp
     Qualifiers.hpp
     fsa/const.hpp 
     MorphInterpretation.hpp 
     Morfeusz.hpp
+    MorfeuszVersion.hpp
     InflexionGraph.hpp
     charset/CharsetConverter.hpp
     charset/TextReader.hpp
-    charset/CaseConverter.hpp
-    charset/caseconv.hpp
+    case/CaseConverter.hpp
+    case/caseconv.hpp
     charset/conversion_tables.hpp
     cli/cli.hpp
     segrules/segrules.hpp
-    deserializer/MorphDeserializer.cpp
+    deserialization/MorphDeserializer.cpp
 )
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
@@ -82,30 +82,28 @@ set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz2")
 
 add_executable (morfeusz_analyzer morfeusz_analyzer.cpp)
 add_executable (morfeusz_generator morfeusz_generator.cpp)
-add_executable (test_result_equals test_result_equals.cpp)
-add_executable (test_recognize_dict test_recognize_dict.cpp)
+add_executable (test_result_equals test/test_result_equals.cpp)
+add_executable (test_recognize_dict test/test_recognize_dict.cpp)
 
 target_link_libraries (morfeusz_analyzer libmorfeusz)
 target_link_libraries (morfeusz_generator libmorfeusz)
 target_link_libraries (test_result_equals libmorfeusz)
 target_link_libraries (test_recognize_dict libmorfeusz)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries (libmorfeusz ws2_32)
-    set (TARGET_LIB_DIR bin)
-else ()
-    set (TARGET_LIB_DIR lib)
-endif ()
-
-add_subdirectory (java)
-add_subdirectory (python)
-add_subdirectory (perl)
+add_subdirectory (wrappers)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_custom_target (morfeusz-repair-library
         COMMAND ${INSTALL_NAME_TOOL} -id libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib
         DEPENDS libmorfeusz)
     add_dependencies (morfeusz_analyzer morfeusz-repair-library)
+endif ()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    target_link_libraries (libmorfeusz ws2_32)
+    set (TARGET_LIB_DIR bin)
+else ()
+    set (TARGET_LIB_DIR lib)
 endif ()
 
 install (FILES ${INCLUDE_FILES} DESTINATION include/morfeusz)

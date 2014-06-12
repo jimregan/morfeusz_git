@@ -1,8 +1,8 @@
 
 #include "segrules.hpp"
-#include "../fsa/fsa.hpp"
-#include "../fsa/const.hpp"
-#include "../deserializationUtils.hpp"
+#include "fsa/fsa.hpp"
+#include "fsa/const.hpp"
+#include "deserialization/deserializationUtils.hpp"
 
 using namespace std;
 

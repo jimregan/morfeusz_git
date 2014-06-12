@@ -13,7 +13,7 @@
 #include <iostream>
 #include "fsa.hpp"
 #include "../utils.hpp"
-#include "../endianness.hpp"
+#include "../deserialization/endianness.hpp"
 
 static const unsigned char HAS_REMAINING_FLAG = 128;
 static const unsigned char ACCEPTING_FLAG = 64;

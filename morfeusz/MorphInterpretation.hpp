@@ -13,10 +13,12 @@
 class Environment;
 
 #include "Tagset.hpp"
-#include "EncodedInterpretation.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "Environment.hpp"
 
+/**
+ * Morphological interpretation as seen by the user in the analysis/generation results.
+ */
 class MorphInterpretation {
 public:
     MorphInterpretation(
@@ -59,7 +61,7 @@ private:
     int namenum;
     std::string tag;
     std::string name;
-    std::vector<std::string> qualifiers;
+    const std::vector<std::string>* qualifiers;
 };
 
 #endif	/* MORPHINTERPRETATION_HPP */

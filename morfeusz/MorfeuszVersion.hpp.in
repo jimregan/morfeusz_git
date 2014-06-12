@@ -1,0 +1,8 @@
+/* 
+ * File:   morfeusz_config.hpp.in
+ * Author: mlenart
+ *
+ * Created on November 29, 2013, 10:03 PM
+ */
+
+#define MORFEUSZ_VERSION "@Morfeusz_VERSION@"

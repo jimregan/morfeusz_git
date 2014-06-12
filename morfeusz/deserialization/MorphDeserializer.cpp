@@ -6,7 +6,7 @@
  */
 
 #include "MorphDeserializer.hpp"
-#include "../deserializationUtils.hpp"
+#include "deserialization/deserializationUtils.hpp"
 
 MorphDeserializer::MorphDeserializer() {
 }
