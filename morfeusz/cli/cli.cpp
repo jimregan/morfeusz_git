@@ -142,7 +142,7 @@ void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
     if (opt.isSet("-i")) {
         string analyzerFile;
         opt.get("-i")->getString(analyzerFile);
-        morfeusz.setAnalyzerFile(analyzerFile);
+        morfeusz.setAnalyzerDictionary(analyzerFile);
         printf("Using dictionary from %s\n", analyzerFile.c_str());
     }
     if (opt.isSet("-a")) {

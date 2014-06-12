@@ -172,7 +172,7 @@ void CompressedFSA1<T>::doProceedToNext(const char c, State<T>& state, bool init
                 offset = readInt24(currPtr);
                 break;
             default:
-                cerr << "Offset size = " << td.offsetSize << endl;
+                std::cerr << "Offset size = " << td.offsetSize << std::endl;
                 throw FileFormatException("Invalid file format");
         }
         currPtr += offset;

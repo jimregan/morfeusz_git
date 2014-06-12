@@ -40,7 +40,7 @@ public:
      * 
      * @param lowercaseCodepoints - codepoints of checked word converter to lowercase
      * @param originalCodepoints - codepoints of checked word
-     * @param casePattern - vector representing case pattern ( ie. [False, True] for "mBank")
+     * @param casePattern - std::vector representing case pattern ( ie. [False, True] for "mBank")
      * @return - true iff word denoted by given codepoints matches given case pattern
      */
     bool checkCasePattern(
@@ -83,8 +83,8 @@ public:
 private:
     bool caseSensitive;
     
-    mutable vector<uint32_t> orthCodepoints;
-    mutable vector<uint32_t> normalizedCodepoints;
+    mutable std::vector<uint32_t> orthCodepoints;
+    mutable std::vector<uint32_t> normalizedCodepoints;
 
     static const uint8_t LEMMA_ONLY_LOWER = 0;
     static const uint8_t LEMMA_UPPER_PREFIX = 1;

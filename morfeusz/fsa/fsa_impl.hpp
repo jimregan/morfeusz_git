@@ -16,11 +16,8 @@
 #include <string>
 #include <sstream>
 #include "const.hpp"
-#include "../utils.hpp"
-#include "../deserialization/endianness.hpp"
-
-//using namespace std;
-//static const unsigned int FSA_OFFSET = 6;
+#include "utils.hpp"
+#include "deserialization/endianness.hpp"
 
 template <class T>
 bool FSA<T>::tryToRecognize(const char* input, T& value) const {

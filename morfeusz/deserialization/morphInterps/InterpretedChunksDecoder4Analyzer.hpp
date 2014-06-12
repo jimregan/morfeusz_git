@@ -13,8 +13,8 @@
 struct DecodeMorphInterpParams {
     unsigned int startNode;
     unsigned int endNode;
-    const string& orth;
-    const string& lemma4Prefixes;
+    const std::string& orth;
+    const std::string& lemma4Prefixes;
     const InterpretedChunk& chunk;
 };
 
@@ -35,7 +35,7 @@ private:
             const EncodedForm& lemma,
             int realOrthCodepointsNum,
             bool forPrefix,
-            string& res) const;
+            std::string& res) const;
 
     void decodeEncodedForm(const unsigned char*& ptr, unsigned char compressionByte, EncodedForm& encodedForm) const;
 

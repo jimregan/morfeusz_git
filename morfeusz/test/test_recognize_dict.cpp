@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     string fsaFilename = argv[1];
     string dictFilename = argv[2];
     Morfeusz morfeusz;
-    morfeusz.setAnalyzerFile(fsaFilename);
+    morfeusz.setAnalyzerDictionary(fsaFilename);
     ifstream in;
     in.open(dictFilename.c_str());
     string line;

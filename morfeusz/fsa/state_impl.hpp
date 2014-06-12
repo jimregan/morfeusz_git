@@ -12,8 +12,6 @@
 #include <cstdio>
 #include "fsa.hpp"
 
-using namespace std;
-
 template <class T>
 State<T>::State()
 : offset(0), accepting(false), sink(false), value(), valueSize(0) {

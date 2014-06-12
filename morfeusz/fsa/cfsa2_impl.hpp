@@ -21,12 +21,10 @@ static const unsigned char LAST_FLAG = 32;
 static const unsigned char OFFSET_MASK = 0x7F; // 0b01111111;
 static const unsigned char FIRST_BYTE_OFFSET_MASK = 0x1F; // 0b00011111;
 
-using namespace std;
-
 template <class T>
-vector<unsigned char> CompressedFSA2<T>::initializeChar2PopularCharIdx(const unsigned char* ptr) {
-    return vector<unsigned char>();
-    //    return vector<unsigned char>(ptr + getPopularCharsOffset(), ptr + getPopularCharsOffset() + 256);
+std::vector<unsigned char> CompressedFSA2<T>::initializeChar2PopularCharIdx(const unsigned char* ptr) {
+    return std::vector<unsigned char>();
+    //    return std::vector<unsigned char>(ptr + getPopularCharsOffset(), ptr + getPopularCharsOffset() + 256);
 }
 
 template <class T>

@@ -27,15 +27,15 @@ private:
 
     MorphInterpretation decodeMorphInterpretation(
             unsigned int startNode, unsigned int endNode,
-            const string& orthPrefix,
-            const string& lemma,
+            const std::string& orthPrefix,
+            const std::string& lemma,
             const InterpretedChunk& chunk,
             const unsigned char*& ptr) const;
 
     void decodeForm(
-            const vector<uint32_t>& lemma,
+            const std::vector<uint32_t>& lemma,
             const EncodedForm& orth,
-            string& res) const;
+            std::string& res) const;
 
     EncodedInterpretation deserializeInterp(const unsigned char*& ptr) const;
     
