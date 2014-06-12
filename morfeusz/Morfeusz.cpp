@@ -115,11 +115,11 @@ graph() {
     generatorEnv.setCaseSensitive(false);
 }
 
-void Morfeusz::setAnalyzerFile(const string& filename) {
+void Morfeusz::setAnalyzerDictionary(const string& filename) {
     this->analyzerEnv.setFSAFile(filename);
 }
 
-void Morfeusz::setGeneratorFile(const string& filename) {
+void Morfeusz::setGeneratorDictionary(const string& filename) {
     this->generatorEnv.setFSAFile(filename);
 }
 
@@ -229,7 +229,7 @@ void Morfeusz::doProcessOneWord(
                 }
                 else if (this->options.debug) {
                     //                    cerr << !newSegrulesStates.empty() << env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig) << endl;
-                    cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << endl;
+                    std::cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
                 }
             }
         }

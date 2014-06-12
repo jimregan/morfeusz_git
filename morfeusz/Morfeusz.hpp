@@ -56,14 +56,14 @@ public:
      * 
      * @param filename
      */
-    void setAnalyzerFile(const std::string& filename);
+    void setAnalyzerDictionary(const std::string& filename);
     
     /**
      * Set a file used for morphological synthesis.
      * 
      * @param filename
      */
-    void setGeneratorFile(const std::string& filename);
+    void setGeneratorDictionary(const std::string& filename);
     
     /**
      * Destroys Morfeusz object.
@@ -189,7 +189,7 @@ private:
     Environment analyzerEnv;
     Environment generatorEnv;
     MorfeuszOptions options;
-    mutable vector<InterpretedChunk> accum;
+    mutable std::vector<InterpretedChunk> accum;
     mutable InflexionGraph graph;
 };
 

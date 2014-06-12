@@ -15,10 +15,6 @@
 #include <fstream>
 #include <vector>
 
-//using namespace std;
-
-//#define DEBUG_BUILD
-
 #ifdef DEBUG_BUILD
 #define DEBUG(x) do { std::cerr << x << std::endl; } while (0)
 #else

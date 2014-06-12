@@ -39,7 +39,7 @@ public:
     const std::string& getOrth() const;
     const std::string& getLemma() const;
 //    const std::string& getHomonymId() const;
-    bool hasHomonym(const string& homonymId) const;
+    bool hasHomonym(const std::string& homonymId) const;
     int getTagnum() const;
     int getNamenum() const;
     const std::string& getTag() const;
