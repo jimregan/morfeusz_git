@@ -10,6 +10,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 map<uint32_t, uint32_t> initializeExtCaseMap(const uint32_t (*table)[2], unsigned int tableSize) {
     map<uint32_t, uint32_t> res;
     for (unsigned int i = 0; i < tableSize; i++) {
@@ -45,4 +47,6 @@ uint32_t CaseConverter::toLower(uint32_t codepoint) const {
 
 uint32_t CaseConverter::toTitle(uint32_t codepoint) const {
     return getFromTables(TO_TITLECASE_TABLE, TO_TITLECASE_TABLE_SIZE, this->extToTitlecaseMap, codepoint);
+}
+
 }

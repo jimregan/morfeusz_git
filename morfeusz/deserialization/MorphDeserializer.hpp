@@ -8,9 +8,11 @@
 #ifndef MORPHDESERIALIZER_HPP
 #define	MORPHDESERIALIZER_HPP
 
-#include "../fsa/fsa.hpp"
-#include "../InterpsGroup.hpp"
+#include "fsa/fsa.hpp"
+#include "InterpsGroup.hpp"
 #include "InterpsGroupsReader.hpp"
+
+namespace morfeusz {
 
 class MorphDeserializer: public Deserializer< InterpsGroupsReader > {
 public:
@@ -22,6 +24,8 @@ public:
 private:
 
 };
+
+}
 
 #endif	/* MORPHDESERIALIZER_HPP */
 

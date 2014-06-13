@@ -12,6 +12,8 @@
 #include <string>
 #include "MorphInterpretation.hpp"
 
+namespace morfeusz {
+
 template <class OutputStream>
 void appendMorfeuszResults(const std::vector<MorphInterpretation>& res, OutputStream& out) {
     int prevStart = -1;
@@ -36,6 +38,8 @@ void appendMorfeuszResults(const std::vector<MorphInterpretation>& res, OutputSt
         prevEnd = mi.getEndNode();
     }
     out << "]\n";
+}
+
 }
 
 #endif	/* CONSOLEUTILS_HPP */

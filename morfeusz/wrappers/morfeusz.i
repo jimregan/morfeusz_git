@@ -6,14 +6,17 @@
 %module MorfeuszWrapper
 #else
 %module morfeusz2
-#endif 
+#endif
+
 
 %feature("autodoc", "2");
 %{
-#include "Morfeusz.hpp"
 #include "MorphInterpretation.hpp"
 #include "exceptions.hpp"
 #include "const.hpp"
+#include "Morfeusz.hpp"
+    
+using namespace morfeusz;
 %}
 
 %include "std_vector.i"
@@ -21,8 +24,7 @@
 %include "std_except.i"
 %include "exception.i"
 
-%exception
-{
+%exception {
     try{
         $action
     }
@@ -38,46 +40,11 @@
 }
 
 #ifdef SWIGJAVA
-
-%typemap(javaimports) Morfeusz %{
-import java.io.IOException;
-%}
-
-%javaexception("java.io.IOException") Morfeusz::setAnalyzerFile {
-    try {
-        $action
-    }
-    catch(FileFormatException & e) {
-        jclass clazz = jenv->FindClass("java/io/IOException");
-        jenv->ThrowNew(clazz, "Invalid file format");
-        return $null;
-    }
-}
-
-%javaexception("java.io.IOException") Morfeusz::setGeneratorFile {
-    try {
-        $action
-    }
-    catch(FileFormatException & e) {
-        jclass clazz = jenv->FindClass("java/io/IOException");
-        jenv->ThrowNew(clazz, "Invalid file format");
-        return $null;
-    }
-}
-
-%include "enums.swg"
-
-/* Force the generated Java code to use the C enum values rather than making a JNI call */
-%javaconst(1);
-
-%pragma(java) jniclasscode=%{
-  static {
-    System.loadLibrary("jmorfeusz");
-  }
-%}
+%include "morfeusz_java.i"
 #endif
 
-%ignore MorphInterpretation::MorphInterpretation(
+namespace morfeusz {
+    %ignore MorphInterpretation::MorphInterpretation(
             int startNode,
             int endNode,
             const std::string& orth,
@@ -87,9 +54,11 @@ import java.io.IOException;
             const Tagset& tagset,
             const CharsetConverter& charsetConverter);
 
-%ignore MorphInterpretation::createIgn(int startNode, const std::string& orth, const Tagset& tagset, const CharsetConverter& charsetConverter);
+    %ignore MorphInterpretation::createIgn(int startNode, const std::string& orth, const Tagset& tagset, const CharsetConverter& charsetConverter);
 
-%ignore Tagset::Tagset(const unsigned char* fsaData);
+    %ignore Tagset::Tagset(const unsigned char* fsaData);
+
+}
 
 %include "../Morfeusz.hpp"
 %include "../MorphInterpretation.hpp"
@@ -106,30 +75,5 @@ namespace std {
 }
 
 #ifdef SWIGPYTHON
-%pythoncode %{
-
-def analyze(self, text):
-  res = InterpsVector()
-  _morfeusz2.Morfeusz_analyze(self, text, res)
-  return list(res)
-
-Morfeusz.analyze = analyze
-
-def getOrth(self):
-  return _morfeusz2.MorphInterpretation_getOrth(self).decode('utf8')
-
-def getLemma(self):
-  return _morfeusz2.MorphInterpretation_getLemma(self).decode('utf8')
-
-def getTag(self):
-  return _morfeusz2.MorphInterpretation_getTag(self).decode('utf8')
-
-def getName(self):
-  return _morfeusz2.MorphInterpretation_getName(self).decode('utf8')
-
-MorphInterpretation.getOrth = getOrth
-MorphInterpretation.getLemma = getLemma
-MorphInterpretation.getTag = getTag
-MorphInterpretation.getName = getName
-%}
+%include "morfeusz_python.i"
 #endif

@@ -10,6 +10,8 @@
 
 #include "InterpretedChunksDecoder.hpp"
 
+namespace morfeusz {
+
 class InterpretedChunksDecoder4Generator : public InterpretedChunksDecoder {
 public:
 
@@ -41,6 +43,8 @@ private:
     
     mutable std::vector<uint32_t> codepoints;
 };
+
+}
 
 
 #endif	/* INTERPRETEDCHUNKSDECODER4GENERATOR_HPP */

@@ -8,6 +8,8 @@
 #include "InterpsGroupsReader.hpp"
 #include "deserialization/deserializationUtils.hpp"
 
+namespace morfeusz {
+
 InterpsGroupsReader::InterpsGroupsReader()
 : currPtr(NULL), endPtr(NULL) {
     
@@ -33,4 +35,6 @@ InterpsGroup InterpsGroupsReader::getNext() {
     ig.ptr = currPtr;
     currPtr += ig.size;
     return ig;
+}
+
 }

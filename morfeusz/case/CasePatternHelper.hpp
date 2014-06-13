@@ -13,6 +13,8 @@
 #include "deserialization/morphInterps/compressionByteUtils.hpp"
 #include "Environment.hpp"
 
+namespace morfeusz {
+    
 class Environment;
 
 /**
@@ -90,6 +92,8 @@ private:
     static const uint8_t LEMMA_UPPER_PREFIX = 1;
     static const uint8_t LEMMA_MIXED_CASE = 2;
 };
+
+}
 
 #endif	/* CASEPATTERNHELPER_HPP */
 

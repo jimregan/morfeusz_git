@@ -10,6 +10,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 InterpretedChunksDecoder4Analyzer::InterpretedChunksDecoder4Analyzer(const Environment& env) : InterpretedChunksDecoder(env) {
 }
 
@@ -150,4 +152,6 @@ bool InterpretedChunksDecoder4Analyzer::tryToGetLemma4OnePrefix(const Interprete
     else {
         return false;
     }
+}
+
 }

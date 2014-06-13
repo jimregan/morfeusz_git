@@ -15,6 +15,7 @@
 #include "consoleUtils.hpp"
 
 using namespace std;
+using namespace morfeusz;
 
 static MorfeuszCharset getEncoding(const string& encodingStr) {
     if (encodingStr == "UTF8")

@@ -12,6 +12,8 @@
 #include <cstdio>
 #include "fsa.hpp"
 
+namespace morfeusz {
+
 template <class T>
 State<T>::State()
 : offset(0), accepting(false), sink(false), value(), valueSize(0) {
@@ -89,6 +91,8 @@ template <class T>
 void State<T>::setNextAsSink() {
     this->sink = true;
     this->accepting = false;
+}
+
 }
 
 #endif	/* _STATE_IMPL_HPP */

@@ -10,6 +10,8 @@
 
 #include "Environment.hpp"
 
+namespace morfeusz {
+
 class TextReader {
 public:
     TextReader(const char* inputStart, const char* inputEnd, const Environment& env);
@@ -40,6 +42,8 @@ private:
     uint32_t theNormalizedPeek;
     const char* ptrAfterThePeek;
 };
+
+}
 
 #endif	/* TEXTREADER_HPP */
 

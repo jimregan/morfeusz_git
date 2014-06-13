@@ -14,6 +14,8 @@
 
 //#pragma pack(push, 1)  /* push current alignment to stack */
 
+namespace morfeusz {
+
 struct StateData {
     unsigned char transitionsNum;
     bool accepting;
@@ -79,6 +81,8 @@ void SimpleFSA<T>::proceedToNext(const char c, State<T>& state) const {
             state.setNext(offset);
         }
     }
+}
+
 }
 
 #endif	/* SIMPLEFSA_IMPL_HPP */

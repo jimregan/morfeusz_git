@@ -1,6 +1,8 @@
 
 #include "InterpretedChunksDecoder.hpp"
 
+namespace morfeusz {
+
 const unsigned char* InterpretedChunksDecoder::getInterpretationsPtr(const unsigned char* igPtr) const {
     if (env.getProcessorType() == ANALYZER) {
         if (hasCompressedOrthCasePatterns(*igPtr)) {
@@ -18,4 +20,6 @@ const unsigned char* InterpretedChunksDecoder::getInterpretationsPtr(const unsig
     else {
         return igPtr;
     }
+}
+
 }

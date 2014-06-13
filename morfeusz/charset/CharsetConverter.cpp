@@ -11,6 +11,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 const char DEFAULT_UNDEFINED_CHAR = static_cast<char> (0xF7);
 
 string CharsetConverter::toString(const vector<uint32_t>& codepoints) const {
@@ -134,4 +136,6 @@ string CharsetConverter::fromUTF8(const string& input) const {
 
 string UTF8CharsetConverter::fromUTF8(const string& input) const {
     return input;
+}
+
 }

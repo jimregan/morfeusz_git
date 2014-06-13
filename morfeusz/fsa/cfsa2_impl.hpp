@@ -15,6 +15,8 @@
 #include "../utils.hpp"
 #include "../deserialization/endianness.hpp"
 
+namespace morfeusz {
+
 static const unsigned char HAS_REMAINING_FLAG = 128;
 static const unsigned char ACCEPTING_FLAG = 64;
 static const unsigned char LAST_FLAG = 32;
@@ -121,6 +123,8 @@ void CompressedFSA2<T>::proceedToNext(const char c, State<T>& state) const {
             c,
             fromPointer + transitionsTableOffset,
             state);
+}
+
 }
 
 #endif	/* _VFSA_IMPL_HPP */

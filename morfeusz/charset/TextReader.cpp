@@ -8,6 +8,8 @@
 #include "TextReader.hpp"
 #include "charset_utils.hpp"
 
+namespace morfeusz {
+
 TextReader::TextReader(
     const char* inputStart, 
     const char* inputEnd, 
@@ -116,4 +118,6 @@ void TextReader::proceedToEnd() {
 
 TextReader::~TextReader() {
     
+}
+
 }

@@ -12,6 +12,8 @@
 #include <iostream>
 #include <vector>
 
+namespace morfeusz {
+
 inline unsigned char readInt8(const unsigned char*& currPtr) {
     return *currPtr++;
 }
@@ -54,6 +56,8 @@ inline void readTags(const unsigned char*& currPtr, std::vector<std::string>& ta
         unsigned int tagNum = readInt16(currPtr);
         tags[tagNum] = readString(currPtr);
     }
+}
+
 }
 
 #endif	/* DESERIALIZATIONUTILS_HPP */

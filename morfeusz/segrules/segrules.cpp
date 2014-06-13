@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 static inline void skipSeparatorsList(const unsigned char*& ptr) {
     uint16_t listSize = readInt16(ptr);
     ptr += 4 * listSize;
@@ -98,4 +100,6 @@ void debugMap(const map<SegrulesOptions, SegrulesFSA*>& res) {
         cerr << it->second << endl;
         it++;
     }
+}
+
 }

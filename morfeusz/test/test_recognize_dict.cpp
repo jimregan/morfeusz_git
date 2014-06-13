@@ -13,6 +13,7 @@
 #include "MorphInterpretation.hpp"
 
 using namespace std;
+using namespace morfeusz;
 
 int main(int argc, char** argv) {
     validate(argc == 3, "Must provide exactly 2 arguments - input FSA filename and dictionary filename.");

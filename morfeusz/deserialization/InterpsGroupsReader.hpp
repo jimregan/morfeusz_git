@@ -8,7 +8,9 @@
 #ifndef INTERPSGROUPSREADER_HPP
 #define	INTERPSGROUPSREADER_HPP
 
-#include "../InterpsGroup.hpp"
+#include "InterpsGroup.hpp"
+
+namespace morfeusz {
 
 class InterpsGroupsReader {
 public:
@@ -21,6 +23,8 @@ private:
     const unsigned char* currPtr;
     const unsigned char* endPtr;
 };
+
+}
 
 #endif	/* INTERPSGROUPSREADER_HPP */
 

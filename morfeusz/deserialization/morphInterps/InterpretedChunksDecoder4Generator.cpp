@@ -11,6 +11,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 InterpretedChunksDecoder4Generator::InterpretedChunksDecoder4Generator(const Environment& env) : InterpretedChunksDecoder(env) {
 }
 
@@ -96,4 +98,6 @@ EncodedInterpretation InterpretedChunksDecoder4Generator::deserializeInterp(cons
     interp.nameClassifier = readInt8(ptr);
     interp.qualifiers = readInt16(ptr);
     return interp;
+}
+
 }

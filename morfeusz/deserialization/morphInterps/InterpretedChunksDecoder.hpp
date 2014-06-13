@@ -23,6 +23,8 @@
 #include "compressionByteUtils.hpp"
 #include "const.hpp"
 
+namespace morfeusz {
+
 class InterpretedChunksDecoder {
 public:
 
@@ -44,6 +46,8 @@ protected:
 
     const Environment& env;
 };
+
+}
 
 #endif	/* INTERPSGROUPDECODER_HPP */
 

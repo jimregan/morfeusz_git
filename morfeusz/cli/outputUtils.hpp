@@ -10,6 +10,8 @@
 
 #include "MorphInterpretation.hpp"
 
+namespace morfeusz {
+
 void printMorphResults(const std::vector<MorphInterpretation>& res, bool printNodeNumbers) {
     printf("[");
     int prevStart = -1;
@@ -45,6 +47,8 @@ void printMorphResults(const std::vector<MorphInterpretation>& res, bool printNo
         prevEnd = mi.getEndNode();
     }
     printf("]\n");
+}
+
 }
 
 #endif	/* OUTPUTUTILS_HPP */

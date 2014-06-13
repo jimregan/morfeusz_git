@@ -13,6 +13,8 @@
 #include <inttypes.h>
 #include "Tagset.hpp"
 
+namespace morfeusz {
+
 /*
  * Lemma in a compressed format (as in an automaton)
  */
@@ -35,5 +37,7 @@ struct EncodedInterpretation {
     std::string homonymId;
     int qualifiers;
 };
+
+}
 
 #endif	/* INTERPRETATION_HPP */

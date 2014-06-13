@@ -7,6 +7,8 @@
 using namespace std;
 using namespace ez;
 
+namespace morfeusz {
+
 static inline void printCLIUsage(ezOptionParser& opt, ostream& out) {
     string usage;
     opt.getUsage(usage);
@@ -174,4 +176,6 @@ void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
 #if defined(_WIN64) || defined(_WIN32)
     morfeusz.setCharset(CP852);
 #endif
+}
+
 }

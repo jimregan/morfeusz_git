@@ -8,6 +8,8 @@
 #include "MorphDeserializer.hpp"
 #include "deserialization/deserializationUtils.hpp"
 
+namespace morfeusz {
+
 MorphDeserializer::MorphDeserializer() {
 }
 
@@ -20,4 +22,6 @@ long MorphDeserializer::deserialize(
     uint16_t size = readInt16(ptr);
     res = InterpsGroupsReader(ptr, size);
     return size + 2;
+}
+
 }

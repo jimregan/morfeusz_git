@@ -58,9 +58,6 @@
         <in>test_recognize_dict.cpp</in>
         <in>test_result_equals.cpp</in>
       </df>
-      <df name="wrappers">
-        <in>morfeusz_python.i</in>
-      </df>
       <in>Environment.cpp</in>
       <in>InflexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
@@ -68,6 +65,7 @@
       <in>Qualifiers.cpp</in>
       <in>Tagset.cpp</in>
       <in>const.cpp</in>
+      <in>morfeusz2.h</in>
       <in>morfeusz_analyzer.cpp</in>
       <in>morfeusz_generator.cpp</in>
     </df>
@@ -479,6 +477,8 @@
       </item>
       <item path="morfeusz/fsa/const.cpp" ex="false" tool="1" flavor2="4">
       </item>
+      <item path="morfeusz/morfeusz2.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="morfeusz/morfeusz_analyzer.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="morfeusz/morfeusz_generator.cpp" ex="false" tool="1" flavor2="4">
@@ -496,11 +496,6 @@
             ex="false"
             tool="1"
             flavor2="4">
-      </item>
-      <item path="morfeusz/wrappers/morfeusz_python.i"
-            ex="false"
-            tool="0"
-            flavor2="0">
       </item>
     </conf>
   </confs>

@@ -3,6 +3,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 bool CasePatternHelper::checkInterpsGroupOrthCasePatterns(
         const Environment& env,
         const char* orthStart,
@@ -69,4 +71,6 @@ std::vector<bool> CasePatternHelper::deserializeOneCasePattern(const unsigned ch
             break;
     }
     return res;
+}
+
 }

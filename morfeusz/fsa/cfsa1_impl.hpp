@@ -14,6 +14,8 @@
 #include "fsa.hpp"
 #include "../deserialization/deserializationUtils.hpp"
 
+namespace morfeusz {
+
 static const unsigned char CFSA1_ACCEPTING_FLAG = 128;
 //static const unsigned char CFSA1_ARRAY_FLAG = 64;
 static const unsigned char CFSA1_TRANSITIONS_NUM_MASK = 127;
@@ -178,6 +180,8 @@ void CompressedFSA1<T>::doProceedToNext(const char c, State<T>& state, bool init
         currPtr += offset;
         reallyDoProceed(currPtr, state);
     }
+}
+
 }
 
 #endif	/* CFSA1_IMPL_HPP */

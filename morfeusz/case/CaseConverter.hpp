@@ -11,6 +11,8 @@
 #include <inttypes.h>
 #include <map>
 
+namespace morfeusz {
+
 class CaseConverter {
 public:
     CaseConverter();
@@ -20,6 +22,8 @@ private:
     std::map<uint32_t, uint32_t> extToLowercaseMap;
     std::map<uint32_t, uint32_t> extToTitlecaseMap;
 };
+
+}
 
 #endif	/* CASECONVERTER_HPP */
 

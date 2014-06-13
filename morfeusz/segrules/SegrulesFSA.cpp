@@ -5,6 +5,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 void SegrulesFSA::proceedToNext(
         const unsigned char segnum,
         const SegrulesState& state,
@@ -75,4 +77,6 @@ vector< vector<SegrulesState> > SegrulesFSA::createInitialTransitionsVector() {
         currPtr += 4;
     }
     return res;
+}
+
 }

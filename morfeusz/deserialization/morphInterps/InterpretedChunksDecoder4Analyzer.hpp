@@ -10,6 +10,8 @@
 
 #include "InterpretedChunksDecoder.hpp"
 
+namespace morfeusz {
+
 struct DecodeMorphInterpParams {
     unsigned int startNode;
     unsigned int endNode;
@@ -50,6 +52,8 @@ private:
     mutable std::vector<uint32_t> orthCodepoints;
     mutable std::vector<uint32_t> normalizedCodepoints;
 };
+
+}
 
 #endif	/* INTERPRETEDCHUNKSDECODER4ANALYZER_HPP */
 

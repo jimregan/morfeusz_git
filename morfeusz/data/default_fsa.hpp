@@ -8,8 +8,12 @@
 #ifndef DEFAULT_FSA_HPP
 #define	DEFAULT_FSA_HPP
 
+namespace morfeusz {
+
 extern const unsigned char DEFAULT_FSA[];
 extern const unsigned char DEFAULT_SYNTH_FSA[];
+
+}
 
 #endif	/* DEFAULT_FSA_HPP */
 

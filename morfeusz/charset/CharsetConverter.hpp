@@ -13,6 +13,8 @@
 #include <vector>
 #include <map>
 
+namespace morfeusz {
+
 class CharsetConverter {
 public:
 //    uint32_t peek(const char* it, const char* end) const;
@@ -79,6 +81,8 @@ private:
     CP852_CharsetConverter(const CP852_CharsetConverter&); // do not implement
     void operator=(const CP852_CharsetConverter&); // do not implement
 };
+
+}
 
 #endif	/* ENCODINGCONVERTER_HPP */
 

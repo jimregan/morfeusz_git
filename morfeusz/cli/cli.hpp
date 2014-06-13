@@ -14,7 +14,7 @@
 #endif
 
 #include <iostream>
-#include "../Morfeusz.hpp"
+#include "Morfeusz.hpp"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
@@ -30,8 +30,12 @@
 
 #include "ezOptionParser.hpp"
 
+namespace morfeusz {
+
 ez::ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType processorType);
 void initializeMorfeusz(ez::ezOptionParser& opt, Morfeusz& morfeusz);
+
+}
 
 #pragma GCC diagnostic pop
 

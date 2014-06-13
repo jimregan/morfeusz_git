@@ -10,7 +10,9 @@
 
 #include <set>
 #include <iostream>
-#include "../deserialization/deserializationUtils.hpp"
+#include "deserialization/deserializationUtils.hpp"
+
+namespace morfeusz {
 
 struct SegrulesState {
     uint16_t offset;
@@ -62,6 +64,8 @@ private:
             bool atEndOfWord,
             std::vector<SegrulesState>& res) const;
 };
+
+}
 
 #endif	/* SEGRULESFSA_HPP */
 

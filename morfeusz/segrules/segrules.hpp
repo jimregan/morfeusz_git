@@ -14,6 +14,8 @@
 #include <vector>
 #include "SegrulesFSA.hpp"
 
+namespace morfeusz {
+
 typedef std::map<std::string, std::string> SegrulesOptions;
 //typedef State<unsigned char> SegrulesStateType;
 //typedef FSA<unsigned char> SegrulesFSAType;
@@ -24,5 +26,6 @@ SegrulesFSA* getDefaultSegrulesFSA(const std::map<SegrulesOptions, SegrulesFSA*>
 std::vector<uint32_t> getSeparatorsList(const unsigned char* ptr);
 void debugMap(const std::map<SegrulesOptions, SegrulesFSA*>& res);
 
+}
 #endif	/* SEGRULES_HPP */
 

@@ -19,6 +19,8 @@
 #include "utils.hpp"
 #include "deserialization/endianness.hpp"
 
+namespace morfeusz {
+
 template <class T>
 bool FSA<T>::tryToRecognize(const char* input, T& value) const {
     State<T> currState = this->getInitialState();
@@ -88,6 +90,8 @@ FSA<T>* FSA<T>::getFSA(const unsigned char* ptr, const Deserializer<T>& deserial
             oss << "Invalid implementation number: " << versionNum << ", should be: " << VERSION_NUM;
             throw FileFormatException(oss.str());
     }
+}
+
 }
 
 #endif	/* _SIMPLE_FSA_IMPL_HPP */

@@ -17,6 +17,8 @@
 #include <vector>
 #include <inttypes.h>
 
+namespace morfeusz {
+
 template <class T> class State;
 template <class T> class FSA;
 template <class T> class Deserializer;
@@ -217,6 +219,8 @@ public:
 private:
     const std::string msg;
 };
+
+}
 
 #include "state_impl.hpp"
 #include "fsa_impl.hpp"

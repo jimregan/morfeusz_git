@@ -13,6 +13,8 @@
 #include <algorithm>
 #include "CharsetConverter.hpp"
 
+namespace morfeusz {
+
 static inline std::vector<char> initializeWhitespaces() {
     std::vector<char> res(0x3000, false);
     res[0x0000] = true; // NULL
@@ -51,6 +53,8 @@ static inline std::vector<char> initializeWhitespaces() {
 inline bool isWhitespace(uint32_t codepoint) {
     static std::vector<char> whitespaces(initializeWhitespaces());
     return codepoint < whitespaces.size() && whitespaces[codepoint];
+}
+
 }
 
 #endif	/* CHARSET_UTILS_HPP */

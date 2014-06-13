@@ -10,6 +10,8 @@
 
 #include "InterpsGroup.hpp"
 
+namespace morfeusz {
+
 class CompressionByteFlags {
 public:
     static const unsigned char ORTH_ONLY_LOWER = 128;
@@ -45,6 +47,8 @@ inline bool hasCompressedPrefixCut(unsigned char byte) {
 
 inline unsigned char getPrefixCutLength(unsigned char byte) {
     return byte & CompressionByteFlags::PREFIX_CUT_MASK;
+}
+
 }
 
 #endif	/* COMPRESSIONBYTEUTILS_HPP */
