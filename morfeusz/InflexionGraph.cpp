@@ -9,6 +9,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 void InflexionGraph::addStartEdge(const Edge& e) {
     if (this->graph.empty()) {
         assert(this->node2ChunkStartPtr.empty());
@@ -233,4 +235,6 @@ void InflexionGraph::clear() {
     graph.clear();
     node2ChunkStartPtr.clear();
     onlyWeakPaths = true;
+}
+
 }

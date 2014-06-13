@@ -12,6 +12,8 @@
 #include <vector>
 #include "charset/CharsetConverter.hpp"
 
+namespace morfeusz {
+
 /**
  * Represents a tagset
  */
@@ -45,6 +47,8 @@ private:
     std::vector<std::string> tags;
     std::vector<std::string> names;
 };
+
+}
 
 #endif	/* TAGSET_HPP */
 

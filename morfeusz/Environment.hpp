@@ -10,9 +10,6 @@
 
 #include <vector>
 
-class InterpretedChunksDecoder;
-class CasePatternHelper;
-
 #include "case/CaseConverter.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "fsa/fsa.hpp"
@@ -24,6 +21,10 @@ class CasePatternHelper;
 #include "Qualifiers.hpp"
 #include "deserialization/InterpsGroupsReader.hpp"
 
+namespace morfeusz {
+
+class InterpretedChunksDecoder;
+class CasePatternHelper;
 struct InterpsGroup;
 typedef FSA<InterpsGroupsReader> FSAType;
 
@@ -172,6 +173,8 @@ private:
     
     const CharsetConverter* getCharsetConverter(MorfeuszCharset charset) const;
 };
+
+}
 
 #endif	/* ENVIRONMENT_HPP */
 

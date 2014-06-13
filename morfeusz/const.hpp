@@ -8,6 +8,8 @@
 #ifndef CONST1_HPP
 #define	CONST1_HPP
 
+namespace morfeusz {
+
 enum MorfeuszCharset {
     UTF8,
 //    UTF16LE,
@@ -28,6 +30,8 @@ extern const MorfeuszCharset DEFAULT_MORFEUSZ_CHARSET;
 extern const unsigned char SHIFT_ORTH_NODE;
 
 extern const char HOMONYM_SEPARATOR;
+
+}
 
 #endif	/* CONST_HPP */
 

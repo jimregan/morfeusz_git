@@ -49,9 +49,6 @@
       </df>
       <df name="fsa">
         <in>const.cpp</in>
-        <in>test_not_recognize.cpp</in>
-        <in>test_recognize.cpp</in>
-        <in>test_speed.cpp</in>
       </df>
       <df name="segrules">
         <in>SegrulesFSA.cpp</in>
@@ -60,6 +57,9 @@
       <df name="test">
         <in>test_recognize_dict.cpp</in>
         <in>test_result_equals.cpp</in>
+      </df>
+      <df name="wrappers">
+        <in>morfeusz_python.i</in>
       </df>
       <in>Environment.cpp</in>
       <in>InflexionGraph.cpp</in>
@@ -479,30 +479,6 @@
       </item>
       <item path="morfeusz/fsa/const.cpp" ex="false" tool="1" flavor2="4">
       </item>
-      <item path="morfeusz/fsa/test_not_recognize.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool>
-          <incDir>
-            <pElem>build/fsa</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="morfeusz/fsa/test_recognize.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool>
-          <incDir>
-            <pElem>build/fsa</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="morfeusz/fsa/test_speed.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool>
-          <incDir>
-            <pElem>build/fsa</pElem>
-          </incDir>
-        </ccTool>
-      </item>
       <item path="morfeusz/morfeusz_analyzer.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="morfeusz/morfeusz_generator.cpp" ex="false" tool="1" flavor2="4">
@@ -520,6 +496,11 @@
             ex="false"
             tool="1"
             flavor2="4">
+      </item>
+      <item path="morfeusz/wrappers/morfeusz_python.i"
+            ex="false"
+            tool="0"
+            flavor2="0">
       </item>
     </conf>
   </confs>

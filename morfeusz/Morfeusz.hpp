@@ -32,7 +32,10 @@
 #include "deserialization/InterpsGroupsReader.hpp"
 #include "deserialization/MorphDeserializer.hpp"
 
+namespace morfeusz {
+
 class Morfeusz;
+class MorphInterpretation;
 class ResultsIterator;
 
 typedef State<InterpsGroupsReader> StateType;
@@ -204,6 +207,8 @@ private:
     std::list<MorphInterpretation> resultsBuffer;
     int startNode;
 };
+
+}
 
 #endif	/* MORFEUSZ_HPP */
 

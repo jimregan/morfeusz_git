@@ -10,11 +10,11 @@
 
 #include <string>
 
-class Environment;
-
 #include "Tagset.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "Environment.hpp"
+
+namespace morfeusz {
 
 /**
  * Morphological interpretation as seen by the user in the analysis/generation results.
@@ -63,6 +63,8 @@ private:
     std::string name;
     const std::vector<std::string>* qualifiers;
 };
+
+}
 
 #endif	/* MORPHINTERPRETATION_HPP */
 

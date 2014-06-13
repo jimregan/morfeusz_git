@@ -7,6 +7,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 Tagset::Tagset(const unsigned char* ptr) {
     uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
     const unsigned char* currPtr = ptr + FSA_DATA_OFFSET + fsaSize + 4;
@@ -20,4 +22,6 @@ const string Tagset::getTag(const int tagNum, const CharsetConverter& charsetCon
 
 const string Tagset::getName(const int nameNum, const CharsetConverter& charsetConverter) const {
     return charsetConverter.fromUTF8(this->names.at(nameNum));
+}
+
 }

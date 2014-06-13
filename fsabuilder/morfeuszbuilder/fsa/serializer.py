@@ -50,6 +50,7 @@ class Serializer(object):
         res.append('\n')
         res.append('#include "%s"' % headerFilename)
         res.append('\n')
+        res.append('namespace morfeusz {\n')
         res.append('\n')
         if isGenerator:
             res.append('extern const unsigned char DEFAULT_SYNTH_FSA[] = {')
@@ -61,6 +62,8 @@ class Serializer(object):
             res.append(',');
         res.append('\n')
         res.append('};')
+        res.append('\n')
+        res.append('}')
         res.append('\n')
         with open(fname, 'w') as f:
             f.write(''.join(res))

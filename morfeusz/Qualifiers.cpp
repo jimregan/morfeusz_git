@@ -12,6 +12,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 Qualifiers::Qualifiers(const unsigned char* ptr):
 qualifiers() {
     uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
@@ -37,4 +39,6 @@ const vector<string>& Qualifiers::getQualifiers(int n) const {
 }
 
 Qualifiers::~Qualifiers() {
+}
+
 }

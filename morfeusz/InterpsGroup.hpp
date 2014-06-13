@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+namespace morfeusz {
+
 /**
  * A structure representing one segment
  * with pointer to its interpretations, case patterns etc.
@@ -19,6 +21,8 @@ struct InterpsGroup {
     uint16_t size;
     const unsigned char* ptr;
 };
+
+}
 
 #endif	/* GROUPEDINTERPRETATIONS_HPP */
 

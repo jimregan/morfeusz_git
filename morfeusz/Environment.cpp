@@ -14,6 +14,8 @@
 #include "deserialization/morphInterps/InterpretedChunksDecoder4Analyzer.hpp"
 #include "deserialization/morphInterps/InterpretedChunksDecoder4Generator.hpp"
 
+namespace morfeusz {
+
 static Deserializer<InterpsGroupsReader>& initializeDeserializer(MorfeuszProcessorType processorType) {
     static Deserializer<InterpsGroupsReader> *analyzerDeserializer
             = new MorphDeserializer();
@@ -162,4 +164,6 @@ bool Environment::isSeparator(uint32_t codepoint) const {
             this->separatorsList.begin(), 
             this->separatorsList.end(), 
             codepoint);
+}
+
 }

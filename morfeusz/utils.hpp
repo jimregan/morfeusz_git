@@ -21,6 +21,8 @@
 #define DEBUG(x)
 #endif
 
+namespace morfeusz {
+
 inline void validate(const bool cond, const std::string& msg) {
     if (!cond) {
         std::cerr << msg << std::endl;
@@ -60,6 +62,8 @@ inline T* readFile(const char* fname) {
     ifs.read(reinterpret_cast<char*> (memblock), size);
     ifs.close();
     return memblock;
+}
+
 }
 
 #endif	/* UTILS_HPP */

@@ -23,6 +23,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 static MorfeuszOptions createDefaultOptions() {
     MorfeuszOptions res;
     res.caseSensitive = true;
@@ -387,4 +389,6 @@ MorphInterpretation ResultsIterator::getNext() {
 
 bool ResultsIterator::hasNext() {
     return !resultsBuffer.empty();
+}
+
 }

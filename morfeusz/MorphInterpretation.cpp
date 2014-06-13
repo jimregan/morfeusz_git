@@ -12,6 +12,8 @@
 
 using namespace std;
 
+namespace morfeusz {
+
 MorphInterpretation::MorphInterpretation(
         int startNode,
         int endNode,
@@ -162,4 +164,6 @@ std::string MorphInterpretation::toString(bool includeNodeNumbers) const {
         res << "," << getQualifiersStr(*this);
     }
     return res.str();
+}
+
 }

@@ -17,6 +17,7 @@
 #include "cli/outputUtils.hpp"
 
 using namespace std;
+using namespace morfeusz;
 
 int main(int argc, const char** argv) {
     cerr << "Morfeusz generator, version: " << MORFEUSZ_VERSION << endl;

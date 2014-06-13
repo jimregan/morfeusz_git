@@ -12,6 +12,8 @@
 #include <string>
 #include <stdint.h>
 
+namespace morfeusz {
+
 /**
  * Helper class used for decoding qualifiers set number into a vector of strings.
  * 
@@ -31,6 +33,8 @@ public:
 private:
     std::vector< std::vector<std::string> > qualifiers;
 };
+
+}
 
 #endif	/* QUALIFIERS_HPP */
 

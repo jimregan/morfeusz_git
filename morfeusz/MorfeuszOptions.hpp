@@ -10,6 +10,8 @@
 
 #include "const.hpp"
 
+namespace morfeusz {
+
 /**
  * Represents options for Morfeusz analyzer/generator.
  */
@@ -18,6 +20,8 @@ struct MorfeuszOptions {
     MorfeuszCharset encoding;
     bool debug;
 };
+
+}
 
 #endif	/* MORFEUSZOPTIONS_HPP */
 

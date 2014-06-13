@@ -13,6 +13,8 @@
 #include <utility>
 #include "InterpretedChunk.hpp"
 
+namespace morfeusz {
+
 /**
  * This class build inflection graph (indexes the nodes, takes into account segments marked as "weak").
  * Takes care to make the number of nodes as little as possible.
@@ -102,6 +104,8 @@ private:
     std::vector< const char* > node2ChunkStartPtr;
     bool onlyWeakPaths;
 };
+
+}
 
 #endif	/* FLEXIONGRAPH_HPP */
 

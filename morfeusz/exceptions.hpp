@@ -11,6 +11,8 @@
 #include <exception>
 #include <string>
 
+namespace morfeusz {
+
 class MorfeuszException : public std::exception {
 public:
 
@@ -26,6 +28,8 @@ public:
 private:
     const std::string msg;
 };
+
+}
 
 #endif	/* EXCEPTIONS_HPP */
 

@@ -63,7 +63,7 @@ set(INCLUDE_FILES
     fsa/const.hpp 
     MorphInterpretation.hpp 
     Morfeusz.hpp
-    MorfeuszVersion.hpp
+    ${PROJECT_BINARY_DIR}/MorfeuszVersion.hpp
     InflexionGraph.hpp
     charset/CharsetConverter.hpp
     charset/TextReader.hpp

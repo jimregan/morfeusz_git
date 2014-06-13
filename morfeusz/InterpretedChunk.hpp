@@ -11,6 +11,8 @@
 #include <vector>
 #include "InterpsGroup.hpp"
 
+namespace morfeusz {
+
 /**
  * Denotes a part of text that has some not-yet-deserialized interpretations attached to it.
  */
@@ -66,6 +68,8 @@ struct InterpretedChunk {
      */
     std::string requiredHomonymId;
 };
+
+}
 
 #endif	/* INTERPRETEDCHUNK_HPP */
 
