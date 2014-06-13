@@ -17,7 +17,7 @@ namespace morfeusz {
  */
 struct MorfeuszOptions {
     bool caseSensitive;
-    MorfeuszCharset encoding;
+    Charset encoding;
     bool debug;
 };
 

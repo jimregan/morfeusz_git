@@ -4,5 +4,9 @@
  *
  * Created on November 29, 2013, 10:03 PM
  */
+#ifndef MORFEUSZ_VERSION_H
+#define MORFEUSZ_VERSION_H
 
 #define MORFEUSZ_VERSION "@Morfeusz_VERSION@"
+
+#endif

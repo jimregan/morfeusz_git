@@ -3,7 +3,7 @@
 
 namespace morfeusz {
 
-extern const MorfeuszCharset DEFAULT_MORFEUSZ_CHARSET = UTF8;
+extern const Charset DEFAULT_MORFEUSZ_CHARSET = UTF8;
 
 extern const unsigned char SHIFT_ORTH_NODE = 1;
 

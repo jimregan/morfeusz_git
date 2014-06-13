@@ -13,8 +13,10 @@
 #include <vector>
 #include <map>
 #include <set>
+
+#include "morfeusz2.h"
+
 #include "fsa/fsa.hpp"
-#include "MorphInterpretation.hpp"
 #include "InterpsGroup.hpp"
 #include "case/CaseConverter.hpp"
 #include "charset/CharsetConverter.hpp"
@@ -34,7 +36,7 @@
 
 namespace morfeusz {
 
-class Morfeusz;
+class MorfeuszInternal;
 class MorphInterpretation;
 class ResultsIterator;
 
@@ -46,13 +48,13 @@ typedef State<InterpsGroupsReader> StateType;
  * It is NOT thread-safe
  * but it is possible to use separate Morfeusz instance for each concurrent thread.
  */
-class Morfeusz {
+class MorfeuszInternal: public Morfeusz {
 public:
     
     /**
      * Create new instance of Morfeusz class.
      */
-    Morfeusz();
+    MorfeuszInternal();
     
     /**
      * Set a file used for morphological analysis.
@@ -71,7 +73,7 @@ public:
     /**
      * Destroys Morfeusz object.
      */
-    virtual ~Morfeusz();
+    virtual ~MorfeuszInternal();
     
     /**
      * Analyze given text and return the results as iterator.
@@ -130,7 +132,7 @@ public:
      * 
      * @param encoding
      */
-    void setCharset(MorfeuszCharset encoding);
+    void setCharset(Charset encoding);
     
     /**
      * Set aggl segmentation option value.
@@ -196,17 +198,17 @@ private:
     mutable InflexionGraph graph;
 };
 
-class ResultsIterator {
-public:
-    MorphInterpretation getNext();
-    bool hasNext();
-    friend class Morfeusz;
-private:
-    ResultsIterator(const std::vector<MorphInterpretation>& res);
-    const char* rawInput;
-    std::list<MorphInterpretation> resultsBuffer;
-    int startNode;
-};
+//class ResultsIterator {
+//public:
+//    MorphInterpretation getNext();
+//    bool hasNext();
+//    friend class MorfeuszInternal;
+//private:
+//    ResultsIterator(const std::vector<MorphInterpretation>& res);
+//    const char* rawInput;
+//    std::list<MorphInterpretation> resultsBuffer;
+//    int startNode;
+//};
 
 }
 

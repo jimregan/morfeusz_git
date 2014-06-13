@@ -11,13 +11,13 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include "Morfeusz.hpp"
+#include "MorfeuszInternal.hpp"
 #include "consoleUtils.hpp"
 
 using namespace std;
 using namespace morfeusz;
 
-static MorfeuszCharset getEncoding(const string& encodingStr) {
+static Charset getEncoding(const string& encodingStr) {
     if (encodingStr == "UTF8")
         return UTF8;
     else if (encodingStr == "ISO8859_2")
@@ -46,9 +46,9 @@ int main(int argc, char** argv) {
     requiredIn.open(requiredOutputFilename.c_str());
     //    string requiredOutput = readFile<char>(requiredOutputFilename);
     cerr << "TEST START" << endl;
-    Morfeusz morfeusz;
+    MorfeuszInternal morfeusz;
     if (argc == 4) {
-        MorfeuszCharset encoding = getEncoding(argv[3]);
+        Charset encoding = getEncoding(argv[3]);
         morfeusz.setCharset(encoding);
     }
     string line;

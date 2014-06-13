@@ -8,24 +8,16 @@
 #ifndef CONST1_HPP
 #define	CONST1_HPP
 
-namespace morfeusz {
+#include "morfeusz2.h"
 
-enum MorfeuszCharset {
-    UTF8,
-//    UTF16LE,
-//    UTF16BE,
-//    UTF32,
-    ISO8859_2,
-    CP1250,
-    CP852
-};
+namespace morfeusz {
 
 enum MorfeuszProcessorType {
     GENERATOR,
     ANALYZER
 };
 
-extern const MorfeuszCharset DEFAULT_MORFEUSZ_CHARSET;
+extern const Charset DEFAULT_MORFEUSZ_CHARSET;
 
 extern const unsigned char SHIFT_ORTH_NODE;
 

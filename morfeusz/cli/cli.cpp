@@ -125,7 +125,7 @@ ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType pr
     return &opt;
 }
 
-static MorfeuszCharset getCharset(const string& encodingStr) {
+static Charset getCharset(const string& encodingStr) {
     if (encodingStr == "UTF8")
         return UTF8;
     else if (encodingStr == "ISO8859_2")
@@ -140,7 +140,7 @@ static MorfeuszCharset getCharset(const string& encodingStr) {
     }
 }
 
-void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz) {
+void initializeMorfeusz(ezOptionParser& opt, MorfeuszInternal& morfeusz) {
     if (opt.isSet("-i")) {
         string analyzerFile;
         opt.get("-i")->getString(analyzerFile);

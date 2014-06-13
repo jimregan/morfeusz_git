@@ -148,8 +148,8 @@ include (CPack)
 file (COPY fsabuilder testfiles input DESTINATION .)
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/morfeusz/MorfeuszVersion.hpp.in"
-  "${PROJECT_BINARY_DIR}/MorfeuszVersion.hpp"
+  "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz_version.h.in"
+  "${PROJECT_BINARY_DIR}/morfeusz_version.h"
 )
 include_directories("${PROJECT_BINARY_DIR}" )
 ###### add main sources ########

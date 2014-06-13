@@ -17,12 +17,13 @@
 #include <vector>
 #include <inttypes.h>
 
+#include "morfeusz2.h"
+
 namespace morfeusz {
 
 template <class T> class State;
 template <class T> class FSA;
 template <class T> class Deserializer;
-class FileFormatException;
 
 template <class T>
 class Deserializer {
@@ -206,18 +207,6 @@ private:
     bool sink;
     T value;
     long valueSize;
-};
-
-class FileFormatException : public std::exception {
-public:
-    FileFormatException(const char* what): msg(what) {}
-    FileFormatException(const std::string& what): msg(what.c_str()) {}
-    virtual ~FileFormatException() throw() {}
-    virtual const char* what() const throw () {
-        return this->msg.c_str();
-    }
-private:
-    const std::string msg;
 };
 
 }

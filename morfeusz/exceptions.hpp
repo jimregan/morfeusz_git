@@ -13,21 +13,21 @@
 
 namespace morfeusz {
 
-class MorfeuszException : public std::exception {
-public:
-
-    MorfeuszException(const std::string& what) : msg(what.c_str()) {
-    }
-
-    virtual ~MorfeuszException() throw () {
-    }
-
-    virtual const char* what() const throw () {
-        return this->msg.c_str();
-    }
-private:
-    const std::string msg;
-};
+//class MorfeuszException : public std::exception {
+//public:
+//
+//    MorfeuszException(const std::string& what) : msg(what.c_str()) {
+//    }
+//
+//    virtual ~MorfeuszException() throw () {
+//    }
+//
+//    virtual const char* what() const throw () {
+//        return this->msg.c_str();
+//    }
+//private:
+//    const std::string msg;
+//};
 
 }
 

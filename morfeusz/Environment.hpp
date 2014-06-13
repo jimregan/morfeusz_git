@@ -43,7 +43,7 @@ public:
      * @param fileStartPtr
      */
     Environment(
-            MorfeuszCharset charset,
+            Charset charset,
             MorfeuszProcessorType morfeuszProcessor,
             const unsigned char* fileStartPtr);
     
@@ -52,7 +52,7 @@ public:
      * 
      * @param charset
      */
-    void setCharset(MorfeuszCharset charset);
+    void setCharset(Charset charset);
     
     /**
      * Sets case sensitivity options.
@@ -171,7 +171,7 @@ private:
     MorfeuszProcessorType processorType;
     CasePatternHelper* casePatternHelper;
     
-    const CharsetConverter* getCharsetConverter(MorfeuszCharset charset) const;
+    const CharsetConverter* getCharsetConverter(Charset charset) const;
 };
 
 }

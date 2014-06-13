@@ -8,7 +8,7 @@
 #ifndef OUTPUTUTILS_HPP
 #define	OUTPUTUTILS_HPP
 
-#include "MorphInterpretation.hpp"
+#include "morfeusz2.h"
 
 namespace morfeusz {
 

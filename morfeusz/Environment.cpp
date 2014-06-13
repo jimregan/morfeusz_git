@@ -35,7 +35,7 @@ static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSA*>& fsasMap)
 }
 
 Environment::Environment(
-        MorfeuszCharset charset,
+        Charset charset,
         MorfeuszProcessorType processorType,
         const unsigned char* fsaFileStartPtr)
 : currentCharsetConverter(getCharsetConverter(charset)),
@@ -57,7 +57,7 @@ processorType(processorType),
 casePatternHelper(new CasePatternHelper()) {
 }
 
-const CharsetConverter* Environment::getCharsetConverter(MorfeuszCharset charset) const {
+const CharsetConverter* Environment::getCharsetConverter(Charset charset) const {
     switch (charset) {
         case UTF8:
             return &UTF8CharsetConverter::getInstance();
@@ -82,7 +82,7 @@ Environment::~Environment() {
     delete this->casePatternHelper;
 }
 
-void Environment::setCharset(MorfeuszCharset charset) {
+void Environment::setCharset(Charset charset) {
     this->currentCharsetConverter = this->getCharsetConverter(charset);
 }
 

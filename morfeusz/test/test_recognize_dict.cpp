@@ -9,8 +9,8 @@
 #include <sstream>
 #include <iostream>
 #include "utils.hpp"
-#include "Morfeusz.hpp"
-#include "MorphInterpretation.hpp"
+#include "MorfeuszInternal.hpp"
+#include "morfeusz2.h"
 
 using namespace std;
 using namespace morfeusz;
@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     validate(argc == 3, "Must provide exactly 2 arguments - input FSA filename and dictionary filename.");
     string fsaFilename = argv[1];
     string dictFilename = argv[2];
-    Morfeusz morfeusz;
+    MorfeuszInternal morfeusz;
     morfeusz.setAnalyzerDictionary(fsaFilename);
     ifstream in;
     in.open(dictFilename.c_str());

@@ -10,8 +10,8 @@
 #include <vector>
 #include "fsa/fsa.hpp"
 #include "Tagset.hpp"
-#include "Morfeusz.hpp"
-#include "MorfeuszVersion.hpp"
+#include "MorfeuszInternal.hpp"
+#include "morfeusz_version.h"
 #include "const.hpp"
 #include "cli/cli.hpp"
 #include "cli/outputUtils.hpp"
@@ -22,7 +22,7 @@ using namespace morfeusz;
 int main(int argc, const char** argv) {
     cerr << "Morfeusz generator, version: " << MORFEUSZ_VERSION << endl;
     ez::ezOptionParser& opt = *getOptions(argc, argv, GENERATOR);
-    Morfeusz morfeusz;
+    MorfeuszInternal morfeusz;
     initializeMorfeusz(opt, morfeusz);
     string line;
     while (getline(cin, line)) {

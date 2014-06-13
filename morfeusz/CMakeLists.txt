@@ -37,6 +37,8 @@ set(SRC_FILES
     fsa/const.cpp 
     MorphInterpretation.cpp 
     Morfeusz.cpp
+    MorfeuszInternal.cpp
+    ResultsIterator.cpp
     InflexionGraph.cpp
     charset/TextReader.cpp
     charset/CharsetConverter.cpp
@@ -51,27 +53,6 @@ set(SRC_FILES
     deserialization/morphInterps/InterpretedChunksDecoder4Analyzer.cpp
     deserialization/morphInterps/InterpretedChunksDecoder4Generator.cpp
     deserialization/InterpsGroupsReader.cpp
-    deserialization/MorphDeserializer.cpp
-)
-
-set(INCLUDE_FILES 
-    const.hpp 
-    data/default_fsa.hpp
-    Environment.hpp
-    Tagset.hpp
-    Qualifiers.hpp
-    fsa/const.hpp 
-    MorphInterpretation.hpp 
-    Morfeusz.hpp
-    ${PROJECT_BINARY_DIR}/MorfeuszVersion.hpp
-    InflexionGraph.hpp
-    charset/CharsetConverter.hpp
-    charset/TextReader.hpp
-    case/CaseConverter.hpp
-    case/caseconv.hpp
-    charset/conversion_tables.hpp
-    cli/cli.hpp
-    segrules/segrules.hpp
     deserialization/MorphDeserializer.cpp
 )
 
@@ -106,6 +87,7 @@ else ()
     set (TARGET_LIB_DIR lib)
 endif ()
 
-install (FILES ${INCLUDE_FILES} DESTINATION include/morfeusz)
+install (FILES morfeusz2.h DESTINATION include)
+install (FILES ${PROJECT_BINARY_DIR}/morfeusz_version.h DESTINATION include)
 install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
 install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)

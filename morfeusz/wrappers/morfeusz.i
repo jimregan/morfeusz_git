@@ -11,10 +11,10 @@
 
 %feature("autodoc", "2");
 %{
-#include "MorphInterpretation.hpp"
-#include "exceptions.hpp"
-#include "const.hpp"
-#include "Morfeusz.hpp"
+#include "morfeusz2.h"
+//#include "exceptions.hpp"
+//#include "const.hpp"
+//#include "Morfeusz.hpp"
     
 using namespace morfeusz;
 %}
@@ -60,10 +60,10 @@ namespace morfeusz {
 
 }
 
-%include "../Morfeusz.hpp"
-%include "../MorphInterpretation.hpp"
-%include "../const.hpp"
-%include "../exceptions.hpp"
+//%include "../Morfeusz.hpp"
+%include "../morfeusz2.h"
+//%include "../const.hpp"
+//%include "../exceptions.hpp"
 
 // instantiate vector of interpretations
 namespace std {

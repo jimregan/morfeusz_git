@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <string>
-#include "MorphInterpretation.hpp"
+#include "morfeusz2.h"
 
 namespace morfeusz {
 

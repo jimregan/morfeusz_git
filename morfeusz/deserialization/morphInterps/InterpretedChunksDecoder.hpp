@@ -18,7 +18,7 @@
 #include "EncodedInterpretation.hpp"
 #include "case/CaseConverter.hpp"
 #include "Environment.hpp"
-#include "MorphInterpretation.hpp"
+#include "morfeusz2.h"
 #include "case/CasePatternHelper.hpp"
 #include "compressionByteUtils.hpp"
 #include "const.hpp"

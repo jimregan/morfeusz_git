@@ -7,7 +7,8 @@
 
 #include <string>
 #include <sstream>
-#include "MorphInterpretation.hpp"
+#include "morfeusz2.h"
+#include "Environment.hpp"
 #include "const.hpp"
 
 using namespace std;
