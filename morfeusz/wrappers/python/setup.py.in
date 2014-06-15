@@ -3,8 +3,8 @@ from setuptools import setup, Extension
 
 morfeusz2 = Extension('_morfeusz2',
                     libraries=['morfeusz2'],
-                    library_dirs=['${CMAKE_CURRENT_BINARY_DIR}/..'],
-                    include_dirs=['${CMAKE_CURRENT_SOURCE_DIR}/..'],
+                    library_dirs=['${CMAKE_CURRENT_BINARY_DIR}/../..'],
+                    include_dirs=['${CMAKE_CURRENT_SOURCE_DIR}/../..'],
                     sources=['${SWIG_PYTHON_OUTFILE_CXX}'])
 
 if __name__ == '__main__':
