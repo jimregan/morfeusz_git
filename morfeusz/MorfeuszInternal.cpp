@@ -203,8 +203,7 @@ void MorfeuszInternal::doProcessOneWord(
                     cerr << "recognized: " << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << " at: '" << reader.getWordStartPtr() << "'" << endl;
                 }
                 newSegrulesStates.clear();
-                bool endOfWord = reader.isAtWhitespace() || !homonymId.empty();
-                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, endOfWord, newSegrulesStates);
+                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, reader.isAtWhitespace(), newSegrulesStates);
                 if (!newSegrulesStates.empty()
                         && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig)) {
                     for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
