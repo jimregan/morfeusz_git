@@ -109,10 +109,6 @@ bool MorphInterpretation::hasHomonym(const string& homonymId) const {
             && hasEnding(this->lemma, homonymId);
 }
 
-//const std::string& MorphInterpretation::getHomonymId() const {
-//    return this->homonymId;
-//}
-
 int MorphInterpretation::getTagnum() const {
     return this->tagnum;
 }

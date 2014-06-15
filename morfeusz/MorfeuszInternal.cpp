@@ -97,7 +97,7 @@ static InterpretedChunk createChunk(
     InterpretedChunk ic;
     ic.segmentType = ig.type;
     ic.textStartPtr = reader.getWordStartPtr();
-    ic.textEndPtr = reader.getCurrPtr();
+    ic.textEndPtr = homonymId.empty() ? reader.getCurrPtr() : reader.getCurrPtr() - homonymId.length() - 1;
     ic.interpsGroupPtr = ig.ptr;
     ic.interpsEndPtr = interpsEndPtr;
     ic.shiftOrth = shiftOrth;
@@ -152,6 +152,7 @@ void MorfeuszInternal::processOneWord(
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
         int srcNode = startNodeNum;
         const std::vector< std::vector<InflexionGraph::Edge> >& theGraph = graph.getTheGraph();
+        size_t initialResultsSize = results.size();
         for (unsigned int i = 0; i < theGraph.size(); i++) {
             const vector<InflexionGraph::Edge>& edges = theGraph[i];
             for (unsigned int j = 0; j < edges.size(); j++) {
@@ -160,6 +161,9 @@ void MorfeuszInternal::processOneWord(
                 interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, results);
             }
             srcNode++;
+        }
+        if (results.size() == initialResultsSize) {
+            this->appendIgnotiumToResults(env, string(reader.getWordStartPtr(), reader.getCurrPtr()), startNodeNum, results);
         }
     }
     else if (env.getProcessorType() == ANALYZER
@@ -185,13 +189,11 @@ void MorfeuszInternal::doProcessOneWord(
 
     while (!reader.isAtWhitespace()) {
         string homonymId;
-        if (env.getProcessorType() == GENERATOR && reader.peek() == 0x3A && reader.getCurrPtr() + 1 != reader.getEndPtr()) {
-            homonymId = string(reader.getCurrPtr() + 1, reader.getEndPtr());
+        feedState(env, state, reader);
+        reader.next();
+        if (env.getProcessorType() == GENERATOR && reader.getCurrPtr() != reader.getEndPtr() && reader.peek() == (uint32_t) HOMONYM_SEPARATOR) {
+            homonymId = env.getCharsetConverter().fromUTF8(string(reader.getCurrPtr() + 1, reader.getEndPtr()));
             reader.proceedToEnd();
-        }
-        else {
-            feedState(env, state, reader);
-            reader.next();
         }
         if (state.isAccepting()) {
             InterpsGroupsReader& igReader = const_cast<InterpsGroupsReader&> (state.getValue());
@@ -201,7 +203,8 @@ void MorfeuszInternal::doProcessOneWord(
                     cerr << "recognized: " << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << " at: '" << reader.getWordStartPtr() << "'" << endl;
                 }
                 newSegrulesStates.clear();
-                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, reader.isAtWhitespace(), newSegrulesStates);
+                bool endOfWord = reader.isAtWhitespace() || !homonymId.empty();
+                env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, endOfWord, newSegrulesStates);
                 if (!newSegrulesStates.empty()
                         && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig)) {
                     for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {

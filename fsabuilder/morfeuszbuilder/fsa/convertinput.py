@@ -95,7 +95,7 @@ class PolimorfConverter4Generator(object):
             line = line.decode(self.inputEncoding).strip('\n')
             orth, base, tag, name, qualifier = _parseLine(line)
             if base:
-                if u':' in base and len(base) > 1 and base.split(u':', 1)[1].isalpha():
+                if u':' in base and len(base) > 1 and base.split(u':', 1)[1] != u'':
                     base, homonymId = base.split(u':', 1)
                 else:
                     homonymId = ''
@@ -110,12 +110,6 @@ class PolimorfConverter4Generator(object):
                             str(typenum),
                             homonymId.encode(self.inputEncoding), 
                             qualifier.encode(self.inputEncoding)))
-#                 if u':' in base and len(base) > 1:
-#                     realBase, _ = base.split(u':', 1)
-#                     yield '%s %s %d %d %d' % (
-#                                    orth.encode(self.inputEncoding), 
-#                                    realBase.encode(self.inputEncoding), 
-#                                    tagnum, namenum, typenum)
             else:
                 logging.warn('Ignoring line: "%s" - contains empty lemma', line.strip())
     
