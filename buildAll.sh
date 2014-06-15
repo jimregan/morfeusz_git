@@ -15,8 +15,11 @@ function buildDictionaries {
         -D CPP_DICTIONARIES_DIR=$CPP_DICTIONARIES_DIR \
         $srcDir
     make -j2 dictionaries
+    echo 'DONE make dictionaries'
     cd $srcDir
-    rm -r $buildDir
+    echo "cleaning temp build dir $buildDir"
+    rm -rf $buildDir
+    echo "DONE building dictionaries" >&2
 }
 
 function build {
