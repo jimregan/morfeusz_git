@@ -32,8 +32,8 @@
 
 namespace morfeusz {
 
-ez::ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType processorType);
-void initializeMorfeusz(ez::ezOptionParser& opt, MorfeuszInternal& morfeusz);
+    ez::ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType processorType);
+    void initializeMorfeusz(ez::ezOptionParser& opt, MorfeuszInternal& morfeusz, MorfeuszProcessorType processorType);
 
 }
 

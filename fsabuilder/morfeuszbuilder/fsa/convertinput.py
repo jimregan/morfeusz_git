@@ -13,7 +13,9 @@ def _mergeEntries(inputLines, lowercase):
     for key, interp in inputLines:
         key = key.lower() if lowercase else key
 #         print 'key=', key, 'interp=', interp
-        assert key
+        if not key:
+            print 'key=', key, 'interp=', interp
+            assert key
         if prevKey and prevKey == key:
             prevInterps.append(interp)
         else:
@@ -95,13 +97,23 @@ class PolimorfConverter4Generator(object):
             line = line.decode(self.inputEncoding).strip('\n')
             orth, base, tag, name, qualifier = _parseLine(line)
             if base:
-                if u':' in base and len(base) > 1 and base.split(u':', 1)[1] != u'':
-                    base, homonymId = base.split(u':', 1)
-                else:
-                    homonymId = ''
+                homonymId = u''
+                if u':' in base:
+                    assumedBase, assumedHomonymId = base.split(u':', 1)
+                    if assumedBase != u'' and assumedHomonymId != u'' and assumedHomonymId.isalnum():
+                        base, homonymId = assumedBase, assumedHomonymId
                 tagnum = self.tagset.getTagnum4Tag(tag)
                 namenum = self.tagset.getNamenum4Name(name)
                 typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
+                
+                #~ print '\t'.join((
+                            #~ orth.encode(self.inputEncoding), 
+                            #~ base.encode(self.inputEncoding), 
+                            #~ str(tagnum), 
+                            #~ str(namenum), 
+                            #~ str(typenum),
+                            #~ homonymId.encode(self.inputEncoding), 
+                            #~ qualifier.encode(self.inputEncoding)))
                 yield '\t'.join((
                             orth.encode(self.inputEncoding), 
                             base.encode(self.inputEncoding), 

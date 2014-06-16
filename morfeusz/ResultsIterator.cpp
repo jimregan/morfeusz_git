@@ -20,4 +20,3 @@ namespace morfeusz {
         return !resultsBuffer.empty();
     }
 }
-

@@ -25,7 +25,7 @@ int main(int argc, const char** argv) {
     cerr << "Morfeusz analyzer, version: " << MORFEUSZ_VERSION << endl;
     ez::ezOptionParser& opt = *getOptions(argc, argv, ANALYZER);
     MorfeuszInternal morfeusz;
-    initializeMorfeusz(opt, morfeusz);
+    initializeMorfeusz(opt, morfeusz, ANALYZER);
 //    Morfeusz morfeusz(getMorfeuszFromCLI(argc, argv, "Morfeusz analyzer"));
     
     string line;

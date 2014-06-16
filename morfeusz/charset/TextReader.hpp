@@ -23,6 +23,7 @@ public:
     int getCodepointsRead() const;
     bool isAtEnd() const;
     bool isAtWhitespace();
+    bool isInsideAWord();
     uint32_t peek();
     uint32_t normalizedPeek();
     uint32_t next();

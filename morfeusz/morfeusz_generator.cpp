@@ -23,7 +23,7 @@ int main(int argc, const char** argv) {
     cerr << "Morfeusz generator, version: " << MORFEUSZ_VERSION << endl;
     ez::ezOptionParser& opt = *getOptions(argc, argv, GENERATOR);
     MorfeuszInternal morfeusz;
-    initializeMorfeusz(opt, morfeusz);
+    initializeMorfeusz(opt, morfeusz, GENERATOR);
     string line;
     while (getline(cin, line)) {
         //        printf("%s\n", line.c_str());

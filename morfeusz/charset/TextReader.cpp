@@ -70,6 +70,10 @@ bool TextReader::isAtWhitespace() {
     }
 }
 
+bool TextReader::isInsideAWord() {
+    return !isAtEnd() && !isAtWhitespace();
+}
+
 uint32_t TextReader::peek() {
     if (peekIsRead) {
         return thePeek;

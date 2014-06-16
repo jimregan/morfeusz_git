@@ -102,7 +102,7 @@ const Tagset& Environment::getTagset() const {
     return this->tagset;
 }
 
-void Environment::setFSAFile(const std::string& filename) {
+void Environment::setDictionaryFile(const std::string& filename) {
     if (this->isFromFile) {
         delete this->fsa;
         deleteSegrulesFSAs(this->segrulesFSAsMap);

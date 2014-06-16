@@ -140,12 +140,21 @@ static Charset getCharset(const string& encodingStr) {
     }
 }
 
-void initializeMorfeusz(ezOptionParser& opt, MorfeuszInternal& morfeusz) {
+void initializeMorfeusz(ezOptionParser& opt, MorfeuszInternal& morfeusz, MorfeuszProcessorType processorType) {
     if (opt.isSet("-i")) {
-        string analyzerFile;
-        opt.get("-i")->getString(analyzerFile);
-        morfeusz.setAnalyzerDictionary(analyzerFile);
-        printf("Using dictionary from %s\n", analyzerFile.c_str());
+        string dictFile;
+        opt.get("-i")->getString(dictFile);
+        switch (processorType) {
+            case ANALYZER:
+                morfeusz.setAnalyzerDictionary(dictFile);
+                break;
+            case GENERATOR:
+                morfeusz.setGeneratorDictionary(dictFile);
+                break;
+            default:
+                break;
+        }
+        printf("Using dictionary from %s\n", dictFile.c_str());
     }
     if (opt.isSet("-a")) {
         string aggl;

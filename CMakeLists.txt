@@ -145,7 +145,7 @@ endif ()
 include (CPack)
 
 ##### END initialize some vars #####
-file (COPY fsabuilder testfiles input DESTINATION .)
+file (COPY fsabuilder testfiles input test.sh DESTINATION .)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz_version.h.in"

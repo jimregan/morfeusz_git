@@ -96,7 +96,7 @@ public:
      * 
      * @param filename - filename of the dictionary
      */
-    void setFSAFile(const std::string& filename);
+    void setDictionaryFile(const std::string& filename);
     
     /**
      * Sets segmentation rules option.

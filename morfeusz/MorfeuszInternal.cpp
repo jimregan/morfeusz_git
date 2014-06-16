@@ -118,14 +118,22 @@ graph() {
 }
 
 void MorfeuszInternal::setAnalyzerDictionary(const string& filename) {
-    this->analyzerEnv.setFSAFile(filename);
+    this->analyzerEnv.setDictionaryFile(filename);
 }
 
 void MorfeuszInternal::setGeneratorDictionary(const string& filename) {
-    this->generatorEnv.setFSAFile(filename);
+    this->generatorEnv.setDictionaryFile(filename);
 }
 
 MorfeuszInternal::~MorfeuszInternal() {
+}
+
+const char* getWordEndPtr(const TextReader& reader, const Environment& env) {
+    TextReader tmpReader(reader.getCurrPtr(), reader.getEndPtr(), env);
+    while (!tmpReader.isAtEnd() && !tmpReader.isAtWhitespace()) {
+        tmpReader.next();
+    }
+    return tmpReader.getCurrPtr();
 }
 
 void MorfeuszInternal::processOneWord(
@@ -147,6 +155,10 @@ void MorfeuszInternal::processOneWord(
 
     reader.markWordStartsHere();
     doProcessOneWord(env, reader, segrulesFSA.initialState);
+    
+    while (reader.isInsideAWord()) {
+        reader.next();
+    }
 
     if (!graph.empty()) {
         const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
@@ -191,6 +203,9 @@ void MorfeuszInternal::doProcessOneWord(
         string homonymId;
         feedState(env, state, reader);
         reader.next();
+        if (state.isSink()) {
+            return;
+        }
         if (env.getProcessorType() == GENERATOR && reader.getCurrPtr() != reader.getEndPtr() && reader.peek() == (uint32_t) HOMONYM_SEPARATOR) {
             homonymId = env.getCharsetConverter().fromUTF8(string(reader.getCurrPtr() + 1, reader.getEndPtr()));
             reader.proceedToEnd();
