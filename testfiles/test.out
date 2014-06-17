@@ -1,0 +1,125 @@
+[0,1,dziewięćdziesięciopięciolecie,dziewięćdziesięciopięciolecie,subst:sg:acc:n2,pospolita,_
+ 0,1,dziewięćdziesięciopięciolecie,dziewięćdziesięciopięciolecie,subst:sg:nom:n2,pospolita,_
+ 0,1,dziewięćdziesięciopięciolecie,dziewięćdziesięciopięciolecie,subst:sg:voc:n2,pospolita,_]
+[0,1,dwudziestopięciometrowy,dwudziestopięciometrowy,adj:sg:acc:m3:pos,_,_
+ 0,1,dwudziestopięciometrowy,dwudziestopięciometrowy,adj:sg:nom.voc:m1.m2.m3:pos,_,_]
+[0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:pl:nom.voc:m1.p1:pos,_,_
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:sg:acc:m3:pos,_,_
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:sg:nom.voc:m1.m2.m3:pos,_,_
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletny,adj:pl:nom.voc:m1.p1:pos,_,daw. dziś gwar.
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:pl:nom.voc:m1.p1:pos,_,_
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:sg:acc:m3:pos,_,_
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:sg:nom.voc:m1.m2.m3:pos,_,_
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:pl:nom.voc:m1.p1:pos,_,_
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:sg:acc:m3:pos,_,_
+ 0,1,trzydziestopięcioipółletni,trzydziestopięcioipółletni,adj:sg:nom.voc:m1.m2.m3:pos,_,_]
+[0,1,trzydziestotrzylatek,trzydziestotrzylatek:s1,subst:sg:nom:m1,pospolita,_
+ 0,1,trzydziestotrzylatek,trzydziestotrzylatek:s2,subst:sg:nom:m2,pospolita,_
+ 0,1,trzydziestotrzylatek,trzydziestotrzylatka,subst:pl:gen:f,pospolita,_]
+[0,1,65-lecie,65-+lecie,subst:sg:acc:n2,pospolita,_
+ 0,1,65-lecie,65-+lecie,subst:sg:nom:n2,pospolita,_
+ 0,1,65-lecie,65-+lecie,subst:sg:voc:n2,pospolita,_]
+[0,1,43-latek,43-+latek,subst:sg:nom:m1,pospolita,_
+ 0,1,43-latek,43-+latka,subst:pl:gen:f,pospolita,_]
+[0,1,23,5-metrowy,23,5-metrowy,adj:sg:acc:m3:pos,_,_
+ 0,1,23,5-metrowy,23,5-metrowy,adj:sg:nom.voc:m1.m2.m3:pos,_,_]
+[0,1,346-cylindrowy,346-cylindrowy,adj:sg:acc:m3:pos,_,_
+ 0,1,346-cylindrowy,346-cylindrowy,adj:sg:nom.voc:m1.m2.m3:pos,_,_]
+[0,1,3-krotnie,3-krotnie,adv:pos,_,_]
+[0,1,pięcioów,pięcioów,ign,_,_]
+[0,1,średniopienny,średniopienny,adj:sg:acc:m3:pos,_,_
+ 0,1,średniopienny,średniopienny,adj:sg:nom.voc:m1.m2.m3:pos,_,_]
+[0,1,półdolarówka,półdolarówka,subst:sg:nom:f,pospolita,_]
+[0,1,potrzebował,potrzebować,praet:sg:m1.m2.m3:imperf,_,_]
+[1,2,że,+że,qub,_,_]
+[2,3,by,by:q3,qub,_,_]
+[3,4,ś,być,aglt:sg:sec:imperf:nwok,_,_]
+[0,1,potrzebowała,potrzebować,praet:sg:f:imperf,_,_]
+[1,2,ż,+ż,qub,_,_]
+[2,3,by,by:q3,qub,_,_]
+[3,4,ś,być,aglt:sg:sec:imperf:nwok,_,_]
+[0,1,idź,iść:v1,impt:sg:sec:imperf,_,_]
+[1,2,że,+że,qub,_,_]
+[0,1,zróbcie,zrobić:v1,impt:pl:sec:perf,_,_
+ 0,1,zróbcie,zrobić:v2,impt:pl:sec:perf,_,_]
+[1,2,ż,+ż,qub,_,_]
+[0,1,znasz,znać:v2,fin:sg:sec:imperf,_,_]
+[1,2,-,-,interp,_,_]
+[2,3,li,li:q,qub,_,przest.]
+[0,1,czytał,czytać,praet:sg:m1.m2.m3:imperf,_,_]
+[1,2,eś,być,aglt:sg:sec:imperf:wok,_,_]
+[2,3,-,-,interp,_,_]
+[3,4,li,li:q,qub,_,przest.]
+[0,1,kobieta,kobieta,subst:sg:nom:f,pospolita,_]
+[1,2,-,-,interp,_,_]
+[2,3,prezydent,prezydent,subst:sg:nom:m1,pospolita,_]
+[0,1,eurosodoma,eurosodoma,subst:sg:nom:f,pospolita,_]
+[0,1,e-papieros,e-papieros,subst:sg:acc:m3,pospolita,rzad.
+ 0,1,e-papieros,e-papieros,subst:sg:nom:m2,pospolita,_
+ 0,1,e-papieros,e-papieros,subst:sg:nom:m3,pospolita,rzad.]
+[0,1,średniopienny,średniopienny,adj:sg:acc:m3:pos,_,_
+ 0,1,średniopienny,średniopienny,adj:sg:nom.voc:m1.m2.m3:pos,_,_]
+[0,1,ekostół,ekostół,subst:sg:acc:m3,pospolita,_
+ 0,1,ekostół,ekostół,subst:sg:nom:m3,pospolita,_]
+[0,1,do,do:p,prep:gen,_,_]
+[0,2,doń,donia,subst:pl:gen:f,pospolita,reg.|daw.|char.]
+[1,2,ń,on,ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep,_,_]
+[0,1,przeze,przez,prep:acc:wok,_,_]
+[1,2,ń,on,ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep,_,_]
+[0,1,niekrzesło,niekrzesło,subst:sg:acc:n2,pospolita,_
+ 0,1,niekrzesło,niekrzesło,subst:sg:nom:n2,pospolita,_
+ 0,1,niekrzesło,niekrzesło,subst:sg:voc:n2,pospolita,_]
+[0,1,nie-Polak,nie-polak,subst:sg:nom:m2,pospolita,pot.|środ.]
+[0,1,niegrzeczniejszy,niegrzeczny,adj:sg:acc:m3:com,_,_
+ 0,1,niegrzeczniejszy,niegrzeczny,adj:sg:nom.voc:m1.m2.m3:com,_,_
+ 0,1,niegrzeczniejszy,niegrzeczny:a1,adj:sg:acc:m3:com,_,_
+ 0,1,niegrzeczniejszy,niegrzeczny:a1,adj:sg:nom.voc:m1.m2.m3:com,_,_]
+[0,1,niegrzeczniej,niegrzecznie,adv:com,_,_
+ 0,1,niegrzeczniej,niegrzecznie:d1,adv:com,_,_]
+[0,1,niegrzeczna,niegrzeczny:a1,adj:sg:nom.voc:f:pos,_,_
+ 0,1,niegrzeczna,niegrzeczny:a2,adj:sg:nom.voc:f:pos,_,_]
+[0,1,niespanie,niespanie,subst:sg:acc:n2,pospolita,_
+ 0,1,niespanie,niespanie,subst:sg:nom:n2,pospolita,_
+ 0,1,niespanie,niespanie,subst:sg:voc:n2,pospolita,_
+ 0,1,niespanie,niespanie,subst:sg:acc:n2,pospolita,_
+ 0,1,niespanie,niespanie,subst:sg:nom:n2,pospolita,_
+ 0,1,niespanie,niespanie,subst:sg:voc:n2,pospolita,_
+ 0,1,niespanie,spać,ger:sg:nom.acc:n2:imperf:neg,_,_]
+[0,1,ja,ja,ppron12:sg:nom:m1.m2.m3.f.n1.n2:pri,_,_]
+[0,2,jam,jama,subst:pl:gen:f,pospolita,_
+ 0,2,jam,jam,burk,_,_]
+[1,2,m,być,aglt:sg:pri:imperf:nwok,_,_]
+[0,1,ty,ty,ppron12:sg:nom:m1.m2.m3.f.n1.n2:sec,_,_]
+[1,2,ś,być,aglt:sg:sec:imperf:nwok,_,_]
+[0,1,my,my,ppron12:pl:nom:_:pri,_,_]
+[1,2,śmy,być,aglt:pl:pri:imperf:nwok,_,_]
+[0,1,wy,wy,ppron12:pl:nom:_:sec,_,_]
+[1,2,ście,być,aglt:pl:sec:imperf:nwok,_,_]
+[0,1,gdy,gdy,adv,_,_]
+[0,2,gdyby,gdyby:c,comp,_,_]
+[1,2,by,by:q3,qub,_,_]
+[2,3,m,być,aglt:sg:pri:imperf:nwok,_,_]
+[0,1,odkierowali,odkierować:v1,praet:pl:m1.p1:imperf,_,_
+ 0,1,odkierowali,odkierować:v2,praet:pl:m1.p1:imperf,_,_]
+[1,2,śmy,być,aglt:pl:pri:imperf:nwok,_,_]
+[0,1,odkierowali,odkierować:v1,praet:pl:m1.p1:imperf,_,_
+ 0,1,odkierowali,odkierować:v2,praet:pl:m1.p1:imperf,_,_]
+[1,2,by,by:q3,qub,_,_]
+[2,3,śmy,być,aglt:pl:pri:imperf:nwok,_,_]
+[0,1,chyba,chyba,qub,_,_]
+[1,2,by,by:q3,qub,_,_]
+[2,3,ś,być,aglt:sg:sec:imperf:nwok,_,_]
+[0,1,gniótł,gnieść,praet:sg:m1.m2.m3:imperf:nagl,_,_]
+[1,2,by,by:q3,qub,_,_]
+[2,3,ś,być,aglt:sg:sec:imperf:nwok,_,_]
+[0,1,gniotła,gnieść,praet:sg:f:imperf,_,_]
+[0,1,gniotł,gniotł,ign,_,_]
+[0,1,gniótł,gnieść,praet:sg:m1.m2.m3:imperf:nagl,_,_]
+[0,1,gnietli,gnieść,praet:pl:m1.p1:imperf,_,_]
+[1,2,by,by:q3,qub,_,_]
+[2,3,śmy,być,aglt:pl:pri:imperf:nwok,_,_]
+[0,1,związane,związać,ppas:pl:nom.acc.voc:m2.m3.f.n1.n2.p2.p3:perf:aff,_,_
+ 0,1,związane,związać,ppas:sg:nom.acc.voc:n1.n2:perf:aff,_,_]
+[0,1,dotyczy,dotyczeć,fin:sg:ter:perf,_,daw.
+ 0,1,dotyczy,dotyczyć,fin:sg:ter:imperf,_,książk.]
+
