@@ -105,6 +105,7 @@ static InterpretedChunk createChunk(
     ic.orthWasShifted = false;
     ic.requiredHomonymId = homonymId;
     ic.codepointsNum = reader.getCodepointsRead();
+    ic.forceIgnoreCase = false;
     return ic;
 }
 
@@ -294,6 +295,7 @@ void MorfeuszInternal::handleIgnChunk(
 
                 int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
                 TextReader newReader1(prevInput, nonSeparatorInputEnd, env);
+                notMatchingCaseSegs = 0;
                 this->processOneWord(env, newReader1, startNode, results, true);
 
                 startNode = results.empty() ? startNodeNum : results.back().getEndNode();
@@ -303,6 +305,7 @@ void MorfeuszInternal::handleIgnChunk(
             else {
                 int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
                 TextReader newReader3(prevInput, currInput, env);
+                notMatchingCaseSegs = 0;
                 this->processOneWord(env, newReader3, startNode, results, true);
             }
         }
