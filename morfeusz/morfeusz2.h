@@ -21,13 +21,13 @@ namespace morfeusz {
     class MorfeuszException;
 
     enum Charset {
-        UTF8,
+        UTF8 = 101,
         //    UTF16LE,
         //    UTF16BE,
         //    UTF32,
-        ISO8859_2,
-        CP1250,
-        CP852
+        ISO8859_2 = 102,
+        CP1250 = 103,
+        CP852 = 104
     };
 
     /**
@@ -55,9 +55,6 @@ namespace morfeusz {
          */
         virtual void setGeneratorDictionary(const std::string& filename) = 0;
 
-        /**
-         * Destroys Morfeusz object.
-         */
         virtual ~Morfeusz();
 
         /**
@@ -147,8 +144,6 @@ namespace morfeusz {
          * @param debug
          */
         virtual void setDebug(bool debug) = 0;
-
-        friend class ResultsIterator;
     };
 
     class ResultsIterator {
@@ -179,17 +174,16 @@ namespace morfeusz {
                 const Environment& env);
         MorphInterpretation();
         static MorphInterpretation createIgn(int startNode, const std::string& orth, const Environment& env);
-        //    virtual ~MorphInterpretation();
+        virtual ~MorphInterpretation() {}
         int getStartNode() const;
         int getEndNode() const;
         const std::string& getOrth() const;
         const std::string& getLemma() const;
-        //    const std::string& getHomonymId() const;
         bool hasHomonym(const std::string& homonymId) const;
         int getTagnum() const;
         int getNamenum() const;
-        const std::string& getTag() const;
-        const std::string& getName() const;
+        const std::string getTag() const;
+        const std::string getName() const;
         const std::vector<std::string>& getQualifiers() const;
 
         std::string toString(bool includeNodeNumbers) const;
@@ -202,12 +196,14 @@ namespace morfeusz {
         int endNode;
         std::string orth;
         std::string lemma;
-        //    std::string homonymId;
         int tagnum;
         int namenum;
-        std::string tag;
-        std::string name;
-        const std::vector<std::string>* qualifiers;
+        int qualifiersNum;
+        
+        /**
+         * not owned by this
+         */
+        const Environment* env;
     };
 
     class MorfeuszException : public std::exception {
@@ -226,20 +222,11 @@ namespace morfeusz {
         const std::string msg;
     };
 
-    class FileFormatException : public std::exception {
+    class FileFormatException : public MorfeuszException {
     public:
 
-        FileFormatException(const std::string& what) : msg(what.c_str()) {
+        FileFormatException(const std::string& what) : MorfeuszException(what) {
         }
-
-        virtual ~FileFormatException() throw () {
-        }
-
-        virtual const char* what() const throw () {
-            return this->msg.c_str();
-        }
-    private:
-        const std::string msg;
     };
 }
 

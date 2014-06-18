@@ -8,6 +8,7 @@
 #ifndef OUTPUTUTILS_HPP
 #define	OUTPUTUTILS_HPP
 
+#include <cstdio>
 #include "morfeusz2.h"
 
 namespace morfeusz {

@@ -140,7 +140,7 @@ static Charset getCharset(const string& encodingStr) {
     }
 }
 
-void initializeMorfeusz(ezOptionParser& opt, MorfeuszInternal& morfeusz, MorfeuszProcessorType processorType) {
+void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz, MorfeuszProcessorType processorType) {
     if (opt.isSet("-i")) {
         string dictFile;
         opt.get("-i")->getString(dictFile);

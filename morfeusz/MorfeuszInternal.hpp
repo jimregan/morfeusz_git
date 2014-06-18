@@ -198,18 +198,6 @@ private:
     mutable InflexionGraph graph;
 };
 
-//class ResultsIterator {
-//public:
-//    MorphInterpretation getNext();
-//    bool hasNext();
-//    friend class MorfeuszInternal;
-//private:
-//    ResultsIterator(const std::vector<MorphInterpretation>& res);
-//    const char* rawInput;
-//    std::list<MorphInterpretation> resultsBuffer;
-//    int startNode;
-//};
-
 }
 
 #endif	/* MORFEUSZ_HPP */
