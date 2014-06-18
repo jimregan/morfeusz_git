@@ -8,7 +8,7 @@
 #ifndef MORFEUSZOPTIONS_HPP
 #define	MORFEUSZOPTIONS_HPP
 
-#include "const.hpp"
+#include "morfeusz2.h"
 
 namespace morfeusz {
 
@@ -18,6 +18,7 @@ namespace morfeusz {
 struct MorfeuszOptions {
     bool caseSensitive;
     Charset encoding;
+    TokenNumbering tokenNumbering;
     bool debug;
 };
 

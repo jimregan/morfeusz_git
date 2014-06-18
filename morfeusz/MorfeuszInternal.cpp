@@ -29,6 +29,7 @@ static MorfeuszOptions createDefaultOptions() {
     MorfeuszOptions res;
     res.caseSensitive = true;
     res.encoding = UTF8;
+    res.tokenNumbering = SEPARATE;
     res.debug = false;
     return res;
 }
@@ -112,7 +113,8 @@ MorfeuszInternal::MorfeuszInternal()
 generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
 options(createDefaultOptions()),
 accum(),
-graph() {
+graph(),
+nextNodeNum(0) {
     analyzerEnv.setCaseSensitive(options.caseSensitive);
     generatorEnv.setCaseSensitive(false);
 }
@@ -329,8 +331,11 @@ void MorfeuszInternal::analyze(const string& text, vector<MorphInterpretation>& 
     const char* inputEnd = input + text.length();
     TextReader reader(input, inputEnd, this->analyzerEnv);
     while (!reader.isAtEnd()) {
-        int startNode = results.empty() ? 0 : results.back().getEndNode();
-        this->processOneWord(this->analyzerEnv, reader, startNode, results);
+        this->processOneWord(this->analyzerEnv, reader, nextNodeNum, results);
+        nextNodeNum = results.back().getEndNode();
+    }
+    if (options.tokenNumbering == SEPARATE) {
+        nextNodeNum = 0;
     }
 }
 
@@ -388,6 +393,10 @@ void MorfeuszInternal::setPraet(const std::string& praet) {
 void MorfeuszInternal::setCaseSensitive(bool caseSensitive) {
     this->options.caseSensitive = caseSensitive;
     this->analyzerEnv.setCaseSensitive(caseSensitive);
+}
+
+void MorfeuszInternal::setTokenNumbering(TokenNumbering tokenNumbering) {
+    this->options.tokenNumbering = tokenNumbering;
 }
 
 void MorfeuszInternal::setDebug(bool debug) {

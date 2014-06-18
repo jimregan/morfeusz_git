@@ -21,7 +21,6 @@ int main(int argc, const char** argv) {
     ez::ezOptionParser& opt = *getOptions(argc, argv, ANALYZER);
     Morfeusz* morfeusz = Morfeusz::createInstance();
     initializeMorfeusz(opt, *morfeusz, ANALYZER);
-//    Morfeusz morfeusz(getMorfeuszFromCLI(argc, argv, "Morfeusz analyzer"));
     
     string line;
     vector<MorphInterpretation> res;

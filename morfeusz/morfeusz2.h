@@ -29,6 +29,19 @@ namespace morfeusz {
         CP1250 = 103,
         CP852 = 104
     };
+    
+    enum TokenNumbering {
+        
+        /**
+         * Start from 0. Reset counter for every invocation of Morfeusz::analyze
+         */
+        SEPARATE = 201,
+        
+        /**
+         * Also start from 0. Reset counter for every invocation of Morfeusz::setTokenNumbering only
+         */
+        CONTINUOUS = 202
+    };
 
     /**
      * Performs morphological analysis (analyze methods) and syntesis (generate methods).
@@ -137,6 +150,13 @@ namespace morfeusz {
          * @param caseSensitive
          */
         virtual void setCaseSensitive(bool caseSensitive) = 0;
+        
+        /**
+         * Set token numbering policy.
+         * 
+         * @param numbering
+         */
+        virtual void setTokenNumbering(TokenNumbering numbering) = 0;
 
         /**
          * Set debug option value.

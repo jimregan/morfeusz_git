@@ -156,6 +156,8 @@ public:
      */
     void setCaseSensitive(bool caseSensitive);
     
+    void setTokenNumbering(TokenNumbering tokenNumbering);
+    
     /**
      * Set debug option value.
      * 
@@ -196,6 +198,7 @@ private:
     MorfeuszOptions options;
     mutable std::vector<InterpretedChunk> accum;
     mutable InflexionGraph graph;
+    mutable int nextNodeNum;
 };
 
 }

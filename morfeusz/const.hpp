@@ -13,8 +13,8 @@
 namespace morfeusz {
 
 enum MorfeuszProcessorType {
-    GENERATOR,
-    ANALYZER
+    GENERATOR = 101,
+    ANALYZER = 102
 };
 
 extern const Charset DEFAULT_MORFEUSZ_CHARSET;
