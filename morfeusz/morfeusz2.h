@@ -42,6 +42,23 @@ namespace morfeusz {
          */
         CONTINUOUS = 202
     };
+    
+    enum CaseHandling {
+        /**
+         * Case-sensitive but allows interpretations that do not match case but there are no alternatives
+         */
+        WEAK = 100,
+        
+        /**
+         * Strictly case-sensitive, reject all interpretations that do not match case
+         */
+        STRICT = 101,
+        
+        /**
+         * Case-insensitive - ignores case
+         */
+        IGNORE = 102
+    };
 
     /**
      * Performs morphological analysis (analyze methods) and syntesis (generate methods).
@@ -149,7 +166,7 @@ namespace morfeusz {
          * 
          * @param caseSensitive
          */
-        virtual void setCaseSensitive(bool caseSensitive) = 0;
+        virtual void setCaseHandling(CaseHandling caseHandling) = 0;
         
         /**
          * Set token numbering policy.

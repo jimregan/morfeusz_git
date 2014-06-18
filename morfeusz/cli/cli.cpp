@@ -88,16 +88,21 @@ namespace morfeusz {
                     0, // Required?
                     1, // Number of args expected.
                     0, // Delimiter if expecting multiple args.
-                    "case insensitive - don't force matching uppercase with dictionary forms", // Help description.
-                    "-case-insensitive", // Flag token.
-                    "--case-insensitive" // Flag token.
+                    "case handling strategy.\n \
+                     WEAK - Case-sensitive but allows interpretations that do not match case but there is no alternative\n \
+                     STRICT - strictly case-sensitive\n \
+                     IGNORE - ignores case\n", // Help description.
+                    "-case-handling", // Flag token.
+                    "--case-handling" // Flag token.
                     );
             opt.add(
                     "", // Default.
                     0, // Required?
                     1, // Number of args expected.
                     0, // Delimiter if expecting multiple args.
-                    "token numbering strategy.\n SEPARATE - Start from 0 and reset counter for every line\n CONTINUOUS - start from 0 and never reset counter", // Help description.
+                    "token numbering strategy \
+                     SEPARATE - Start from 0 and reset counter for every line\n \
+                     CONTINUOUS - start from 0 and never reset counter", // Help description.
                     "-token-numbering", // Flag token.
                     "--token-numbering" // Flag token.
                     );
@@ -159,6 +164,19 @@ namespace morfeusz {
             throw "Invalid token numbering";
         }
     }
+    
+    static CaseHandling getCaseHandling(const string& optionStr) {
+        if (optionStr == "WEAK")
+            return WEAK;
+        else if (optionStr == "STRICT")
+            return STRICT;
+        else if (optionStr == "IGNORE")
+            return IGNORE;
+        else {
+            cerr << "Invalid case handling: '" << optionStr << "'. Must be one of: WEAK, STRICT, IGNORE" << endl;
+            throw "Invalid token numbering";
+        }
+    }
 
     void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz, MorfeuszProcessorType processorType) {
         if (opt.isSet("-i")) {
@@ -200,9 +218,11 @@ namespace morfeusz {
         }
 
         if (processorType == ANALYZER) {
-            if (opt.isSet("-case-insensitive")) {
-                cerr << "setting case sensitive to FALSE" << endl;
-                morfeusz.setCaseSensitive(false);
+            if (opt.isSet("-case-handling")) {
+                string caseHandling;
+                opt.get("-case-handling")->getString(caseHandling);
+                cerr << "setting case handling to " << caseHandling << endl;
+                morfeusz.setCaseHandling(getCaseHandling(caseHandling));
             }
 
             if (opt.isSet("-token-numbering")) {

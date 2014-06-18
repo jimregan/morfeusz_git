@@ -154,7 +154,7 @@ public:
      * 
      * @param caseSensitive
      */
-    void setCaseSensitive(bool caseSensitive);
+    void setCaseHandling(CaseHandling caseHandling);
     
     void setTokenNumbering(TokenNumbering tokenNumbering);
     
@@ -197,6 +197,7 @@ private:
     Environment generatorEnv;
     MorfeuszOptions options;
     mutable std::vector<InterpretedChunk> accum;
+    mutable int notMatchingCaseSegs;
     mutable InflexionGraph graph;
     mutable int nextNodeNum;
 };

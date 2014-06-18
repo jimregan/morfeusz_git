@@ -21,9 +21,10 @@ int main(int argc, const char** argv) {
     Morfeusz* morfeusz = Morfeusz::createInstance();
     initializeMorfeusz(opt, *morfeusz, GENERATOR);
     string line;
+    vector<MorphInterpretation> res;
     while (getline(cin, line)) {
         //        printf("%s\n", line.c_str());
-        vector<MorphInterpretation> res;
+        res.clear();
         morfeusz->generate(line, res);
         printMorphResults(res, false);
     }

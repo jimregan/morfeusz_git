@@ -16,7 +16,7 @@ namespace morfeusz {
  * Represents options for Morfeusz analyzer/generator.
  */
 struct MorfeuszOptions {
-    bool caseSensitive;
+    CaseHandling caseHandling;
     Charset encoding;
     TokenNumbering tokenNumbering;
     bool debug;

@@ -108,7 +108,7 @@ void InterpretedChunksDecoder4Analyzer::decodeMorphInterpretation(
         normalizedCodepoints.push_back(env.getCaseConverter().toLower(cp));
     }
     EncodedInterpretation ei = this->decodeEncodedInterp(ptr, *params.chunk.interpsGroupPtr);
-    if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
+    if (params.chunk.forceIgnoreCase || env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
         string lemma(params.lemma4Prefixes);
         lemma.reserve(lemma.size() + 2 * normalizedCodepoints.size());
         this->decodeLemma(ei.value, params.chunk.codepointsNum, false, lemma);

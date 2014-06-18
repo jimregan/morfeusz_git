@@ -27,7 +27,7 @@ namespace morfeusz {
 
 static MorfeuszOptions createDefaultOptions() {
     MorfeuszOptions res;
-    res.caseSensitive = true;
+    res.caseHandling = WEAK;
     res.encoding = UTF8;
     res.tokenNumbering = SEPARATE;
     res.debug = false;
@@ -113,9 +113,10 @@ MorfeuszInternal::MorfeuszInternal()
 generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
 options(createDefaultOptions()),
 accum(),
+notMatchingCaseSegs(0),
 graph(),
 nextNodeNum(0) {
-    analyzerEnv.setCaseSensitive(options.caseSensitive);
+    analyzerEnv.setCaseSensitive(options.caseHandling != IGNORE);
     generatorEnv.setCaseSensitive(false);
 }
 
@@ -151,6 +152,7 @@ void MorfeuszInternal::processOneWord(
         return;
     }
     accum.clear();
+    notMatchingCaseSegs = 0;
     graph.clear();
 
     const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
@@ -221,8 +223,9 @@ void MorfeuszInternal::doProcessOneWord(
                 }
                 newSegrulesStates.clear();
                 env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, reader.isAtWhitespace(), newSegrulesStates);
+                bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
                 if (!newSegrulesStates.empty()
-                        && env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig)) {
+                        && (caseMatches || options.caseHandling == WEAK)) {
                     for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
                         const SegrulesState& newSegrulesState = newSegrulesStates[i];
 
@@ -232,13 +235,17 @@ void MorfeuszInternal::doProcessOneWord(
                         if (!accum.empty() && accum.back().shiftOrth) {
                             doShiftOrth(accum.back(), ic);
                         }
+                        if (!caseMatches && options.caseHandling == WEAK) {
+                            notMatchingCaseSegs++;
+                            ic.forceIgnoreCase = true;
+                        }
                         accum.push_back(ic);
                         if (reader.isAtWhitespace()) {
                             assert(newSegrulesState.accepting);
                             if (this->options.debug) {
                                 cerr << "ACCEPTING " << debugAccum(accum) << endl;
                             }
-                            graph.addPath(accum, newSegrulesState.weak);
+                            graph.addPath(accum, newSegrulesState.weak || notMatchingCaseSegs > 0);
                         }
                         else {
                             assert(!newSegrulesState.sink);
@@ -246,6 +253,9 @@ void MorfeuszInternal::doProcessOneWord(
                             doProcessOneWord(env, newReader, newSegrulesState);
                         }
                         accum.pop_back();
+                        if (!caseMatches && options.caseHandling == WEAK) {
+                            notMatchingCaseSegs--;
+                        }
                     }
                 }
                 else if (this->options.debug) {
@@ -332,7 +342,9 @@ void MorfeuszInternal::analyze(const string& text, vector<MorphInterpretation>& 
     TextReader reader(input, inputEnd, this->analyzerEnv);
     while (!reader.isAtEnd()) {
         this->processOneWord(this->analyzerEnv, reader, nextNodeNum, results);
-        nextNodeNum = results.back().getEndNode();
+        if (!results.empty()) {
+            nextNodeNum = results.back().getEndNode();
+        }
     }
     if (options.tokenNumbering == SEPARATE) {
         nextNodeNum = 0;
@@ -390,9 +402,9 @@ void MorfeuszInternal::setPraet(const std::string& praet) {
     this->generatorEnv.setSegrulesOption("praet", praet);
 }
 
-void MorfeuszInternal::setCaseSensitive(bool caseSensitive) {
-    this->options.caseSensitive = caseSensitive;
-    this->analyzerEnv.setCaseSensitive(caseSensitive);
+void MorfeuszInternal::setCaseHandling(CaseHandling caseHandling) {
+    this->options.caseHandling = caseHandling;
+    this->analyzerEnv.setCaseSensitive(caseHandling != IGNORE);
 }
 
 void MorfeuszInternal::setTokenNumbering(TokenNumbering tokenNumbering) {

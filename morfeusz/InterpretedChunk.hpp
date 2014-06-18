@@ -67,6 +67,8 @@ struct InterpretedChunk {
      * Homonym id specified by the user.
      */
     std::string requiredHomonymId;
+    
+    bool forceIgnoreCase;
 };
 
 }
