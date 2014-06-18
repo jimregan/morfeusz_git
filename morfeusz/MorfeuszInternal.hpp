@@ -180,6 +180,14 @@ private:
             TextReader& reader,
             const SegrulesState& segrulesState) const;
     
+    void processInterpsGroup(
+            const Environment& env,
+            const TextReader& reader,
+            bool isAtWhitespace,
+            const SegrulesState& segrulesState,
+            const std::string& homonymId,
+            const InterpsGroup& ig) const;
+    
     void handleIgnChunk(
         const Environment& env,
         const char* inputStart,

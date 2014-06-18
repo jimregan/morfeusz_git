@@ -74,6 +74,12 @@ public:
             const char* orthStart,
             const char* orthEnd,
             const InterpsGroup& ig) const;
+    
+    bool checkMultipleCasePatterns(
+            const Environment& env,
+            const char* orthStart,
+            const char* orthEnd,
+            const unsigned char* ptr) const;
 
     /**
      * Deserializes case pattern encoded at given pointer.
