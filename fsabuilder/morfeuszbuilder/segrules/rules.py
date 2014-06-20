@@ -126,7 +126,9 @@ class ConcatRule(ComplexRule):
             elif not child.isShiftOrthRule():
                 hasNonOptionalNonShiftingRule = True
 #                 print 'got nonshifting'
-        return ConcatRule(newChildren, self.linenum)
+        res = ConcatRule(newChildren, self.linenum)
+        res.setWeak(self.weak)
+        return res
     
 class OrRule(ComplexRule):
     
@@ -156,7 +158,9 @@ class OrRule(ComplexRule):
         if newChildren == []:
             return SinkRule()
         else:
-            return OrRule(newChildren, self.linenum)
+            res = OrRule(newChildren, self.linenum)
+            res.setWeak(self.weak)
+            return res
     
 class ZeroOrMoreRule(UnaryRule):
     

@@ -6,6 +6,7 @@ Created on Oct 23, 2013
 import logging
 from common import Interpretation4Analyzer
 from morfeuszbuilder.fsa.common import Interpretation4Generator
+from morfeuszbuilder.fsa import externalsort
 
 def _mergeEntries(inputLines, lowercase):
     prevKey = None
@@ -68,6 +69,7 @@ class PolimorfConverter4Analyzer(object):
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
         return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split('\t')[0].decode('utf8')))
+#         return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split('\t')[0].decode('utf8')))
     
     def _reallyParseLines(self, inputLines):
         for line in inputLines:
@@ -139,6 +141,7 @@ class PolimorfConverter4Generator(object):
                 tagnum = int(tagnum)
                 namenum = int(namenum)
                 typenum = int(typenum)
+                del prevLine
                 prevLine = line
                 qualifiers = qualifierStr.split('|') if qualifierStr else ()
                 yield (base, Interpretation4Generator(orth, base, tagnum, namenum, typenum, homonymId, qualifiers))
