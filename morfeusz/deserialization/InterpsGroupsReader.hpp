@@ -19,6 +19,11 @@ public:
     virtual ~InterpsGroupsReader();
     bool hasNext() const;
     InterpsGroup getNext();
+    
+    inline void update(const unsigned char* ptr, long size) {
+        this->currPtr = ptr;
+        this->endPtr = ptr + size;
+    }
 private:
     const unsigned char* currPtr;
     const unsigned char* endPtr;

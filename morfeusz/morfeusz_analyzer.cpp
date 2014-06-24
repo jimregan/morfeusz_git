@@ -28,7 +28,7 @@ int main(int argc, const char** argv) {
 //        printf("%s\n", line.c_str());
         res.clear();
         morfeusz->analyze(line, res);
-        printMorphResults(res, true);
+//        printMorphResults(res, true);
     }
     delete morfeusz;
     printf("\n");

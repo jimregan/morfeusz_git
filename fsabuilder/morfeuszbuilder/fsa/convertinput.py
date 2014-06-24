@@ -6,7 +6,7 @@ Created on Oct 23, 2013
 import logging
 from common import Interpretation4Analyzer
 from morfeuszbuilder.fsa.common import Interpretation4Generator
-from morfeuszbuilder.fsa import externalsort
+#from morfeuszbuilder.fsa import externalsort
 
 def _mergeEntries(inputLines, lowercase):
     prevKey = None

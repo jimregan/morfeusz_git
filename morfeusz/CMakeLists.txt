@@ -54,6 +54,8 @@ set(SRC_FILES
     deserialization/morphInterps/InterpretedChunksDecoder4Generator.cpp
     deserialization/InterpsGroupsReader.cpp
     deserialization/MorphDeserializer.cpp
+    morfeusz2_c.cpp
+    c_api/ResultsManager.cpp
 )
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
@@ -87,7 +89,6 @@ else ()
     set (TARGET_LIB_DIR lib)
 endif ()
 
-install (FILES morfeusz2.h DESTINATION include)
-install (FILES ${PROJECT_BINARY_DIR}/morfeusz_version.h DESTINATION include)
+install (FILES morfeusz2.h ${PROJECT_BINARY_DIR}/morfeusz_version.h morfeusz2_c.h DESTINATION include)
 install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
 install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)

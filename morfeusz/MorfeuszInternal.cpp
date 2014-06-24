@@ -152,7 +152,7 @@ namespace morfeusz {
         if (reader.isAtEnd()) {
             return;
         }
-        accum.clear();
+        accum.resize(0);
         notMatchingCaseSegs = 0;
         graph.clear();
 
@@ -201,8 +201,9 @@ namespace morfeusz {
             cerr << "PROCESS: '" << reader.getCurrPtr() << "', already recognized: " << debugAccum(accum) << endl;
         }
         StateType state = env.getFSA().getInitialState();
+        string homonymId;
+        vector<SegrulesState> newSegrulesStates;
         while (!reader.isAtWhitespace()) {
-            string homonymId;
             feedState(env, state, reader);
             reader.next();
             if (state.isSink()) {
@@ -215,7 +216,7 @@ namespace morfeusz {
             if (state.isAccepting()) {
                 InterpsGroupsReader& igReader = const_cast<InterpsGroupsReader&> (state.getValue());
                 while (igReader.hasNext()) {
-                    processInterpsGroup(env, reader, reader.isAtWhitespace(), segrulesState, homonymId, igReader.getNext());
+                    processInterpsGroup(env, reader, reader.isAtWhitespace(), segrulesState, homonymId, igReader.getNext(), newSegrulesStates);
                 }
             }
         }
@@ -227,47 +228,68 @@ namespace morfeusz {
             bool isAtWhitespace,
             const SegrulesState& segrulesState,
             const string& homonymId,
-            const InterpsGroup& ig) const {
-        vector<SegrulesState> newSegrulesStates;
-        env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace, newSegrulesStates);
+            const InterpsGroup& ig,
+            vector<SegrulesState>& newSegrulesStates) const {
         bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
-        if (!newSegrulesStates.empty()
-                && (caseMatches || options.caseHandling == WEAK)) {
-            for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
-                const SegrulesState& newSegrulesState = newSegrulesStates[i];
+        if (caseMatches || options.caseHandling == WEAK) {
+            
+            env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace, newSegrulesStates);
+            if (!newSegrulesStates.empty()) {
+                for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
+                    const SegrulesState& newSegrulesState = newSegrulesStates[i];
 
-                InterpretedChunk ic(
-                        createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
-
-                if (!accum.empty() && accum.back().shiftOrth) {
-                    doShiftOrth(accum.back(), ic);
+                    InterpretedChunk ic(
+                            createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
+                    
+                    processInterpretedChunk(
+                            env, 
+                            reader, 
+                            isAtWhitespace, 
+                            caseMatches, 
+                            newSegrulesState, 
+                            ic);
                 }
-                if (!caseMatches && options.caseHandling == WEAK) {
-                    notMatchingCaseSegs++;
-                    ic.forceIgnoreCase = true;
-                }
-                accum.push_back(ic);
-                if (isAtWhitespace) {
-                    assert(newSegrulesState.accepting);
-                    if (this->options.debug) {
-                        cerr << "ACCEPTING " << debugAccum(accum) << endl;
-                    }
-                    graph.addPath(accum, newSegrulesState.weak || notMatchingCaseSegs > 0);
-                }
-                else {
-                    assert(!newSegrulesState.sink);
-                    TextReader newReader(reader.getCurrPtr(), reader.getEndPtr(), env);
-                    doProcessOneWord(env, newReader, newSegrulesState);
-                }
-                accum.pop_back();
-                if (!caseMatches && options.caseHandling == WEAK) {
-                    notMatchingCaseSegs--;
-                }
+                newSegrulesStates.resize(0);
+            }
+            else if (this->options.debug) {
+                std::cerr << "NOT ACCEPTING (segmentation)" << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
             }
         }
         else if (this->options.debug) {
-            //                    cerr << !newSegrulesStates.empty() << env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(normalizedCodepoints, originalCodepoints, ig) << endl;
-            std::cerr << "NOT ACCEPTING " << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
+            std::cerr << "NOT ACCEPTING (case)" << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
+        }
+    }
+
+    void MorfeuszInternal::processInterpretedChunk(
+            const Environment& env,
+            const TextReader& reader,
+            bool isAtWhitespace,
+            bool caseMatches,
+            const SegrulesState& newSegrulesState,
+            InterpretedChunk& ic) const {
+        if (!accum.empty() && accum.back().shiftOrth) {
+            doShiftOrth(accum.back(), ic);
+        }
+        if (!caseMatches && options.caseHandling == WEAK) {
+            notMatchingCaseSegs++;
+            ic.forceIgnoreCase = true;
+        }
+        accum.push_back(ic);
+        if (isAtWhitespace) {
+            assert(newSegrulesState.accepting);
+            if (this->options.debug) {
+                cerr << "ACCEPTING " << debugAccum(accum) << endl;
+            }
+            graph.addPath(accum, newSegrulesState.weak || notMatchingCaseSegs > 0);
+        }
+        else {
+            assert(!newSegrulesState.sink);
+            TextReader newReader(reader.getCurrPtr(), reader.getEndPtr(), env);
+            doProcessOneWord(env, newReader, newSegrulesState);
+        }
+        accum.pop_back();
+        if (!caseMatches && options.caseHandling == WEAK) {
+            notMatchingCaseSegs--;
         }
     }
 

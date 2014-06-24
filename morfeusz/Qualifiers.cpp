@@ -28,7 +28,8 @@ qualifiers() {
         unsigned char qualsNum = readInt8(currPtr);
         vector<string> quals;
         for (unsigned int j = 0; j < qualsNum; j++) {
-            quals.push_back(readString(currPtr));
+            string qual = readString(currPtr);
+            quals.push_back(qual);
         }
         this->qualifiers.push_back(quals);
     }

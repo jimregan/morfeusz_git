@@ -186,7 +186,16 @@ private:
             bool isAtWhitespace,
             const SegrulesState& segrulesState,
             const std::string& homonymId,
-            const InterpsGroup& ig) const;
+            const InterpsGroup& ig,
+            std::vector<SegrulesState>& newSegrulesStates) const;
+    
+    void processInterpretedChunk(
+            const Environment& env,
+            const TextReader& reader,
+            bool isAtWhitespace,
+            bool caseMatches,
+            const SegrulesState& newState,
+            InterpretedChunk& ic) const;
     
     void handleIgnChunk(
         const Environment& env,

@@ -20,7 +20,7 @@ long MorphDeserializer::deserialize(
         const unsigned char* ptr,
         InterpsGroupsReader& res) const {
     uint16_t size = readInt16(ptr);
-    res = InterpsGroupsReader(ptr, size);
+    res.update(ptr, size);
     return size + 2;
 }
 

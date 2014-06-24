@@ -69,6 +69,12 @@ namespace morfeusz {
     class Morfeusz {
     public:
 
+        /**
+         * Creates actual instance of Morfeusz class.
+         * The caller is responsible for destroying it.
+         * 
+         * @return 
+         */
         static Morfeusz* createInstance();
 
         /**
@@ -242,7 +248,7 @@ namespace morfeusz {
          */
         const Environment* env;
     };
-
+    
     class MorfeuszException : public std::exception {
     public:
 

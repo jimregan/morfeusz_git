@@ -6,6 +6,7 @@
 #include <iostream>
 #include "deserialization/endianness.hpp"
 #include "utf8.h"
+#include "utf8sqlite.hpp"
 #include "CharsetConverter.hpp"
 #include "conversion_tables.hpp"
 
@@ -27,10 +28,6 @@ CharsetConverter::~CharsetConverter() {
 
 }
 
-//uint32_t CharsetConverter::peek(const char* it, const char* end) const {
-//    return this->next(it, end);
-//}
-
 static inline void iterateThroughInvalidUtf8Sequence(const char*& it, const char* end) {
     uint32_t _dupa;
     while (it != end && utf8::internal::validate_next(it, end, _dupa) != utf8::internal::UTF8_OK) {
@@ -46,17 +43,7 @@ const UTF8CharsetConverter& UTF8CharsetConverter::getInstance() {
 UTF8CharsetConverter::UTF8CharsetConverter() {}
 
 uint32_t UTF8CharsetConverter::next(const char*& it, const char* end) const {
-//    return utf8::unchecked::next(it);
-    uint32_t cp = 0;
-    utf8::internal::utf_error err_code = utf8::internal::validate_next(it, end, cp);
-    if (err_code == utf8::internal::UTF8_OK) {
-        return cp;
-    }
-    else {
-        cerr << "WARNING: Replacing invalid sequence with replacement char: 0xFFFD" << endl;
-        iterateThroughInvalidUtf8Sequence(it, end);
-        return 0xFFFD;
-    }
+    return readUTF8((const unsigned char*&) it, (const unsigned char*) end);
 }
 
 void UTF8CharsetConverter::append(uint32_t cp, string& result) const {

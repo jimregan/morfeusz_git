@@ -35,8 +35,8 @@ namespace morfeusz {
         }
         else {
             const char* currOrthPtr = orthStart;
-            orthCodepoints.clear();
-            normalizedCodepoints.clear();
+            orthCodepoints.resize(0);
+            normalizedCodepoints.resize(0);
             bool isDiff = false;
             while (currOrthPtr != orthEnd) {
                 uint32_t codepoint = env.getCharsetConverter().next(currOrthPtr, orthEnd);

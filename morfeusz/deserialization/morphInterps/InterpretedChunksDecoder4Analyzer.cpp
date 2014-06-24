@@ -99,8 +99,8 @@ void InterpretedChunksDecoder4Analyzer::decodeMorphInterpretation(
         const DecodeMorphInterpParams& params,
         const unsigned char*& ptr,
         std::vector<MorphInterpretation>& out) const {
-    orthCodepoints.clear();
-    normalizedCodepoints.clear();
+    orthCodepoints.resize(0);
+    normalizedCodepoints.resize(0);
     const char* currPtr = params.chunk.textStartPtr;
     while (currPtr != params.chunk.textEndPtr) {
         uint32_t cp = env.getCharsetConverter().next(currPtr, params.chunk.textEndPtr);
@@ -110,15 +110,16 @@ void InterpretedChunksDecoder4Analyzer::decodeMorphInterpretation(
     EncodedInterpretation ei = this->decodeEncodedInterp(ptr, *params.chunk.interpsGroupPtr);
     if (params.chunk.forceIgnoreCase || env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
         string lemma(params.lemma4Prefixes);
-        lemma.reserve(lemma.size() + 2 * normalizedCodepoints.size());
+        lemma.reserve(lemma.size() + normalizedCodepoints.size());
         this->decodeLemma(ei.value, params.chunk.codepointsNum, false, lemma);
-        out.push_back(MorphInterpretation(
+        MorphInterpretation mi(
                 params.startNode, params.endNode,
                 params.orth, lemma,
                 ei.tag,
                 ei.nameClassifier,
                 ei.qualifiers,
-                env));
+                env);
+        out.push_back(mi);
     }
 }
 
@@ -135,8 +136,8 @@ bool InterpretedChunksDecoder4Analyzer::tryToGetLemma4Prefixes(
 }
 
 bool InterpretedChunksDecoder4Analyzer::tryToGetLemma4OnePrefix(const InterpretedChunk& prefixChunk, std::string& lemma4Prefixes) const {
-    orthCodepoints.clear();
-    normalizedCodepoints.clear();
+    orthCodepoints.resize(0);
+    normalizedCodepoints.resize(0);
     const char* currTextPtr = prefixChunk.textStartPtr;
     while (currTextPtr != prefixChunk.textEndPtr) {
         uint32_t cp = env.getCharsetConverter().next(currTextPtr, prefixChunk.textEndPtr);

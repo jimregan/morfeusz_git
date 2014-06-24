@@ -59,8 +59,8 @@ void InflexionGraph::addPath(const std::vector<InterpretedChunk>& path, bool wea
         return;
     }
     else if (this->onlyWeakPaths && !weak) {
-        this->graph.clear();
-        this->node2ChunkStartPtr.clear();
+        this->graph.resize(0);
+        this->node2ChunkStartPtr.resize(0);
         this->onlyWeakPaths = false;
     }
     for (unsigned int i = 0; i < path.size(); i++) {
@@ -231,8 +231,8 @@ const vector< vector<InflexionGraph::Edge> >& InflexionGraph::getTheGraph() {
 }
 
 void InflexionGraph::clear() {
-    graph.clear();
-    node2ChunkStartPtr.clear();
+    graph.resize(0);
+    node2ChunkStartPtr.resize(0);
     onlyWeakPaths = true;
 }
 

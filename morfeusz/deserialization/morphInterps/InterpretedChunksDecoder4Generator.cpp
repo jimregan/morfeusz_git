@@ -55,14 +55,14 @@ MorphInterpretation InterpretedChunksDecoder4Generator::decodeMorphInterpretatio
         const unsigned char*& ptr) const {
     string orth = orthPrefix;
     EncodedInterpretation ei = this->deserializeInterp(ptr);
-    codepoints.clear();
+    codepoints.resize(0);
     const char* currPtr = chunk.textStartPtr;
     while (currPtr != chunk.textEndPtr) {
         uint32_t cp = env.getCharsetConverter().next(currPtr, chunk.textEndPtr);
         codepoints.push_back(cp);
     }
     this->decodeForm(codepoints, ei.value, orth);
-    return MorphInterpretation(
+    MorphInterpretation res(
             startNode, endNode,
             orth, ei.homonymId.empty() ? lemma : (lemma + HOMONYM_SEPARATOR + ei.homonymId),
             //                ei.homonymId,
@@ -70,6 +70,7 @@ MorphInterpretation InterpretedChunksDecoder4Generator::decodeMorphInterpretatio
             ei.nameClassifier,
             ei.qualifiers,
             env);
+    return res;
 }
 
 void InterpretedChunksDecoder4Generator::decodeForm(
