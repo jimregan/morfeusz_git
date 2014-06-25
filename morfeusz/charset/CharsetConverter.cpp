@@ -121,7 +121,22 @@ string CharsetConverter::fromUTF8(const string& input) const {
     return res;
 }
 
+string CharsetConverter::toUTF8(const string& input) const {
+    string res;
+    const char* currInput = input.c_str();
+    const char* inputEnd = input.c_str() + input.length();
+    while (currInput != inputEnd) {
+        uint32_t cp = this->next(currInput, inputEnd);
+        UTF8CharsetConverter::getInstance().append(cp, res);
+    }
+    return res;
+}
+
 string UTF8CharsetConverter::fromUTF8(const string& input) const {
+    return input;
+}
+
+string UTF8CharsetConverter::toUTF8(const string& input) const {
     return input;
 }
 

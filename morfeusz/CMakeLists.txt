@@ -65,13 +65,15 @@ set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz2")
 
 add_executable (morfeusz_analyzer morfeusz_analyzer.cpp)
 add_executable (morfeusz_generator morfeusz_generator.cpp)
-add_executable (test_result_equals test/test_result_equals.cpp)
-add_executable (test_recognize_dict test/test_recognize_dict.cpp)
+add_executable (test_c_api tests/test_c_api.cpp)
+#add_executable (test_result_equals test/test_result_equals.cpp)
+#add_executable (test_recognize_dict test/test_recognize_dict.cpp)
 
 target_link_libraries (morfeusz_analyzer libmorfeusz)
 target_link_libraries (morfeusz_generator libmorfeusz)
-target_link_libraries (test_result_equals libmorfeusz)
-target_link_libraries (test_recognize_dict libmorfeusz)
+target_link_libraries (test_c_api libmorfeusz)
+#target_link_libraries (test_result_equals libmorfeusz)
+#target_link_libraries (test_recognize_dict libmorfeusz)
 
 add_subdirectory (wrappers)
 

@@ -7,6 +7,9 @@
 
 #include "ResultsManager.hpp"
 #include "morfeusz2.h"
+#include <iostream>
+
+using namespace std;
 
 namespace morfeusz {
 
@@ -42,6 +45,7 @@ namespace morfeusz {
 
     InterpMorf ResultsManager::convertOneResult(const MorphInterpretation& res) {
         InterpMorf convertedRes;
+        cerr << res.toString(true) << endl;
         convertedRes.p = res.getStartNode();
         convertedRes.k = res.getEndNode();
         convertedRes.forma = const_cast<char*>(res.getOrth().c_str());

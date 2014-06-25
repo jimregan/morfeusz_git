@@ -41,6 +41,7 @@ namespace morfeusz {
     private:
         std::vector<std::string> tags;
         std::vector<std::string> names;
+        const CharsetConverter* charsetConverter;
     };
 
 }

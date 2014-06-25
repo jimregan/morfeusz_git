@@ -125,6 +125,34 @@ extern "C" {
 
 #define MORFEUSZ_SKIP_WHITESPACE 0
 #define MORFEUSZ_KEEP_WHITESPACE 2
+#define MORFEUSZ_APPEND_WHITESPACE 4
+  
+
+  /* MORFOPT_CASE:
+
+     MORFEUSZ_WEAK_CASE: interps not matching case are ignored unless there is no alternative
+     MORFEUSZ_STRICT_CASE: interps not matching case are marked as unrecognized (ign)
+     MORFEUSZ_IGNORE_CASE: interps not matching case are treated the same way as those that match case
+  */
+
+#define MORFOPT_CASE 3
+
+#define MORFEUSZ_WEAK_CASE 301
+#define MORFEUSZ_STRICT_CASE 302
+#define MORFEUSZ_IGNORE_CASE 303
+  
+
+  /* MORFOPT_TOKEN_NUMBERING 
+     
+   SEPARATE: after each invocation first token number is set to 0
+   CONTINUOUS: after each invocation first token number is set to the end of the one from previous invocation
+   
+   */
+
+#define MORFOPT_TOKEN_NUMBERING 4
+
+#define MORFEUSZ_SEPARATE_TOKEN_NUMBERING 401
+#define MORFEUSZ_CONTINUOUS_TOKEN_NUMBERING 402
 
 #ifdef __cplusplus
 } /* extern C */

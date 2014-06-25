@@ -12,7 +12,8 @@ namespace morfeusz {
 
     DefaultTagset::DefaultTagset(const unsigned char* ptr, const CharsetConverter* charsetConverter)
     : tags(),
-    names(){
+    names(),
+    charsetConverter(charsetConverter) {
         uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
         const unsigned char* currPtr = ptr + FSA_DATA_OFFSET + fsaSize + 4;
         readTags(currPtr, this->tags);
@@ -50,13 +51,18 @@ namespace morfeusz {
 
     // FIXME - probably should not convert whole tagset on every setCharsetConverter method invocation.
     void DefaultTagset::setCharsetConverter(const CharsetConverter* charsetConverter) {
+        
         for (unsigned int i = 0; i < tags.size(); i++) {
-            tags[i] = charsetConverter->fromUTF8(tags[i]);
+            tags[i] = charsetConverter->fromUTF8(
+                    this->charsetConverter->toUTF8(tags[i]));
         }
         
         for (unsigned int j = 0; j < names.size(); j++) {
-            names[j] = charsetConverter->fromUTF8(names[j]);
+            names[j] = charsetConverter->fromUTF8(
+                    this->charsetConverter->toUTF8(names[j]));
         }
+        
+        this->charsetConverter = charsetConverter;
     }
 
 }

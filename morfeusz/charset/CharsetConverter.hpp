@@ -21,6 +21,7 @@ public:
     virtual uint32_t next(const char*& it, const char* end) const = 0;
     virtual void append(uint32_t cp, std::string& result) const = 0;
     virtual std::string fromUTF8(const std::string& input) const;
+    virtual std::string toUTF8(const std::string& input) const;
 
     std::string toString(const std::vector<uint32_t>& codepoints) const;
 
@@ -36,6 +37,7 @@ public:
     uint32_t next(const char*& it, const char* end) const;
     void append(uint32_t cp, std::string& result) const;
     std::string fromUTF8(const std::string& input) const;
+    std::string toUTF8(const std::string& input) const;
 private:
     UTF8CharsetConverter();
     UTF8CharsetConverter(const UTF8CharsetConverter&); // do not implement
