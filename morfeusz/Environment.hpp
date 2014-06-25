@@ -82,7 +82,7 @@ public:
      * 
      * @param tagset
      */
-    void setTagset(const DefaultTagset& tagset);
+    void setTagset(DefaultTagset& tagset);
     
     /**
      * Gets currently used tagset.

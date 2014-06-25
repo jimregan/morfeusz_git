@@ -37,15 +37,15 @@ void InterpretedChunksDecoder4Generator::decode(
     }
 }
 
-void InterpretedChunksDecoder4Generator::convertPrefixes(const InterpretedChunk& interpretedChunk, std::string& orthPrefix, std::string& lemma) const {
-    for (unsigned int i = 0; i < interpretedChunk.prefixChunks.size(); i++) {
-        const InterpretedChunk& prefixChunk = interpretedChunk.prefixChunks[i];
-//        lemma.insert(lemma.end(), prefixChunk.textStartPtr, prefixChunk.textEndPtr);
-        const unsigned char* ptr = getInterpretationsPtr(interpretedChunk.interpsGroupPtr);
-        MorphInterpretation mi = this->decodeMorphInterpretation(0, 0, orthPrefix, string(""), prefixChunk, ptr);
-//        orthPrefix += mi.getOrth();
-    }
-}
+//void InterpretedChunksDecoder4Generator::convertPrefixes(const InterpretedChunk& interpretedChunk, std::string& orthPrefix, std::string& lemma) const {
+//    for (unsigned int i = 0; i < interpretedChunk.prefixChunks.size(); i++) {
+//        const InterpretedChunk& prefixChunk = interpretedChunk.prefixChunks[i];
+////        lemma.insert(lemma.end(), prefixChunk.textStartPtr, prefixChunk.textEndPtr);
+//        const unsigned char* ptr = getInterpretationsPtr(interpretedChunk.interpsGroupPtr);
+//        MorphInterpretation mi = this->decodeMorphInterpretation(0, 0, orthPrefix, string(""), prefixChunk, ptr);
+////        orthPrefix += mi.getOrth();
+//    }
+//}
 
 MorphInterpretation InterpretedChunksDecoder4Generator::decodeMorphInterpretation(
         unsigned int startNode, unsigned int endNode,

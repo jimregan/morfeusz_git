@@ -10,7 +10,9 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "morfeusz2.h"
+#include "charset/CharsetConverter.hpp"
 
 namespace morfeusz {
 
@@ -24,7 +26,7 @@ namespace morfeusz {
          * 
          * @param fsaData - pointer to the beginning of automaton data.
          */
-        explicit DefaultTagset(const unsigned char* fsaData);
+        DefaultTagset(const unsigned char* fsaData, const CharsetConverter* charsetConverter);
 
         const std::string& getTag(const int tagNum) const;
 
@@ -33,6 +35,9 @@ namespace morfeusz {
         size_t getTagsSize() const;
 
         size_t getNamesSize() const;
+        
+        void setCharsetConverter(const CharsetConverter* charsetConverter);
+        
     private:
         std::vector<std::string> tags;
         std::vector<std::string> names;

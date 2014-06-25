@@ -40,7 +40,7 @@ Environment::Environment(
         const unsigned char* fsaFileStartPtr)
 : currentCharsetConverter(getCharsetConverter(charset)),
 caseConverter(),
-tagset(fsaFileStartPtr),
+tagset(fsaFileStartPtr, currentCharsetConverter),
 qualifiers(fsaFileStartPtr),
 fsaFileStartPtr(fsaFileStartPtr),
 fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
@@ -84,6 +84,7 @@ Environment::~Environment() {
 
 void Environment::setCharset(Charset charset) {
     this->currentCharsetConverter = this->getCharsetConverter(charset);
+    this->tagset.setCharsetConverter(currentCharsetConverter);
 }
 
 const CharsetConverter& Environment::getCharsetConverter() const {
@@ -94,8 +95,9 @@ const CaseConverter& Environment::getCaseConverter() const {
     return this->caseConverter;
 }
 
-void Environment::setTagset(const DefaultTagset& tagset) {
+void Environment::setTagset(DefaultTagset& tagset) {
     this->tagset = tagset;
+    this->tagset.setCharsetConverter(currentCharsetConverter);
 }
 
 const DefaultTagset& Environment::getTagset() const {
@@ -114,7 +116,7 @@ void Environment::setDictionaryFile(const std::string& filename) {
     this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
     this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
     this->isFromFile = true;
-    this->tagset = DefaultTagset(fsaFileStartPtr);
+    this->tagset = DefaultTagset(fsaFileStartPtr, currentCharsetConverter);
     this->qualifiers = Qualifiers(fsaFileStartPtr);
 }
 

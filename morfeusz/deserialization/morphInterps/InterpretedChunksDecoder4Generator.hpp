@@ -25,7 +25,7 @@ public:
 
 private:
 
-    void convertPrefixes(const InterpretedChunk& interpretedChunk, std::string& orthPrefix, std::string& lemma) const;
+//    void convertPrefixes(const InterpretedChunk& interpretedChunk, std::string& orthPrefix, std::string& lemma) const;
 
     MorphInterpretation decodeMorphInterpretation(
             unsigned int startNode, unsigned int endNode,
