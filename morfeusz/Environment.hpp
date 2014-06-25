@@ -15,7 +15,7 @@
 #include "fsa/fsa.hpp"
 #include "segrules/segrules.hpp"
 #include "const.hpp"
-#include "Tagset.hpp"
+#include "DefaultTagset.hpp"
 #include "InterpsGroup.hpp"
 #include "case/CasePatternHelper.hpp"
 #include "Qualifiers.hpp"
@@ -82,14 +82,14 @@ public:
      * 
      * @param tagset
      */
-    void setTagset(const Tagset& tagset);
+    void setTagset(const DefaultTagset& tagset);
     
     /**
      * Gets currently used tagset.
      * 
      * @return 
      */
-    const Tagset& getTagset() const;
+    const DefaultTagset& getTagset() const;
     
     /**
      * Sets binary dictionary file used by this environment.
@@ -156,7 +156,7 @@ public:
 private:
     const CharsetConverter* currentCharsetConverter;
     const CaseConverter caseConverter;
-    Tagset tagset;
+    DefaultTagset tagset;
     Qualifiers qualifiers;
     
     const unsigned char* fsaFileStartPtr;

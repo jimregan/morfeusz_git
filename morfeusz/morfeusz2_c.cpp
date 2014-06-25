@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdio>
 
-#include "morfeusz_version.h"
+#include "morfeusz2_version.h"
 #include "morfeusz2_c.h"
 #include "morfeusz2.h"
 #include "c_api/ResultsManager.hpp"

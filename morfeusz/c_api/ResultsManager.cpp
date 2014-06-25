@@ -29,6 +29,7 @@ namespace morfeusz {
             results[i] = convertOneResult(res[i]);
         }
         results[res.size()].p = -1;
+        return results;
     }
 
     void ResultsManager::reserve(size_t size) {

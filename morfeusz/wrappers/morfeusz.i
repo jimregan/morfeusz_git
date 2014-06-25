@@ -51,13 +51,21 @@ namespace morfeusz {
             const std::string& lemma,
             int tagnum,
             int namenum,
-            const Tagset& tagset,
-            const CharsetConverter& charsetConverter);
+            const std::vector<std::string>* qualifiers,
+            const Tagset<std::string>* tagset);
 
-    %ignore MorphInterpretation::createIgn(int startNode, const std::string& orth, const Tagset& tagset, const CharsetConverter& charsetConverter);
+    %ignore MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
+    %ignore MorphInterpretation::createWhitespace(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
+}
 
-    %ignore Tagset::Tagset(const unsigned char* fsaData);
-
+// instantiate vector of interpretations
+namespace std {
+       // dirty hack so it will compile without no-arg constructor for MorphInterpretation
+   %ignore vector<morfeusz::MorphInterpretation>::vector(size_type); 
+   %ignore vector<morfeusz::MorphInterpretation>::resize;
+   
+   %template(InterpsList) vector<morfeusz::MorphInterpretation>;
+   %template(StringsList) vector<string>;
 }
 
 //%include "../Morfeusz.hpp"
@@ -65,14 +73,6 @@ namespace morfeusz {
 //%include "../const.hpp"
 //%include "../exceptions.hpp"
 
-// instantiate vector of interpretations
-namespace std {
-       // dirty hack so it will compile without no-arg constructor for MorphInterpretation
-   %ignore vector<MorphInterpretation>::vector(size_type); 
-   %ignore vector<MorphInterpretation>::resize;
-   
-   %template(InterpsVector) vector<MorphInterpretation>;
-}
 
 #ifdef SWIGPYTHON
 %include "morfeusz_python.i"

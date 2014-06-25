@@ -32,7 +32,7 @@ set(SRC_FILES
     ${INPUT_DICTIONARY_CPP}
     ${INPUT_SYNTH_DICTIONARY_CPP}
     Environment.cpp
-    Tagset.cpp
+    DefaultTagset.cpp
     Qualifiers.cpp
     fsa/const.cpp 
     MorphInterpretation.cpp 

@@ -12,12 +12,14 @@
 #include <string>
 #include <list>
 
+#include "morfeusz2_version.h"
+
 namespace morfeusz {
 
     class MorphInterpretation;
     class Morfeusz;
     class ResultsIterator;
-    class Environment;
+    template <class T> class Tagset;
     class MorfeuszException;
 
     enum Charset {
@@ -29,35 +31,52 @@ namespace morfeusz {
         CP1250 = 103,
         CP852 = 104
     };
-    
+
     enum TokenNumbering {
-        
         /**
          * Start from 0. Reset counter for every invocation of Morfeusz::analyze
          */
         SEPARATE = 201,
-        
+
         /**
          * Also start from 0. Reset counter for every invocation of Morfeusz::setTokenNumbering only
          */
         CONTINUOUS = 202
     };
-    
+
     enum CaseHandling {
         /**
          * Case-sensitive but allows interpretations that do not match case but there are no alternatives
          */
         WEAK = 100,
-        
+
         /**
          * Strictly case-sensitive, reject all interpretations that do not match case
          */
         STRICT = 101,
-        
+
         /**
          * Case-insensitive - ignores case
          */
         IGNORE = 102
+    };
+    
+    enum WhitespaceHandling {
+        
+        /**
+         * Ignore whitespaces
+         */
+        SKIP = 301,
+        
+        /**
+         * Append whitespaces to previous MorphInterpretation
+         */
+        APPEND = 302,
+        
+        /**
+         * Whitespaces are separate MorphInterpretation objects
+         */
+        KEEP = 303
     };
 
     /**
@@ -68,6 +87,8 @@ namespace morfeusz {
      */
     class Morfeusz {
     public:
+
+        static std::string getVersion();
 
         /**
          * Creates actual instance of Morfeusz class.
@@ -167,19 +188,25 @@ namespace morfeusz {
         virtual void setPraet(const std::string& praet) = 0;
 
         /**
-         * If set to true characters case in analyzed text must match
-         * the case in the recognized forms from dictionary.
+         * Set case handling.
          * 
          * @param caseSensitive
          */
         virtual void setCaseHandling(CaseHandling caseHandling) = 0;
-        
+
         /**
          * Set token numbering policy.
          * 
          * @param numbering
          */
         virtual void setTokenNumbering(TokenNumbering numbering) = 0;
+        
+        /**
+         * Set whitespace handling.
+         * 
+         * @param numbering
+         */
+        virtual void setWhitespaceHandling(WhitespaceHandling whitespaceHandling) = 0;
 
         /**
          * Set debug option value.
@@ -187,6 +214,18 @@ namespace morfeusz {
          * @param debug
          */
         virtual void setDebug(bool debug) = 0;
+        
+        /**
+         * Gets default tagset used for morphological analysis.
+         * @return 
+         */
+        virtual const Tagset<std::string>& getDefaultAnalyzerTagset() const = 0;
+        
+        /**
+         * Gets default tagset used for morphological synthesis.
+         * @return 
+         */
+        virtual const Tagset<std::string>& getDefaultGeneratorTagset() const = 0;
     };
 
     class ResultsIterator {
@@ -200,12 +239,79 @@ namespace morfeusz {
         std::list<MorphInterpretation> resultsBuffer;
         int startNode;
     };
-
-    /**
-     * Morphological interpretation as seen by the user in the analysis/generation results.
+    
+        /**
+     * Represents a tagset
      */
+    template <class T>
+    class Tagset {
+    public:
+        
+        /**
+         * Returns tag (denoted by its index).
+         * 
+         * @param tagNum - tag index in the tagset.
+         * @return - the tag
+         */
+        virtual const T& getTag(const int tagNum) const = 0;
+
+        /**
+         * Returns named entity type (denoted by its index).
+         * 
+         * @param nameNum - name index in the tagset.
+         * @return - the named entity type
+         */
+        virtual const T& getName(const int nameNum) const = 0;
+        
+        /**
+         * Returs number of tags this tagset contains.
+         * 
+         * @return 
+         */
+        virtual size_t getTagsSize() const = 0;
+        
+        /**
+         * Returs number of named entity types this tagset contains.
+         * 
+         * @return 
+         */
+        virtual size_t getNamesSize() const = 0;
+    };
+
+      /**
+     The result of analysis is  a directed acyclic graph with numbered
+     nodes representing positions  in text (points _between_ segments)
+     and edges representing interpretations of segments that span from
+     one node to another.  E.g.,
+
+         {0,1,"ja","ja","ppron12:sg:nom:m1.m2.m3.f.n1.n2:pri"}
+         |
+         |      {1,2,"został","zostać","praet:sg:m1.m2.m3:perf"}
+         |      |
+       __|  ____|   __{2,3,"em","być","aglt:sg:pri:imperf:wok"}
+      /  \ /     \ / \
+     * Ja * został*em *
+     0    1       2   3
+
+     Note that the word 'zostałem' got broken into 2 separate segments.
+
+     The structure below describes one edge of this DAG:
+
+    */
     class MorphInterpretation {
     public:
+        
+        /**
+         * 
+         * @param startNode - number of start node in DAG.
+         * @param endNode - number of end node in DAG.
+         * @param orth - orthographic form
+         * @param lemma - base form
+         * @param tagnum - tag identifier (0 for "unrecognized", 1 for "whitespace")
+         * @param namenum - named entity identifier (0 for "not a named entity")
+         * @param qualifiers - pointer to vector of qualifiers (not owned by this)
+         * @param tagset - pointer to default tagset used by Morfeusz (not owned by this)
+         */
         MorphInterpretation(
                 int startNode,
                 int endNode,
@@ -213,42 +319,86 @@ namespace morfeusz {
                 const std::string& lemma,
                 int tagnum,
                 int namenum,
-                int qualifiersNum,
-                const Environment& env);
+                const std::vector<std::string>* qualifiers,
+                const Tagset<std::string>* tagset);
         MorphInterpretation();
-        static MorphInterpretation createIgn(int startNode, const std::string& orth, const Environment& env);
-        virtual ~MorphInterpretation() {}
-        int getStartNode() const;
-        int getEndNode() const;
-        const std::string& getOrth() const;
-        const std::string& getLemma() const;
+        
+        /**
+         * Creates new instance with "ign" tag (meaning: "not found in the dictionary")
+         */
+        static MorphInterpretation createIgn(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
+        
+        /**
+         * Creates new instance with "sp" tag (meaning: "this is a sequence of whitespaces")
+         */
+        static MorphInterpretation createWhitespace(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
+
+        inline int getStartNode() const {
+            return startNode;
+        }
+
+        inline int getEndNode() const {
+            return endNode;
+        }
+
+        inline const std::string& getOrth() const {
+            return orth;
+        }
+
+        inline const std::string& getLemma() const {
+            return lemma;
+        }
+
+        inline int getTagnum() const {
+            return tagnum;
+        }
+
+        inline int getNamenum() const {
+            return namenum;
+        }
+        
+        inline bool isIgn() const {
+            return tagnum == 0;
+        }
+        
+        inline bool isWhitespace() const {
+            return tagnum == 1;
+        }
+
+        inline const std::string& getTag() const {
+            return tagset->getTag(tagnum);
+        }
+
+        inline const std::string& getName() const {
+            return tagset->getName(namenum);
+        }
+
+        inline const std::vector<std::string>& getQualifiers() const {
+            return *qualifiers;
+        }
+
         bool hasHomonym(const std::string& homonymId) const;
-        int getTagnum() const;
-        int getNamenum() const;
-        const std::string getTag() const;
-        const std::string getName() const;
-        const std::vector<std::string>& getQualifiers() const;
 
         std::string toString(bool includeNodeNumbers) const;
     private:
-        MorphInterpretation(
-                int startNode,
-                const std::string& orth,
-                const Environment& env);
         int startNode;
         int endNode;
         std::string orth;
         std::string lemma;
         int tagnum;
         int namenum;
-        int qualifiersNum;
-        
+
         /**
          * not owned by this
          */
-        const Environment* env;
+        const std::vector<std::string>* qualifiers;
+
+        /**
+         * not owned by this
+         */
+        const Tagset<std::string>* tagset;
     };
-    
+
     class MorfeuszException : public std::exception {
     public:
 

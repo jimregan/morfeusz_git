@@ -106,6 +106,18 @@ namespace morfeusz {
                     "-token-numbering", // Flag token.
                     "--token-numbering" // Flag token.
                     );
+            opt.add(
+                    "", // Default.
+                    0, // Required?
+                    1, // Number of args expected.
+                    0, // Delimiter if expecting multiple args.
+                    "whitespace handling strategy. \n \
+                     SKIP - ignore whitespaces \n \
+                     APPEND - append whitespaces to preceding segment\n \
+                     KEEP - whitespaces are separate segments", // Help description.
+                    "-whitespace-handling", // Flag token.
+                    "--whitespace-handling" // Flag token.
+                    );
         }
 
         opt.add(
@@ -177,6 +189,19 @@ namespace morfeusz {
             throw "Invalid token numbering";
         }
     }
+    
+    static WhitespaceHandling getWhitespaceHandling(const string& optionStr) {
+        if (optionStr == "SKIP")
+            return SKIP;
+        else if (optionStr == "APPEND")
+            return APPEND;
+        else if (optionStr == "KEEP")
+            return KEEP;
+        else {
+            cerr << "Invalid whitespace handling: '" << optionStr << "'. Must be one of: SKIP, APPEND, KEEP" << endl;
+            throw "Invalid whitespace handling";
+        }
+    }
 
     void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz, MorfeuszProcessorType processorType) {
         if (opt.isSet("-i")) {
@@ -231,7 +256,13 @@ namespace morfeusz {
                 cerr << "setting token numbering to " << tokenNumbering << endl;
                 morfeusz.setTokenNumbering(getTokenNumbering(tokenNumbering));
             }
-
+            
+            if (opt.isSet("-whitespace-handling")) {
+                string whitespaceHandling;
+                opt.get("-whitespace-handling")->getString(whitespaceHandling);
+                cerr << "setting whitespace handling to " << whitespaceHandling << endl;
+                morfeusz.setWhitespaceHandling(getWhitespaceHandling(whitespaceHandling));
+            }
         }
 
 #if defined(_WIN64) || defined(_WIN32)

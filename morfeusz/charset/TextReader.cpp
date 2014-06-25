@@ -8,6 +8,8 @@
 #include "TextReader.hpp"
 #include "charset_utils.hpp"
 
+using namespace std;
+
 namespace morfeusz {
 
 TextReader::TextReader(
@@ -112,6 +114,15 @@ void TextReader::skipWhitespaces() {
     while (!isAtEnd() && isAtWhitespace()) {
         next();
     }
+}
+
+string TextReader::readWhitespacesChunk() {
+    const char* startPtr = currPtr;
+    while (!isAtEnd() && isAtWhitespace()) {
+        next();
+    }
+    string res(startPtr, currPtr);
+    return res;
 }
 
 void TextReader::proceedToEnd() {

@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 #include <inttypes.h>
-#include "Tagset.hpp"
+#include "DefaultTagset.hpp"
 
 namespace morfeusz {
 

@@ -36,188 +36,143 @@
 
 namespace morfeusz {
 
-class MorfeuszInternal;
-class MorphInterpretation;
-class ResultsIterator;
+    class MorfeuszInternal;
+    class MorphInterpretation;
+    class ResultsIterator;
 
-typedef State<InterpsGroupsReader> StateType;
-
-/**
- * Performs morphological analysis (analyze methods) and syntesis (generate methods).
- * 
- * It is NOT thread-safe
- * but it is possible to use separate Morfeusz instance for each concurrent thread.
- */
-class MorfeuszInternal: public Morfeusz {
-public:
-    
-    /**
-     * Create new instance of Morfeusz class.
-     */
-    MorfeuszInternal();
-    
-    /**
-     * Set a file used for morphological analysis.
-     * 
-     * @param filename
-     */
-    void setAnalyzerDictionary(const std::string& filename);
-    
-    /**
-     * Set a file used for morphological synthesis.
-     * 
-     * @param filename
-     */
-    void setGeneratorDictionary(const std::string& filename);
-    
-    /**
-     * Destroys Morfeusz object.
-     */
-    virtual ~MorfeuszInternal();
-    
-    /**
-     * Analyze given text and return the results as iterator.
-     * 
-     * @param text - text for morphological analysis
-     * @return - iterator over morphological analysis results
-     */
-    ResultsIterator analyze(const std::string& text) const;
-    
-    /**
-     * Perform morphological analysis on a given text and put results in a vector.
-     * 
-     * @param text - text to be analyzed
-     * @param result - results vector
-     */
-    void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const;
-    
-    /**
-     * Perform morphological synthesis on a given lemma and return the results as iterator.
-     * 
-     * @param text - text for morphological analysis
-     * @return - iterator over morphological analysis results
-     */
-    ResultsIterator generate(const std::string& lemma) const;
-    
-    /**
-     * Perform morphological synthesis on a given lemma and return the results as iterator.
-     * Limit results to interpretations with the specified tag.
-     * 
-     * @param text - text for morphological analysis
-     * @param tag - tag of result interpretations
-     * @return - iterator over morphological analysis results
-     */
-    ResultsIterator generate(const std::string& lemma, int tagnum) const;
+    typedef State<InterpsGroupsReader> StateType;
 
     /**
-     * Perform morphological synthesis on a given lemma and put results in a vector.
+     * Performs morphological analysis (analyze methods) and syntesis (generate methods).
      * 
-     * @param lemma - lemma to be analyzed
-     * @param result - results vector
+     * It is NOT thread-safe
+     * but it is possible to use separate Morfeusz instance for each concurrent thread.
      */
-    void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const;
-    
-    /**
-     * Perform morphological synthesis on a given lemma and put results in a vector.
-     * Limit results to interpretations with the specified tag.
-     * 
-     * @param lemma - lemma to be analyzed
-     * @param tag - tag of result interpretations
-     * @param result - results vector
-     */
-    void generate(const std::string& lemma, int tagnum, std::vector<MorphInterpretation>& result) const;
+    class MorfeuszInternal : public Morfeusz {
+    public:
+        MorfeuszInternal();
 
-    /**
-     * Set encoding for input and output string objects.
-     * 
-     * @param encoding
-     */
-    void setCharset(Charset encoding);
-    
-    /**
-     * Set aggl segmentation option value.
-     * 
-     * @param aggl
-     */
-    void setAggl(const std::string& aggl);
-    
-    /**
-     * Set praet segmentation option value.
-     * 
-     * @param praet
-     */
-    void setPraet(const std::string& praet);
-    
-    /**
-     * If set to true characters case in analyzed text must match
-     * the case in the recognized forms from dictionary.
-     * 
-     * @param caseSensitive
-     */
-    void setCaseHandling(CaseHandling caseHandling);
-    
-    void setTokenNumbering(TokenNumbering tokenNumbering);
-    
-    /**
-     * Set debug option value.
-     * 
-     * @param debug
-     */
-    void setDebug(bool debug);
+        void setAnalyzerDictionary(const std::string& filename);
 
-    friend class ResultsIterator;
-private:
-    
-    void processOneWord(
+        void setGeneratorDictionary(const std::string& filename);
+
+        virtual ~MorfeuszInternal();
+
+        ResultsIterator analyze(const std::string& text) const;
+
+        void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const;
+
+        ResultsIterator generate(const std::string& lemma) const;
+
+        ResultsIterator generate(const std::string& lemma, int tagnum) const;
+
+        void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const;
+
+        void generate(const std::string& lemma, int tagnum, std::vector<MorphInterpretation>& result) const;
+
+        void setCharset(Charset encoding);
+
+        void setAggl(const std::string& aggl);
+
+        void setPraet(const std::string& praet);
+
+        void setCaseHandling(CaseHandling caseHandling);
+
+        void setTokenNumbering(TokenNumbering tokenNumbering);
+        
+        void setWhitespaceHandling(WhitespaceHandling whitespaceHandling);
+        
+        void setDebug(bool debug);
+
+        const Tagset<std::string>& getDefaultAnalyzerTagset() const;
+
+        const Tagset<std::string>& getDefaultGeneratorTagset() const;
+
+        friend class ResultsIterator;
+    private:
+
+        void processOneWord(
+                const Environment& env,
+                TextReader& reader,
+                int startNodeNum,
+                std::vector<MorphInterpretation>& result,
+                bool insideIgnHandler = false) const;
+
+        void doProcessOneWord(
+                const Environment& env,
+                TextReader& reader,
+                const SegrulesState& segrulesState) const;
+
+        void processInterpsGroup(
+                const Environment& env,
+                const TextReader& reader,
+                bool isAtWhitespace,
+                const SegrulesState& segrulesState,
+                const std::string& homonymId,
+                const InterpsGroup& ig,
+                std::vector<SegrulesState>& newSegrulesStates) const;
+
+        void processInterpretedChunk(
+                const Environment& env,
+                const TextReader& reader,
+                bool isAtWhitespace,
+                bool caseMatches,
+                const SegrulesState& newState,
+                InterpretedChunk& ic) const;
+        
+        void processWhitespacesChunk(
+                TextReader& reader,
+                int startNodeNum,
+                std::vector<MorphInterpretation>& results) const;
+        
+        /**
+         * Read whitespaces at beginning of the word. 
+         * Add whitespace MorphIntepretations to results vector 
+         * iff whitespace handling is set to KEEP
+         * 
+         * @param reader
+         * @param startNodeNum
+         * @param results
+         * @return - true iff some whitespace interpretations were added to the results vector
+         */
+        bool handleWhitespacesAtBeginning(
             const Environment& env,
-            TextReader& reader,
-            int startNodeNum,
-            std::vector<MorphInterpretation>& result,
-            bool insideIgnHandler=false) const;
-
-    void doProcessOneWord(
-            const Environment& env,
-            TextReader& reader,
-            const SegrulesState& segrulesState) const;
-    
-    void processInterpsGroup(
-            const Environment& env,
-            const TextReader& reader,
-            bool isAtWhitespace,
-            const SegrulesState& segrulesState,
-            const std::string& homonymId,
-            const InterpsGroup& ig,
-            std::vector<SegrulesState>& newSegrulesStates) const;
-    
-    void processInterpretedChunk(
-            const Environment& env,
-            const TextReader& reader,
-            bool isAtWhitespace,
-            bool caseMatches,
-            const SegrulesState& newState,
-            InterpretedChunk& ic) const;
-    
-    void handleIgnChunk(
-        const Environment& env,
-        const char* inputStart,
-        const char* inputEnd,
-        int startNodeNum,
-        std::vector<MorphInterpretation>& results) const;
-
-    void appendIgnotiumToResults(
-            const Environment& env,
-            const std::string& word,
-            int startNodeNum,
+            TextReader& reader, 
+            int startNodeNum, 
             std::vector<MorphInterpretation>& results) const;
-    
-    Environment analyzerEnv;
-    Environment generatorEnv;
-    MorfeuszOptions options;
-    mutable std::vector<InterpretedChunk> accum;
-    mutable int notMatchingCaseSegs;
-    mutable InflexionGraph graph;
-    mutable int nextNodeNum;
-};
+        
+        /**
+         * Skips whitespaces at end of the word
+         * iff whitespaceHandling set to APPEND.
+         *
+         * @param env
+         * @param reader
+         */
+        void handleWhitespacesAtEnd(
+            const Environment& env,
+            TextReader& reader) const;
+
+        void handleIgnChunk(
+                const Environment& env,
+                const char* inputStart,
+                const char* inputEnd,
+                int startNodeNum,
+                std::vector<MorphInterpretation>& results) const;
+
+        void appendIgnotiumToResults(
+                const Environment& env,
+                const std::string& word,
+                int startNodeNum,
+                std::vector<MorphInterpretation>& results) const;
+
+        Environment analyzerEnv;
+        Environment generatorEnv;
+        MorfeuszOptions options;
+        mutable std::vector<InterpretedChunk> accum;
+        mutable int notMatchingCaseSegs;
+        mutable InflexionGraph graph;
+        mutable int nextNodeNum;
+    };
 
 }
 

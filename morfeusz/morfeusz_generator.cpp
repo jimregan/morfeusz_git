@@ -9,7 +9,6 @@
 #include <iostream>
 #include <vector>
 #include "morfeusz2.h"
-#include "morfeusz_version.h"
 #include "cli/cli.hpp"
 
 using namespace std;

@@ -8,6 +8,7 @@
 #ifndef TEXTREADER_HPP
 #define	TEXTREADER_HPP
 
+#include <string>
 #include "Environment.hpp"
 
 namespace morfeusz {
@@ -28,6 +29,7 @@ public:
     uint32_t normalizedPeek();
     uint32_t next();
     void skipWhitespaces();
+    std::string readWhitespacesChunk();
     void proceedToEnd();
     virtual ~TextReader();
 private:

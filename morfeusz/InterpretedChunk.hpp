@@ -34,6 +34,12 @@ struct InterpretedChunk {
     const char* textEndPtr;
     
     /**
+     * Pointer to end of this chunks text (exclusive)
+     * including following whitespaces if whitespace-handling set to APPEND
+     */
+    const char* chunkEndPtr;
+    
+    /**
      * Pointer to the start of this chunks binary data.
      */
     const unsigned char* interpsGroupPtr;

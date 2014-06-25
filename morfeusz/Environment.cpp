@@ -94,11 +94,11 @@ const CaseConverter& Environment::getCaseConverter() const {
     return this->caseConverter;
 }
 
-void Environment::setTagset(const Tagset& tagset) {
+void Environment::setTagset(const DefaultTagset& tagset) {
     this->tagset = tagset;
 }
 
-const Tagset& Environment::getTagset() const {
+const DefaultTagset& Environment::getTagset() const {
     return this->tagset;
 }
 
@@ -114,7 +114,7 @@ void Environment::setDictionaryFile(const std::string& filename) {
     this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
     this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
     this->isFromFile = true;
-    this->tagset = Tagset(fsaFileStartPtr);
+    this->tagset = DefaultTagset(fsaFileStartPtr);
     this->qualifiers = Qualifiers(fsaFileStartPtr);
 }
 

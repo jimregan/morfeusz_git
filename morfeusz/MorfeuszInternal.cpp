@@ -7,6 +7,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 #include "fsa/fsa.hpp"
 #include "utils.hpp"
 #include "data/default_fsa.hpp"
@@ -30,6 +31,7 @@ namespace morfeusz {
         res.caseHandling = WEAK;
         res.encoding = UTF8;
         res.tokenNumbering = SEPARATE;
+        res.whitespaceHandling = SKIP;
         res.debug = false;
         return res;
     }
@@ -140,14 +142,45 @@ namespace morfeusz {
         return tmpReader.getCurrPtr();
     }
 
+    bool MorfeuszInternal::handleWhitespacesAtBeginning(
+        const Environment& env,
+        TextReader& reader, 
+        int startNodeNum, 
+        std::vector<MorphInterpretation>& results) const {
+        
+        if (env.getProcessorType() == ANALYZER 
+                && options.whitespaceHandling == KEEP) {
+            if (reader.isAtWhitespace() && !reader.isAtEnd()) {
+                processWhitespacesChunk(reader, startNodeNum, results);
+                return true;
+            }
+        }
+        else {
+            reader.skipWhitespaces();
+        }
+        return false;
+    }
+    
+    void MorfeuszInternal::handleWhitespacesAtEnd(
+        const Environment& env, 
+        TextReader& reader) const {
+        
+        if (env.getProcessorType() == ANALYZER 
+                && options.whitespaceHandling == APPEND) {
+            reader.skipWhitespaces();
+        }
+    }
+    
     void MorfeuszInternal::processOneWord(
             const Environment& env,
             TextReader& reader,
             int startNodeNum,
-            std::vector<MorphInterpretation>& results,
+            vector<MorphInterpretation>& results,
             bool insideIgnHandler) const {
-
-        reader.skipWhitespaces();
+        
+        if (handleWhitespacesAtBeginning(env, reader, startNodeNum, results)) {
+            startNodeNum = results.back().getEndNode();
+        }
 
         if (reader.isAtEnd()) {
             return;
@@ -164,6 +197,9 @@ namespace morfeusz {
         while (reader.isInsideAWord()) {
             reader.next();
         }
+        
+        const char* endOfWordPtr = reader.getCurrPtr();
+        handleWhitespacesAtEnd(env, reader);
 
         if (!graph.empty()) {
             const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
@@ -175,7 +211,11 @@ namespace morfeusz {
                 for (unsigned int j = 0; j < edges.size(); j++) {
                     const InflexionGraph::Edge& e = edges[j];
                     unsigned int targetNode = startNodeNum + e.nextNode;
-                    interpretedChunksDecoder.decode(srcNode, targetNode, e.chunk, results);
+                    InterpretedChunk ic = e.chunk;
+                    ic.chunkEndPtr = (ic.textEndPtr == endOfWordPtr) 
+                            ? reader.getCurrPtr() 
+                            : ic.textEndPtr;
+                    interpretedChunksDecoder.decode(srcNode, targetNode, ic, results);
                 }
                 srcNode++;
             }
@@ -232,7 +272,7 @@ namespace morfeusz {
             vector<SegrulesState>& newSegrulesStates) const {
         bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
         if (caseMatches || options.caseHandling == WEAK) {
-            
+
             env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace, newSegrulesStates);
             if (!newSegrulesStates.empty()) {
                 for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
@@ -240,13 +280,13 @@ namespace morfeusz {
 
                     InterpretedChunk ic(
                             createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
-                    
+
                     processInterpretedChunk(
-                            env, 
-                            reader, 
-                            isAtWhitespace, 
-                            caseMatches, 
-                            newSegrulesState, 
+                            env,
+                            reader,
+                            isAtWhitespace,
+                            caseMatches,
+                            newSegrulesState,
                             ic);
                 }
                 newSegrulesStates.resize(0);
@@ -291,6 +331,15 @@ namespace morfeusz {
         if (!caseMatches && options.caseHandling == WEAK) {
             notMatchingCaseSegs--;
         }
+    }
+    
+    void MorfeuszInternal::processWhitespacesChunk(
+            TextReader& reader,
+            int startNodeNum,
+            std::vector<MorphInterpretation>& results) const {
+        string orth(reader.readWhitespacesChunk());
+        MorphInterpretation mi(MorphInterpretation::createWhitespace(startNodeNum, startNodeNum + 1, orth, this->getDefaultAnalyzerTagset()));
+        results.push_back(mi);
     }
 
     void MorfeuszInternal::handleIgnChunk(
@@ -354,7 +403,7 @@ namespace morfeusz {
             const string& word,
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const {
-        MorphInterpretation interp = MorphInterpretation::createIgn(startNodeNum, word, env);
+        MorphInterpretation interp(MorphInterpretation::createIgn(startNodeNum, startNodeNum + 1, word, env.getTagset()));
         results.push_back(interp);
     }
 
@@ -438,9 +487,21 @@ namespace morfeusz {
     void MorfeuszInternal::setTokenNumbering(TokenNumbering tokenNumbering) {
         this->options.tokenNumbering = tokenNumbering;
     }
+    
+    void MorfeuszInternal::setWhitespaceHandling(WhitespaceHandling whitespaceHandling) {
+        this->options.whitespaceHandling = whitespaceHandling;
+    }
 
     void MorfeuszInternal::setDebug(bool debug) {
         this->options.debug = debug;
+    }
+
+    const Tagset<string>& MorfeuszInternal::getDefaultAnalyzerTagset() const {
+        return this->generatorEnv.getTagset();
+    }
+
+    const Tagset<string>& MorfeuszInternal::getDefaultGeneratorTagset() const {
+        return this->analyzerEnv.getTagset();
     }
 
 }

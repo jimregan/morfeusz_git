@@ -19,6 +19,7 @@ struct MorfeuszOptions {
     CaseHandling caseHandling;
     Charset encoding;
     TokenNumbering tokenNumbering;
+    WhitespaceHandling whitespaceHandling;
     bool debug;
 };
 

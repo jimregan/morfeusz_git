@@ -23,7 +23,7 @@ void InterpretedChunksDecoder4Generator::decode(
         std::vector<MorphInterpretation>& out) const {
     string orthPrefix;
     string lemma;
-    convertPrefixes(interpretedChunk, orthPrefix, lemma);
+//    convertPrefixes(interpretedChunk, orthPrefix, lemma);
     //        lemma += env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
     lemma.insert(lemma.end(), interpretedChunk.textStartPtr, interpretedChunk.textEndPtr);
     const unsigned char* currPtr = getInterpretationsPtr(interpretedChunk.interpsGroupPtr);
@@ -68,8 +68,8 @@ MorphInterpretation InterpretedChunksDecoder4Generator::decodeMorphInterpretatio
             //                ei.homonymId,
             ei.tag,
             ei.nameClassifier,
-            ei.qualifiers,
-            env);
+            &env.getQualifiersHelper().getQualifiers(ei.qualifiers),
+            &env.getTagset());
     return res;
 }
 
