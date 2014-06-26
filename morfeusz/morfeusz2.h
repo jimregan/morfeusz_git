@@ -120,7 +120,7 @@ namespace morfeusz {
          * @param text - text for morphological analysis
          * @return - iterator over morphological analysis results
          */
-        virtual ResultsIterator analyze(const std::string& text) const = 0;
+        virtual ResultsIterator* analyze(const std::string& text) const = 0;
 
         /**
          * Perform morphological analysis on a given text and put results in a vector.
@@ -129,24 +129,6 @@ namespace morfeusz {
          * @param result - results vector
          */
         virtual void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const = 0;
-
-        /**
-         * Perform morphological synthesis on a given lemma and return the results as iterator.
-         * 
-         * @param text - text for morphological analysis
-         * @return - iterator over morphological analysis results
-         */
-        virtual ResultsIterator generate(const std::string& lemma) const = 0;
-
-        /**
-         * Perform morphological synthesis on a given lemma and return the results as iterator.
-         * Limit results to interpretations with the specified tag.
-         * 
-         * @param text - text for morphological analysis
-         * @param tag - tag of result interpretations
-         * @return - iterator over morphological analysis results
-         */
-        virtual ResultsIterator generate(const std::string& lemma, int tagnum) const = 0;
 
         /**
          * Perform morphological synthesis on a given lemma and put results in a vector.
@@ -230,14 +212,10 @@ namespace morfeusz {
 
     class ResultsIterator {
     public:
-        ResultsIterator(const std::vector<MorphInterpretation>& res);
-        MorphInterpretation getNext();
-        bool hasNext();
-        friend class Morfeusz;
-    private:
-        const char* rawInput;
-        std::list<MorphInterpretation> resultsBuffer;
-        int startNode;
+        virtual bool hasNext() const = 0;
+        virtual const MorphInterpretation& peek() const = 0;
+        virtual MorphInterpretation next() = 0;
+        ~ResultsIterator() {}
     };
     
         /**
@@ -276,9 +254,11 @@ namespace morfeusz {
          * @return 
          */
         virtual size_t getNamesSize() const = 0;
+        
+        virtual ~Tagset() {}
     };
 
-      /**
+    /**
      The result of analysis is  a directed acyclic graph with numbered
      nodes representing positions  in text (points _between_ segments)
      and edges representing interpretations of segments that span from
@@ -321,6 +301,7 @@ namespace morfeusz {
                 int namenum,
                 const std::vector<std::string>* qualifiers,
                 const Tagset<std::string>* tagset);
+        
         MorphInterpretation();
         
         /**

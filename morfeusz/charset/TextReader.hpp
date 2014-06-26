@@ -16,6 +16,7 @@ namespace morfeusz {
 class TextReader {
 public:
     TextReader(const char* inputStart, const char* inputEnd, const Environment& env);
+    TextReader(const std::string& text, const Environment& env);
     void markWordStartsHere();
     const char* getWordStartPtr() const;
     const char* getCurrPtr() const;

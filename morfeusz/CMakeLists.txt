@@ -38,7 +38,7 @@ set(SRC_FILES
     MorphInterpretation.cpp 
     Morfeusz.cpp
     MorfeuszInternal.cpp
-    ResultsIterator.cpp
+    ResultsIteratorImpl.cpp
     InflexionGraph.cpp
     charset/TextReader.cpp
     charset/CharsetConverter.cpp

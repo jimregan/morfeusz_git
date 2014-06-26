@@ -27,6 +27,7 @@
 #include "const.hpp"
 #include "exceptions.hpp"
 #include "Environment.hpp"
+#include "ResultsIteratorImpl.hpp"
 
 #include "segrules/segrules.hpp"
 #include "segrules/SegrulesFSA.hpp"
@@ -39,6 +40,7 @@ namespace morfeusz {
     class MorfeuszInternal;
     class MorphInterpretation;
     class ResultsIterator;
+//    class ResultsIteratorImpl;
 
     typedef State<InterpsGroupsReader> StateType;
 
@@ -58,13 +60,9 @@ namespace morfeusz {
 
         virtual ~MorfeuszInternal();
 
-        ResultsIterator analyze(const std::string& text) const;
+        ResultsIterator* analyze(const std::string& text) const;
 
         void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const;
-
-        ResultsIterator generate(const std::string& lemma) const;
-
-        ResultsIterator generate(const std::string& lemma, int tagnum) const;
 
         void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const;
 
@@ -88,7 +86,7 @@ namespace morfeusz {
 
         const Tagset<std::string>& getDefaultGeneratorTagset() const;
 
-        friend class ResultsIterator;
+        friend class ResultsIteratorImpl;
     private:
 
         void processOneWord(
@@ -97,7 +95,13 @@ namespace morfeusz {
                 int startNodeNum,
                 std::vector<MorphInterpretation>& result,
                 bool insideIgnHandler = false) const;
-
+        
+        void analyzeOneWord(
+                TextReader& reader,
+                std::vector<MorphInterpretation>& results) const;
+        
+        void adjustTokensCounter() const;
+        
         void doProcessOneWord(
                 const Environment& env,
                 TextReader& reader,

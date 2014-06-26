@@ -143,12 +143,12 @@ namespace morfeusz {
     }
 
     bool MorfeuszInternal::handleWhitespacesAtBeginning(
-        const Environment& env,
-        TextReader& reader, 
-        int startNodeNum, 
-        std::vector<MorphInterpretation>& results) const {
-        
-        if (env.getProcessorType() == ANALYZER 
+            const Environment& env,
+            TextReader& reader,
+            int startNodeNum,
+            std::vector<MorphInterpretation>& results) const {
+
+        if (env.getProcessorType() == ANALYZER
                 && options.whitespaceHandling == KEEP) {
             if (reader.isAtWhitespace() && !reader.isAtEnd()) {
                 processWhitespacesChunk(reader, startNodeNum, results);
@@ -160,24 +160,24 @@ namespace morfeusz {
         }
         return false;
     }
-    
+
     void MorfeuszInternal::handleWhitespacesAtEnd(
-        const Environment& env, 
-        TextReader& reader) const {
-        
-        if (env.getProcessorType() == ANALYZER 
+            const Environment& env,
+            TextReader& reader) const {
+
+        if (env.getProcessorType() == ANALYZER
                 && options.whitespaceHandling == APPEND) {
             reader.skipWhitespaces();
         }
     }
-    
+
     void MorfeuszInternal::processOneWord(
             const Environment& env,
             TextReader& reader,
             int startNodeNum,
             vector<MorphInterpretation>& results,
             bool insideIgnHandler) const {
-        
+
         if (handleWhitespacesAtBeginning(env, reader, startNodeNum, results)) {
             startNodeNum = results.back().getEndNode();
         }
@@ -197,7 +197,7 @@ namespace morfeusz {
         while (reader.isInsideAWord()) {
             reader.next();
         }
-        
+
         const char* endOfWordPtr = reader.getCurrPtr();
         handleWhitespacesAtEnd(env, reader);
 
@@ -212,8 +212,8 @@ namespace morfeusz {
                     const InflexionGraph::Edge& e = edges[j];
                     unsigned int targetNode = startNodeNum + e.nextNode;
                     InterpretedChunk ic = e.chunk;
-                    ic.chunkEndPtr = (ic.textEndPtr == endOfWordPtr) 
-                            ? reader.getCurrPtr() 
+                    ic.chunkEndPtr = (ic.textEndPtr == endOfWordPtr)
+                            ? reader.getCurrPtr()
                             : ic.textEndPtr;
                     interpretedChunksDecoder.decode(srcNode, targetNode, ic, results);
                 }
@@ -332,7 +332,7 @@ namespace morfeusz {
             notMatchingCaseSegs--;
         }
     }
-    
+
     void MorfeuszInternal::processWhitespacesChunk(
             TextReader& reader,
             int startNodeNum,
@@ -407,37 +407,32 @@ namespace morfeusz {
         results.push_back(interp);
     }
 
-    ResultsIterator MorfeuszInternal::analyze(const string& text) const {
-        vector<MorphInterpretation> res;
-        this->analyze(text, res);
-        return ResultsIterator(res);
-    }
-
-    void MorfeuszInternal::analyze(const string& text, vector<MorphInterpretation>& results) const {
-        const char* input = text.c_str();
-        const char* inputEnd = input + text.length();
-        TextReader reader(input, inputEnd, this->analyzerEnv);
-        while (!reader.isAtEnd()) {
-            this->processOneWord(this->analyzerEnv, reader, nextNodeNum, results);
-            if (!results.empty()) {
-                nextNodeNum = results.back().getEndNode();
-            }
+    void MorfeuszInternal::analyzeOneWord(
+            TextReader& reader,
+            vector<MorphInterpretation>& results) const {
+        this->processOneWord(this->analyzerEnv, reader, nextNodeNum, results);
+        if (!results.empty()) {
+            nextNodeNum = results.back().getEndNode();
         }
+    }
+    
+    void MorfeuszInternal::adjustTokensCounter() const {
         if (options.tokenNumbering == SEPARATE) {
             nextNodeNum = 0;
         }
     }
 
-    ResultsIterator MorfeuszInternal::generate(const string& text) const {
-        vector<MorphInterpretation> res;
-        this->generate(text, res);
-        return ResultsIterator(res);
+    ResultsIterator* MorfeuszInternal::analyze(const string& text) const {
+        adjustTokensCounter();
+        return new ResultsIteratorImpl(*this, text);
     }
 
-    ResultsIterator MorfeuszInternal::generate(const string& text, int tagnum) const {
-        vector<MorphInterpretation> res;
-        this->generate(text, tagnum, res);
-        return ResultsIterator(res);
+    void MorfeuszInternal::analyze(const string& text, vector<MorphInterpretation>& results) const {
+        adjustTokensCounter();
+        TextReader reader(text, this->analyzerEnv);
+        while (!reader.isAtEnd()) {
+            analyzeOneWord(reader, results);
+        }
     }
 
     void MorfeuszInternal::generate(const string& lemma, vector<MorphInterpretation>& results) const {
@@ -451,12 +446,11 @@ namespace morfeusz {
         }
     }
 
-    // XXX - someday it should be improved
-
     void MorfeuszInternal::generate(const std::string& lemma, int tagnum, vector<MorphInterpretation>& result) const {
         vector<MorphInterpretation> partRes;
         this->generate(lemma, partRes);
         for (unsigned int i = 0; i < partRes.size(); i++) {
+            // XXX - someday it should be improved
             if (partRes[i].getTagnum() == tagnum) {
                 result.push_back(partRes[i]);
             }
@@ -486,8 +480,9 @@ namespace morfeusz {
 
     void MorfeuszInternal::setTokenNumbering(TokenNumbering tokenNumbering) {
         this->options.tokenNumbering = tokenNumbering;
+        nextNodeNum = 0;
     }
-    
+
     void MorfeuszInternal::setWhitespaceHandling(WhitespaceHandling whitespaceHandling) {
         this->options.whitespaceHandling = whitespaceHandling;
     }

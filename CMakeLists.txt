@@ -10,7 +10,7 @@ if (VERSION_SUFFIX)
     set (Morfeusz_VERSION_TWEAK "${VERSION_SUFFIX}")
     set (Morfeusz_VERSION "${Morfeusz_VERSION}_${Morfeusz_VERSION_TWEAK}")
 endif ()
-set (CMAKE_BUILD_TYPE Debug)
+set (CMAKE_BUILD_TYPE Release)
 #~ set (CMAKE_SKIP_RPATH ON)
 
 message ("Version=${Morfeusz_VERSION}")

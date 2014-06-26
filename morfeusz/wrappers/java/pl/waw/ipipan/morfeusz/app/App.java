@@ -16,7 +16,7 @@ public class App {
         Morfeusz morfeusz = Morfeusz.createInstance();
         ResultsIterator it = morfeusz.analyze("Ala ma kota i żółć.");
         while (it.hasNext()) {
-            System.out.println(MorfeuszUtils.getInterpretationString(it.getNext()));
+            System.out.println(MorfeuszUtils.getInterpretationString(it.next()));
         }
     }
 }
