@@ -17,6 +17,7 @@ namespace morfeusz {
             const char* inputEnd,
             const Environment& env)
     : codepointsNum(0),
+    chunkStartPtr(inputStart),
     wordStartPtr(inputStart),
     currPtr(inputStart),
     inputEnd(inputEnd),
@@ -31,6 +32,7 @@ namespace morfeusz {
 
     TextReader::TextReader(const std::string& text, const Environment& env)
     : codepointsNum(0),
+    chunkStartPtr(text.c_str()),
     wordStartPtr(text.c_str()),
     currPtr(text.c_str()),
     inputEnd(text.c_str() + text.length()),
@@ -41,16 +43,24 @@ namespace morfeusz {
     thePeek(0x00),
     theNormalizedPeek(0x00),
     ptrAfterThePeek(NULL) {
-        
+
     }
 
     void TextReader::markWordStartsHere() {
         codepointsNum = 0;
         wordStartPtr = currPtr;
     }
+    
+    void TextReader::markChunkStartsHere() {
+        chunkStartPtr = currPtr;
+    }
 
     const char* TextReader::getWordStartPtr() const {
         return wordStartPtr;
+    }
+    
+    const char* TextReader::getChunkStartPtr() const {
+        return chunkStartPtr;
     }
 
     const char* TextReader::getCurrPtr() const {
@@ -148,7 +158,7 @@ namespace morfeusz {
     }
 
     TextReader::~TextReader() {
-        
+
     }
 
 }

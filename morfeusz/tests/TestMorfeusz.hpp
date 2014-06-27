@@ -16,6 +16,8 @@ class TestMorfeusz : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(TestMorfeusz);
 
     CPPUNIT_TEST(testAnalyzeIterate1);
+    CPPUNIT_TEST(testAnalyzeIterateWithWhitespaceHandlingKEEP);
+    CPPUNIT_TEST(testAnalyzeIterateWithWhitespaceHandlingAPPEND);
     CPPUNIT_TEST(testAnalyzeVector1);
     CPPUNIT_TEST(testOpenInvalidFile);
     CPPUNIT_TEST(testOpenNonExistentFile);
@@ -34,6 +36,8 @@ public:
 
 private:
     void testAnalyzeIterate1();
+    void testAnalyzeIterateWithWhitespaceHandlingKEEP();
+    void testAnalyzeIterateWithWhitespaceHandlingAPPEND();
     void testAnalyzeVector1();
     void testOpenInvalidFile();
     void testOpenNonExistentFile();

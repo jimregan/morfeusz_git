@@ -17,6 +17,7 @@
 #include "morfeusz2.h"
 
 #include "fsa/fsa.hpp"
+#include "ChunkBounds.hpp"
 #include "InterpsGroup.hpp"
 #include "case/CaseConverter.hpp"
 #include "charset/CharsetConverter.hpp"
@@ -153,21 +154,21 @@ namespace morfeusz {
          *
          * @param env
          * @param reader
+         * @return pointer to chunk end (possibly after some whitespaces)
          */
-        void handleWhitespacesAtEnd(
+        const char* handleWhitespacesAtEnd(
             const Environment& env,
             TextReader& reader) const;
 
         void handleIgnChunk(
                 const Environment& env,
-                const char* inputStart,
-                const char* inputEnd,
+                const ChunkBounds& chunkBounds,
                 int startNodeNum,
                 std::vector<MorphInterpretation>& results) const;
 
         void appendIgnotiumToResults(
                 const Environment& env,
-                const std::string& word,
+                const ChunkBounds& chunkBounds,
                 int startNodeNum,
                 std::vector<MorphInterpretation>& results) const;
 

@@ -35,6 +35,12 @@ struct InterpretedChunk {
     
     /**
      * Pointer to end of this chunks text (exclusive)
+     * including preceding whitespaces if whitespace-handling set to APPEND
+     */
+    const char* chunkStartPtr;
+    
+    /**
+     * Pointer to end of this chunks text (exclusive)
      * including following whitespaces if whitespace-handling set to APPEND
      */
     const char* chunkEndPtr;

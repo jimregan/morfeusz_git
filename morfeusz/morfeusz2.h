@@ -321,7 +321,10 @@ namespace morfeusz {
         /**
          * Creates new instance with "ign" tag (meaning: "not found in the dictionary")
          */
-        static MorphInterpretation createIgn(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
+        static MorphInterpretation createIgn(
+            int startNode, int endNode,
+            const std::string& orth, const std::string& lemma, 
+            const Tagset<std::string>& tagset);
 
         /**
          * Creates new instance with "sp" tag (meaning: "this is a sequence of whitespaces")

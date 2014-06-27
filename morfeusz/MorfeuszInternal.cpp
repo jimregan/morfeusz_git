@@ -20,6 +20,7 @@
 #include "segrules/segrules.hpp"
 #include "const.hpp"
 #include "charset/utf8.h"
+#include "ChunkBounds.hpp"
 
 // TODO - konstruktor kopiujący działający Tak-Jak-Trzeba
 
@@ -148,28 +149,44 @@ namespace morfeusz {
             TextReader& reader,
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const {
-
-        if (env.getProcessorType() == ANALYZER
-                && options.whitespaceHandling == KEEP) {
-            if (reader.isAtWhitespace() && !reader.isAtEnd()) {
-                processWhitespacesChunk(reader, startNodeNum, results);
-                return true;
+        if (env.getProcessorType() == ANALYZER) {
+            switch (options.whitespaceHandling) {
+                case KEEP:
+                {
+                    bool res = reader.isAtWhitespace() && !reader.isAtEnd();
+                    if (res) {
+                        processWhitespacesChunk(reader, startNodeNum, results);
+                    }
+                    reader.markChunkStartsHere();
+                    reader.markWordStartsHere();
+                    return res;
+                }
+                case APPEND:
+                    reader.markChunkStartsHere();
+                    reader.skipWhitespaces();
+                    reader.markWordStartsHere();
+                    return false;
+                case SKIP:
+                    reader.skipWhitespaces();
+                    reader.markChunkStartsHere();
+                    reader.markWordStartsHere();
+                    return false;
+                default:
+                    break;
             }
         }
-        else {
-            reader.skipWhitespaces();
-        }
+
         return false;
     }
 
-    void MorfeuszInternal::handleWhitespacesAtEnd(
+    const char* MorfeuszInternal::handleWhitespacesAtEnd(
             const Environment& env,
             TextReader& reader) const {
-
         if (env.getProcessorType() == ANALYZER
                 && options.whitespaceHandling == APPEND) {
             reader.skipWhitespaces();
         }
+        return reader.getCurrPtr();
     }
 
     void MorfeuszInternal::processOneWord(
@@ -178,7 +195,6 @@ namespace morfeusz {
             int startNodeNum,
             vector<MorphInterpretation>& results,
             bool insideIgnHandler) const {
-
         if (handleWhitespacesAtBeginning(env, reader, startNodeNum, results)) {
             startNodeNum = results.back().getEndNode();
         }
@@ -192,15 +208,17 @@ namespace morfeusz {
 
         const SegrulesFSA& segrulesFSA = env.getCurrentSegrulesFSA();
 
-        reader.markWordStartsHere();
         doProcessOneWord(env, reader, segrulesFSA.initialState);
 
         while (reader.isInsideAWord()) {
             reader.next();
         }
-
-        const char* endOfWordPtr = reader.getCurrPtr();
-        handleWhitespacesAtEnd(env, reader);
+        
+        ChunkBounds chunkBounds;
+        chunkBounds.chunkStartPtr = reader.getChunkStartPtr();
+        chunkBounds.wordStartPtr = reader.getWordStartPtr();
+        chunkBounds.wordEndPtr = reader.getCurrPtr();
+        chunkBounds.chunkEndPtr = handleWhitespacesAtEnd(env, reader);
 
         if (!graph.empty()) {
             const InterpretedChunksDecoder& interpretedChunksDecoder = env.getInterpretedChunksDecoder();
@@ -213,23 +231,27 @@ namespace morfeusz {
                     const InflexionGraph::Edge& e = edges[j];
                     unsigned int targetNode = startNodeNum + e.nextNode;
                     InterpretedChunk ic = e.chunk;
-                    ic.chunkEndPtr = (ic.textEndPtr == endOfWordPtr)
-                            ? reader.getCurrPtr()
+                    ic.chunkStartPtr = 
+                            ic.textStartPtr == reader.getWordStartPtr()
+                            ? reader.getChunkStartPtr()
+                            : ic.textStartPtr;
+                    ic.chunkEndPtr = (ic.textEndPtr == chunkBounds.wordEndPtr)
+                            ? chunkBounds.wordEndPtr
                             : ic.textEndPtr;
                     interpretedChunksDecoder.decode(srcNode, targetNode, ic, results);
                 }
                 srcNode++;
             }
             if (results.size() == initialResultsSize) {
-                this->appendIgnotiumToResults(env, string(reader.getWordStartPtr(), reader.getCurrPtr()), startNodeNum, results);
+                this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
             }
         }
         else if (env.getProcessorType() == ANALYZER
                 && !insideIgnHandler) {
-            this->handleIgnChunk(env, reader.getWordStartPtr(), reader.getCurrPtr(), startNodeNum, results);
+            this->handleIgnChunk(env, chunkBounds, startNodeNum, results);
         }
         else {
-            this->appendIgnotiumToResults(env, string(reader.getWordStartPtr(), reader.getCurrPtr()), startNodeNum, results);
+            this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
         }
     }
 
@@ -345,39 +367,48 @@ namespace morfeusz {
 
     void MorfeuszInternal::handleIgnChunk(
             const Environment& env,
-            const char* inputStart,
-            const char* inputEnd,
+            const ChunkBounds& chunkBounds,
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const {
-        const char* currInput = inputStart;
+        const char* currInput = chunkBounds.chunkStartPtr;
         const char* prevInput;
         uint32_t codepoint = 0x00;
         bool separatorFound = false;
-        while (currInput != inputEnd) {
+        while (currInput != chunkBounds.chunkEndPtr) {
             prevInput = currInput;
             const char* nonSeparatorInputEnd = prevInput;
             do {
-                codepoint = env.getCharsetConverter().next(currInput, inputEnd);
+                codepoint = env.getCharsetConverter().next(currInput, chunkBounds.chunkEndPtr);
                 if (!env.isSeparator(codepoint)) {
                     nonSeparatorInputEnd = currInput;
                 }
             }
-            while (currInput != inputEnd && !env.isSeparator(codepoint));
+            while (currInput != chunkBounds.chunkEndPtr && !env.isSeparator(codepoint));
 
             if (env.isSeparator(codepoint)) {
                 separatorFound = true;
                 if (nonSeparatorInputEnd != prevInput) {
+                    // there are non-separators + separators
 
                     int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+                    // process part before separators
                     TextReader newReader1(prevInput, nonSeparatorInputEnd, env);
                     notMatchingCaseSegs = 0;
                     this->processOneWord(env, newReader1, startNode, results, true);
 
+                    // process separators part
+                    if (currInput == chunkBounds.wordEndPtr) {
+                        currInput = chunkBounds.chunkEndPtr;
+                    }
                     startNode = results.empty() ? startNodeNum : results.back().getEndNode();
                     TextReader newReader2(nonSeparatorInputEnd, currInput, env);
                     this->processOneWord(env, newReader2, startNode, results, true);
                 }
                 else {
+                    // there are only separators
+                    if (currInput == chunkBounds.wordEndPtr) {
+                        currInput = chunkBounds.chunkEndPtr;
+                    }
                     int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
                     TextReader newReader3(prevInput, currInput, env);
                     notMatchingCaseSegs = 0;
@@ -386,25 +417,28 @@ namespace morfeusz {
             }
         }
 
-        // currInput == inputEnd
+        // currInput == chunkBounds.chunkEndPtr
         if (!env.isSeparator(codepoint)) {
             if (separatorFound) {
+                // process part after separators
                 int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
-                TextReader newReader4(prevInput, inputEnd, env);
+                TextReader newReader4(prevInput, chunkBounds.chunkEndPtr, env);
                 this->processOneWord(env, newReader4, startNode, results, true);
             }
             else {
-                this->appendIgnotiumToResults(env, string(inputStart, inputEnd), startNodeNum, results);
+                this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
             }
         }
     }
 
     void MorfeuszInternal::appendIgnotiumToResults(
             const Environment& env,
-            const string& word,
+            const ChunkBounds& chunkBounds,
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const {
-        MorphInterpretation interp(MorphInterpretation::createIgn(startNodeNum, startNodeNum + 1, word, env.getTagset()));
+        string orth(chunkBounds.chunkStartPtr, chunkBounds.chunkEndPtr);
+        string lemma(chunkBounds.wordStartPtr, chunkBounds.wordEndPtr);
+        MorphInterpretation interp(MorphInterpretation::createIgn(startNodeNum, startNodeNum + 1, orth, lemma, env.getTagset()));
         results.push_back(interp);
     }
 
@@ -416,7 +450,7 @@ namespace morfeusz {
             nextNodeNum = results.back().getEndNode();
         }
     }
-    
+
     void MorfeuszInternal::adjustTokensCounter() const {
         if (options.tokenNumbering == SEPARATE) {
             nextNodeNum = 0;
@@ -429,7 +463,7 @@ namespace morfeusz {
         strcpy(textCopy, text.c_str());
         return new ResultsIteratorImpl(*this, textCopy, textCopy + text.length(), true);
     }
-    
+
     ResultsIterator* MorfeuszInternal::analyze(const char* text) const {
         adjustTokensCounter();
         return new ResultsIteratorImpl(*this, text, text + strlen(text), false);

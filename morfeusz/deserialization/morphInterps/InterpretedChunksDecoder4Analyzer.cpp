@@ -23,7 +23,7 @@ void InterpretedChunksDecoder4Analyzer::decode(
     string orth;
     string lemma4Prefixes;
     if (tryToGetLemma4Prefixes(interpretedChunk, lemma4Prefixes)) {
-        orth.insert(orth.end(), interpretedChunk.textStartPtr, interpretedChunk.chunkEndPtr);
+        orth.insert(orth.end(), interpretedChunk.chunkStartPtr, interpretedChunk.chunkEndPtr);
         const unsigned char* currPtr = getInterpretationsPtr(interpretedChunk.interpsGroupPtr);
         while (currPtr < interpretedChunk.interpsEndPtr) {
             DecodeMorphInterpParams params = {startNode, endNode, orth, lemma4Prefixes, interpretedChunk};

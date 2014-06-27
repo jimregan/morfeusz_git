@@ -17,8 +17,10 @@ class TextReader {
 public:
     TextReader(const char* inputStart, const char* inputEnd, const Environment& env);
     TextReader(const std::string& text, const Environment& env);
+    void markChunkStartsHere();
     void markWordStartsHere();
     const char* getWordStartPtr() const;
+    const char* getChunkStartPtr() const;
     const char* getCurrPtr() const;
     const char* getNextPtr();
     const char* getEndPtr() const;
@@ -35,6 +37,7 @@ public:
     virtual ~TextReader();
 private:
     int codepointsNum;
+    const char* chunkStartPtr;
     const char* wordStartPtr;
     const char* currPtr;
     const char* inputEnd;

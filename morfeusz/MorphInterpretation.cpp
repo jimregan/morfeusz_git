@@ -51,8 +51,8 @@ namespace morfeusz {
 
     }
 
-    MorphInterpretation MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const Tagset<string>& tagset) {
-        MorphInterpretation mi(startNode, endNode, orth, orth, 0, 0, &emptyQualifiers, &tagset);
+    MorphInterpretation MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const std::string& lemma, const Tagset<string>& tagset) {
+        MorphInterpretation mi(startNode, endNode, orth, lemma, 0, 0, &emptyQualifiers, &tagset);
         return mi;
     }
     
