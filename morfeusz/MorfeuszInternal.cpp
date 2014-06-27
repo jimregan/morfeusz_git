@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <cstring>
 #include "fsa/fsa.hpp"
 #include "utils.hpp"
 #include "data/default_fsa.hpp"
@@ -424,7 +425,14 @@ namespace morfeusz {
 
     ResultsIterator* MorfeuszInternal::analyze(const string& text) const {
         adjustTokensCounter();
-        return new ResultsIteratorImpl(*this, text);
+        char* textCopy = new char[text.length() + 1];
+        strcpy(textCopy, text.c_str());
+        return new ResultsIteratorImpl(*this, textCopy, textCopy + text.length(), true);
+    }
+    
+    ResultsIterator* MorfeuszInternal::analyze(const char* text) const {
+        adjustTokensCounter();
+        return new ResultsIteratorImpl(*this, text, text + strlen(text), false);
     }
 
     void MorfeuszInternal::analyze(const string& text, vector<MorphInterpretation>& results) const {

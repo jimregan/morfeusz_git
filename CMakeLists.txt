@@ -15,7 +15,9 @@ set (CMAKE_BUILD_TYPE Release)
 
 message ("Version=${Morfeusz_VERSION}")
 
-enable_testing()
+if (NOT CMAKE_CROSSCOMPILING AND NOT SKIP_TESTING)
+    enable_testing()
+endif ()
 
 ##### initialize some vars #####
 
@@ -158,8 +160,6 @@ add_subdirectory (morfeusz)
 add_subdirectory (fsabuilder)
 
 ########## add tests ##########
-
-add_test(Test_C_API morfeusz/test_c_api)
 
 #macro (test_build_and_recognize fname method)
 #    add_test (TestBuild-${method}-${fname} python fsabuilder/morfeusz_builder --analyzer --input-files testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --segments-file=testfiles/segmenty.dat --serialization-method=${method})

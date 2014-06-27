@@ -60,19 +60,18 @@ namespace morfeusz {
          */
         IGNORE = 102
     };
-    
+
     enum WhitespaceHandling {
-        
         /**
          * Ignore whitespaces
          */
         SKIP = 301,
-        
+
         /**
          * Append whitespaces to previous MorphInterpretation
          */
         APPEND = 302,
-        
+
         /**
          * Whitespaces are separate MorphInterpretation objects
          */
@@ -116,11 +115,23 @@ namespace morfeusz {
 
         /**
          * Analyze given text and return the results as iterator.
+         * Use this method for analysis of big texts.
+         * Copies the text under the hood - use analyze(const char*) if you want to avoid this.
          * 
-         * @param text - text for morphological analysis
+         * @param text - text for morphological analysis.
          * @return - iterator over morphological analysis results
          */
         virtual ResultsIterator* analyze(const std::string& text) const = 0;
+        
+        /**
+         * Analyze given text and return the results as iterator.
+         * Use this method for analysis of big texts.
+         * 
+         * 
+         * @param text - text for morphological analysis. This pointer must not be deleted before returned ResultsIterator object.
+         * @return - iterator over morphological analysis results
+         */
+        virtual ResultsIterator* analyze(const char* text) const = 0;
 
         /**
          * Perform morphological analysis on a given text and put results in a vector.
@@ -182,7 +193,7 @@ namespace morfeusz {
          * @param numbering
          */
         virtual void setTokenNumbering(TokenNumbering numbering) = 0;
-        
+
         /**
          * Set whitespace handling.
          * 
@@ -196,13 +207,13 @@ namespace morfeusz {
          * @param debug
          */
         virtual void setDebug(bool debug) = 0;
-        
+
         /**
          * Gets default tagset used for morphological analysis.
          * @return 
          */
         virtual const Tagset<std::string>& getDefaultAnalyzerTagset() const = 0;
-        
+
         /**
          * Gets default tagset used for morphological synthesis.
          * @return 
@@ -212,19 +223,21 @@ namespace morfeusz {
 
     class ResultsIterator {
     public:
-        virtual bool hasNext() const = 0;
-        virtual const MorphInterpretation& peek() const = 0;
+        virtual bool hasNext() = 0;
+        virtual const MorphInterpretation& peek() = 0;
         virtual MorphInterpretation next() = 0;
-        ~ResultsIterator() {}
+
+        ~ResultsIterator() {
+        }
     };
-    
-        /**
+
+    /**
      * Represents a tagset
      */
     template <class T>
     class Tagset {
     public:
-        
+
         /**
          * Returns tag (denoted by its index).
          * 
@@ -240,22 +253,23 @@ namespace morfeusz {
          * @return - the named entity type
          */
         virtual const T& getName(const int nameNum) const = 0;
-        
+
         /**
          * Returs number of tags this tagset contains.
          * 
          * @return 
          */
         virtual size_t getTagsSize() const = 0;
-        
+
         /**
          * Returs number of named entity types this tagset contains.
          * 
          * @return 
          */
         virtual size_t getNamesSize() const = 0;
-        
-        virtual ~Tagset() {}
+
+        virtual ~Tagset() {
+        }
     };
 
     /**
@@ -277,10 +291,10 @@ namespace morfeusz {
 
      The structure below describes one edge of this DAG:
 
-    */
+     */
     class MorphInterpretation {
     public:
-        
+
         /**
          * 
          * @param startNode - number of start node in DAG.
@@ -301,14 +315,14 @@ namespace morfeusz {
                 int namenum,
                 const std::vector<std::string>* qualifiers,
                 const Tagset<std::string>* tagset);
-        
+
         MorphInterpretation();
-        
+
         /**
          * Creates new instance with "ign" tag (meaning: "not found in the dictionary")
          */
         static MorphInterpretation createIgn(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
-        
+
         /**
          * Creates new instance with "sp" tag (meaning: "this is a sequence of whitespaces")
          */
@@ -337,11 +351,11 @@ namespace morfeusz {
         inline int getNamenum() const {
             return namenum;
         }
-        
+
         inline bool isIgn() const {
             return tagnum == 0;
         }
-        
+
         inline bool isWhitespace() const {
             return tagnum == 1;
         }

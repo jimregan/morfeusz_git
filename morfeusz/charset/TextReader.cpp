@@ -41,6 +41,7 @@ namespace morfeusz {
     thePeek(0x00),
     theNormalizedPeek(0x00),
     ptrAfterThePeek(NULL) {
+        
     }
 
     void TextReader::markWordStartsHere() {

@@ -61,6 +61,8 @@ namespace morfeusz {
         virtual ~MorfeuszInternal();
 
         ResultsIterator* analyze(const std::string& text) const;
+        
+        ResultsIterator* analyze(const char* text) const;
 
         void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const;
 

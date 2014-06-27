@@ -9,6 +9,7 @@
 #define	RESULTSITERATORIMPL_HPP
 
 #include <string>
+#include <vector>
 
 #include "morfeusz2.h"
 //#include "MorfeuszInternal.hpp"
@@ -21,19 +22,28 @@ namespace morfeusz {
     class ResultsIteratorImpl: public ResultsIterator {
     public:
         
-        ResultsIteratorImpl(const MorfeuszInternal& morfeusz, const std::string& text);
+        ResultsIteratorImpl(const MorfeuszInternal& morfeusz, const char* text, const char* textEnd, bool isOwnerOfText);
         
-        virtual ~ResultsIteratorImpl();
+        ~ResultsIteratorImpl();
         
-        bool hasNext() const;
+        bool hasNext();
         
-        const MorphInterpretation& peek() const;
+        const MorphInterpretation& peek();
         
         MorphInterpretation next();
         
     private:
         const MorfeuszInternal& morfeusz;
+        const char* text;
+        bool isOwnerOfText;
         TextReader reader;
+        std::vector<MorphInterpretation> buffer;
+        std::vector<MorphInterpretation>::iterator bufferIterator;
+        
+        bool tryToReadIntoBuffer();
+        
+        void ensureHasNext();
+        
     };
 }
 
