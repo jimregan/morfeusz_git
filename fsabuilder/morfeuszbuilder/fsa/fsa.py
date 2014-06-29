@@ -7,6 +7,7 @@ Created on Oct 8, 2013
 import state
 import register
 import logging
+from morfeuszbuilder.utils import exceptions
 
 class FSA(object):
     '''
@@ -47,7 +48,8 @@ class FSA(object):
             self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
     
     def close(self):
-        assert self.n > 0
+        if self.n == 0:
+            raise exceptions.FSABuilderException('empty input')
         assert not self.closed
         self.initialState = self._replaceOrRegister(self.initialState, self.encodedPrevWord)
         self.encodedPrevWord = None

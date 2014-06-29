@@ -26,7 +26,6 @@
 #include "InflexionGraph.hpp"
 #include "MorfeuszOptions.hpp"
 #include "const.hpp"
-#include "exceptions.hpp"
 #include "Environment.hpp"
 #include "ResultsIteratorImpl.hpp"
 

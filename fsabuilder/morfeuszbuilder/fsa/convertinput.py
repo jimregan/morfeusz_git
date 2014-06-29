@@ -24,7 +24,8 @@ def _mergeEntries(inputLines, lowercase):
                 yield (prevKey, frozenset(prevInterps))
             prevKey = key
             prevInterps = [interp]
-    yield (prevKey, frozenset(prevInterps))
+    if prevInterps:
+        yield (prevKey, frozenset(prevInterps))
 
 def _parseLine(line):
     splitLine = line.strip().split(u'\t')

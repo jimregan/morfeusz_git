@@ -146,7 +146,7 @@ def _concatFiles(inputFiles):
         if inputFile:
             with open(inputFile, 'r') as f:
                 for line in f:
-                    if not ' ' in ''.join(line.split('\t')[:2]):
+                    if line and not ' ' in ''.join(line.split('\t')[:2]):
                         yield line
                     else:
                         logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % line.strip().decode('utf8'))
@@ -258,11 +258,12 @@ def main(opts):
 if __name__ == '__main__':
     import os
     opts = _parseOptions()
+    main(opts)
     try:
         main(opts)
     except Exception as ex:
         print >> sys.stderr, u'Building dictionary file failed:', unicode(ex).encode('utf8'), 'type of error:', type(ex)
-#         raise ex
+        raise ex
         sys.exit(1)
     finally:
         pass

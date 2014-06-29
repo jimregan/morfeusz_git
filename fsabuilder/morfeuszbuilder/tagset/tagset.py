@@ -35,7 +35,8 @@ class Tagset(object):
                            Tagset.NAMES: self._name2namenum}[addingTo]
                     tagNum = line.split(Tagset.SEP)[0]
                     tag = line.split(Tagset.SEP)[1]
-                    assert tag not in res
+                    if tag in res:
+                        raise FSABuilderException('duplicate tag: "%s"' % tag)
                     res[tag] = int(tagNum)
     
     def getAllTags(self):

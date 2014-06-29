@@ -147,7 +147,7 @@ endif ()
 include (CPack)
 
 ##### END initialize some vars #####
-file (COPY fsabuilder testfiles input test.sh DESTINATION .)
+file (COPY fsabuilder testfiles input test.sh doTest.sh DESTINATION .)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_version.h.in"
@@ -160,6 +160,19 @@ add_subdirectory (morfeusz)
 add_subdirectory (fsabuilder)
 
 ########## add tests ##########
+
+macro (test_analyzer analyzerDir)
+    message ("adding test dir ${analyzerDir}")
+    get_filename_component (dirname ${analyzerTestDir} NAME)
+    add_test(TestAnalyzer_${dirname} ./doTest.sh morfeusz analyzer ${analyzerDir})
+endmacro()
+
+file (GLOB analyzerTestDirs "tests/analyzer/*")
+if (UNIX)
+    foreach (analyzerTestDir ${analyzerTestDirs})
+        test_analyzer(${analyzerTestDir})
+    endforeach()
+endif()
 
 #macro (test_build_and_recognize fname method)
 #    add_test (TestBuild-${method}-${fname} python fsabuilder/morfeusz_builder --analyzer --input-files testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --segments-file=testfiles/segmenty.dat --serialization-method=${method})

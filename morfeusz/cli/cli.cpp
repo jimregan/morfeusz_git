@@ -217,7 +217,7 @@ namespace morfeusz {
                 default:
                     break;
             }
-            printf("Using dictionary from %s\n", dictFile.c_str());
+            cerr << "Using dictionary from " << dictFile << endl;
         }
         if (opt.isSet("-a")) {
             string aggl;
