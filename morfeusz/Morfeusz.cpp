@@ -2,14 +2,13 @@
 #include <string>
 #include "morfeusz2.h"
 #include "MorfeuszInternal.hpp"
-#include "morfeusz2_version.h"
 
 namespace morfeusz {
 
     using namespace std;
 
-    string version() {
-        static string version = MORFEUSZ_VERSION;
+    string Morfeusz::getVersion() {
+        static string version = MORFEUSZ2_VERSION;
         return version;
     }
 

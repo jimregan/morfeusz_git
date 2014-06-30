@@ -258,12 +258,10 @@ def main(opts):
 if __name__ == '__main__':
     import os
     opts = _parseOptions()
-    main(opts)
     try:
         main(opts)
     except Exception as ex:
         print >> sys.stderr, u'Building dictionary file failed:', unicode(ex).encode('utf8'), 'type of error:', type(ex)
-        raise ex
         sys.exit(1)
     finally:
         pass

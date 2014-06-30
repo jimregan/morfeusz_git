@@ -44,6 +44,20 @@ cmake ..
 make
 
 ***************
+Testing
+***************
+
+To compile and run tests you must have cppunit library installed t
+To test if everything is working type:
+
+make build-tests
+make test
+
+If the tests fail, you can see errors by invoking:
+
+ctest --output-on-failure
+
+***************
 Packaging
 ***************
 
@@ -84,7 +98,8 @@ INPUT_TAGSET - tagset file
 INPUT_DICTIONARIES - comma-separated list of dictionary files (can use empty one from input/empty.txt)
 SEGMENT_RULES_FILE - segmentation rules file
 TARGET_DIR - a dir where packages built by CMake are put in
-CPP_DICTIONARIES_DIR - a dir where analyzer and generator embedded C++ dictionary files a read/written to
+ANALYZER_DICTIONARY_CPP - a file where analyzer embedded C++ dictionary file is read/written to
+GENERATOR_DICTIONARY_CPP - a file where generator embedded C++ dictionary file is read/written to
 SKIP_DICTIONARY_BUILDING - if set, the dictionary-building part of the build process is skipped
 
 Execute like following:

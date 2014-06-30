@@ -12,15 +12,24 @@
 #include <string>
 #include <list>
 
-#include "morfeusz2_version.h"
+#ifndef __WIN32
+#define DLLIMPORT
+#else
+/* A Windows system.  Need to define DLLIMPORT. */
+#if BUILDING_MORFEUSZ
+#  define DLLIMPORT __declspec (dllexport)
+#else
+#  define DLLIMPORT __declspec (dllimport)
+#endif
+#endif
 
 namespace morfeusz {
 
-    class MorphInterpretation;
-    class Morfeusz;
-    class ResultsIterator;
-    template <class T> class Tagset;
-    class MorfeuszException;
+    class DLLIMPORT MorphInterpretation;
+    class DLLIMPORT Morfeusz;
+    class DLLIMPORT ResultsIterator;
+    template <class T> class DLLIMPORT Tagset;
+    class DLLIMPORT MorfeuszException;
 
     enum Charset {
         UTF8 = 101,
@@ -36,46 +45,46 @@ namespace morfeusz {
         /**
          * Start from 0. Reset counter for every invocation of Morfeusz::analyze
          */
-        SEPARATE = 201,
+        SEPARATE_NUMBERING = 201,
 
         /**
          * Also start from 0. Reset counter for every invocation of Morfeusz::setTokenNumbering only
          */
-        CONTINUOUS = 202
+        CONTINUOUS_NUMBERING = 202
     };
 
     enum CaseHandling {
         /**
          * Case-sensitive but allows interpretations that do not match case but there are no alternatives
          */
-        WEAK = 100,
+        CONDITIONALLY_CASE_SENSITIVE = 100,
 
         /**
          * Strictly case-sensitive, reject all interpretations that do not match case
          */
-        STRICT = 101,
+        STRICTLY_CASE_SENSITIVE = 101,
 
         /**
          * Case-insensitive - ignores case
          */
-        IGNORE = 102
+        IGNORE_CASE = 102
     };
 
     enum WhitespaceHandling {
         /**
          * Ignore whitespaces
          */
-        SKIP = 301,
+        SKIP_WHITESPACES = 301,
 
         /**
          * Append whitespaces to previous MorphInterpretation
          */
-        APPEND = 302,
+        APPEND_WHITESPACES = 302,
 
         /**
          * Whitespaces are separate MorphInterpretation objects
          */
-        KEEP = 303
+        KEEP_WHITESPACES = 303
     };
 
     /**
@@ -84,7 +93,7 @@ namespace morfeusz {
      * It is NOT thread-safe
      * but it is possible to use separate Morfeusz instance for each concurrent thread.
      */
-    class Morfeusz {
+    class DLLIMPORT Morfeusz {
     public:
 
         static std::string getVersion();
@@ -221,21 +230,20 @@ namespace morfeusz {
         virtual const Tagset<std::string>& getDefaultGeneratorTagset() const = 0;
     };
 
-    class ResultsIterator {
+    class DLLIMPORT ResultsIterator {
     public:
         virtual bool hasNext() = 0;
         virtual const MorphInterpretation& peek() = 0;
         virtual MorphInterpretation next() = 0;
 
-        ~ResultsIterator() {
-        }
+        virtual ~ResultsIterator() {}
     };
 
     /**
      * Represents a tagset
      */
     template <class T>
-    class Tagset {
+    class DLLIMPORT Tagset {
     public:
 
         /**
@@ -292,7 +300,7 @@ namespace morfeusz {
      The structure below describes one edge of this DAG:
 
      */
-    class MorphInterpretation {
+    class DLLIMPORT MorphInterpretation {
     public:
 
         /**
@@ -397,7 +405,7 @@ namespace morfeusz {
         const Tagset<std::string>* tagset;
     };
 
-    class MorfeuszException : public std::exception {
+    class DLLIMPORT MorfeuszException : public std::exception {
     public:
 
         MorfeuszException(const std::string& what) : msg(what.c_str()) {
@@ -413,7 +421,7 @@ namespace morfeusz {
         const std::string msg;
     };
 
-    class FileFormatException : public MorfeuszException {
+    class DLLIMPORT FileFormatException : public MorfeuszException {
     public:
 
         FileFormatException(const std::string& what) : MorfeuszException(what) {

@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <iostream>
 
-#include "morfeusz2_version.h"
 #include "morfeusz2_c.h"
 #include "morfeusz2.h"
 #include "c_api/ResultsManager.hpp"
@@ -18,7 +17,7 @@ static ResultsManager resultsManager;
 
 extern "C" DLLIMPORT
 char* morfeusz_about() {
-    return const_cast<char*> (MORFEUSZ_VERSION);
+    return const_cast<char*> (MORFEUSZ2_VERSION);
 }
 
 extern "C" DLLIMPORT
@@ -51,13 +50,13 @@ static inline int setEncodingOption(int value) {
 static inline int setWhitespaceOption(int value) {
     switch (value) {
         case MORFEUSZ_KEEP_WHITESPACE:
-            morfeuszInstance->setWhitespaceHandling(KEEP);
+            morfeuszInstance->setWhitespaceHandling(KEEP_WHITESPACES);
             return 1;
         case MORFEUSZ_APPEND_WHITESPACE:
-            morfeuszInstance->setWhitespaceHandling(APPEND);
+            morfeuszInstance->setWhitespaceHandling(APPEND_WHITESPACES);
             return 1;
         case MORFEUSZ_SKIP_WHITESPACE:
-            morfeuszInstance->setWhitespaceHandling(SKIP);
+            morfeuszInstance->setWhitespaceHandling(SKIP_WHITESPACES);
             return 1;
         default:
             fprintf(stderr, "Wrong whitespace option %d\n", value);
@@ -68,13 +67,13 @@ static inline int setWhitespaceOption(int value) {
 static inline int setCaseOption(int value) {
     switch (value) {
         case MORFEUSZ_STRICT_CASE:
-            morfeuszInstance->setCaseHandling(STRICT);
+            morfeuszInstance->setCaseHandling(STRICTLY_CASE_SENSITIVE);
             return 1;
         case MORFEUSZ_WEAK_CASE:
-            morfeuszInstance->setCaseHandling(WEAK);
+            morfeuszInstance->setCaseHandling(CONDITIONALLY_CASE_SENSITIVE);
             return 1;
         case MORFEUSZ_IGNORE_CASE:
-            morfeuszInstance->setCaseHandling(IGNORE);
+            morfeuszInstance->setCaseHandling(IGNORE_CASE);
             return 1;
         default:
             fprintf(stderr, "Wrong case option %d\n", value);
@@ -85,10 +84,10 @@ static inline int setCaseOption(int value) {
 static inline int setTokenNumberingOption(int value) {
     switch (value) {
         case MORFEUSZ_CONTINUOUS_TOKEN_NUMBERING:
-            morfeuszInstance->setTokenNumbering(CONTINUOUS);
+            morfeuszInstance->setTokenNumbering(CONTINUOUS_NUMBERING);
             return 1;
         case MORFEUSZ_SEPARATE_TOKEN_NUMBERING:
-            morfeuszInstance->setTokenNumbering(SEPARATE);
+            morfeuszInstance->setTokenNumbering(SEPARATE_NUMBERING);
             return 1;
         default:
             fprintf(stderr, "Wrong case option %d\n", value);

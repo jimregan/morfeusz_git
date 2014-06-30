@@ -15,6 +15,9 @@ set (CMAKE_BUILD_TYPE Release)
 
 message ("Version=${Morfeusz_VERSION}")
 
+add_definitions (-DMORFEUSZ2_VERSION="${Morfeusz_VERSION}")
+add_definitions (-DBUILDING_MORFEUSZ)
+
 if (NOT CMAKE_CROSSCOMPILING AND NOT SKIP_TESTING)
     enable_testing()
 endif ()
@@ -40,16 +43,21 @@ endif ()
 ### USER DEFINED VARIABLES
 
 # INPUT_DICTIONARY_CPP
-set (INPUT_DICTIONARY_CPP "default_fsa.cpp")
-set (INPUT_SYNTH_DICTIONARY_CPP "default_synth_fsa.cpp")
-
-if (CPP_DICTIONARIES_DIR)
-    set (INPUT_DICTIONARY_CPP "${CPP_DICTIONARIES_DIR}/${INPUT_DICTIONARY_CPP}")
-    set (INPUT_SYNTH_DICTIONARY_CPP "${CPP_DICTIONARIES_DIR}/${INPUT_SYNTH_DICTIONARY_CPP}")
+if (NOT ANALYZER_DICTIONARY_CPP)
+    set (ANALYZER_DICTIONARY_CPP "default_fsa.cpp")
 endif ()
 
-if ("${INPUT_DICTIONARIES}" STREQUAL "")
-   if ("${EMPTY_INPUT_DICTIONARY}" STREQUAL "TRUE")
+if (NOT GENERATOR_DICTIONARY_CPP)
+    set (GENERATOR_DICTIONARY_CPP "default_synth_fsa.cpp")
+endif ()
+
+#~ if (CPP_DICTIONARIES_DIR)
+    #~ set (INPUT_DICTIONARY_CPP "${CPP_DICTIONARIES_DIR}/${INPUT_DICTIONARY_CPP}")
+    #~ set (INPUT_SYNTH_DICTIONARY_CPP "${CPP_DICTIONARIES_DIR}/${INPUT_SYNTH_DICTIONARY_CPP}")
+#~ endif ()
+
+if (NOT INPUT_DICTIONARIES)
+   if (EMPTY_INPUT_DICTIONARY)
     set (INPUT_DICTIONARIES ${PROJECT_SOURCE_DIR}/input/empty.txt)
    else ()
     set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/sgjp-hom.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
@@ -57,12 +65,12 @@ if ("${INPUT_DICTIONARIES}" STREQUAL "")
 endif ()
 
 # INPUT_TAGSET
-if ("${INPUT_TAGSET}" STREQUAL "")
+if (NOT INPUT_TAGSET)
    set (INPUT_TAGSET ${PROJECT_SOURCE_DIR}/input/sgjp-morfeusz.tagset)
 endif ()
 
 # SEGMENT_RULES_FILE
-if ("${SEGMENT_RULES_FILE}" STREQUAL "")
+if (NOT SEGMENT_RULES_FILE)
    set (SEGMENT_RULES_FILE "${PROJECT_SOURCE_DIR}/input/segmenty.dat")
 endif ()
 
@@ -147,13 +155,13 @@ endif ()
 include (CPack)
 
 ##### END initialize some vars #####
-file (COPY fsabuilder testfiles input test.sh doTest.sh DESTINATION .)
+file (COPY fsabuilder doTest.sh DESTINATION .)
 
-configure_file (
-  "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_version.h.in"
-  "${PROJECT_BINARY_DIR}/morfeusz2_version.h"
-)
-include_directories("${PROJECT_BINARY_DIR}" )
+#~ configure_file (
+  #~ "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_version.h.in"
+  #~ "${PROJECT_BINARY_DIR}/morfeusz2_version.h"
+#~ )
+#~ include_directories("${PROJECT_BINARY_DIR}" )
 ###### add main sources ########
 
 add_subdirectory (morfeusz)

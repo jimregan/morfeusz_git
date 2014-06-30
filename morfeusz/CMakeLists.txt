@@ -6,14 +6,14 @@ if (SKIP_DICTIONARY_BUILDING)
     message ("SKIPPING dictionary building")
 else ()
     add_custom_command (
-            OUTPUT "${INPUT_DICTIONARY_CPP}"
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --analyzer --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
+            OUTPUT "${ANALYZER_DICTIONARY_CPP}"
+            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --analyzer --input-files="${INPUT_DICTIONARIES}" -o "${ANALYZER_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary C++ file"
     )
     add_custom_command (
-            OUTPUT "${INPUT_SYNTH_DICTIONARY_CPP}"
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --generator --input-files="${INPUT_DICTIONARIES}" -o "${INPUT_SYNTH_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
+            OUTPUT "${GENERATOR_DICTIONARY_CPP}"
+            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --generator --input-files="${INPUT_DICTIONARIES}" -o "${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary C++ file"
     )
@@ -29,8 +29,8 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 set(SRC_FILES 
     const.cpp
-    ${INPUT_DICTIONARY_CPP}
-    ${INPUT_SYNTH_DICTIONARY_CPP}
+    ${ANALYZER_DICTIONARY_CPP}
+    ${GENERATOR_DICTIONARY_CPP}
     Environment.cpp
     DefaultTagset.cpp
     Qualifiers.cpp
@@ -61,8 +61,8 @@ set(SRC_FILES
 file (GLOB TEST_SRC_FILES tests/*.cpp)
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
-set_source_files_properties ( SOURCE "${INPUT_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
-set_source_files_properties ( SOURCE "${INPUT_SYNTH_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
+set_source_files_properties ( SOURCE "${ANALYZER_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
+set_source_files_properties ( SOURCE "${GENERATOR_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
 set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz2")
 
 add_executable (morfeusz_analyzer morfeusz_analyzer.cpp)
@@ -87,7 +87,7 @@ else ()
     set (TARGET_LIB_DIR lib)
 endif ()
 
-install (FILES morfeusz2.h ${PROJECT_BINARY_DIR}/morfeusz_version.h morfeusz2_c.h DESTINATION include)
+install (FILES morfeusz2.h morfeusz2_c.h DESTINATION include)
 install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
 install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)
 

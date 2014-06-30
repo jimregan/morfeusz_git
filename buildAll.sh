@@ -2,23 +2,38 @@
 
 set -e -o pipefail
 
+if [ "$#" -ne 3 ]; then
+    echo "Must provide exactly 3 arguments: <CROSSMORFEUSZ_ROOT> <INPUT_DICTIONARIES> <VERSION_SUFFIX>"
+    exit 1
+fi
+
 export CROSSMORFEUSZ_ROOT="$1"
 export INPUT_DICTIONARIES="$2"
 export VERSION_SUFFIX="$3"
-export CPP_DICTIONARIES_DIR=`mktemp -d`
+export ANALYZER_DICTIONARY_CPP=`mktemp`.cpp
+export GENERATOR_DICTIONARY_CPP=`mktemp`.cpp
 
 function buildDictionaries {
-    buildDir=`mktemp -d`
-    srcDir=`pwd`
-    cd $buildDir
-    cmake -D INPUT_DICTIONARIES=$INPUT_DICTIONARIES \
-        -D CPP_DICTIONARIES_DIR=$CPP_DICTIONARIES_DIR \
-        $srcDir
-    make -j2 dictionaries
-    echo 'DONE make dictionaries'
-    cd $srcDir
-    echo "cleaning temp build dir $buildDir"
-    rm -rf $buildDir
+    
+    INPUT_TAGSET=input/sgjp-morfeusz.tagset
+    SEGMENT_RULES_FILE=input/segmenty.dat
+    
+    python fsabuilder/morfeusz_builder \
+        --analyzer \
+        --input-files="$INPUT_DICTIONARIES" \
+        --tagset-file="$INPUT_TAGSET" \
+        --segments-file="$SEGMENT_RULES_FILE" \
+        --cpp --serialization-method=V1 \
+        -o "$ANALYZER_DICTIONARY_CPP"
+    
+    python fsabuilder/morfeusz_builder \
+        --generator \
+        --input-files="$INPUT_DICTIONARIES" \
+        --tagset-file="$INPUT_TAGSET" \
+        --segments-file="$SEGMENT_RULES_FILE" \
+        --cpp --serialization-method=V1 \
+        -o "$GENERATOR_DICTIONARY_CPP"
+    
     echo "DONE building dictionaries" >&2
 }
 
@@ -45,9 +60,9 @@ function build {
     cmake -D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
         -D CMAKE_TOOLCHAIN_FILE=$toolchain \
         -D TARGET_DIR=$targetDir \
-        -D INPUT_DICTIONARIES=$INPUT_DICTIONARIES \
+        -D ANALYZER_DICTIONARY_CPP=$ANALYZER_DICTIONARY_CPP \
+        -D GENERATOR_DICTIONARY_CPP=$GENERATOR_DICTIONARY_CPP \
         -D VERSION_SUFFIX=$VERSION_SUFFIX \
-        -D CPP_DICTIONARIES_DIR=$CPP_DICTIONARIES_DIR \
         -D SKIP_DICTIONARY_BUILDING=1 \
         $srcDir 2>&1
     echo "building $toolchain" >&2
@@ -82,6 +97,6 @@ buildDictionaries 2>&1 | log All all
     echo "build Windows amd64 package package-java 2>&1 | log Windows amd64"
     echo "build Windows i386 package package-java 2>&1 | log Windows i386"
     echo "build Darwin amd64 package package-java 2>&1 | log Darwin amd64"
-} | xargs -n1 -P5 -d$'\n' bash -c
+} | xargs -n1 -P3 -d$'\n' bash -c
 
 

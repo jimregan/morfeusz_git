@@ -16,7 +16,7 @@ using namespace std;
 using namespace morfeusz;
 
 int main(int argc, const char** argv) {
-    cerr << "Morfeusz analyzer, version: " << MORFEUSZ_VERSION << endl;
+    cerr << "Morfeusz analyzer, version: " << MORFEUSZ2_VERSION << endl;
     ez::ezOptionParser& opt = *getOptions(argc, argv, ANALYZER);
     Morfeusz* morfeusz = Morfeusz::createInstance();
     initializeMorfeusz(opt, *morfeusz, ANALYZER);

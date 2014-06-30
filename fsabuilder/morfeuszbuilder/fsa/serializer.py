@@ -67,6 +67,7 @@ class Serializer(object):
         res.append('\n')
         with open(fname, 'w') as f:
             f.write(''.join(res))
+        logging.info('written dictionary data to %s', fname)
     
     def serialize2BinaryFile(self, fname, isGenerator):
         with open(fname, 'wb') as f:

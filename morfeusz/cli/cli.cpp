@@ -168,9 +168,9 @@ namespace morfeusz {
 
     static TokenNumbering getTokenNumbering(const string& optionStr) {
         if (optionStr == "SEPARATE")
-            return SEPARATE;
+            return SEPARATE_NUMBERING;
         else if (optionStr == "CONTINUOUS")
-            return CONTINUOUS;
+            return CONTINUOUS_NUMBERING;
         else {
             cerr << "Invalid token numbering: '" << optionStr << "'. Must be one of: SEPARATE, CONTINUOUS" << endl;
             throw "Invalid token numbering";
@@ -179,11 +179,11 @@ namespace morfeusz {
     
     static CaseHandling getCaseHandling(const string& optionStr) {
         if (optionStr == "WEAK")
-            return WEAK;
+            return CONDITIONALLY_CASE_SENSITIVE;
         else if (optionStr == "STRICT")
-            return STRICT;
+            return STRICTLY_CASE_SENSITIVE;
         else if (optionStr == "IGNORE")
-            return IGNORE;
+            return IGNORE_CASE;
         else {
             cerr << "Invalid case handling: '" << optionStr << "'. Must be one of: WEAK, STRICT, IGNORE" << endl;
             throw "Invalid token numbering";
@@ -192,11 +192,11 @@ namespace morfeusz {
     
     static WhitespaceHandling getWhitespaceHandling(const string& optionStr) {
         if (optionStr == "SKIP")
-            return SKIP;
+            return SKIP_WHITESPACES;
         else if (optionStr == "APPEND")
-            return APPEND;
+            return APPEND_WHITESPACES;
         else if (optionStr == "KEEP")
-            return KEEP;
+            return KEEP_WHITESPACES;
         else {
             cerr << "Invalid whitespace handling: '" << optionStr << "'. Must be one of: SKIP, APPEND, KEEP" << endl;
             throw "Invalid whitespace handling";

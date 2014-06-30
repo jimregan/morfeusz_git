@@ -44,7 +44,7 @@ void TestMorfeusz::testAnalyzeIterate1() {
 
 void TestMorfeusz::testAnalyzeIterateWithWhitespaceHandlingKEEP() {
     cerr << "testAnalyzeIterateWithWhitespaceHandlingKEEP" << endl;
-    morfeusz->setWhitespaceHandling(KEEP);
+    morfeusz->setWhitespaceHandling(KEEP_WHITESPACES);
     ResultsIterator* it = morfeusz->analyze(" AAAAbbbbCCCC  DDDDeeee.\t");
     
     CPPUNIT_ASSERT(it->hasNext());
@@ -73,7 +73,7 @@ void TestMorfeusz::testAnalyzeIterateWithWhitespaceHandlingKEEP() {
 
 void TestMorfeusz::testAnalyzeIterateWithWhitespaceHandlingAPPEND() {
     cerr << "testAnalyzeIterateWithWhitespaceHandlingAPPEND" << endl;
-    morfeusz->setWhitespaceHandling(APPEND);
+    morfeusz->setWhitespaceHandling(APPEND_WHITESPACES);
     ResultsIterator* it = morfeusz->analyze(" AAAAbbbbCCCC  DDDDeeee.\t");
     
     CPPUNIT_ASSERT(it->hasNext());
@@ -134,7 +134,7 @@ void TestMorfeusz::testSetInvalidPraetOption() {
 void TestMorfeusz::testWhitespaceHandlingKEEP() {
     cerr << "testWhitespaceHandlingKEEP" << endl;
     vector<MorphInterpretation> res;
-    morfeusz->setWhitespaceHandling(KEEP);
+    morfeusz->setWhitespaceHandling(KEEP_WHITESPACES);
     morfeusz->analyze("  AAAAbbbbCCCC DDDDeeee\t", res);
     CPPUNIT_ASSERT_EQUAL((size_t) 5, res.size());
     CPPUNIT_ASSERT_EQUAL(string("  "), res[0].getOrth());
@@ -157,7 +157,7 @@ void TestMorfeusz::testWhitespaceHandlingKEEP() {
 void TestMorfeusz::testWhitespaceHandlingAPPEND() {
     cerr << "testWhitespaceHandlingAPPEND" << endl;
     vector<MorphInterpretation> res;
-    morfeusz->setWhitespaceHandling(APPEND);
+    morfeusz->setWhitespaceHandling(APPEND_WHITESPACES);
     morfeusz->analyze("  AAAAbbbbCCCC DDDDeeee\t", res);
     CPPUNIT_ASSERT_EQUAL((size_t) 2, res.size());
     CPPUNIT_ASSERT_EQUAL(string("  AAAAbbbbCCCC "), res[0].getOrth());

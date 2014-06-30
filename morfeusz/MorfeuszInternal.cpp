@@ -30,10 +30,10 @@ namespace morfeusz {
 
     static MorfeuszOptions createDefaultOptions() {
         MorfeuszOptions res;
-        res.caseHandling = WEAK;
+        res.caseHandling = CONDITIONALLY_CASE_SENSITIVE;
         res.encoding = UTF8;
-        res.tokenNumbering = SEPARATE;
-        res.whitespaceHandling = SKIP;
+        res.tokenNumbering = SEPARATE_NUMBERING;
+        res.whitespaceHandling = SKIP_WHITESPACES;
         res.debug = false;
         return res;
     }
@@ -121,7 +121,7 @@ namespace morfeusz {
     notMatchingCaseSegs(0),
     graph(),
     nextNodeNum(0) {
-        analyzerEnv.setCaseSensitive(options.caseHandling != IGNORE);
+        analyzerEnv.setCaseSensitive(options.caseHandling != IGNORE_CASE);
         generatorEnv.setCaseSensitive(false);
     }
 
@@ -151,7 +151,7 @@ namespace morfeusz {
             std::vector<MorphInterpretation>& results) const {
         if (env.getProcessorType() == ANALYZER) {
             switch (options.whitespaceHandling) {
-                case KEEP:
+                case KEEP_WHITESPACES:
                 {
                     bool res = reader.isAtWhitespace() && !reader.isAtEnd();
                     if (res) {
@@ -161,12 +161,12 @@ namespace morfeusz {
                     reader.markWordStartsHere();
                     return res;
                 }
-                case APPEND:
+                case APPEND_WHITESPACES:
                     reader.markChunkStartsHere();
                     reader.skipWhitespaces();
                     reader.markWordStartsHere();
                     return false;
-                case SKIP:
+                case SKIP_WHITESPACES:
                     reader.skipWhitespaces();
                     reader.markChunkStartsHere();
                     reader.markWordStartsHere();
@@ -183,7 +183,7 @@ namespace morfeusz {
             const Environment& env,
             TextReader& reader) const {
         if (env.getProcessorType() == ANALYZER
-                && options.whitespaceHandling == APPEND) {
+                && options.whitespaceHandling == APPEND_WHITESPACES) {
             reader.skipWhitespaces();
         }
         return reader.getCurrPtr();
@@ -294,7 +294,7 @@ namespace morfeusz {
             const InterpsGroup& ig,
             vector<SegrulesState>& newSegrulesStates) const {
         bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
-        if (caseMatches || options.caseHandling == WEAK) {
+        if (caseMatches || options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
 
             env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace, newSegrulesStates);
             if (!newSegrulesStates.empty()) {
@@ -333,7 +333,7 @@ namespace morfeusz {
         if (!accum.empty() && accum.back().shiftOrth) {
             doShiftOrth(accum.back(), ic);
         }
-        if (!caseMatches && options.caseHandling == WEAK) {
+        if (!caseMatches && options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
             notMatchingCaseSegs++;
             ic.forceIgnoreCase = true;
         }
@@ -351,7 +351,7 @@ namespace morfeusz {
             doProcessOneWord(env, newReader, newSegrulesState);
         }
         accum.pop_back();
-        if (!caseMatches && options.caseHandling == WEAK) {
+        if (!caseMatches && options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
             notMatchingCaseSegs--;
         }
     }
@@ -452,7 +452,7 @@ namespace morfeusz {
     }
 
     void MorfeuszInternal::adjustTokensCounter() const {
-        if (options.tokenNumbering == SEPARATE) {
+        if (options.tokenNumbering == SEPARATE_NUMBERING) {
             nextNodeNum = 0;
         }
     }
@@ -517,7 +517,7 @@ namespace morfeusz {
 
     void MorfeuszInternal::setCaseHandling(CaseHandling caseHandling) {
         this->options.caseHandling = caseHandling;
-        this->analyzerEnv.setCaseSensitive(caseHandling != IGNORE);
+        this->analyzerEnv.setCaseSensitive(caseHandling != IGNORE_CASE);
     }
 
     void MorfeuszInternal::setTokenNumbering(TokenNumbering tokenNumbering) {
