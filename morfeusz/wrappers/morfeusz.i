@@ -23,6 +23,7 @@ using namespace morfeusz;
 %include "std_string.i"
 %include "std_except.i"
 %include "exception.i"
+%include "typemaps.i"
 
 %exception {
     try{
@@ -43,6 +44,7 @@ using namespace morfeusz;
 %include "morfeusz_java.i"
 #endif
 
+
 namespace morfeusz {
     %ignore MorphInterpretation::MorphInterpretation(
             int startNode,
@@ -57,7 +59,13 @@ namespace morfeusz {
     %ignore MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
     %ignore MorphInterpretation::createWhitespace(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
     %ignore Morfeusz::analyze(const char*) const;
+    
+    %newobject Morfeusz::createInstance();
+    %newobject Morfeusz::analyze(const std::string&) const;
 }
+
+%template(InterpsList) std::vector<morfeusz::MorphInterpretation>;
+%template(StringsList) std::vector<string>;
 
 // instantiate vector of interpretations
 namespace std {
@@ -65,14 +73,14 @@ namespace std {
    %ignore vector<morfeusz::MorphInterpretation>::vector(size_type); 
    %ignore vector<morfeusz::MorphInterpretation>::resize;
    
-   %template(InterpsList) vector<morfeusz::MorphInterpretation>;
-   %template(StringsList) vector<string>;
+
+   //%template(InterpsList) vector<morfeusz::MorphInterpretation>;
+   //%template(StringsList) vector<string>;
+   
+   
 }
 
-//%include "../Morfeusz.hpp"
 %include "../morfeusz2.h"
-//%include "../const.hpp"
-//%include "../exceptions.hpp"
 
 
 #ifdef SWIGPYTHON

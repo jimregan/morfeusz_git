@@ -34,3 +34,20 @@ import java.io.IOException;
     System.loadLibrary("jmorfeusz");
   }
 %}
+
+%typemap(javabase) std::vector<morfeusz::MorphInterpretation> "java.util.AbstractList<MorphInterpretation>"
+%typemap(javabase) std::vector<morfeusz::String> "java.util.AbstractList<String>"
+
+%typemap(javabody) morfeusz::Morfeusz %{
+    public List<MorphInterpretation> analyzeAsList(String text) {
+        InterpsList res = new InterpsList();
+        analyze(text, res);
+        return res;
+    }
+%}
+
+%extend std::vector {
+    T& std::vector::get(int idx) const {
+        return at(idx);
+    }
+}
