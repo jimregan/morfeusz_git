@@ -35,7 +35,7 @@ import java.util.AbstractList;
 
 %typemap(javacode) morfeusz::Morfeusz %{
     
-    public List<MorphInterpretation> analyzeAsList(String text) {
+    public List<MorphInterpretation> analyze(String text) {
         InterpsList res = new InterpsList();
         analyze(text, res);
         return res;
