@@ -59,6 +59,10 @@ namespace morfeusz {
     %ignore MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
     %ignore MorphInterpretation::createWhitespace(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
     %ignore Morfeusz::analyze(const char*) const;
+    %ignore Morfeusz::analyze(const string&) const;
+    %ignore Morfeusz::analyze(const string&, std::vector<MorphInterpretation>&) const;
+    %ignore Morfeusz::generate(const string&, std::vector<MorphInterpretation>&) const;
+    %ignore Morfeusz::generate(const string&, int, std::vector<MorphInterpretation>&) const;
     
     %newobject Morfeusz::createInstance();
     %newobject Morfeusz::analyze(const std::string&) const;
