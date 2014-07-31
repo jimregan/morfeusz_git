@@ -96,6 +96,10 @@ namespace morfeusz {
     class DLLIMPORT Morfeusz {
     public:
 
+        /**
+         * Returns a string containing library version.
+         * @return 
+         */
         static std::string getVersion();
 
         /**
@@ -134,7 +138,7 @@ namespace morfeusz {
         
         /**
          * Analyze given text and return the results as iterator.
-         * Use this method for analysis of big texts.
+         * It does not store results for whole text at once, so may be less memory-consuming for analysis of big texts
          * 
          * 
          * @param text - text for morphological analysis. This pointer must not be deleted before returned ResultsIterator object.
@@ -228,6 +232,13 @@ namespace morfeusz {
          * @return 
          */
         virtual const Tagset<std::string>& getDefaultGeneratorTagset() const = 0;
+    
+    protected:
+        /**
+         * Same as analyze(text) but copies the text under the hood.
+         * Useful for wrappers to other languages.
+         */
+        virtual ResultsIterator* analyzeWithCopy(const char* text) const = 0;
     };
 
     class DLLIMPORT ResultsIterator {

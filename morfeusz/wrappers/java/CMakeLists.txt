@@ -16,7 +16,7 @@ add_custom_command (
     COMMAND swig -java -c++ -package pl.waw.ipipan.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${JAVA_SRC_DIR} ${CMAKE_SOURCE_DIR}/morfeusz/wrappers/morfeusz.i
     DEPENDS libmorfeusz
 )
-add_custom_target(generate_java_wrapper ALL
+add_custom_target(generate-java-wrapper ALL
     DEPENDS ${SWIG_JAVA_OUTFILE})
 add_library (libjmorfeusz SHARED ${SWIG_JAVA_OUTFILE})
 add_dependencies (libjmorfeusz generate_java_wrapper)
@@ -53,7 +53,33 @@ endif ()
 file(GLOB_RECURSE JAVA_SOURCES ${JAVA_SRC_DIR} "*.java")
 add_jar (jmorfeusz
     SOURCES "${JAVA_SOURCES}"
-    DEPENDS libjmorfeusz generate_java_wrapper)
+    ENTRY_POINT pl/waw/ipipan/morfeusz/app/App
+    DEPENDS libjmorfeusz generate-java-wrapper)
+
+#create_javadoc(jmorfeusz_javadoc
+#  PACKAGES pl.waw.ipipan.morfeusz
+#  SOURCEPATH "${CMAKE_CURRENT_BINARY_DIR}"
+#  CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH}"
+#  WINDOWTITLE "JMorfeusz - Morfeusz Java binding"
+#  DOCTITLE "<h1>JMorfeusz</h1>"
+#  AUTHOR TRUE
+#  USE TRUE
+#  VERSION TRUE
+#  DEPENDS jmorfeusz generate_java_wrapper)
+
+add_custom_target(generate-javadoc ALL
+    COMMAND javadoc
+        -d "${CMAKE_CURRENT_BINARY_DIR}/jmorfeusz_javadoc"
+        -sourcepath "${CMAKE_CURRENT_BINARY_DIR}"
+        -windowtitle "JMorfeusz - Morfeusz Java binding"
+        -use
+        -link http://docs.oracle.com/javase/7/docs/api/
+        pl.waw.ipipan.morfeusz
+    DEPENDS jmorfeusz)
+
+add_custom_target(package-javadoc ALL
+    COMMAND mkdir -p "${TARGET_DIR}" && ${CMAKE_COMMAND} -E tar "cfvz" "${TARGET_DIR}/jmorfeusz_javadoc.tgz" "${CMAKE_CURRENT_BINARY_DIR}/jmorfeusz_javadoc"
+    DEPENDS generate-javadoc)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_dependencies(jmorfeusz jmorfeusz-repair-libmorfeusz-link jmorfeusz-repair-libjmorfeusz-id)
@@ -65,4 +91,4 @@ add_custom_target (jmorfeusz-copy-readme
 
 add_custom_target(package-java
     COMMAND mkdir -p "${TARGET_DIR}" && ${CMAKE_COMMAND} -E tar "cfvz" "${TARGET_DIR}/jmorfeusz-${JMORFEUSZ_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}.tar.gz" "${CMAKE_CURRENT_BINARY_DIR}/*.jar" "${CMAKE_CURRENT_BINARY_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_CURRENT_BINARY_DIR}/README"
-    DEPENDS jmorfeusz jmorfeusz-copy-readme libjmorfeusz)
+    DEPENDS jmorfeusz package-javadoc jmorfeusz-copy-readme libjmorfeusz)

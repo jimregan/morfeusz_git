@@ -87,8 +87,11 @@ namespace morfeusz {
         const Tagset<std::string>& getDefaultAnalyzerTagset() const;
 
         const Tagset<std::string>& getDefaultGeneratorTagset() const;
+        
+        ResultsIterator* analyzeWithCopy(const char* text) const;
 
         friend class ResultsIteratorImpl;
+    
     private:
 
         void processOneWord(

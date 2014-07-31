@@ -3,21 +3,21 @@
 // set module name with preprocessor
 // because Mac OS X doesn't seem to recognize jniclassname option
 #ifdef SWIGJAVA
-%module MorfeuszWrapper
+%module(allprotected="1") MorfeuszWrapper
 #else
-%module morfeusz2
+%module(allprotected="1") morfeusz2
 #endif
-
 
 %feature("autodoc", "2");
 %{
 #include "morfeusz2.h"
-//#include "exceptions.hpp"
-//#include "const.hpp"
-//#include "Morfeusz.hpp"
-    
-using namespace morfeusz;
+#include "MorfeuszInternal.hpp"
+#include <vector>
 %}
+
+#ifdef SWIGJAVA
+%include "morfeusz_java.i"
+#endif
 
 %include "std_vector.i"
 %include "std_string.i"
@@ -29,7 +29,7 @@ using namespace morfeusz;
     try{
         $action
     }
-    catch(const FileFormatException& e) {
+    catch(const morfeusz::FileFormatException& e) {
         SWIG_exception(SWIG_IOError, const_cast<char*>(e.what()));
     }
     catch(const std::exception& e) {
@@ -40,12 +40,8 @@ using namespace morfeusz;
     }
 }
 
-#ifdef SWIGJAVA
-%include "morfeusz_java.i"
-#endif
-
-
 namespace morfeusz {
+    
     %ignore MorphInterpretation::MorphInterpretation(
             int startNode,
             int endNode,
@@ -59,30 +55,25 @@ namespace morfeusz {
     %ignore MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
     %ignore MorphInterpretation::createWhitespace(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
     %ignore Morfeusz::analyze(const char*) const;
-    %ignore Morfeusz::analyze(const string&) const;
-    %ignore Morfeusz::analyze(const string&, std::vector<MorphInterpretation>&) const;
-    %ignore Morfeusz::generate(const string&, std::vector<MorphInterpretation>&) const;
-    %ignore Morfeusz::generate(const string&, int, std::vector<MorphInterpretation>&) const;
+    %ignore Morfeusz::analyze(const std::string&) const;
+    %ignore Morfeusz::setCharset(Charset);
+//    %ignore Morfeusz::analyze(const std::string&, std::vector<MorphInterpretation>&) const;
+//    %ignore Morfeusz::generate(const std::string&, std::vector<MorphInterpretation>&) const;
+//    %ignore Morfeusz::generate(const std::string&, int, std::vector<MorphInterpretation>&) const;
+    %ignore Morfeusz::setDebug(bool);
     
     %newobject Morfeusz::createInstance();
-    %newobject Morfeusz::analyze(const std::string&) const;
+    %newobject Morfeusz::analyzeAsIterator(const char*) const;
+}
+
+%extend morfeusz::Morfeusz {
+    morfeusz::ResultsIterator* morfeusz::Morfeusz::analyzeAsIterator(const char* text) const {
+        return dynamic_cast<const morfeusz::MorfeuszInternal*>($self)->analyzeWithCopy(text);
+    }
 }
 
 %template(InterpsList) std::vector<morfeusz::MorphInterpretation>;
-%template(StringsList) std::vector<string>;
-
-// instantiate vector of interpretations
-namespace std {
-       // dirty hack so it will compile without no-arg constructor for MorphInterpretation
-   %ignore vector<morfeusz::MorphInterpretation>::vector(size_type); 
-   %ignore vector<morfeusz::MorphInterpretation>::resize;
-   
-
-   //%template(InterpsList) vector<morfeusz::MorphInterpretation>;
-   //%template(StringsList) vector<string>;
-   
-   
-}
+%template(StringsList) std::vector<std::string>;
 
 %include "../morfeusz2.h"
 

@@ -155,7 +155,7 @@ endif ()
 include (CPack)
 
 ##### END initialize some vars #####
-file (COPY fsabuilder doTest.sh DESTINATION .)
+file (COPY fsabuilder doTest.sh testJavaWrapper.sh DESTINATION .)
 
 #~ configure_file (
   #~ "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_version.h.in"
@@ -182,24 +182,6 @@ if (UNIX)
     endforeach()
 endif()
 
-#macro (test_build_and_recognize fname method)
-#    add_test (TestBuild-${method}-${fname} python fsabuilder/morfeusz_builder --analyzer --input-files testfiles/${fname} -o /tmp/test-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --segments-file=testfiles/segmenty.dat --serialization-method=${method})
-#    add_test (TestBuild4Synth-${method}-${fname} python fsabuilder/morfeusz_builder --generator --input-files testfiles/${fname} -o /tmp/test-synth-${method}-${fname}.fsa --tagset-file=testfiles/polimorf.tagset --serialization-method=${method})
-#    add_test (TestRecognize-${method}-${fname} morfeusz/test_recognize_dict /tmp/test-${method}-${fname}.fsa testfiles/${fname})
-#    # add_test (TestNOTRecognize-${method}-${fname} fsa/test_not_recognize /tmp/test-${method}-${fname}.fsa testfiles/out_of_dict)
-#    # add_test (TestSpeed-${method}-${fname} fsa/test_speed /tmp/test-${method}-${fname}.fsa testfiles/speed_test_data)
-#endmacro ()
-#
-#macro (test_result_equals inputFilename requiredOutputFilename encoding)
-#    # add_test (TestBuild4ResultEquals-${dictFilename}-${requiredOutputFilename} python fsabuilder/fsa/morfeusz_builder -i ${dictFilename} -o /tmp/test.fsa --tagset-file=testfiles/polimorf.tagset --output-format=BINARY --serialization-method=SIMPLE)
-#    add_test (TestResultEquals-${inputFilename}-${requiredOutputFilename} morfeusz/test_result_equals ${inputFilename} ${requiredOutputFilename} ${encoding})
-#endmacro ()
-#
-#test_build_and_recognize(PoliMorfSmall.tab SIMPLE)
-#test_build_and_recognize(PoliMorfSmall.tab V1)
-#test_build_and_recognize(PoliMorfSmall.tab V2)
-#
-#test_result_equals (testfiles/test1.txt             testfiles/test1.txt.out             UTF8)
-#test_result_equals (testfiles/test1.txt.ISO8859-2   testfiles/test1.txt.out.ISO8859-2   ISO8859_2)
-#test_result_equals (testfiles/test1.txt.CP1250      testfiles/test1.txt.out.CP1250      CP1250)
-#test_result_equals (testfiles/test1.txt.CP852     testfiles/test1.txt.out.CP852     CP852)
+if (UNIX)
+    add_test(TestJavaWrapper ./testJavaWrapper.sh "${PROJECT_BINARY_DIR}")
+endif ()

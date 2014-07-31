@@ -463,6 +463,14 @@ namespace morfeusz {
         strcpy(textCopy, text.c_str());
         return new ResultsIteratorImpl(*this, textCopy, textCopy + text.length(), true);
     }
+    
+    ResultsIterator* MorfeuszInternal::analyzeWithCopy(const char* text) const {
+        adjustTokensCounter();
+        long n = strlen(text);
+        char* textCopy = new char[n + 1];
+        strcpy(textCopy, text);
+        return new ResultsIteratorImpl(*this, textCopy, textCopy + n, true);
+    }
 
     ResultsIterator* MorfeuszInternal::analyze(const char* text) const {
         adjustTokensCounter();

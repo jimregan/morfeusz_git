@@ -14,7 +14,7 @@ public class App {
               System.getProperty("user.dir"));
         System.err.println("java.library.path="+System.getProperty("java.library.path"));
         Morfeusz morfeusz = Morfeusz.createInstance();
-        ResultsIterator it = morfeusz.analyze("Ala ma kota i żółć.");
+        ResultsIterator it = morfeusz.analyzeAsIterator("Ala ma kota i żółć.");
         while (it.hasNext()) {
             System.out.println(MorfeuszUtils.getInterpretationString(it.next()));
         }
