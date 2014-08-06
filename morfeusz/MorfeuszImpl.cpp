@@ -12,7 +12,7 @@
 #include "fsa/fsa.hpp"
 #include "utils.hpp"
 #include "data/default_fsa.hpp"
-#include "MorfeuszInternal.hpp"
+#include "MorfeuszImpl.hpp"
 #include "deserialization/morphInterps/InterpretedChunksDecoder.hpp"
 #include "charset/CharsetConverter.hpp"
 #include "charset/charset_utils.hpp"
@@ -113,7 +113,7 @@ namespace morfeusz {
         return ic;
     }
 
-    MorfeuszInternal::MorfeuszInternal()
+    MorfeuszImpl::MorfeuszImpl()
     : analyzerEnv(DEFAULT_MORFEUSZ_CHARSET, ANALYZER, DEFAULT_FSA),
     generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
     options(createDefaultOptions()),
@@ -125,15 +125,15 @@ namespace morfeusz {
         generatorEnv.setCaseSensitive(false);
     }
 
-    void MorfeuszInternal::setAnalyzerDictionary(const string& filename) {
+    void MorfeuszImpl::setAnalyzerDictionary(const string& filename) {
         this->analyzerEnv.setDictionaryFile(filename);
     }
 
-    void MorfeuszInternal::setGeneratorDictionary(const string& filename) {
+    void MorfeuszImpl::setGeneratorDictionary(const string& filename) {
         this->generatorEnv.setDictionaryFile(filename);
     }
 
-    MorfeuszInternal::~MorfeuszInternal() {
+    MorfeuszImpl::~MorfeuszImpl() {
     }
 
     const char* getWordEndPtr(const TextReader& reader, const Environment& env) {
@@ -144,7 +144,7 @@ namespace morfeusz {
         return tmpReader.getCurrPtr();
     }
 
-    bool MorfeuszInternal::handleWhitespacesAtBeginning(
+    bool MorfeuszImpl::handleWhitespacesAtBeginning(
             const Environment& env,
             TextReader& reader,
             int startNodeNum,
@@ -179,7 +179,7 @@ namespace morfeusz {
         return false;
     }
 
-    const char* MorfeuszInternal::handleWhitespacesAtEnd(
+    const char* MorfeuszImpl::handleWhitespacesAtEnd(
             const Environment& env,
             TextReader& reader) const {
         if (env.getProcessorType() == ANALYZER
@@ -189,7 +189,7 @@ namespace morfeusz {
         return reader.getCurrPtr();
     }
 
-    void MorfeuszInternal::processOneWord(
+    void MorfeuszImpl::processOneWord(
             const Environment& env,
             TextReader& reader,
             int startNodeNum,
@@ -255,7 +255,7 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::doProcessOneWord(
+    void MorfeuszImpl::doProcessOneWord(
             const Environment& env,
             TextReader& reader,
             const SegrulesState& segrulesState) const {
@@ -285,7 +285,7 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::processInterpsGroup(
+    void MorfeuszImpl::processInterpsGroup(
             const Environment& env,
             const TextReader& reader,
             bool isAtWhitespace,
@@ -323,7 +323,7 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::processInterpretedChunk(
+    void MorfeuszImpl::processInterpretedChunk(
             const Environment& env,
             const TextReader& reader,
             bool isAtWhitespace,
@@ -356,7 +356,7 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::processWhitespacesChunk(
+    void MorfeuszImpl::processWhitespacesChunk(
             TextReader& reader,
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const {
@@ -364,7 +364,7 @@ namespace morfeusz {
         results.push_back(MorphInterpretation::createWhitespace(startNodeNum, startNodeNum + 1, orth));
     }
 
-    void MorfeuszInternal::handleIgnChunk(
+    void MorfeuszImpl::handleIgnChunk(
             const Environment& env,
             const ChunkBounds& chunkBounds,
             int startNodeNum,
@@ -430,7 +430,7 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::appendIgnotiumToResults(
+    void MorfeuszImpl::appendIgnotiumToResults(
             const Environment& env,
             const ChunkBounds& chunkBounds,
             int startNodeNum,
@@ -440,7 +440,7 @@ namespace morfeusz {
         results.push_back(MorphInterpretation::createIgn(startNodeNum, startNodeNum + 1, orth, lemma));
     }
 
-    void MorfeuszInternal::analyseOneWord(
+    void MorfeuszImpl::analyseOneWord(
             TextReader& reader,
             vector<MorphInterpretation>& results) const {
         this->processOneWord(this->analyzerEnv, reader, nextNodeNum, results);
@@ -449,20 +449,20 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::adjustTokensCounter() const {
+    void MorfeuszImpl::adjustTokensCounter() const {
         if (options.tokenNumbering == SEPARATE_NUMBERING) {
             nextNodeNum = 0;
         }
     }
 
-    ResultsIterator* MorfeuszInternal::analyse(const string& text) const {
+    ResultsIterator* MorfeuszImpl::analyse(const string& text) const {
         adjustTokensCounter();
         char* textCopy = new char[text.length() + 1];
         strcpy(textCopy, text.c_str());
         return new ResultsIteratorImpl(*this, textCopy, textCopy + text.length(), true);
     }
     
-    ResultsIterator* MorfeuszInternal::analyseWithCopy(const char* text) const {
+    ResultsIterator* MorfeuszImpl::analyseWithCopy(const char* text) const {
         adjustTokensCounter();
         long n = strlen(text);
         char* textCopy = new char[n + 1];
@@ -470,12 +470,12 @@ namespace morfeusz {
         return new ResultsIteratorImpl(*this, textCopy, textCopy + n, true);
     }
 
-    ResultsIterator* MorfeuszInternal::analyse(const char* text) const {
+    ResultsIterator* MorfeuszImpl::analyse(const char* text) const {
         adjustTokensCounter();
         return new ResultsIteratorImpl(*this, text, text + strlen(text), false);
     }
 
-    void MorfeuszInternal::analyse(const string& text, vector<MorphInterpretation>& results) const {
+    void MorfeuszImpl::analyse(const string& text, vector<MorphInterpretation>& results) const {
         adjustTokensCounter();
         TextReader reader(text, this->analyzerEnv);
         while (!reader.isAtEnd()) {
@@ -483,7 +483,7 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::generate(const string& lemma, vector<MorphInterpretation>& results) const {
+    void MorfeuszImpl::generate(const string& lemma, vector<MorphInterpretation>& results) const {
         const char* input = lemma.c_str();
         const char* inputEnd = input + lemma.length();
         int startNode = 0;
@@ -494,7 +494,7 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::generate(const std::string& lemma, int tagId, vector<MorphInterpretation>& result) const {
+    void MorfeuszImpl::generate(const std::string& lemma, int tagId, vector<MorphInterpretation>& result) const {
         vector<MorphInterpretation> partRes;
         this->generate(lemma, partRes);
         for (unsigned int i = 0; i < partRes.size(); i++) {
@@ -505,48 +505,48 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::setCharset(Charset charset) {
+    void MorfeuszImpl::setCharset(Charset charset) {
         this->options.encoding = charset;
         this->analyzerEnv.setCharset(charset);
         this->generatorEnv.setCharset(charset);
     }
 
-    void MorfeuszInternal::setAggl(const std::string& aggl) {
+    void MorfeuszImpl::setAggl(const std::string& aggl) {
         this->analyzerEnv.setSegrulesOption("aggl", aggl);
         this->generatorEnv.setSegrulesOption("aggl", aggl);
     }
 
-    void MorfeuszInternal::setPraet(const std::string& praet) {
+    void MorfeuszImpl::setPraet(const std::string& praet) {
         this->analyzerEnv.setSegrulesOption("praet", praet);
         this->generatorEnv.setSegrulesOption("praet", praet);
     }
 
-    void MorfeuszInternal::setCaseHandling(CaseHandling caseHandling) {
+    void MorfeuszImpl::setCaseHandling(CaseHandling caseHandling) {
         this->analyzerEnv.setCaseSensitive(caseHandling != IGNORE_CASE);
     }
 
-    void MorfeuszInternal::setTokenNumbering(TokenNumbering tokenNumbering) {
+    void MorfeuszImpl::setTokenNumbering(TokenNumbering tokenNumbering) {
         this->options.tokenNumbering = tokenNumbering;
         nextNodeNum = 0;
     }
 
-    void MorfeuszInternal::setWhitespaceHandling(WhitespaceHandling whitespaceHandling) {
+    void MorfeuszImpl::setWhitespaceHandling(WhitespaceHandling whitespaceHandling) {
         this->options.whitespaceHandling = whitespaceHandling;
     }
 
-    void MorfeuszInternal::setDebug(bool debug) {
+    void MorfeuszImpl::setDebug(bool debug) {
         this->options.debug = debug;
     }
 
-    const IdResolver& MorfeuszInternal::getDefaultAnalyzerTagset() const {
+    const IdResolver& MorfeuszImpl::getDefaultAnalyzerTagset() const {
         return this->generatorEnv.getTagset();
     }
 
-    const IdResolver& MorfeuszInternal::getDefaultGeneratorTagset() const {
+    const IdResolver& MorfeuszImpl::getDefaultGeneratorTagset() const {
         return this->analyzerEnv.getTagset();
     }
     
-    const IdResolver& MorfeuszInternal::getIdResolver() const {
+    const IdResolver& MorfeuszImpl::getIdResolver() const {
         return this->analyzerEnv.getTagset();
     }
 }

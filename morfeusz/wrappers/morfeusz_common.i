@@ -33,7 +33,7 @@ namespace morfeusz {
 
 %extend morfeusz::Morfeusz {
     morfeusz::ResultsIterator* morfeusz::Morfeusz::analyseAsIterator(const char* text) const {
-        return dynamic_cast<const morfeusz::MorfeuszInternal*>($self)->analyseWithCopy(text);
+        return dynamic_cast<const morfeusz::MorfeuszImpl*>($self)->analyseWithCopy(text);
     }
 }
 

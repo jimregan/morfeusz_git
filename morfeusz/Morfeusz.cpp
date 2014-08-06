@@ -1,7 +1,7 @@
 
 #include <string>
 #include "morfeusz2.h"
-#include "MorfeuszInternal.hpp"
+#include "MorfeuszImpl.hpp"
 
 namespace morfeusz {
 
@@ -13,7 +13,7 @@ namespace morfeusz {
     }
 
     Morfeusz* Morfeusz::createInstance() {
-        return new MorfeuszInternal();
+        return new MorfeuszImpl();
     }
 
     Morfeusz::~Morfeusz() {

@@ -11,7 +11,7 @@
 %feature("autodoc", "2");
 %{
 #include "morfeusz2.h"
-#include "MorfeuszInternal.hpp"
+#include "MorfeuszImpl.hpp"
 #include <vector>
 #include <list>
 %}

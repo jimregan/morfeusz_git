@@ -36,7 +36,7 @@ set(SRC_FILES
     fsa/const.cpp 
     MorphInterpretation.cpp 
     Morfeusz.cpp
-    MorfeuszInternal.cpp
+    MorfeuszImpl.cpp
     ResultsIteratorImpl.cpp
     InflexionGraph.cpp
     charset/TextReader.cpp

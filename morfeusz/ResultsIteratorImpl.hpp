@@ -12,17 +12,17 @@
 #include <vector>
 
 #include "morfeusz2.h"
-//#include "MorfeuszInternal.hpp"
+#include "MorfeuszImpl.hpp"
 #include "charset/TextReader.hpp"
 
 namespace morfeusz {
     
-    class MorfeuszInternal;
+    class MorfeuszImpl;
     
     class ResultsIteratorImpl: public ResultsIterator {
     public:
         
-        ResultsIteratorImpl(const MorfeuszInternal& morfeusz, const char* text, const char* textEnd, bool isOwnerOfText);
+        ResultsIteratorImpl(const MorfeuszImpl& morfeusz, const char* text, const char* textEnd, bool isOwnerOfText);
         
         ~ResultsIteratorImpl();
         
@@ -33,7 +33,7 @@ namespace morfeusz {
         MorphInterpretation next();
         
     private:
-        const MorfeuszInternal& morfeusz;
+        const MorfeuszImpl& morfeusz;
         const char* text;
         bool isOwnerOfText;
         TextReader reader;

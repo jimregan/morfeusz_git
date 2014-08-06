@@ -6,13 +6,12 @@
  */
 
 #include "ResultsIteratorImpl.hpp"
-#include "MorfeuszInternal.hpp"
 
 #include <cstring>
 
 namespace morfeusz {
 
-    ResultsIteratorImpl::ResultsIteratorImpl(const MorfeuszInternal& morfeusz, const char* text, const char* textEnd, bool isOwnerOfText)
+    ResultsIteratorImpl::ResultsIteratorImpl(const MorfeuszImpl& morfeusz, const char* text, const char* textEnd, bool isOwnerOfText)
     :
     morfeusz(morfeusz),
     text(text),

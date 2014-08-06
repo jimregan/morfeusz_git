@@ -37,7 +37,7 @@
 
 namespace morfeusz {
 
-    class MorfeuszInternal;
+    class MorfeuszImpl;
     class MorphInterpretation;
     class ResultsIterator;
 //    class ResultsIteratorImpl;
@@ -50,15 +50,15 @@ namespace morfeusz {
      * It is NOT thread-safe
      * but it is possible to use separate Morfeusz instance for each concurrent thread.
      */
-    class MorfeuszInternal : public Morfeusz {
+    class MorfeuszImpl : public Morfeusz {
     public:
-        MorfeuszInternal();
+        MorfeuszImpl();
 
         void setAnalyzerDictionary(const std::string& filename);
 
         void setGeneratorDictionary(const std::string& filename);
 
-        virtual ~MorfeuszInternal();
+        virtual ~MorfeuszImpl();
 
         ResultsIterator* analyse(const std::string& text) const;
         
