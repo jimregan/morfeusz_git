@@ -45,40 +45,4 @@ namespace morfeusz {
         return mi;
     }
 
-    static inline bool hasEnding(const string &fullString, const string &ending) {
-        if (fullString.length() >= ending.length()) {
-            return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-        }
-        else {
-            return false;
-        }
-    }
-
-    bool MorphInterpretation::hasHomonym(const string& homonymId) const {
-        size_t homonymSeparatorIdx = this->lemma.length() - homonymId.length() - 1;
-        return homonymSeparatorIdx > 0
-                && this->lemma[homonymSeparatorIdx] == HOMONYM_SEPARATOR
-                && hasEnding(this->lemma, homonymId);
-    }
-
-    std::string MorphInterpretation::toString(bool includeNodeNumbers) const {
-        std::stringstream res;
-        if (includeNodeNumbers) {
-            res << startNode << "," << endNode << ",";
-        }
-        res << orth << ",";
-
-        res << lemma;
-        res << ",";
-
-        //        res << getTag();
-        //        if (!getName().empty()) {
-        //            res << "," << getName();
-        //        }
-        //        if (!getQualifiers().empty()) {
-        //            res << "," << getQualifiersStr(*this);
-        //        }
-        return res.str();
-    }
-
 }

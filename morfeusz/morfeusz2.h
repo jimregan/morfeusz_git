@@ -358,12 +358,6 @@ namespace morfeusz {
             return tagId == 1;
         }
         
-        // FIXME - do wyrzucenia gdzie indziej
-        bool hasHomonym(const std::string& homonymId) const;
-
-        // FIXME - do wyrzucenia gdzie indziej
-        std::string toString(bool includeNodeNumbers) const;
-        
         int startNode;
         int endNode;
         std::string orth;

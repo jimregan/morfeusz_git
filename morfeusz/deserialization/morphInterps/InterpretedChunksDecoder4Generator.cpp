@@ -12,6 +12,22 @@
 using namespace std;
 
 namespace morfeusz {
+    
+    static bool hasEnding(const string &fullString, const string &ending) {
+        if (fullString.length() >= ending.length()) {
+            return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+        }
+        else {
+            return false;
+        }
+    }
+    
+    static bool hasHomonym(const MorphInterpretation& mi, const string& homonymId) {
+        size_t homonymSeparatorIdx = mi.lemma.length() - homonymId.length() - 1;
+        return homonymSeparatorIdx > 0
+                && mi.lemma[homonymSeparatorIdx] == HOMONYM_SEPARATOR
+                && hasEnding(mi.lemma, homonymId);
+    }
 
     InterpretedChunksDecoder4Generator::InterpretedChunksDecoder4Generator(const Environment& env) : InterpretedChunksDecoder(env) {
     }
@@ -31,7 +47,7 @@ namespace morfeusz {
             MorphInterpretation mi = this->decodeMorphInterpretation(startNode, endNode, orthPrefix, lemma, interpretedChunk, currPtr);
             //                        cerr << mi.toString(false) << endl;
             //            cerr << "required='" << interpretedChunk.requiredHomonymId << "' morphInterp='" << mi.getHomonymId() << "'" << endl;
-            if (interpretedChunk.requiredHomonymId.empty() || mi.hasHomonym(interpretedChunk.requiredHomonymId)) {
+            if (interpretedChunk.requiredHomonymId.empty() || hasHomonym(mi, interpretedChunk.requiredHomonymId)) {
                 out.push_back(mi);
             }
         }
