@@ -48,16 +48,6 @@ inline std::string readString(const unsigned char*& currPtr) {
     return res;
 }
 
-inline void readTags(const unsigned char*& currPtr, std::vector<std::string>& tags) {
-    tags.clear();
-    tags.resize(65536);
-    uint16_t tagsNum = readInt16(currPtr);
-    for (unsigned int i = 0; i < tagsNum; i++) {
-        unsigned int tagNum = readInt16(currPtr);
-        tags[tagNum] = readString(currPtr);
-    }
-}
-
 }
 
 #endif	/* DESERIALIZATIONUTILS_HPP */

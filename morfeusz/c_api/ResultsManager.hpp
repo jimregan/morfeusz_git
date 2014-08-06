@@ -16,11 +16,11 @@ namespace morfeusz {
 
     class ResultsManager {
     public:
-        ResultsManager();
+        ResultsManager(const Morfeusz* morfeusz);
         InterpMorf* convertResults(const std::vector<MorphInterpretation>& res);
         virtual ~ResultsManager();
     private:
-        
+        const Morfeusz* morfeusz;
         InterpMorf* results;
         unsigned int resultsArraySize;
         

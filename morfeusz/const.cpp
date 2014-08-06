@@ -9,5 +9,6 @@ extern const unsigned char SHIFT_ORTH_NODE = 1;
 
 extern const char HOMONYM_SEPARATOR = ':';
 
+extern const char LABELS_SEPARATOR = '|';
 
 }

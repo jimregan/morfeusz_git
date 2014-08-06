@@ -66,7 +66,7 @@ endif ()
 
 # INPUT_TAGSET
 if (NOT INPUT_TAGSET)
-   set (INPUT_TAGSET ${PROJECT_SOURCE_DIR}/input/sgjp-morfeusz.tagset)
+   set (INPUT_TAGSET ${PROJECT_SOURCE_DIR}/input/morfeusz-sgjp.tagset)
 endif ()
 
 # SEGMENT_RULES_FILE

@@ -196,7 +196,7 @@ namespace morfeusz {
             vector<MorphInterpretation>& results,
             bool insideIgnHandler) const {
         if (handleWhitespacesAtBeginning(env, reader, startNodeNum, results)) {
-            startNodeNum = results.back().getEndNode();
+            startNodeNum = results.back().endNode;
         }
 
         if (reader.isAtEnd()) {
@@ -361,8 +361,7 @@ namespace morfeusz {
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const {
         string orth(reader.readWhitespacesChunk());
-        MorphInterpretation mi(MorphInterpretation::createWhitespace(startNodeNum, startNodeNum + 1, orth, this->getDefaultAnalyzerTagset()));
-        results.push_back(mi);
+        results.push_back(MorphInterpretation::createWhitespace(startNodeNum, startNodeNum + 1, orth));
     }
 
     void MorfeuszInternal::handleIgnChunk(
@@ -390,7 +389,7 @@ namespace morfeusz {
                 if (nonSeparatorInputEnd != prevInput) {
                     // there are non-separators + separators
 
-                    int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+                    int startNode = results.empty() ? startNodeNum : results.back().endNode;
                     // process part before separators
                     TextReader newReader1(prevInput, nonSeparatorInputEnd, env);
                     notMatchingCaseSegs = 0;
@@ -400,7 +399,7 @@ namespace morfeusz {
                     if (currInput == chunkBounds.wordEndPtr) {
                         currInput = chunkBounds.chunkEndPtr;
                     }
-                    startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+                    startNode = results.empty() ? startNodeNum : results.back().endNode;
                     TextReader newReader2(nonSeparatorInputEnd, currInput, env);
                     this->processOneWord(env, newReader2, startNode, results, true);
                 }
@@ -409,7 +408,7 @@ namespace morfeusz {
                     if (currInput == chunkBounds.wordEndPtr) {
                         currInput = chunkBounds.chunkEndPtr;
                     }
-                    int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+                    int startNode = results.empty() ? startNodeNum : results.back().endNode;
                     TextReader newReader3(prevInput, currInput, env);
                     notMatchingCaseSegs = 0;
                     this->processOneWord(env, newReader3, startNode, results, true);
@@ -421,7 +420,7 @@ namespace morfeusz {
         if (!env.isSeparator(codepoint)) {
             if (separatorFound) {
                 // process part after separators
-                int startNode = results.empty() ? startNodeNum : results.back().getEndNode();
+                int startNode = results.empty() ? startNodeNum : results.back().endNode;
                 TextReader newReader4(prevInput, chunkBounds.chunkEndPtr, env);
                 this->processOneWord(env, newReader4, startNode, results, true);
             }
@@ -438,16 +437,15 @@ namespace morfeusz {
             std::vector<MorphInterpretation>& results) const {
         string orth(chunkBounds.chunkStartPtr, chunkBounds.chunkEndPtr);
         string lemma(chunkBounds.wordStartPtr, chunkBounds.wordEndPtr);
-        MorphInterpretation interp(MorphInterpretation::createIgn(startNodeNum, startNodeNum + 1, orth, lemma, env.getTagset()));
-        results.push_back(interp);
+        results.push_back(MorphInterpretation::createIgn(startNodeNum, startNodeNum + 1, orth, lemma));
     }
 
-    void MorfeuszInternal::analyzeOneWord(
+    void MorfeuszInternal::analyseOneWord(
             TextReader& reader,
             vector<MorphInterpretation>& results) const {
         this->processOneWord(this->analyzerEnv, reader, nextNodeNum, results);
         if (!results.empty()) {
-            nextNodeNum = results.back().getEndNode();
+            nextNodeNum = results.back().endNode;
         }
     }
 
@@ -457,14 +455,14 @@ namespace morfeusz {
         }
     }
 
-    ResultsIterator* MorfeuszInternal::analyze(const string& text) const {
+    ResultsIterator* MorfeuszInternal::analyse(const string& text) const {
         adjustTokensCounter();
         char* textCopy = new char[text.length() + 1];
         strcpy(textCopy, text.c_str());
         return new ResultsIteratorImpl(*this, textCopy, textCopy + text.length(), true);
     }
     
-    ResultsIterator* MorfeuszInternal::analyzeWithCopy(const char* text) const {
+    ResultsIterator* MorfeuszInternal::analyseWithCopy(const char* text) const {
         adjustTokensCounter();
         long n = strlen(text);
         char* textCopy = new char[n + 1];
@@ -472,16 +470,16 @@ namespace morfeusz {
         return new ResultsIteratorImpl(*this, textCopy, textCopy + n, true);
     }
 
-    ResultsIterator* MorfeuszInternal::analyze(const char* text) const {
+    ResultsIterator* MorfeuszInternal::analyse(const char* text) const {
         adjustTokensCounter();
         return new ResultsIteratorImpl(*this, text, text + strlen(text), false);
     }
 
-    void MorfeuszInternal::analyze(const string& text, vector<MorphInterpretation>& results) const {
+    void MorfeuszInternal::analyse(const string& text, vector<MorphInterpretation>& results) const {
         adjustTokensCounter();
         TextReader reader(text, this->analyzerEnv);
         while (!reader.isAtEnd()) {
-            analyzeOneWord(reader, results);
+            analyseOneWord(reader, results);
         }
     }
 
@@ -496,12 +494,12 @@ namespace morfeusz {
         }
     }
 
-    void MorfeuszInternal::generate(const std::string& lemma, int tagnum, vector<MorphInterpretation>& result) const {
+    void MorfeuszInternal::generate(const std::string& lemma, int tagId, vector<MorphInterpretation>& result) const {
         vector<MorphInterpretation> partRes;
         this->generate(lemma, partRes);
         for (unsigned int i = 0; i < partRes.size(); i++) {
             // XXX - someday it should be improved
-            if (partRes[i].getTagnum() == tagnum) {
+            if (partRes[i].tagId == tagId) {
                 result.push_back(partRes[i]);
             }
         }
@@ -524,7 +522,6 @@ namespace morfeusz {
     }
 
     void MorfeuszInternal::setCaseHandling(CaseHandling caseHandling) {
-        this->options.caseHandling = caseHandling;
         this->analyzerEnv.setCaseSensitive(caseHandling != IGNORE_CASE);
     }
 
@@ -541,12 +538,15 @@ namespace morfeusz {
         this->options.debug = debug;
     }
 
-    const Tagset<string>& MorfeuszInternal::getDefaultAnalyzerTagset() const {
+    const IdResolver& MorfeuszInternal::getDefaultAnalyzerTagset() const {
         return this->generatorEnv.getTagset();
     }
 
-    const Tagset<string>& MorfeuszInternal::getDefaultGeneratorTagset() const {
+    const IdResolver& MorfeuszInternal::getDefaultGeneratorTagset() const {
         return this->analyzerEnv.getTagset();
     }
-
+    
+    const IdResolver& MorfeuszInternal::getIdResolver() const {
+        return this->analyzerEnv.getTagset();
+    }
 }

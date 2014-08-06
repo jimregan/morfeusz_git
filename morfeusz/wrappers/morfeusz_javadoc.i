@@ -13,7 +13,7 @@
      */
     public";
 
-%javamethodmodifiers morfeusz::Morfeusz::analyzeAsIterator(const char*) const "
+%javamethodmodifiers morfeusz::Morfeusz::analyseAsIterator(const char*) const "
     /**
      * Analyze given text and return the results as iterator.
      * It does not store results for whole text at once, so may be less memory-consuming for analysis of big texts.

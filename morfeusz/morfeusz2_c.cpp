@@ -13,7 +13,7 @@ using namespace morfeusz;
 
 static Morfeusz* morfeuszInstance = Morfeusz::createInstance();
 static vector<MorphInterpretation> results;
-static ResultsManager resultsManager;
+static ResultsManager resultsManager(morfeuszInstance);
 
 extern "C" DLLIMPORT
 char* morfeusz_about() {
@@ -23,7 +23,7 @@ char* morfeusz_about() {
 extern "C" DLLIMPORT
 InterpMorf* morfeusz_analyse(char *tekst) {
     results.clear();
-    morfeuszInstance->analyze(string(tekst), results);
+    morfeuszInstance->analyse(string(tekst), results);
     return resultsManager.convertResults(results);
 }
 

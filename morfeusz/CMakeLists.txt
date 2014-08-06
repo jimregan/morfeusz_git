@@ -32,8 +32,7 @@ set(SRC_FILES
     ${ANALYZER_DICTIONARY_CPP}
     ${GENERATOR_DICTIONARY_CPP}
     Environment.cpp
-    DefaultTagset.cpp
-    Qualifiers.cpp
+    IdResolverImpl.cpp
     fsa/const.cpp 
     MorphInterpretation.cpp 
     Morfeusz.cpp

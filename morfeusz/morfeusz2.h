@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include <list>
+#include <set>
 
 #ifndef __WIN32
 #define DLLIMPORT
@@ -28,7 +29,7 @@ namespace morfeusz {
     class DLLIMPORT MorphInterpretation;
     class DLLIMPORT Morfeusz;
     class DLLIMPORT ResultsIterator;
-    template <class T> class DLLIMPORT Tagset;
+    class DLLIMPORT IdResolver;
     class DLLIMPORT MorfeuszException;
 
     enum Charset {
@@ -110,20 +111,6 @@ namespace morfeusz {
          */
         static Morfeusz* createInstance();
 
-        /**
-         * Set a file used for morphological analysis.
-         * 
-         * @param filename
-         */
-        virtual void setAnalyzerDictionary(const std::string& filename) = 0;
-
-        /**
-         * Set a file used for morphological synthesis.
-         * 
-         * @param filename
-         */
-        virtual void setGeneratorDictionary(const std::string& filename) = 0;
-
         virtual ~Morfeusz();
 
         /**
@@ -134,7 +121,7 @@ namespace morfeusz {
          * @param text - text for morphological analysis.
          * @return - iterator over morphological analysis results
          */
-        virtual ResultsIterator* analyze(const std::string& text) const = 0;
+        virtual ResultsIterator* analyse(const std::string& text) const = 0;
         
         /**
          * Analyze given text and return the results as iterator.
@@ -144,7 +131,7 @@ namespace morfeusz {
          * @param text - text for morphological analysis. This pointer must not be deleted before returned ResultsIterator object.
          * @return - iterator over morphological analysis results
          */
-        virtual ResultsIterator* analyze(const char* text) const = 0;
+        virtual ResultsIterator* analyse(const char* text) const = 0;
 
         /**
          * Perform morphological analysis on a given text and put results in a vector.
@@ -152,7 +139,7 @@ namespace morfeusz {
          * @param text - text to be analyzed
          * @param result - results vector
          */
-        virtual void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const = 0;
+        virtual void analyse(const std::string& text, std::vector<MorphInterpretation>& result) const = 0;
 
         /**
          * Perform morphological synthesis on a given lemma and put results in a vector.
@@ -170,7 +157,7 @@ namespace morfeusz {
          * @param tag - tag of result interpretations
          * @param result - results vector
          */
-        virtual void generate(const std::string& lemma, int tagnum, std::vector<MorphInterpretation>& result) const = 0;
+        virtual void generate(const std::string& lemma, int tagId, std::vector<MorphInterpretation>& result) const = 0;
 
         /**
          * Set encoding for input and output string objects.
@@ -220,25 +207,40 @@ namespace morfeusz {
          * @param debug
          */
         virtual void setDebug(bool debug) = 0;
-
+        
         /**
-         * Gets default tagset used for morphological analysis.
-         * @return 
+         * Get reference to tagset currently being in use.
+         * 
+         * @return currently used tagset
          */
-        virtual const Tagset<std::string>& getDefaultAnalyzerTagset() const = 0;
-
+        virtual const IdResolver& getIdResolver() const = 0;
+        
         /**
-         * Gets default tagset used for morphological synthesis.
-         * @return 
+         * Set current dictionary to the one with provided name.
+         * 
+         * This is NOT thread safe (no other thread may invoke setDictionary 
+         * either within this instance, or any other in the same application.
+         * 
+         * @param dictName dictionary name
          */
-        virtual const Tagset<std::string>& getDefaultGeneratorTagset() const = 0;
+//        virtual void setDictionary(const std::string& dictName) = 0;
+        
+        /**
+         * List of directories where current Morfeusz instance will look for dictionaries.
+         */
+        std::list<std::string> dictionarySearchPaths;
     
+        
+        virtual void setAnalyzerDictionary(const std::string& filename) = 0;
+
+        virtual void setGeneratorDictionary(const std::string& filename) = 0;
+        
     protected:
         /**
          * Same as analyze(text) but copies the text under the hood.
          * Useful for wrappers to other languages.
          */
-        virtual ResultsIterator* analyzeWithCopy(const char* text) const = 0;
+        virtual ResultsIterator* analyseWithCopy(const char* text) const = 0;
     };
 
     class DLLIMPORT ResultsIterator {
@@ -253,8 +255,7 @@ namespace morfeusz {
     /**
      * Represents a tagset
      */
-    template <class T>
-    class DLLIMPORT Tagset {
+    class DLLIMPORT IdResolver {
     public:
 
         /**
@@ -263,7 +264,15 @@ namespace morfeusz {
          * @param tagNum - tag index in the tagset.
          * @return - the tag
          */
-        virtual const T& getTag(const int tagNum) const = 0;
+        virtual const std::string& getTag(const int tagId) const = 0;
+        
+        /**
+         * Returns identifier for given tag.
+         * Throws MorfeuszException when none exists.
+         * 
+         * @return identifier for given tag
+         */
+        virtual int getTagId(const std::string& tag) const = 0;
 
         /**
          * Returns named entity type (denoted by its index).
@@ -271,23 +280,39 @@ namespace morfeusz {
          * @param nameNum - name index in the tagset.
          * @return - the named entity type
          */
-        virtual const T& getName(const int nameNum) const = 0;
+        virtual const std::string& getName(const int nameId) const = 0;
+        
+        /**
+         * Returns identifier for given named entity.
+         * Throws MorfeuszException when none exists.
+         * 
+         * @return identifier for given named entity
+         */
+        virtual int getNameId(const std::string& name) const = 0;
+        
+        virtual const std::string& getLabelsAsString(int labelsId) const = 0;
+        
+        virtual const std::set<std::string>& getLabels(int labelsId) const = 0;
+        
+        virtual int getLabelsId(const std::string& labelsStr) const = 0;
 
         /**
          * Returs number of tags this tagset contains.
          * 
          * @return 
          */
-        virtual size_t getTagsSize() const = 0;
+        virtual size_t getTagsCount() const = 0;
 
         /**
          * Returs number of named entity types this tagset contains.
          * 
          * @return 
          */
-        virtual size_t getNamesSize() const = 0;
+        virtual size_t getNamesCount() const = 0;
+        
+        virtual size_t getLabelsCount() const = 0;
 
-        virtual ~Tagset() {
+        virtual ~IdResolver() {
         }
     };
 
@@ -311,109 +336,41 @@ namespace morfeusz {
      The structure below describes one edge of this DAG:
 
      */
-    class DLLIMPORT MorphInterpretation {
-    public:
-
-        /**
-         * 
-         * @param startNode - number of start node in DAG.
-         * @param endNode - number of end node in DAG.
-         * @param orth - orthographic form
-         * @param lemma - base form
-         * @param tagnum - tag identifier (0 for "unrecognized", 1 for "whitespace")
-         * @param namenum - named entity identifier (0 for "not a named entity")
-         * @param qualifiers - pointer to vector of qualifiers (not owned by this)
-         * @param tagset - pointer to default tagset used by Morfeusz (not owned by this)
-         */
-        MorphInterpretation(
-                int startNode,
-                int endNode,
-                const std::string& orth,
-                const std::string& lemma,
-                int tagnum,
-                int namenum,
-                const std::vector<std::string>* qualifiers,
-                const Tagset<std::string>* tagset);
-
-        MorphInterpretation();
+    struct DLLIMPORT MorphInterpretation {
 
         /**
          * Creates new instance with "ign" tag (meaning: "not found in the dictionary")
          */
         static MorphInterpretation createIgn(
             int startNode, int endNode,
-            const std::string& orth, const std::string& lemma, 
-            const Tagset<std::string>& tagset);
+            const std::string& orth, const std::string& lemma);
 
         /**
          * Creates new instance with "sp" tag (meaning: "this is a sequence of whitespaces")
          */
-        static MorphInterpretation createWhitespace(int startNode, int endNode, const std::string& orth, const Tagset<std::string>& tagset);
-
-        inline int getStartNode() const {
-            return startNode;
-        }
-
-        inline int getEndNode() const {
-            return endNode;
-        }
-
-        inline const std::string& getOrth() const {
-            return orth;
-        }
-
-        inline const std::string& getLemma() const {
-            return lemma;
-        }
-
-        inline int getTagnum() const {
-            return tagnum;
-        }
-
-        inline int getNamenum() const {
-            return namenum;
-        }
+        static MorphInterpretation createWhitespace(int startNode, int endNode, const std::string& orth);
 
         inline bool isIgn() const {
-            return tagnum == 0;
+            return tagId == 0;
         }
 
         inline bool isWhitespace() const {
-            return tagnum == 1;
+            return tagId == 1;
         }
-
-        inline const std::string& getTag() const {
-            return tagset->getTag(tagnum);
-        }
-
-        inline const std::string& getName() const {
-            return tagset->getName(namenum);
-        }
-
-        inline const std::vector<std::string>& getQualifiers() const {
-            return *qualifiers;
-        }
-
+        
+        // FIXME - do wyrzucenia gdzie indziej
         bool hasHomonym(const std::string& homonymId) const;
 
+        // FIXME - do wyrzucenia gdzie indziej
         std::string toString(bool includeNodeNumbers) const;
-    private:
+        
         int startNode;
         int endNode;
         std::string orth;
         std::string lemma;
-        int tagnum;
-        int namenum;
-
-        /**
-         * not owned by this
-         */
-        const std::vector<std::string>* qualifiers;
-
-        /**
-         * not owned by this
-         */
-        const Tagset<std::string>* tagset;
+        int tagId;
+        int nameId;
+        int labelsId;
     };
 
     class DLLIMPORT MorfeuszException : public std::exception {

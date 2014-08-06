@@ -23,14 +23,15 @@ class Tagset(object):
     def _doInit(self, filename, encoding):
         addingTo = None
         with codecs.open(filename, 'r', encoding) as f:
-            for line in f:
-                line = line.strip('\n')
+            for linenum, line in enumerate(f, start=1):
+                line = line.strip('\n\r')
                 if line == u'[TAGS]':
                     addingTo = Tagset.TAGS
                 elif line == u'[NAMES]':
                     addingTo = Tagset.NAMES
                 elif line and not line.startswith(u'#'):
-                    assert addingTo in [Tagset.TAGS, Tagset.NAMES]
+                    if not addingTo in [Tagset.TAGS, Tagset.NAMES]:
+                        raise FSABuilderException('"%s" - text outside [TAGS] section in tagset file line %d' % (line, linenum))
                     res = {Tagset.TAGS: self._tag2tagnum,
                            Tagset.NAMES: self._name2namenum}[addingTo]
                     tagNum = line.split(Tagset.SEP)[0]

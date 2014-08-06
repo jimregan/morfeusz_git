@@ -13,14 +13,14 @@
 
 namespace morfeusz {
 
-void printMorphResults(const std::vector<MorphInterpretation>& res, bool printNodeNumbers) {
+void printMorphResults(const Morfeusz& morfeusz, const std::vector<MorphInterpretation>& res, bool printNodeNumbers) {
     printf("[");
     int prevStart = -1;
     int prevEnd = -1;
     for (unsigned int i = 0; i < res.size(); i++) {
         const MorphInterpretation& mi = res[i];
         if (prevStart != -1
-                && (prevStart != mi.getStartNode() || prevEnd != mi.getEndNode())) {
+                && (prevStart != mi.startNode || prevEnd != mi.endNode)) {
             printf("]\n[");
         }
         else if (prevStart != -1) {
@@ -28,24 +28,16 @@ void printMorphResults(const std::vector<MorphInterpretation>& res, bool printNo
         }
         //            printf("%s", mi.toString(true).c_str());
         if (printNodeNumbers) {
-            printf("%d,%d,", mi.getStartNode(), mi.getEndNode());
+            printf("%d,%d,", mi.startNode, mi.endNode);
         }
-        printf("%s,%s,%s,%s,",
-                mi.getOrth().c_str(),
-                mi.getLemma().c_str(),
-                mi.getTag().c_str(),
-                mi.getName().empty() ? "_" : mi.getName().c_str());
-        if (!mi.getQualifiers().empty()) {
-            printf("%s", mi.getQualifiers()[0].c_str());
-            for (unsigned int i = 1; i < mi.getQualifiers().size(); i++) {
-                printf("|%s", mi.getQualifiers()[i].c_str());
-            }
-        }
-        else {
-            printf("_");
-        }
-        prevStart = mi.getStartNode();
-        prevEnd = mi.getEndNode();
+        printf("%s,%s,%s,%s,%s",
+                mi.orth.c_str(),
+                mi.lemma.c_str(),
+                morfeusz.getIdResolver().getTag(mi.tagId).c_str(),
+                mi.nameId == 0 ? "_" : morfeusz.getIdResolver().getName(mi.nameId).c_str(),
+                mi.labelsId == 0 ? "_" : morfeusz.getIdResolver().getLabelsAsString(mi.labelsId).c_str());
+        prevStart = mi.startNode;
+        prevEnd = mi.endNode;
     }
     printf("]\n");
 }

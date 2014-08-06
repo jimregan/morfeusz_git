@@ -15,49 +15,33 @@ using namespace std;
 
 namespace morfeusz {
 
-    /**
-     * used for ignotium and whitespace tags who don't have any qualifiers.
-     */
-    static vector<string> emptyQualifiers;
-
-    MorphInterpretation::MorphInterpretation(
-            int startNode,
-            int endNode,
-            const string& orth,
-            const string& lemma,
-            int tagnum,
-            int namenum,
-            const vector<string>* qualifiers,
-            const Tagset<string>* tagset)
-    : startNode(startNode),
-    endNode(endNode),
-    orth(orth),
-    lemma(lemma),
-    tagnum(tagnum),
-    namenum(namenum),
-    qualifiers(qualifiers),
-    tagset(tagset) {
-    }
-
-    MorphInterpretation::MorphInterpretation()
-    : startNode(),
-    endNode(),
-    orth(),
-    lemma(),
-    tagnum(),
-    namenum(),
-    qualifiers(&emptyQualifiers),
-    tagset(NULL) {
-
-    }
-
-    MorphInterpretation MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const std::string& lemma, const Tagset<string>& tagset) {
-        MorphInterpretation mi(startNode, endNode, orth, lemma, 0, 0, &emptyQualifiers, &tagset);
+    MorphInterpretation MorphInterpretation::createIgn(
+            int startNode, int endNode,
+            const std::string& orth,
+            const std::string& lemma) {
+        MorphInterpretation mi;
+        mi.startNode = startNode;
+        mi.endNode = endNode;
+        mi.orth = orth;
+        mi.lemma = lemma;
+        mi.tagId = 0;
+        mi.nameId = 0;
+        mi.labelsId = 0;
         return mi;
     }
-    
-    MorphInterpretation MorphInterpretation::createWhitespace(int startNode, int endNode, const std::string& orth, const Tagset<string>& tagset) {
-        MorphInterpretation mi(startNode, endNode, orth, orth, 1, 0, &emptyQualifiers, &tagset);
+
+    /**
+     * Creates new instance with "sp" tag (meaning: "this is a sequence of whitespaces")
+     */
+    MorphInterpretation MorphInterpretation::createWhitespace(int startNode, int endNode, const std::string& orth) {
+        MorphInterpretation mi;
+        mi.startNode = startNode;
+        mi.endNode = endNode;
+        mi.orth = orth;
+        mi.lemma = orth;
+        mi.tagId = 1;
+        mi.nameId = 0;
+        mi.labelsId = 0;
         return mi;
     }
 
@@ -77,17 +61,6 @@ namespace morfeusz {
                 && hasEnding(this->lemma, homonymId);
     }
 
-    static inline string getQualifiersStr(const MorphInterpretation& mi) {
-        string res;
-        for (unsigned int i = 0; i < mi.getQualifiers().size(); i++) {
-            res += mi.getQualifiers()[i];
-            if (i + 1 < mi.getQualifiers().size()) {
-                res += "|";
-            }
-        }
-        return res;
-    }
-
     std::string MorphInterpretation::toString(bool includeNodeNumbers) const {
         std::stringstream res;
         if (includeNodeNumbers) {
@@ -98,13 +71,13 @@ namespace morfeusz {
         res << lemma;
         res << ",";
 
-        res << getTag();
-        if (!getName().empty()) {
-            res << "," << getName();
-        }
-        if (!getQualifiers().empty()) {
-            res << "," << getQualifiersStr(*this);
-        }
+        //        res << getTag();
+        //        if (!getName().empty()) {
+        //            res << "," << getName();
+        //        }
+        //        if (!getQualifiers().empty()) {
+        //            res << "," << getQualifiersStr(*this);
+        //        }
         return res.str();
     }
 

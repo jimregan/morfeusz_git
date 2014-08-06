@@ -25,7 +25,7 @@ int main(int argc, const char** argv) {
         //        printf("%s\n", line.c_str());
         res.clear();
         morfeusz->generate(line, res);
-        printMorphResults(res, false);
+        printMorphResults(*morfeusz, res, false);
     }
     printf("\n");
     delete &opt;

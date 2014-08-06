@@ -15,7 +15,7 @@
 #include "fsa/fsa.hpp"
 #include "segrules/segrules.hpp"
 #include "const.hpp"
-#include "DefaultTagset.hpp"
+#include "IdResolverImpl.hpp"
 #include "InterpsGroup.hpp"
 #include "case/CasePatternHelper.hpp"
 #include "Qualifiers.hpp"
@@ -82,14 +82,14 @@ public:
      * 
      * @param tagset
      */
-    void setTagset(DefaultTagset& tagset);
+    void setTagset(IdResolverImpl& tagset);
     
     /**
      * Gets currently used tagset.
      * 
      * @return 
      */
-    const DefaultTagset& getTagset() const;
+    const IdResolverImpl& getTagset() const;
     
     /**
      * Sets binary dictionary file used by this environment.
@@ -143,7 +143,7 @@ public:
      * Return current qualifiers helper.
      * @return 
      */
-    const Qualifiers& getQualifiersHelper() const;
+//    const Qualifiers& getQualifiersHelper() const;
     
     /**
      * Returns true iff given codepoint denotes a separator char for ign handling.
@@ -156,8 +156,8 @@ public:
 private:
     const CharsetConverter* currentCharsetConverter;
     const CaseConverter caseConverter;
-    DefaultTagset tagset;
-    Qualifiers qualifiers;
+    IdResolverImpl tagset;
+//    Qualifiers qualifiers;
     
     const unsigned char* fsaFileStartPtr;
     const FSAType* fsa;

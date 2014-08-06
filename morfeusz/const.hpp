@@ -23,6 +23,8 @@ extern const unsigned char SHIFT_ORTH_NODE;
 
 extern const char HOMONYM_SEPARATOR;
 
+extern const char LABELS_SEPARATOR;
+
 }
 
 #endif	/* CONST_HPP */

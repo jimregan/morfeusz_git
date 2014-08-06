@@ -3,7 +3,7 @@
 
 %include <stdint.i>
 %include <std_except.i>
-
+%include <std_common.i>
 // make vector compatible with java.util.List interface
 
 namespace std {
@@ -42,16 +42,85 @@ namespace std {
             }
         }
     };
+    
+    template<class T> class list {
+        public:
+        typedef size_t size_type;
+        typedef T value_type;
+        typedef const value_type& const_reference;
+        
+        %rename(isEmpty) empty;
+        bool empty() const;
+        void clear();
+        
+        %extend {
+        
+        const_reference get(int32_t i) const throw (std::out_of_range) {
+            std::list<T>::const_iterator it = $self->begin();
+            std::advance(it, i);
+            return *it;
+        }
+        
+        value_type set(int32_t i, const value_type& VECTOR_VALUE_IN) throw (std::out_of_range) {
+            std::list<T>::iterator it = $self->begin();
+            std::advance(it, i);
+            std::string old = *it;
+            *it = VECTOR_VALUE_IN;
+            return old;
+        }
+        
+        void add(int32_t i, const value_type& VECTOR_VALUE_IN) {
+            std::list<T>::iterator it = $self->begin();
+            std::advance(it, i);
+            $self->insert(it, VECTOR_VALUE_IN);
+        }
+        
+        value_type remove(int32_t i, const value_type& VECTOR_VALUE_IN) throw (std::out_of_range) {
+            std::list<T>::iterator it = $self->begin();
+            std::advance(it, i);
+            std::string old = *it;
+            $self->erase(it);
+            return old;
+        }
+        
+        int32_t size() const {
+            return $self->size();
+        }
+        }
+    };
+        
+    template<class T> class set {
+        public:
+        typedef size_t size_type;
+        typedef T value_type;
+        typedef const value_type& const_reference;
+        
+        %rename(isEmpty) empty;
+        bool empty() const;
+        
+        %extend {
+            
+        const_reference get(int32_t i) const throw (std::out_of_range) {
+            std::set<T>::const_iterator it = $self->begin();
+            std::advance(it, i);
+            return *it;
+        }
+        
+        int32_t size() const {
+            return $self->size();
+        }
+        }
+    };
 }
 
 %typemap(javaimports) morfeusz::Morfeusz %{
 import java.io.IOException;
 import java.lang.RuntimeException;
 import java.util.List;
-import java.util.Collections;
+import java.util.ArrayList;
 
 /**
- * Performs morphological analysis (analyze methods) and syntesis (generate methods).
+ * Performs morphological analysis (analyse methods) and syntesis (generate methods).
  * 
  * It is NOT thread-safe
  * but it is possible to use separate Morfeusz instance for each concurrent thread.
@@ -59,18 +128,14 @@ import java.util.Collections;
 %}
 
 %typemap(javaimports) morfeusz::ResultsIterator %{
-import java.util.Iterator;
-
 /**
  * Iterates through morphological analysis and synthesis results.
  * 
  */
 %}
 
-%typemap(javaimports) std::vector %{
-import java.util.List;
-import java.util.AbstractList;
-%}
+%rename(_dictionarySearchPaths) morfeusz::Morfeusz::dictionarySearchPaths;
+%rename(_getLabels) morfeusz::IdResolver::getLabels;
 
 %javaexception("IOException") morfeusz::Morfeusz::setAnalyzerDictionary {
     try {
@@ -94,10 +159,12 @@ import java.util.AbstractList;
     }
 }
 
-%typemap(javainterfaces) morfeusz::ResultsIterator "Iterator<MorphInterpretation>"
-%typemap(javabase) std::vector<morfeusz::MorphInterpretation> "AbstractList<MorphInterpretation>"
-%typemap(javabase) std::vector<morfeusz::String> "AbstractList<String>"
-%typemap(javabase) morfeusz::MorfeuszException "RuntimeException"
+%typemap(javainterfaces) morfeusz::ResultsIterator "java.util.Iterator<MorphInterpretation>"
+%typemap(javabase) std::vector<morfeusz::MorphInterpretation> "java.util.AbstractList<MorphInterpretation>"
+%typemap(javabase) std::vector<std::string> "java.util.AbstractList<java.lang.String>"
+%typemap(javabase) std::list<std::string> "java.util.AbstractList<java.lang.String>"
+%typemap(javabase) std::set<std::string> "java.util.AbstractList<java.lang.String>"
+%typemap(javabase) morfeusz::MorfeuszException "java.lang.RuntimeException"
 
 %typemap(javacode) morfeusz::Morfeusz %{
     
@@ -107,10 +174,10 @@ import java.util.AbstractList;
      * @param text text for morphological analysis.
      * @return list containing the results of morphological analysis
     */
-    public List<MorphInterpretation> analyzeAsList(String text) {
+    public List<MorphInterpretation> analyseAsList(String text) {
         InterpsList res = new InterpsList();
-        analyze(text, res);
-        return Collections.unmodifiableList(res);
+        analyse(text, res);
+        return new ArrayList<MorphInterpretation>(res);
     }
 
     /**
@@ -122,21 +189,30 @@ import java.util.AbstractList;
     public List<MorphInterpretation> generate(String lemma) {
         InterpsList res = new InterpsList();
         generate(lemma, res);
-        return Collections.unmodifiableList(res);
+        return new ArrayList<MorphInterpretation>(res);
     }
 
     /**
      * Perform morphological synthesis on a given lemma.
      * Limit results to interpretations with the specified tag.
      * 
-     * @param lemma lemma to be analyzed
+     * @param lemma lemma to be analysed
      * @param tagnum tag number of result interpretations
      * @return list containing results of the morphological synthesis
      */
     public List<MorphInterpretation> generate(String lemma, int tagnum) {
         InterpsList res = new InterpsList();
         generate(lemma, tagnum, res);
-        return Collections.unmodifiableList(res);
+        return new ArrayList<MorphInterpretation>(res);
+    }
+    
+    /**
+     * Get list of paths for dictionaries searching
+     * 
+     * @return modifiable list of paths
+     */
+    public List<String> getDictionarySearchPaths() {
+        return this.get_dictionarySearchPaths();
     }
 %}
 
@@ -150,6 +226,13 @@ import java.util.AbstractList;
     }
 %}
 
+%typemap(javacode) morfeusz::IdResolver %{
+    
+    public java.util.Collection<java.lang.String> getLabels(int labelsId) {
+        return _getLabels(labelsId);
+    }
+%}
+
 %typemap(javafinalize) SWIGTYPE %{
     protected void finalize() {
         if (swigCMemOwn) {
@@ -160,9 +243,15 @@ import java.util.AbstractList;
 
 %typemap(javadestruct, methodname="delete", methodmodifiers="private") SWIGTYPE "";
 
-%javamethodmodifiers morfeusz::Morfeusz::analyze(const std::string&, std::vector<MorphInterpretation>&) const "private";
+%javamethodmodifiers morfeusz::Morfeusz::analyse(const std::string&, std::vector<MorphInterpretation>&) const "private";
 %javamethodmodifiers morfeusz::Morfeusz::generate(const std::string&, std::vector<MorphInterpretation>&) const "private";
 %javamethodmodifiers morfeusz::Morfeusz::generate(const std::string&, int, std::vector<MorphInterpretation>&) const "private";
+
+// should be overwritten by getDictionarySearchPaths() in typemap(javacode)
+%javamethodmodifiers morfeusz::Morfeusz::dictionarySearchPaths "private";
+
+// should be overwritten by getLabels() in typemap(javacode)
+%javamethodmodifiers morfeusz::IdResolver::getLabels "private";
 
 %typemap(javaclassmodifiers) std::vector "class"
 
@@ -180,3 +269,10 @@ import java.util.AbstractList;
 %pragma(java) jniclassimports=%{
 import java.io.IOException;
 %}
+
+%include "std_vector.i"
+%include "std_string.i"
+%include "std_except.i"
+%include "exception.i"
+%include "typemaps.i"
+

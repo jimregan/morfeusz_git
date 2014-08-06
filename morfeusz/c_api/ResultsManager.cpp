@@ -15,8 +15,8 @@ namespace morfeusz {
 
     static const int initialSize = 1024;
 
-    ResultsManager::ResultsManager()
-    : results(new InterpMorf[initialSize]()),
+    ResultsManager::ResultsManager(const Morfeusz* morfeusz)
+    : morfeusz(morfeusz), results(new InterpMorf[initialSize]()),
     resultsArraySize(initialSize) {
     }
 
@@ -45,11 +45,11 @@ namespace morfeusz {
 
     InterpMorf ResultsManager::convertOneResult(const MorphInterpretation& res) {
         InterpMorf convertedRes;
-        convertedRes.p = res.getStartNode();
-        convertedRes.k = res.getEndNode();
-        convertedRes.forma = const_cast<char*>(res.getOrth().c_str());
-        convertedRes.haslo = const_cast<char*>(res.getLemma().c_str());
-        convertedRes.interp = const_cast<char*>(res.getTag().c_str());
+        convertedRes.p = res.startNode;
+        convertedRes.k = res.endNode;
+        convertedRes.forma = const_cast<char*>(res.orth.c_str());
+        convertedRes.haslo = const_cast<char*>(res.lemma.c_str());
+        convertedRes.interp = const_cast<char*>(morfeusz->getIdResolver().getTag(res.tagId).c_str());
         return convertedRes;
     }
 }

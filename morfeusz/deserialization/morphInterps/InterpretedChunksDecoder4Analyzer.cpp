@@ -112,14 +112,24 @@ void InterpretedChunksDecoder4Analyzer::decodeMorphInterpretation(
         string lemma(params.lemma4Prefixes);
         lemma.reserve(lemma.size() + normalizedCodepoints.size());
         this->decodeLemma(ei.value, params.chunk.codepointsNum, false, lemma);
-        MorphInterpretation mi(
-                params.startNode, params.endNode,
-                params.orth, lemma,
-                ei.tag,
-                ei.nameClassifier,
-                &env.getQualifiersHelper().getQualifiers(ei.qualifiers),
-                &env.getTagset());
-        out.push_back(mi);
+        size_t newIdx = out.size();
+        out.resize(newIdx + 1);
+        MorphInterpretation& newElem = out[newIdx];
+        newElem.startNode = params.startNode;
+        newElem.endNode = params.endNode;
+        newElem.orth = params.orth;
+        newElem.lemma = lemma;
+        newElem.tagId = ei.tag;
+        newElem.nameId = ei.nameClassifier;
+        newElem.labelsId = ei.qualifiers;
+//        MorphInterpretation mi(
+//                params.startNode, params.endNode,
+//                params.orth, lemma,
+//                ei.tag,
+//                ei.nameClassifier,
+//                &env.getQualifiersHelper().getQualifiers(ei.qualifiers),
+//                &env.getTagset());
+//        out.push_back(mi);
     }
 }
 

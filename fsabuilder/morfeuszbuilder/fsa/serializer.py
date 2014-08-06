@@ -42,7 +42,7 @@ class Serializer(object):
     
     # get the Morfeusz file format version that is being encoded
     def getVersion(self):
-        return 18
+        return 19
     
     def serialize2CppFile(self, fname, isGenerator, headerFilename="data/default_fsa.hpp"):
         res = []
@@ -113,11 +113,13 @@ class Serializer(object):
     def serializeQualifiersMap(self):
         res = bytearray()
         res.extend(htons(len(self.qualifiersMap)))
-        for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n):
-            res.append(len(qualifiers))
-            for q in qualifiers:
-                res.extend(q.encode('utf8'))
-                res.append(0)
+        label2labelId = dict([ (u'|'.join(qualifiers), n) for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n) ])
+        res.extend(self._serializeTags(label2labelId))
+        #~ for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n):
+            #~ res.append(len(qualifiers))
+            #~ for q in qualifiers:
+                #~ res.extend(q.encode('utf8'))
+                #~ res.append(0)
         return res
     
     def serializePrologue(self):

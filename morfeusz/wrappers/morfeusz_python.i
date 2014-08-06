@@ -1,11 +1,12 @@
+
 %pythoncode %{
 
-def _analyze(self, text):
+def _analyse(self, text):
   res = InterpsVector()
-  _morfeusz2.Morfeusz_analyze(self, text.encode('utf8'), res)
+  _morfeusz2.Morfeusz_analyse(self, text.encode('utf8'), res)
   return list(res)
 
-Morfeusz.analyze = _analyze
+Morfeusz.analyse = _analyse
 
 def _generate(self, text):
   res = InterpsVector()
@@ -31,3 +32,11 @@ MorphInterpretation.getLemma = _getLemma
 MorphInterpretation.getTag = _getTag
 MorphInterpretation.getName = _getName
 %}
+
+%include "std_vector.i"
+%include "std_string.i"
+%include "std_list.i"
+%include "std_set.i"
+%include "std_except.i"
+%include "exception.i"
+%include "typemaps.i"

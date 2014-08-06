@@ -60,15 +60,15 @@ namespace morfeusz {
 
         virtual ~MorfeuszInternal();
 
-        ResultsIterator* analyze(const std::string& text) const;
+        ResultsIterator* analyse(const std::string& text) const;
         
-        ResultsIterator* analyze(const char* text) const;
+        ResultsIterator* analyse(const char* text) const;
 
-        void analyze(const std::string& text, std::vector<MorphInterpretation>& result) const;
+        void analyse(const std::string& text, std::vector<MorphInterpretation>& result) const;
 
         void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const;
 
-        void generate(const std::string& lemma, int tagnum, std::vector<MorphInterpretation>& result) const;
+        void generate(const std::string& lemma, int tagId, std::vector<MorphInterpretation>& result) const;
 
         void setCharset(Charset encoding);
 
@@ -84,11 +84,13 @@ namespace morfeusz {
         
         void setDebug(bool debug);
 
-        const Tagset<std::string>& getDefaultAnalyzerTagset() const;
+        const IdResolver& getDefaultAnalyzerTagset() const;
 
-        const Tagset<std::string>& getDefaultGeneratorTagset() const;
+        const IdResolver& getDefaultGeneratorTagset() const;
         
-        ResultsIterator* analyzeWithCopy(const char* text) const;
+        ResultsIterator* analyseWithCopy(const char* text) const;
+        
+        const IdResolver& getIdResolver() const;
 
         friend class ResultsIteratorImpl;
     
@@ -101,7 +103,7 @@ namespace morfeusz {
                 std::vector<MorphInterpretation>& result,
                 bool insideIgnHandler = false) const;
         
-        void analyzeOneWord(
+        void analyseOneWord(
                 TextReader& reader,
                 std::vector<MorphInterpretation>& results) const;
         

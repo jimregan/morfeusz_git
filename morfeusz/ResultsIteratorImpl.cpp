@@ -52,7 +52,7 @@ namespace morfeusz {
         assert(bufferIterator == buffer.end());
         buffer.resize(0);
         if (!reader.isAtEnd()) {
-            morfeusz.analyzeOneWord(reader, buffer);
+            morfeusz.analyseOneWord(reader, buffer);
         }
         bufferIterator = buffer.begin();
         return bufferIterator != buffer.end();
