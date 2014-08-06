@@ -16,8 +16,8 @@
 
 namespace morfeusz {
 
-    %ignore MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const std::string& lemma);
-    %ignore MorphInterpretation::createWhitespace(int startNode, int endNode, const std::string& orth);
+//    %ignore MorphInterpretation::createIgn(int startNode, int endNode, const std::string& orth, const std::string& lemma);
+//    %ignore MorphInterpretation::createWhitespace(int startNode, int endNode, const std::string& orth);
     %ignore Morfeusz::analyse(const char*) const;
     %ignore Morfeusz::analyse(const std::string&) const;
     %ignore Morfeusz::setCharset(Charset);

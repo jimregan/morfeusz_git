@@ -19,7 +19,7 @@ add_custom_command (
     COMMAND swig -python -c++ -o "${SWIG_PYTHON_OUTFILE_CXX}" "${CMAKE_SOURCE_DIR}/morfeusz/wrappers/morfeusz.i"
     DEPENDS libmorfeusz
 )
-add_custom_target (generate_python_wrapper
+add_custom_target (generate_python_wrapper ALL
         DEPENDS "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}")
 
 set (SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
@@ -38,7 +38,7 @@ add_custom_command (OUTPUT ${OUTPUT}
                        ARGS ${SETUP_PY} build
                        DEPENDS generate_python_wrapper generate_python_setup_file libmorfeusz)
 
-add_custom_target (build_python_wrapper
+add_custom_target (build_python_wrapper ALL
         DEPENDS ${OUTPUT})
 
 add_custom_target (pymorfeusz

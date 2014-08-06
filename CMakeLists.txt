@@ -155,7 +155,7 @@ endif ()
 include (CPack)
 
 ##### END initialize some vars #####
-file (COPY fsabuilder doTest.sh testJavaWrapper.sh DESTINATION .)
+file (COPY fsabuilder doTest.sh testJavaWrapper.sh testPythonWrapper.sh morfeusz/wrappers/python/test.py DESTINATION .)
 
 #~ configure_file (
   #~ "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_version.h.in"
@@ -184,4 +184,5 @@ endif()
 
 if (UNIX)
     add_test(TestJavaWrapper ./testJavaWrapper.sh "${PROJECT_BINARY_DIR}")
+    add_test(TestPythonWrapper ./testPythonWrapper.sh "${PROJECT_BINARY_DIR}")
 endif ()
