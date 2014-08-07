@@ -1,6 +1,30 @@
 
-//%rename (_Morfeusz) morfeusz::Morfeusz;
-//%rename (_ResultsIterator) morfeusz::ResultsIterator;
+%exception {
+    try{
+        $action
+    }
+    catch(const std::ios_base::failure& e) {
+        SWIG_exception(SWIG_IOError, const_cast<char*>(e.what()));
+    }
+    catch(const morfeusz::FileFormatException& e) {
+        SWIG_exception(SWIG_IOError, const_cast<char*>(e.what()));
+    }
+    catch(const std::invalid_argument& e) {
+        SWIG_exception(SWIG_ValueError, const_cast<char*>(e.what()));
+    }
+    catch(const std::exception& e) {
+        SWIG_exception(SWIG_RuntimeError, const_cast<char*>(e.what()));
+    }
+    catch(const std::string& e) {
+        SWIG_exception(SWIG_RuntimeError, const_cast<char*>(e.c_str()));
+    }
+    catch(...) {
+        SWIG_exception(SWIG_RuntimeError, "Unknown exception");
+    }
+}
+
+%ignore morfeusz::MorfeuszException;
+%ignore morfeusz::FileFormatException;
 
 %rename (_generateByTagId) morfeusz::Morfeusz::generate(const std::string&, int, std::vector<std::string>&);
 

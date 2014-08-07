@@ -1,19 +1,4 @@
 
-//%exception {
-//    try{
-//        $action
-//    }
-//    catch(const morfeusz::FileFormatException& e) {
-//        SWIG_exception(SWIG_IOError, const_cast<char*>(e.what()));
-//    }
-//    catch(const std::exception& e) {
-//        SWIG_exception(SWIG_RuntimeError, const_cast<char*>(e.what()));
-//    }
-//    catch(...) {
-//        SWIG_exception(SWIG_RuntimeError, "Unknown exception");
-//    }
-//}
-
 namespace morfeusz {
     
     %ignore Morfeusz::analyse(const char*) const;

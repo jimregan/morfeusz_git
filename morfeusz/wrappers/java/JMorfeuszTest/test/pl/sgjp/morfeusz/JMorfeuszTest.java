@@ -96,7 +96,9 @@ public class JMorfeuszTest {
 
     @Test(expected = IOException.class)
     public void testNonExistingDictionaryFile() throws IOException {
-        morfeusz.setGeneratorDictionary("/asfda/asfa");
+        File tmpFile = File.createTempFile("morfeusz_invalid_dict", ".test");
+        tmpFile.delete();
+        morfeusz.setGeneratorDictionary(tmpFile.getAbsolutePath());
     }
 
     @Test(expected = IOException.class)

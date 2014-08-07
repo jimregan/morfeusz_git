@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <stdexcept>
 #include "fsa/fsa.hpp"
 #include "utils.hpp"
 #include "data/default_fsa.hpp"
@@ -522,15 +523,39 @@ namespace morfeusz {
     }
 
     void MorfeuszImpl::setCaseHandling(CaseHandling caseHandling) {
+        switch (caseHandling) {
+            case IGNORE_CASE:
+            case CONDITIONALLY_CASE_SENSITIVE:
+            case STRICTLY_CASE_SENSITIVE:
+                break;
+            default:
+                throw std::invalid_argument("Invalid caseHandling option");
+        }
+        this->options.caseHandling = caseHandling;
         this->analyzerEnv.setCaseSensitive(caseHandling != IGNORE_CASE);
     }
 
     void MorfeuszImpl::setTokenNumbering(TokenNumbering tokenNumbering) {
+        switch (tokenNumbering) {
+            case SEPARATE_NUMBERING:
+            case CONTINUOUS_NUMBERING:
+                break;
+            default:
+                throw std::invalid_argument("Invalid tokenNumbering option");
+        }
         this->options.tokenNumbering = tokenNumbering;
         nextNodeNum = 0;
     }
 
     void MorfeuszImpl::setWhitespaceHandling(WhitespaceHandling whitespaceHandling) {
+        switch (whitespaceHandling) {
+            case SKIP_WHITESPACES:
+            case APPEND_WHITESPACES:
+            case KEEP_WHITESPACES:
+                break;
+            default:
+                throw std::invalid_argument("Invalid whitespaceHandling option");
+        }
         this->options.whitespaceHandling = whitespaceHandling;
     }
 
