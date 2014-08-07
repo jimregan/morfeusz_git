@@ -183,6 +183,6 @@ if (UNIX)
 endif()
 
 if (UNIX)
-    add_test(TestJavaWrapper ./testJavaWrapper.sh "${PROJECT_BINARY_DIR}")
+    add_test(TestJavaWrapper ./testJavaWrapper.sh "${CMAKE_CURRENT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
     add_test(TestPythonWrapper ./testPythonWrapper.sh "${PROJECT_BINARY_DIR}")
 endif ()

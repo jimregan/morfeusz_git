@@ -10,8 +10,9 @@ include_directories (${CMAKE_SOURCE_DIR}/morfeusz)
 
 set (SWIG_JAVA_OUTFILE "${CMAKE_CURRENT_BINARY_DIR}/swigJAVA.cpp")
 file (COPY pl DESTINATION .)
-file (COPY JMorfeuszTest DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
 set (JAVA_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}/pl/waw/ipipan/morfeusz")
+
 add_custom_command (
     OUTPUT ${SWIG_JAVA_OUTFILE}
     COMMAND swig -java -c++ -package pl.waw.ipipan.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${JAVA_SRC_DIR} ${CMAKE_SOURCE_DIR}/morfeusz/wrappers/morfeusz.i
@@ -19,6 +20,7 @@ add_custom_command (
 )
 add_custom_target(generate-java-wrapper ALL
     DEPENDS ${SWIG_JAVA_OUTFILE})
+
 add_library (libjmorfeusz SHARED ${SWIG_JAVA_OUTFILE})
 add_dependencies (libjmorfeusz generate_java_wrapper)
 set_target_properties (libjmorfeusz PROPERTIES OUTPUT_NAME "jmorfeusz")
@@ -57,17 +59,6 @@ add_jar (jmorfeusz
     SOURCES "${JAVA_SOURCES}"
     ENTRY_POINT pl/waw/ipipan/morfeusz/app/App
     DEPENDS libjmorfeusz generate-java-wrapper)
-
-#create_javadoc(jmorfeusz_javadoc
-#  PACKAGES pl.waw.ipipan.morfeusz
-#  SOURCEPATH "${CMAKE_CURRENT_BINARY_DIR}"
-#  CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH}"
-#  WINDOWTITLE "JMorfeusz - Morfeusz Java binding"
-#  DOCTITLE "<h1>JMorfeusz</h1>"
-#  AUTHOR TRUE
-#  USE TRUE
-#  VERSION TRUE
-#  DEPENDS jmorfeusz generate_java_wrapper)
 
 add_custom_target(generate-javadoc ALL
     COMMAND javadoc
