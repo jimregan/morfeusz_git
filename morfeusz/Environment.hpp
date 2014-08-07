@@ -18,7 +18,6 @@
 #include "IdResolverImpl.hpp"
 #include "InterpsGroup.hpp"
 #include "case/CasePatternHelper.hpp"
-#include "Qualifiers.hpp"
 #include "deserialization/InterpsGroupsReader.hpp"
 
 namespace morfeusz {
@@ -140,12 +139,6 @@ public:
     const CasePatternHelper& getCasePatternHelper() const;
     
     /**
-     * Return current qualifiers helper.
-     * @return 
-     */
-//    const Qualifiers& getQualifiersHelper() const;
-    
-    /**
      * Returns true iff given codepoint denotes a separator char for ign handling.
      * @param codepoint
      * @return 
@@ -157,7 +150,6 @@ private:
     const CharsetConverter* currentCharsetConverter;
     const CaseConverter caseConverter;
     IdResolverImpl tagset;
-//    Qualifiers qualifiers;
     
     const unsigned char* fsaFileStartPtr;
     const FSAType* fsa;

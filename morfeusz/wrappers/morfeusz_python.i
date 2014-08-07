@@ -26,13 +26,20 @@ def next(self):
         raise StopIteration
 %}
 
-%feature("shadow") morfeusz::Morfeusz::analyseAsIterator(const char*) %{
+%feature("shadow") morfeusz::Morfeusz::analyseAsIterator %{
+
 def analyse_iter(self, text):
+    """
+    Analyse given text and return an iterator over MorphInterpretation as a result.
+    """
     return $action(self, text)
 %}
 
 %feature("shadow") morfeusz::Morfeusz::analyse %{
 def analyse(self, text):
+    """
+    Analyse given text and return a list of MorphInterpretation objects.
+    """
     res = InterpsList()
     $action(self, text, res)
     return res
@@ -47,6 +54,9 @@ def _generateByTagId(self, lemma, tagId):
 
 %feature("shadow") morfeusz::Morfeusz::generate %{
 def generate(self, lemma, tagId=None):
+    """
+    Perform morphological synthesis on given text and return a list of MorphInterpretation objects.
+    """
     if tagId is not None:
         return self._generateByTagId(lemma, tagId)
     else:

@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <vector>
 #include <fstream>
+#include <stdexcept>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TestMorfeusz);
 
@@ -37,8 +38,8 @@ void TestMorfeusz::testAnalyzeIterate1() {
     CPPUNIT_ASSERT_EQUAL(string("AAAAbbbbCCCC"), it->peek().orth);
     CPPUNIT_ASSERT_EQUAL(string("AAAAbbbbCCCC"), it->next().orth);
     CPPUNIT_ASSERT(!it->hasNext());
-    CPPUNIT_ASSERT_THROW(it->peek(), MorfeuszException);
-    CPPUNIT_ASSERT_THROW(it->next(), MorfeuszException);
+    CPPUNIT_ASSERT_THROW(it->peek(), std::out_of_range);
+    CPPUNIT_ASSERT_THROW(it->next(), std::out_of_range);
     delete it;
 }
 
@@ -66,8 +67,8 @@ void TestMorfeusz::testAnalyzeIterateWithWhitespaceHandlingKEEP() {
     CPPUNIT_ASSERT_EQUAL(string("\t"), it->next().orth);
     
     CPPUNIT_ASSERT(!it->hasNext());
-    CPPUNIT_ASSERT_THROW(it->peek(), MorfeuszException);
-    CPPUNIT_ASSERT_THROW(it->next(), MorfeuszException);
+    CPPUNIT_ASSERT_THROW(it->peek(), std::out_of_range);
+    CPPUNIT_ASSERT_THROW(it->next(), std::out_of_range);
     delete it;
 }
 
@@ -86,8 +87,8 @@ void TestMorfeusz::testAnalyzeIterateWithWhitespaceHandlingAPPEND() {
     CPPUNIT_ASSERT_EQUAL(string(".\t"), it->next().orth);
     
     CPPUNIT_ASSERT(!it->hasNext());
-    CPPUNIT_ASSERT_THROW(it->peek(), MorfeuszException);
-    CPPUNIT_ASSERT_THROW(it->next(), MorfeuszException);
+    CPPUNIT_ASSERT_THROW(it->peek(), std::out_of_range);
+    CPPUNIT_ASSERT_THROW(it->next(), std::out_of_range);
     delete it;
 }
 

@@ -64,13 +64,17 @@
         <in>TestMorfeusz.cpp</in>
         <in>test_c_api.cpp</in>
       </df>
+      <df name="wrappers">
+        <df name="java">
+          <in>JMorfeuszTest.java</in>
+        </df>
+      </df>
       <in>Environment.cpp</in>
       <in>IdResolverImpl.cpp</in>
       <in>InflexionGraph.cpp</in>
       <in>Morfeusz.cpp</in>
       <in>MorfeuszImpl.cpp</in>
       <in>MorphInterpretation.cpp</in>
-      <in>Qualifiers.cpp</in>
       <in>ResultsIteratorImpl.cpp</in>
       <in>const.cpp</in>
       <in>morfeusz2_c.cpp</in>
@@ -327,8 +331,6 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="build/morfeusz/wrappers/morfeuszPERL_wrap.cxx"
             ex="false"
@@ -773,19 +775,6 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="morfeusz/Qualifiers.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
-            <Elem>NDEBUG</Elem>
-            <Elem>libmorfeusz_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </item>
       <item path="morfeusz/ResultsIteratorImpl.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
           <incDir>
@@ -959,6 +948,11 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="morfeusz/wrappers/java/JMorfeuszTest.java"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
     </conf>
   </confs>

@@ -8,7 +8,7 @@
 %module(allprotected="1") morfeusz2
 #endif
 
-%feature("autodoc", "2");
+//%feature("autodoc", "2");
 %{
 #include "morfeusz2.h"
 #include "MorfeuszImpl.hpp"

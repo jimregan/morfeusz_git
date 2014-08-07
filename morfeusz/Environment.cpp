@@ -40,7 +40,6 @@ Environment::Environment(
 : currentCharsetConverter(getCharsetConverter(charset)),
 caseConverter(),
 tagset(fsaFileStartPtr, currentCharsetConverter),
-//qualifiers(fsaFileStartPtr),
 fsaFileStartPtr(fsaFileStartPtr),
 fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
 separatorsList(getSeparatorsList(fsaFileStartPtr)),
@@ -116,7 +115,6 @@ void Environment::setDictionaryFile(const std::string& filename) {
     this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
     this->isFromFile = true;
     this->tagset = IdResolverImpl(fsaFileStartPtr, currentCharsetConverter);
-//    this->qualifiers = Qualifiers(fsaFileStartPtr);
 }
 
 const SegrulesFSA& Environment::getCurrentSegrulesFSA() const {
@@ -155,10 +153,6 @@ void Environment::setCaseSensitive(bool caseSensitive) {
 const CasePatternHelper& Environment::getCasePatternHelper() const {
     return *this->casePatternHelper;
 }
-
-//const Qualifiers& Environment::getQualifiersHelper() const {
-//    return this->qualifiers;
-//}
 
 bool Environment::isSeparator(uint32_t codepoint) const {
     return binary_search(

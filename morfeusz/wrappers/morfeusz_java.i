@@ -136,8 +136,9 @@ import java.util.ArrayList;
 
 %rename(_dictionarySearchPaths) morfeusz::Morfeusz::dictionarySearchPaths;
 %rename(_getLabels) morfeusz::IdResolver::getLabels;
+%ignore morfeusz::FileFormatException;
 
-%javaexception("IOException") morfeusz::Morfeusz::setAnalyzerDictionary {
+%javaexception("java.io.IOException") morfeusz::Morfeusz::setAnalyzerDictionary {
     try {
         $action
     }
@@ -146,15 +147,62 @@ import java.util.ArrayList;
         jenv->ThrowNew(clazz, "Invalid file format");
         return $null;
     }
+    catch(std::ios_base::failure & e) {
+        jclass clazz = jenv->FindClass("java/io/IOException");
+        jenv->ThrowNew(clazz, e.what());
+        return $null;
+    }
 }
 
-%javaexception("IOException") morfeusz::Morfeusz::setGeneratorDictionary {
+%javaexception("java.io.IOException") morfeusz::Morfeusz::setGeneratorDictionary {
     try {
         $action
     }
     catch(morfeusz::FileFormatException & e) {
         jclass clazz = jenv->FindClass("java/io/IOException");
         jenv->ThrowNew(clazz, "Invalid file format");
+        return $null;
+    }
+    catch(std::ios_base::failure & e) {
+        jclass clazz = jenv->FindClass("java/io/IOException");
+        jenv->ThrowNew(clazz, e.what());
+        return $null;
+    }
+}
+
+%javaexception("java.util.NoSuchElementException") morfeusz::ResultsIterator::next {
+    try {
+        $action
+    }
+    catch(std::out_of_range & e) {
+        jclass clazz = jenv->FindClass("java/util/NoSuchElementException");
+        jenv->ThrowNew(clazz, e.what());
+        return $null;
+    }
+}
+
+%exception {
+    try{
+        $action
+    }
+    catch(const morfeusz::MorfeuszException& e) {
+        jclass clazz = jenv->FindClass("pl/waw/ipipan/morfeusz/MorfeuszException");
+        jenv->ThrowNew(clazz, e.what());
+        return $null;
+    }
+    catch(const std::exception& e) {
+        jclass clazz = jenv->FindClass("java/lang/RuntimeException");
+        jenv->ThrowNew(clazz, e.what());
+        return $null;
+    }
+    catch(const std::string& e) {
+        jclass clazz = jenv->FindClass("java/lang/RuntimeException");
+        jenv->ThrowNew(clazz, e.c_str());
+        return $null;
+    }
+    catch(...) {
+        jclass clazz = jenv->FindClass("java/lang/RuntimeException");
+        jenv->ThrowNew(clazz, "Unknown exception");
         return $null;
     }
 }
@@ -254,11 +302,17 @@ import java.util.ArrayList;
 %javamethodmodifiers morfeusz::IdResolver::getLabels "private";
 
 %typemap(javaclassmodifiers) std::vector "class"
+%typemap(javaclassmodifiers) std::list "class"
+%typemap(javaclassmodifiers) std::set "class"
 
 %include "enums.swg"
 
 /* Force the generated Java code to use the C enum values rather than making a JNI call */
 %javaconst(1);
+
+%pragma(java) jniclassclassmodifiers="class"
+        
+%pragma(java) moduleclassmodifiers="class"
 
 %pragma(java) jniclasscode=%{
   static {

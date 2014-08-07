@@ -8,6 +8,7 @@
 #include "ResultsIteratorImpl.hpp"
 
 #include <cstring>
+#include <stdexcept>
 
 namespace morfeusz {
 
@@ -43,7 +44,7 @@ namespace morfeusz {
 
     void ResultsIteratorImpl::ensureHasNext() {
         if (!hasNext()) {
-            throw MorfeuszException("No more interpretations available to ResultsIterator");
+            throw std::out_of_range("No more interpretations available to ResultsIterator");
         }
     }
 

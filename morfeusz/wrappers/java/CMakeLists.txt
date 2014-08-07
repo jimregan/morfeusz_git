@@ -10,6 +10,7 @@ include_directories (${CMAKE_SOURCE_DIR}/morfeusz)
 
 set (SWIG_JAVA_OUTFILE "${CMAKE_CURRENT_BINARY_DIR}/swigJAVA.cpp")
 file (COPY pl DESTINATION .)
+file (COPY JMorfeuszTest DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 set (JAVA_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}/pl/waw/ipipan/morfeusz")
 add_custom_command (
     OUTPUT ${SWIG_JAVA_OUTFILE}
@@ -50,7 +51,8 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif ()
 
 # build jmorfeusz
-file(GLOB_RECURSE JAVA_SOURCES ${JAVA_SRC_DIR} "*.java")
+file(GLOB_RECURSE JAVA_SOURCES "${JAVA_SRC_DIR}" "${JAVA_SRC_DIR}/*.java")
+message("SOURCES: ${JAVA_SOURCES}")
 add_jar (jmorfeusz
     SOURCES "${JAVA_SOURCES}"
     ENTRY_POINT pl/waw/ipipan/morfeusz/app/App
