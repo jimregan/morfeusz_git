@@ -43,10 +43,20 @@ namespace morfeusz {
                 0, // Required?
                 1, // Number of args expected.
                 0, // Delimiter if expecting multiple args.
-                "file with analyzer finite state automaton and data, created with buildfsa.py script.", // Help description.
-                "-i", // Flag token. 
-                "-input", // Flag token.
-                "--input" // Flag token.
+                "dictionary name", // Help description.
+                "-d", // Flag token. 
+                "-dict", // Flag token.
+                "--dict" // Flag token.
+                );
+        
+        opt.add(
+                "", // Default.
+                0, // Required?
+                1, // Number of args expected.
+                0, // Delimiter if expecting multiple args.
+                "directory containing the dictionary (optional)", // Help description.
+                "-dict-dir", // Flag token. 
+                "--dict-dir" // Flag token.
                 );
 
         opt.add(
@@ -126,7 +136,6 @@ namespace morfeusz {
                 0, // Number of args expected.
                 0, // Delimiter if expecting multiple args.
                 "show some debug information.", // Help description.
-                "-d", // Flag token. 
                 "-debug", // Flag token.
                 "--debug" // Flag token.
                 );
@@ -203,21 +212,13 @@ namespace morfeusz {
         }
     }
 
-    void initializeMorfeusz(ezOptionParser& opt, Morfeusz& morfeusz, MorfeuszProcessorType processorType) {
-        if (opt.isSet("-i")) {
-            string dictFile;
-            opt.get("-i")->getString(dictFile);
-            switch (processorType) {
-                case ANALYZER:
-                    morfeusz.setAnalyzerDictionary(dictFile);
-                    break;
-                case GENERATOR:
-                    morfeusz.setGeneratorDictionary(dictFile);
-                    break;
-                default:
-                    break;
-            }
-            cerr << "Using dictionary from " << dictFile << endl;
+    Morfeusz* initializeMorfeusz(ezOptionParser& opt, MorfeuszProcessorType processorType) {
+        Morfeusz& morfeusz = *Morfeusz::createInstance();
+        if (opt.isSet("-d")) {
+            string dictName;
+            opt.get("-d")->getString(dictName);
+            morfeusz.setDictionary(dictName);
+            cerr << "Using dictionary: " << dictName << endl;
         }
         if (opt.isSet("-a")) {
             string aggl;
@@ -231,7 +232,7 @@ namespace morfeusz {
             cerr << "setting praet option to " << praet << endl;
             morfeusz.setPraet(praet);
         }
-        if (opt.isSet("-d")) {
+        if (opt.isSet("-debug")) {
             cerr << "setting debug to TRUE" << endl;
             morfeusz.setDebug(true);
         }
@@ -264,10 +265,11 @@ namespace morfeusz {
                 morfeusz.setWhitespaceHandling(getWhitespaceHandling(whitespaceHandling));
             }
         }
-
+        
 #if defined(_WIN64) || defined(_WIN32)
         morfeusz.setCharset(CP852);
 #endif
+        return &morfeusz;
     }
 
 }

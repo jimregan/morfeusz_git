@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="94">
+<configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="build"
                    displayName="build"
@@ -9,6 +9,9 @@
         <logicalFolder name="wrappers" displayName="wrappers" projectFiles="true">
           <logicalFolder name="java" displayName="java" projectFiles="true">
             <itemPath>build/morfeusz/wrappers/java/swigJAVA.cpp</itemPath>
+          </logicalFolder>
+          <logicalFolder name="python" displayName="python" projectFiles="true">
+            <itemPath>build/morfeusz/wrappers/python/swigPYTHON.cpp</itemPath>
           </logicalFolder>
           <itemPath>build/morfeusz/wrappers/morfeuszPERL_wrap.cxx</itemPath>
         </logicalFolder>
@@ -64,11 +67,8 @@
         <in>TestMorfeusz.cpp</in>
         <in>test_c_api.cpp</in>
       </df>
-      <df name="wrappers">
-        <df name="java">
-          <in>JMorfeuszTest.java</in>
-        </df>
-      </df>
+      <in>DictionariesRepository.cpp</in>
+      <in>Dictionary.cpp</in>
       <in>Environment.cpp</in>
       <in>IdResolverImpl.cpp</in>
       <in>InflexionGraph.cpp</in>
@@ -168,8 +168,9 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++98 -O3"/>
-        <element flagsID="1" commonFlags="-std=c++98 -O3 -fPIC"/>
+        <element flagsID="0" commonFlags="-g -O2 -fPIC"/>
+        <element flagsID="1" commonFlags="-std=c++98 -O3"/>
+        <element flagsID="2" commonFlags="-std=c++98 -O3 -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -222,7 +223,7 @@
         </ccTool>
       </item>
       <item path="build/morfeusz/default_fsa.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
           </incDir>
@@ -236,7 +237,7 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
           </incDir>
@@ -278,7 +279,7 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>build</pElem>
             <pElem>morfeusz</pElem>
@@ -331,19 +332,30 @@
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="2">
+        </ccTool>
       </item>
       <item path="build/morfeusz/wrappers/morfeuszPERL_wrap.cxx"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>/usr/lib/perl/5.14/CORE</pElem>
             <pElem>build/morfeusz/wrappers/perl</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>BUILDING_MORFEUSZ</Elem>
+            <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
             <Elem>morfeusz_perl_EXPORTS</Elem>
           </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="build/morfeusz/wrappers/python/swigPYTHON.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="build1/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
@@ -621,20 +633,26 @@
           <incDir>
             <pElem>morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="build/morfeusz/wrappers/java">
         <ccTool>
           <incDir>
-            <pElem>/usr/lib/jvm/default-java/include</pElem>
+            <pElem>/usr/lib/jvm/java-6-openjdk/include</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>BUILDING_MORFEUSZ</Elem>
+            <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
             <Elem>libjmorfeusz_EXPORTS</Elem>
           </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="build/morfeusz/wrappers/python">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+            <pElem>/usr/include/python2.7</pElem>
+          </incDir>
         </ccTool>
       </folder>
       <folder path="java">
@@ -691,8 +709,39 @@
           </incDir>
         </ccTool>
       </folder>
+      <item path="morfeusz/DictionariesRepository.cpp"
+            ex="false"
+            tool="1"
+            flavor2="4">
+        <ccTool flags="2">
+          <incDir>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BUILDING_MORFEUSZ</Elem>
+            <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>NDEBUG</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="morfeusz/Dictionary.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="2">
+          <incDir>
+            <pElem>morfeusz</pElem>
+            <pElem>build/morfeusz</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BUILDING_MORFEUSZ</Elem>
+            <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>NDEBUG</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="morfeusz/Environment.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -706,7 +755,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/IdResolverImpl.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -720,7 +769,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/InflexionGraph.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -734,7 +783,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -748,7 +797,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/MorfeuszImpl.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -762,7 +811,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/MorphInterpretation.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -776,7 +825,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/ResultsIteratorImpl.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -815,7 +864,7 @@
       <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -856,7 +905,7 @@
       <item path="morfeusz/fsa/const.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="morfeusz/morfeusz2_c.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -870,7 +919,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/morfeusz_analyzer.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -883,7 +932,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/morfeusz_generator.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -900,7 +949,7 @@
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="morfeusz/test_runner.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -915,7 +964,7 @@
       <item path="morfeusz/tests/.cpp" ex="true" tool="3" flavor2="0">
       </item>
       <item path="morfeusz/tests/TestCAPI.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -928,7 +977,7 @@
         </ccTool>
       </item>
       <item path="morfeusz/tests/TestMorfeusz.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -948,11 +997,6 @@
             <pElem>build/morfeusz</pElem>
           </incDir>
         </ccTool>
-      </item>
-      <item path="morfeusz/wrappers/java/JMorfeuszTest.java"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
     </conf>
   </confs>

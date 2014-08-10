@@ -31,9 +31,11 @@ set(SRC_FILES
     const.cpp
     ${ANALYZER_DICTIONARY_CPP}
     ${GENERATOR_DICTIONARY_CPP}
+    Dictionary.cpp
+    DictionariesRepository.cpp
     Environment.cpp
     IdResolverImpl.cpp
-    fsa/const.cpp 
+    fsa/const.cpp
     MorphInterpretation.cpp 
     Morfeusz.cpp
     MorfeuszImpl.cpp

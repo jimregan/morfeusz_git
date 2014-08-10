@@ -35,7 +35,7 @@
 namespace morfeusz {
 
     ez::ezOptionParser* DLLIMPORT getOptions(int argc, const char** argv, MorfeuszProcessorType processorType);
-    void DLLIMPORT initializeMorfeusz(ez::ezOptionParser& opt, Morfeusz& morfeusz, MorfeuszProcessorType processorType);
+    Morfeusz* DLLIMPORT initializeMorfeusz(ez::ezOptionParser& opt, MorfeuszProcessorType processorType);
 
 }
 

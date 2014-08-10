@@ -19,5 +19,7 @@ namespace morfeusz {
     Morfeusz::~Morfeusz() {
 
     }
+    
+    list<string> Morfeusz::dictionarySearchPaths;
 
 }

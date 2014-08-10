@@ -111,15 +111,17 @@ static inline string prepareErrorneusTmpFile() {
 }
 
 void TestMorfeusz::testOpenInvalidFile() {
-    cerr << "testOpenInvalidFile" << endl;
-    string filename(prepareErrorneusTmpFile());
-    CPPUNIT_ASSERT_THROW(morfeusz->setAnalyzerDictionary(filename), FileFormatException);
+    CPPUNIT_FAIL("not implemented yet");
+//    cerr << "testOpenInvalidFile" << endl;
+//    string filename(prepareErrorneusTmpFile());
+//    CPPUNIT_ASSERT_THROW(morfeusz->setAnalyzerDictionary(filename), FileFormatException);
 }
 
 void TestMorfeusz::testOpenNonExistentFile() {
-    cerr << "testOpenNonExistentFile" << endl;
-    string filename(tmpnam(NULL));
-    CPPUNIT_ASSERT_THROW(morfeusz->setAnalyzerDictionary(filename), std::ios_base::failure);
+    CPPUNIT_FAIL("not implemented yet");
+//    cerr << "testOpenNonExistentFile" << endl;
+//    string filename(tmpnam(NULL));
+//    CPPUNIT_ASSERT_THROW(morfeusz->setAnalyzerDictionary(filename), std::ios_base::failure);
 }
 
 void TestMorfeusz::testSetInvalidAgglOption() {

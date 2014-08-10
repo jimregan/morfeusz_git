@@ -53,10 +53,10 @@ namespace morfeusz {
     class MorfeuszImpl : public Morfeusz {
     public:
         MorfeuszImpl();
-
-        void setAnalyzerDictionary(const std::string& filename);
-
-        void setGeneratorDictionary(const std::string& filename);
+//
+//        void setAnalyzerDictionary(const std::string& filename);
+//
+//        void setGeneratorDictionary(const std::string& filename);
 
         virtual ~MorfeuszImpl();
 
@@ -92,6 +92,12 @@ namespace morfeusz {
         
         const IdResolver& getIdResolver() const;
 
+        void setDictionary(const std::string& dictName);
+        
+        const std::set<std::string>& getAvailableAgglOptions() const;
+        
+        const std::set<std::string>& getAvailablePraetOptions() const;
+        
         friend class ResultsIteratorImpl;
     
     private:

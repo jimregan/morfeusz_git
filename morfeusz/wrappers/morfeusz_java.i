@@ -138,7 +138,7 @@ import java.util.ArrayList;
 %rename(_getLabels) morfeusz::IdResolver::getLabels;
 %ignore morfeusz::FileFormatException;
 
-%javaexception("java.io.IOException") morfeusz::Morfeusz::setAnalyzerDictionary {
+%javaexception("java.io.IOException") morfeusz::Morfeusz::setDictionary {
     try {
         $action
     }
@@ -154,21 +154,21 @@ import java.util.ArrayList;
     }
 }
 
-%javaexception("java.io.IOException") morfeusz::Morfeusz::setGeneratorDictionary {
-    try {
-        $action
-    }
-    catch(morfeusz::FileFormatException & e) {
-        jclass clazz = jenv->FindClass("java/io/IOException");
-        jenv->ThrowNew(clazz, "Invalid file format");
-        return $null;
-    }
-    catch(std::ios_base::failure & e) {
-        jclass clazz = jenv->FindClass("java/io/IOException");
-        jenv->ThrowNew(clazz, e.what());
-        return $null;
-    }
-}
+//%javaexception("java.io.IOException") morfeusz::Morfeusz::setGeneratorDictionary {
+//    try {
+//        $action
+//    }
+//    catch(morfeusz::FileFormatException & e) {
+//        jclass clazz = jenv->FindClass("java/io/IOException");
+//        jenv->ThrowNew(clazz, "Invalid file format");
+//        return $null;
+//    }
+//    catch(std::ios_base::failure & e) {
+//        jclass clazz = jenv->FindClass("java/io/IOException");
+//        jenv->ThrowNew(clazz, e.what());
+//        return $null;
+//    }
+//}
 
 %javaexception("java.util.NoSuchElementException") morfeusz::ResultsIterator::next {
     try {
@@ -259,8 +259,8 @@ import java.util.ArrayList;
      * 
      * @return modifiable list of paths
      */
-    public List<String> getDictionarySearchPaths() {
-        return this.get_dictionarySearchPaths();
+    public static List<String> getDictionarySearchPaths() {
+        return get_dictionarySearchPaths();
     }
 %}
 

@@ -18,9 +18,9 @@
 #else
 /* A Windows system.  Need to define DLLIMPORT. */
 #if BUILDING_MORFEUSZ
-#  define DLLIMPORT __declspec (dllexport)
+#define DLLIMPORT __declspec (dllexport)
 #else
-#  define DLLIMPORT __declspec (dllimport)
+#define DLLIMPORT __declspec (dllimport)
 #endif
 #endif
 
@@ -33,13 +33,13 @@ namespace morfeusz {
     class DLLIMPORT MorfeuszException;
 
     enum Charset {
-        UTF8 = 101,
+        UTF8 = 11,
         //    UTF16LE,
         //    UTF16BE,
         //    UTF32,
-        ISO8859_2 = 102,
-        CP1250 = 103,
-        CP852 = 104
+        ISO8859_2 = 12,
+        CP1250 = 13,
+        CP852 = 14
     };
 
     enum TokenNumbering {
@@ -87,6 +87,12 @@ namespace morfeusz {
          */
         KEEP_WHITESPACES = 303
     };
+    
+    enum MorfeuszUsage {
+        ONLY_ANALYSE = 401,
+        ONLY_GENERATE = 402,
+        BOTH_ANALYSE_AND_GENERATE = 403
+    };
 
     /**
      * Performs morphological analysis (analyze methods) and syntesis (generate methods).
@@ -122,7 +128,7 @@ namespace morfeusz {
          * @return - iterator over morphological analysis results
          */
         virtual ResultsIterator* analyse(const std::string& text) const = 0;
-        
+
         /**
          * Analyze given text and return the results as iterator.
          * It does not store results for whole text at once, so may be less memory-consuming for analysis of big texts
@@ -207,34 +213,41 @@ namespace morfeusz {
          * @param debug
          */
         virtual void setDebug(bool debug) = 0;
-        
+
         /**
          * Get reference to tagset currently being in use.
          * 
          * @return currently used tagset
          */
         virtual const IdResolver& getIdResolver() const = 0;
-        
+
         /**
          * Set current dictionary to the one with provided name.
          * 
-         * This is NOT thread safe (no other thread may invoke setDictionary 
+         * This is NOT THREAD SAFE - no other thread may invoke setDictionary 
          * either within this instance, or any other in the same application.
          * 
          * @param dictName dictionary name
          */
-//        virtual void setDictionary(const std::string& dictName) = 0;
-        
-        /**
-         * List of directories where current Morfeusz instance will look for dictionaries.
-         */
-        std::list<std::string> dictionarySearchPaths;
-    
-        
-        virtual void setAnalyzerDictionary(const std::string& filename) = 0;
+        virtual void setDictionary(const std::string& dictName) = 0;
 
-        virtual void setGeneratorDictionary(const std::string& filename) = 0;
-        
+        /**
+         * List of paths where current Morfeusz instance will look for dictionaries.
+         */
+        static std::list<std::string> dictionarySearchPaths;
+
+        /**
+         * Get available parameters for "setAggl" method.
+         * @return 
+         */
+        virtual const std::set<std::string>& getAvailableAgglOptions() const = 0;
+
+        /**
+         * Get available parameters for "setPraet" method.
+         * @return 
+         */
+        virtual const std::set<std::string>& getAvailablePraetOptions() const = 0;
+
     protected:
         /**
          * Same as analyze(text) but copies the text under the hood.
@@ -249,7 +262,8 @@ namespace morfeusz {
         virtual const MorphInterpretation& peek() = 0;
         virtual MorphInterpretation next() = 0;
 
-        virtual ~ResultsIterator() {}
+        virtual ~ResultsIterator() {
+        }
     };
 
     /**
@@ -265,7 +279,7 @@ namespace morfeusz {
          * @return - the tag
          */
         virtual const std::string& getTag(const int tagId) const = 0;
-        
+
         /**
          * Returns identifier for given tag.
          * Throws MorfeuszException when none exists.
@@ -281,7 +295,7 @@ namespace morfeusz {
          * @return - the named entity type
          */
         virtual const std::string& getName(const int nameId) const = 0;
-        
+
         /**
          * Returns identifier for given named entity.
          * Throws MorfeuszException when none exists.
@@ -289,11 +303,11 @@ namespace morfeusz {
          * @return identifier for given named entity
          */
         virtual int getNameId(const std::string& name) const = 0;
-        
+
         virtual const std::string& getLabelsAsString(int labelsId) const = 0;
-        
+
         virtual const std::set<std::string>& getLabels(int labelsId) const = 0;
-        
+
         virtual int getLabelsId(const std::string& labelsStr) const = 0;
 
         /**
@@ -309,7 +323,7 @@ namespace morfeusz {
          * @return 
          */
         virtual size_t getNamesCount() const = 0;
-        
+
         virtual size_t getLabelsCount() const = 0;
 
         virtual ~IdResolver() {
@@ -337,13 +351,12 @@ namespace morfeusz {
 
      */
     struct DLLIMPORT MorphInterpretation {
-
         /**
          * Creates new instance with "ign" tag (meaning: "not found in the dictionary")
          */
         static MorphInterpretation createIgn(
-            int startNode, int endNode,
-            const std::string& orth, const std::string& lemma);
+                int startNode, int endNode,
+                const std::string& orth, const std::string& lemma);
 
         /**
          * Creates new instance with "sp" tag (meaning: "this is a sequence of whitespaces")
@@ -357,7 +370,7 @@ namespace morfeusz {
         inline bool isWhitespace() const {
             return tagId == 1;
         }
-        
+
         int startNode;
         int endNode;
         std::string orth;

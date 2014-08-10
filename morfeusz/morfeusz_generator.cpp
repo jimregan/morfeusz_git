@@ -17,8 +17,7 @@ using namespace morfeusz;
 int main(int argc, const char** argv) {
     cerr << "Morfeusz generator, version: " << MORFEUSZ2_VERSION << endl;
     ez::ezOptionParser& opt = *getOptions(argc, argv, GENERATOR);
-    Morfeusz* morfeusz = Morfeusz::createInstance();
-    initializeMorfeusz(opt, *morfeusz, GENERATOR);
+    Morfeusz* morfeusz = initializeMorfeusz(opt, GENERATOR);
     string line;
     vector<MorphInterpretation> res;
     while (getline(cin, line)) {

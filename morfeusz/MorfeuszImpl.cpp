@@ -125,14 +125,26 @@ namespace morfeusz {
         analyzerEnv.setCaseSensitive(options.caseHandling != IGNORE_CASE);
         generatorEnv.setCaseSensitive(false);
     }
-
-    void MorfeuszImpl::setAnalyzerDictionary(const string& filename) {
-        this->analyzerEnv.setDictionaryFile(filename);
+    
+    void MorfeuszImpl::setDictionary(const string& dictName) {
+        
+    }
+    
+    const set<string>& MorfeuszImpl::getAvailableAgglOptions() const {
+        
+    }
+        
+    const set<string>& MorfeuszImpl::getAvailablePraetOptions() const {
+        
     }
 
-    void MorfeuszImpl::setGeneratorDictionary(const string& filename) {
-        this->generatorEnv.setDictionaryFile(filename);
-    }
+//    void MorfeuszImpl::setAnalyzerDictionary(const string& filename) {
+//        this->analyzerEnv.setDictionaryFile(filename);
+//    }
+//
+//    void MorfeuszImpl::setGeneratorDictionary(const string& filename) {
+//        this->generatorEnv.setDictionaryFile(filename);
+//    }
 
     MorfeuszImpl::~MorfeuszImpl() {
     }

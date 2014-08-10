@@ -95,14 +95,16 @@ public class JMorfeuszTest {
 
     @Test(expected = IOException.class)
     public void testNonExistingDictionaryFile() throws IOException {
-        File tmpFile = File.createTempFile("morfeusz_invalid_dict", ".test");
-        tmpFile.delete();
-        morfeusz.setGeneratorDictionary(tmpFile.getAbsolutePath());
+        fail("not implemented yet");
+//        File tmpFile = File.createTempFile("morfeusz_invalid_dict", ".test");
+//        tmpFile.delete();
+//        morfeusz.setGeneratorDictionary(tmpFile.getAbsolutePath());
     }
 
     @Test(expected = IOException.class)
     public void testInvalidDictionaryFile() throws IOException {
-        File tmpFile = File.createTempFile("morfeusz_invalid_dict", ".test");
-        morfeusz.setGeneratorDictionary(tmpFile.getAbsolutePath());
+        fail("not implemented yet");
+//        File tmpFile = File.createTempFile("morfeusz_invalid_dict", ".test");
+//        morfeusz.setGeneratorDictionary(tmpFile.getAbsolutePath());
     }
 }

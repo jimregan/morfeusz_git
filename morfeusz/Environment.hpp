@@ -9,6 +9,7 @@
 #define	ENVIRONMENT_HPP
 
 #include <vector>
+#include <set>
 
 #include "case/CaseConverter.hpp"
 #include "charset/CharsetConverter.hpp"
@@ -144,6 +145,16 @@ public:
      * @return 
      */
     bool isSeparator(uint32_t codepoint) const;
+    
+    const std::set<std::string>& getAvailableAgglOptions() const;
+    
+    const std::set<std::string>& getAvailablePraetOptions() const;
+    
+    /**
+     * Returns true iff this Environment has dictionary attached to it
+     * @return 
+     */
+    bool isUsable() const;
     
     virtual ~Environment();
 private:
