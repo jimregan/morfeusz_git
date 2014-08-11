@@ -12,8 +12,8 @@ namespace morfeusz {
         return version;
     }
 
-    Morfeusz* Morfeusz::createInstance() {
-        return new MorfeuszImpl();
+    Morfeusz* Morfeusz::createInstance(MorfeuszUsage usage) {
+        return new MorfeuszImpl(usage);
     }
 
     Morfeusz::~Morfeusz() {

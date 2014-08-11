@@ -11,7 +11,7 @@
 using namespace std;
 using namespace morfeusz;
 
-static Morfeusz* morfeuszInstance = Morfeusz::createInstance();
+static Morfeusz* morfeuszInstance = Morfeusz::createInstance(ANALYSE_ONLY);
 static vector<MorphInterpretation> results;
 static ResultsManager resultsManager(morfeuszInstance);
 

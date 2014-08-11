@@ -54,18 +54,19 @@ class PolimorfConverter4Analyzer(object):
     def _partiallyParseLines(self, inputLines):
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip('\n')
-            orth, base, tag, name, qualifier = _parseLine(line)
-            
-            tagnum = self.tagset.getTagnum4Tag(tag)
-            namenum = self.tagset.getNamenum4Name(name)
-            typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
-            yield '\t'.join((
-                        orth.encode(self.inputEncoding),
-                        base.encode(self.inputEncoding),
-                        str(tagnum),
-                        str(namenum),
-                        str(typenum), 
-                        qualifier.encode(self.inputEncoding)))
+            if line:
+                orth, base, tag, name, qualifier = _parseLine(line)
+                
+                tagnum = self.tagset.getTagnum4Tag(tag)
+                namenum = self.tagset.getNamenum4Name(name)
+                typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
+                yield '\t'.join((
+                            orth.encode(self.inputEncoding),
+                            base.encode(self.inputEncoding),
+                            str(tagnum),
+                            str(namenum),
+                            str(typenum), 
+                            qualifier.encode(self.inputEncoding)))
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
@@ -98,35 +99,36 @@ class PolimorfConverter4Generator(object):
     def _partiallyParseLines(self, inputLines):
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip('\n')
-            orth, base, tag, name, qualifier = _parseLine(line)
-            if base:
-                homonymId = u''
-                if u':' in base:
-                    assumedBase, assumedHomonymId = base.split(u':', 1)
-                    if assumedBase != u'' and assumedHomonymId != u'' and assumedHomonymId.isalnum():
-                        base, homonymId = assumedBase, assumedHomonymId
-                tagnum = self.tagset.getTagnum4Tag(tag)
-                namenum = self.tagset.getNamenum4Name(name)
-                typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
-                
-                #~ print '\t'.join((
-                            #~ orth.encode(self.inputEncoding), 
-                            #~ base.encode(self.inputEncoding), 
-                            #~ str(tagnum), 
-                            #~ str(namenum), 
-                            #~ str(typenum),
-                            #~ homonymId.encode(self.inputEncoding), 
-                            #~ qualifier.encode(self.inputEncoding)))
-                yield '\t'.join((
-                            orth.encode(self.inputEncoding), 
-                            base.encode(self.inputEncoding), 
-                            str(tagnum), 
-                            str(namenum), 
-                            str(typenum),
-                            homonymId.encode(self.inputEncoding), 
-                            qualifier.encode(self.inputEncoding)))
-            else:
-                logging.warn('Ignoring line: "%s" - contains empty lemma', line.strip())
+            if line:
+                orth, base, tag, name, qualifier = _parseLine(line)
+                if base:
+                    homonymId = u''
+                    if u':' in base:
+                        assumedBase, assumedHomonymId = base.split(u':', 1)
+                        if assumedBase != u'' and assumedHomonymId != u'' and assumedHomonymId.isalnum():
+                            base, homonymId = assumedBase, assumedHomonymId
+                    tagnum = self.tagset.getTagnum4Tag(tag)
+                    namenum = self.tagset.getNamenum4Name(name)
+                    typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
+                    
+                    #~ print '\t'.join((
+                                #~ orth.encode(self.inputEncoding), 
+                                #~ base.encode(self.inputEncoding), 
+                                #~ str(tagnum), 
+                                #~ str(namenum), 
+                                #~ str(typenum),
+                                #~ homonymId.encode(self.inputEncoding), 
+                                #~ qualifier.encode(self.inputEncoding)))
+                    yield '\t'.join((
+                                orth.encode(self.inputEncoding), 
+                                base.encode(self.inputEncoding), 
+                                str(tagnum), 
+                                str(namenum), 
+                                str(typenum),
+                                homonymId.encode(self.inputEncoding), 
+                                qualifier.encode(self.inputEncoding)))
+                else:
+                    logging.warn('Ignoring line: "%s" - contains empty lemma', line.strip())
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):

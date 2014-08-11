@@ -34,11 +34,24 @@
     }
 };
 
+%ignore morfeusz::Morfeusz::createInstance(morfeusz::MorfeuszUsage);
 %extend morfeusz::Morfeusz {
     std::vector<morfeusz::MorphInterpretation> morfeusz::Morfeusz::_generateByTagId(const std::string& lemma, int tagId) const {
         std::vector<morfeusz::MorphInterpretation> res;
         $self->generate(lemma, tagId, res);
         return res;
+    }
+    
+    static morfeusz::Morfeusz* morfeusz::Morfeusz::createAnalyzerInstance() {
+        return morfeusz::Morfeusz::createInstance(morfeusz::ANALYSE_ONLY);
+    }
+    
+    static morfeusz::Morfeusz* morfeusz::Morfeusz::createGeneratorInstance() {
+        return morfeusz::Morfeusz::createInstance(morfeusz::GENERATE_ONLY);
+    }
+    
+    static morfeusz::Morfeusz* morfeusz::Morfeusz::createInstance() {
+        return morfeusz::Morfeusz::createInstance(morfeusz::BOTH_ANALYSE_AND_GENERATE);
     }
 };
 

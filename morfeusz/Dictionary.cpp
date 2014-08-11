@@ -20,11 +20,11 @@ namespace morfeusz {
                 = new MorphDeserializer();
         return *(processorType == ANALYZER ? analyzerDeserializer : generatorDeserializer);
     }
-    
+
     static set<string> getAvailableOptions(const map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap, const string& option) {
         set<string> res;
-        for(
-                map<SegrulesOptions, SegrulesFSA*>::const_iterator it = segrulesFSAsMap.begin(); 
+        for (
+                map<SegrulesOptions, SegrulesFSA*>::const_iterator it = segrulesFSAsMap.begin();
                 it != segrulesFSAsMap.end();
                 ++it) {
             res.insert(it->first.find(option)->second);
@@ -38,7 +38,8 @@ namespace morfeusz {
     separatorsList(getSeparatorsList(fsaFileStartPtr)),
     segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
     defaultSegrulesOptions(getDefaultSegrulesOptions(fsaFileStartPtr)),
+    defaultSegrulesFSA(getDefaultSegrulesFSA(this->segrulesFSAsMap, fsaFileStartPtr)),
     availableAgglOptions(getAvailableOptions(segrulesFSAsMap, "aggl")),
-    availablePraetOptions(getAvailableOptions(segrulesFSAsMap, "praet")){
+    availablePraetOptions(getAvailableOptions(segrulesFSAsMap, "praet")) {
     }
 }

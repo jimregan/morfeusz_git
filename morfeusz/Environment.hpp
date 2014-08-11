@@ -20,6 +20,7 @@
 #include "InterpsGroup.hpp"
 #include "case/CasePatternHelper.hpp"
 #include "deserialization/InterpsGroupsReader.hpp"
+#include "Dictionary.hpp"
 
 namespace morfeusz {
 
@@ -42,10 +43,7 @@ public:
      * @param morfeuszProcessor
      * @param fileStartPtr
      */
-    Environment(
-            Charset charset,
-            MorfeuszProcessorType morfeuszProcessor,
-            const unsigned char* fileStartPtr);
+    explicit Environment(MorfeuszProcessorType morfeuszProcessor);
     
     /**
      * Sets charset for this environment.
@@ -77,26 +75,26 @@ public:
      */
     const CaseConverter& getCaseConverter() const;
     
-    /**
-     * Sets new tagset for this environment.
-     * 
-     * @param tagset
-     */
-    void setTagset(IdResolverImpl& tagset);
+//    /**
+//     * Sets new tagset for this environment.
+//     * 
+//     * @param tagset
+//     */
+//    void setTagset(IdResolverImpl& tagset);
     
     /**
      * Gets currently used tagset.
      * 
      * @return 
      */
-    const IdResolverImpl& getTagset() const;
+    const IdResolverImpl& getIdResolver() const;
     
     /**
-     * Sets binary dictionary file used by this environment.
+     * Sets dictionary file used by this environment.
      * 
      * @param filename - filename of the dictionary
      */
-    void setDictionaryFile(const std::string& filename);
+    void setDictionary(const std::string& dictName);
     
     /**
      * Sets segmentation rules option.
@@ -160,21 +158,26 @@ public:
 private:
     const CharsetConverter* currentCharsetConverter;
     const CaseConverter caseConverter;
-    IdResolverImpl tagset;
     
-    const unsigned char* fsaFileStartPtr;
-    const FSAType* fsa;
-    std::vector<uint32_t> separatorsList;
-    std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;
+    const Dictionary* dictionary;
+    IdResolverImpl idResolver;
+//    IdResolverImpl tagset;
+//    
+//    const unsigned char* fsaFileStartPtr;
+//    const FSAType* fsa;
+//    std::vector<uint32_t> separatorsList;
+//    std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;
     SegrulesOptions currSegrulesOptions;
     const SegrulesFSA* currSegrulesFSA;
-    bool isFromFile;
+//    bool isFromFile;
     
     const InterpretedChunksDecoder* chunksDecoder;
     MorfeuszProcessorType processorType;
     CasePatternHelper* casePatternHelper;
     
     const CharsetConverter* getCharsetConverter(Charset charset) const;
+    
+    std::string getAvailableOptionsAsString(const std::string& option) const;
 };
 
 }

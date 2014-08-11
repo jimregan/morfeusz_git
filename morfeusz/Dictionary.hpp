@@ -30,10 +30,10 @@ namespace morfeusz {
         std::vector<uint32_t> separatorsList;
         std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;
         SegrulesOptions defaultSegrulesOptions;
+        SegrulesFSA* defaultSegrulesFSA;
         std::set<std::string> availableAgglOptions;
         std::set<std::string> availablePraetOptions;
     };
-
 }
 
 #endif	/* DICTIONARY_HPP */

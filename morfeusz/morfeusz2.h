@@ -89,8 +89,8 @@ namespace morfeusz {
     };
     
     enum MorfeuszUsage {
-        ONLY_ANALYSE = 401,
-        ONLY_GENERATE = 402,
+        ANALYSE_ONLY = 401,
+        GENERATE_ONLY = 402,
         BOTH_ANALYSE_AND_GENERATE = 403
     };
 
@@ -115,7 +115,12 @@ namespace morfeusz {
          * 
          * @return 
          */
-        static Morfeusz* createInstance();
+        static Morfeusz* createInstance(MorfeuszUsage usage);
+        
+        /**
+         * Creates exact copy of Morfeusz object
+         */
+        virtual Morfeusz* clone() const = 0;
 
         virtual ~Morfeusz();
 
@@ -173,14 +178,14 @@ namespace morfeusz {
         virtual void setCharset(Charset encoding) = 0;
 
         /**
-         * Set aggl segmentation option value.
+         * Select agglutination rules
          * 
          * @param aggl
          */
         virtual void setAggl(const std::string& aggl) = 0;
 
         /**
-         * Set praet segmentation option value.
+         * Select past tense segmentation
          * 
          * @param praet
          */

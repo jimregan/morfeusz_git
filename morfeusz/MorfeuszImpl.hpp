@@ -52,7 +52,7 @@ namespace morfeusz {
      */
     class MorfeuszImpl : public Morfeusz {
     public:
-        MorfeuszImpl();
+        MorfeuszImpl(MorfeuszUsage usage);
 //
 //        void setAnalyzerDictionary(const std::string& filename);
 //
@@ -97,6 +97,8 @@ namespace morfeusz {
         const std::set<std::string>& getAvailableAgglOptions() const;
         
         const std::set<std::string>& getAvailablePraetOptions() const;
+        
+        Morfeusz* clone() const;
         
         friend class ResultsIteratorImpl;
     
@@ -181,7 +183,14 @@ namespace morfeusz {
                 const ChunkBounds& chunkBounds,
                 int startNodeNum,
                 std::vector<MorphInterpretation>& results) const;
+        
+        void ensureIsAnalyzer() const;
+        
+        void ensureIsGenerator() const;
+        
+        const Environment& getAnyEnvironment() const;
 
+        MorfeuszUsage usage;
         Environment analyzerEnv;
         Environment generatorEnv;
         MorfeuszOptions options;

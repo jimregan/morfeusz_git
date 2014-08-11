@@ -24,7 +24,7 @@ TestMorfeusz::~TestMorfeusz() {
 }
 
 void TestMorfeusz::setUp() {
-    morfeusz = Morfeusz::createInstance();
+    morfeusz = Morfeusz::createInstance(BOTH_ANALYSE_AND_GENERATE);
 }
 
 void TestMorfeusz::tearDown() {

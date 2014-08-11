@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.waw.ipipan.morfeusz.Morfeusz;
+import pl.waw.ipipan.morfeusz.MorfeuszUsage;
 import pl.waw.ipipan.morfeusz.MorfeuszException;
 import pl.waw.ipipan.morfeusz.MorphInterpretation;
 import pl.waw.ipipan.morfeusz.ResultsIterator;
@@ -35,7 +36,7 @@ public class JMorfeuszTest {
 
     @Before
     public void setUp() {
-        morfeusz = Morfeusz.createInstance();
+        morfeusz = Morfeusz.createInstance(MorfeuszUsage.BOTH_ANALYSE_AND_GENERATE);
     }
 
     @After

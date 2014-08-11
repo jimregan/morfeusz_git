@@ -88,8 +88,7 @@ namespace morfeusz {
             TextReader& reader) {
         if (reader.peek() == reader.normalizedPeek() && &env.getCharsetConverter() == &UTF8CharsetConverter::getInstance()) {
             feedStateDirectly(env.getFSA(), state, reader.getCurrPtr(), reader.getNextPtr());
-        }
-        else {
+        } else {
             feedStateIndirectly(env.getFSA(), state, reader.normalizedPeek());
         }
     }
@@ -114,9 +113,10 @@ namespace morfeusz {
         return ic;
     }
 
-    MorfeuszImpl::MorfeuszImpl()
-    : analyzerEnv(DEFAULT_MORFEUSZ_CHARSET, ANALYZER, DEFAULT_FSA),
-    generatorEnv(DEFAULT_MORFEUSZ_CHARSET, GENERATOR, DEFAULT_SYNTH_FSA),
+    MorfeuszImpl::MorfeuszImpl(MorfeuszUsage usage)
+    : usage(usage),
+    analyzerEnv(ANALYZER),
+    generatorEnv(GENERATOR),
     options(createDefaultOptions()),
     accum(),
     notMatchingCaseSegs(0),
@@ -125,26 +125,44 @@ namespace morfeusz {
         analyzerEnv.setCaseSensitive(options.caseHandling != IGNORE_CASE);
         generatorEnv.setCaseSensitive(false);
     }
-    
-    void MorfeuszImpl::setDictionary(const string& dictName) {
-        
-    }
-    
-    const set<string>& MorfeuszImpl::getAvailableAgglOptions() const {
-        
-    }
-        
-    const set<string>& MorfeuszImpl::getAvailablePraetOptions() const {
-        
+
+    Morfeusz* MorfeuszImpl::clone() const {
+        return new MorfeuszImpl(*this);
     }
 
-//    void MorfeuszImpl::setAnalyzerDictionary(const string& filename) {
-//        this->analyzerEnv.setDictionaryFile(filename);
-//    }
-//
-//    void MorfeuszImpl::setGeneratorDictionary(const string& filename) {
-//        this->generatorEnv.setDictionaryFile(filename);
-//    }
+    void MorfeuszImpl::setDictionary(const string& dictName) {
+        if (usage == ANALYSE_ONLY || usage == BOTH_ANALYSE_AND_GENERATE) {
+            analyzerEnv.setDictionary(dictName);
+        }
+        if (usage == GENERATE_ONLY || usage == BOTH_ANALYSE_AND_GENERATE) {
+            generatorEnv.setDictionary(dictName);
+        }
+    }
+    
+    const Environment& MorfeuszImpl::getAnyEnvironment() const {
+        if (analyzerEnv.isUsable()) {
+            return analyzerEnv;
+        }
+        else {
+            return generatorEnv;
+        }
+    }
+
+    const set<string>& MorfeuszImpl::getAvailableAgglOptions() const {
+        return getAnyEnvironment().getAvailableAgglOptions();
+    }
+
+    const set<string>& MorfeuszImpl::getAvailablePraetOptions() const {
+        return getAnyEnvironment().getAvailablePraetOptions();
+    }
+
+    //    void MorfeuszImpl::setAnalyzerDictionary(const string& filename) {
+    //        this->analyzerEnv.setDictionaryFile(filename);
+    //    }
+    //
+    //    void MorfeuszImpl::setGeneratorDictionary(const string& filename) {
+    //        this->generatorEnv.setDictionaryFile(filename);
+    //    }
 
     MorfeuszImpl::~MorfeuszImpl() {
     }
@@ -226,7 +244,7 @@ namespace morfeusz {
         while (reader.isInsideAWord()) {
             reader.next();
         }
-        
+
         ChunkBounds chunkBounds;
         chunkBounds.chunkStartPtr = reader.getChunkStartPtr();
         chunkBounds.wordStartPtr = reader.getWordStartPtr();
@@ -244,7 +262,7 @@ namespace morfeusz {
                     const InflexionGraph::Edge& e = edges[j];
                     unsigned int targetNode = startNodeNum + e.nextNode;
                     InterpretedChunk ic = e.chunk;
-                    ic.chunkStartPtr = 
+                    ic.chunkStartPtr =
                             ic.textStartPtr == reader.getWordStartPtr()
                             ? reader.getChunkStartPtr()
                             : ic.textStartPtr;
@@ -258,12 +276,10 @@ namespace morfeusz {
             if (results.size() == initialResultsSize) {
                 this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
             }
-        }
-        else if (env.getProcessorType() == ANALYZER
+        } else if (env.getProcessorType() == ANALYZER
                 && !insideIgnHandler) {
             this->handleIgnChunk(env, chunkBounds, startNodeNum, results);
-        }
-        else {
+        } else {
             this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
         }
     }
@@ -326,12 +342,10 @@ namespace morfeusz {
                             ic);
                 }
                 newSegrulesStates.resize(0);
-            }
-            else if (this->options.debug) {
+            } else if (this->options.debug) {
                 std::cerr << "NOT ACCEPTING (segmentation)" << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
             }
-        }
-        else if (this->options.debug) {
+        } else if (this->options.debug) {
             std::cerr << "NOT ACCEPTING (case)" << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
         }
     }
@@ -357,8 +371,7 @@ namespace morfeusz {
                 cerr << "ACCEPTING " << debugAccum(accum) << endl;
             }
             graph.addPath(accum, newSegrulesState.weak || notMatchingCaseSegs > 0);
-        }
-        else {
+        } else {
             assert(!newSegrulesState.sink);
             TextReader newReader(reader.getCurrPtr(), reader.getEndPtr(), env);
             doProcessOneWord(env, newReader, newSegrulesState);
@@ -394,8 +407,7 @@ namespace morfeusz {
                 if (!env.isSeparator(codepoint)) {
                     nonSeparatorInputEnd = currInput;
                 }
-            }
-            while (currInput != chunkBounds.chunkEndPtr && !env.isSeparator(codepoint));
+            } while (currInput != chunkBounds.chunkEndPtr && !env.isSeparator(codepoint));
 
             if (env.isSeparator(codepoint)) {
                 separatorFound = true;
@@ -415,8 +427,7 @@ namespace morfeusz {
                     startNode = results.empty() ? startNodeNum : results.back().endNode;
                     TextReader newReader2(nonSeparatorInputEnd, currInput, env);
                     this->processOneWord(env, newReader2, startNode, results, true);
-                }
-                else {
+                } else {
                     // there are only separators
                     if (currInput == chunkBounds.wordEndPtr) {
                         currInput = chunkBounds.chunkEndPtr;
@@ -436,8 +447,7 @@ namespace morfeusz {
                 int startNode = results.empty() ? startNodeNum : results.back().endNode;
                 TextReader newReader4(prevInput, chunkBounds.chunkEndPtr, env);
                 this->processOneWord(env, newReader4, startNode, results, true);
-            }
-            else {
+            } else {
                 this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
             }
         }
@@ -469,13 +479,19 @@ namespace morfeusz {
     }
 
     ResultsIterator* MorfeuszImpl::analyse(const string& text) const {
+
+        ensureIsAnalyzer();
+
         adjustTokensCounter();
         char* textCopy = new char[text.length() + 1];
         strcpy(textCopy, text.c_str());
         return new ResultsIteratorImpl(*this, textCopy, textCopy + text.length(), true);
     }
-    
+
     ResultsIterator* MorfeuszImpl::analyseWithCopy(const char* text) const {
+
+        ensureIsAnalyzer();
+
         adjustTokensCounter();
         long n = strlen(text);
         char* textCopy = new char[n + 1];
@@ -484,11 +500,17 @@ namespace morfeusz {
     }
 
     ResultsIterator* MorfeuszImpl::analyse(const char* text) const {
+
+        ensureIsAnalyzer();
+
         adjustTokensCounter();
         return new ResultsIteratorImpl(*this, text, text + strlen(text), false);
     }
 
     void MorfeuszImpl::analyse(const string& text, vector<MorphInterpretation>& results) const {
+
+        ensureIsAnalyzer();
+
         adjustTokensCounter();
         TextReader reader(text, this->analyzerEnv);
         while (!reader.isAtEnd()) {
@@ -497,6 +519,9 @@ namespace morfeusz {
     }
 
     void MorfeuszImpl::generate(const string& lemma, vector<MorphInterpretation>& results) const {
+
+        ensureIsGenerator();
+
         const char* input = lemma.c_str();
         const char* inputEnd = input + lemma.length();
         int startNode = 0;
@@ -508,6 +533,9 @@ namespace morfeusz {
     }
 
     void MorfeuszImpl::generate(const std::string& lemma, int tagId, vector<MorphInterpretation>& result) const {
+
+        ensureIsGenerator();
+
         vector<MorphInterpretation> partRes;
         this->generate(lemma, partRes);
         for (unsigned int i = 0; i < partRes.size(); i++) {
@@ -575,15 +603,23 @@ namespace morfeusz {
         this->options.debug = debug;
     }
 
-    const IdResolver& MorfeuszImpl::getDefaultAnalyzerTagset() const {
-        return this->generatorEnv.getTagset();
+    const IdResolver& MorfeuszImpl::getIdResolver() const {
+        if (this->analyzerEnv.isUsable()) {
+            return this->analyzerEnv.getIdResolver();
+        } else {
+            return this->generatorEnv.getIdResolver();
+        }
     }
 
-    const IdResolver& MorfeuszImpl::getDefaultGeneratorTagset() const {
-        return this->analyzerEnv.getTagset();
+    void MorfeuszImpl::ensureIsAnalyzer() const {
+        if (usage != ANALYSE_ONLY && usage != BOTH_ANALYSE_AND_GENERATE) {
+            throw MorfeuszException("Cannot analyse with given Morfeusz instance.");
+        }
     }
-    
-    const IdResolver& MorfeuszImpl::getIdResolver() const {
-        return this->analyzerEnv.getTagset();
+
+    void MorfeuszImpl::ensureIsGenerator() const {
+        if (usage != GENERATE_ONLY && usage != BOTH_ANALYSE_AND_GENERATE) {
+            throw MorfeuszException("Cannot generate with given Morfeusz instance.");
+        }
     }
 }

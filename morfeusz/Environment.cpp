@@ -7,158 +7,208 @@
 
 #include <vector>
 #include <algorithm>
+#include <string>
+#include "DictionariesRepository.hpp"
 #include "Environment.hpp"
 #include "deserialization/MorphDeserializer.hpp"
 #include "deserialization/morphInterps/InterpretedChunksDecoder.hpp"
 #include "deserialization/morphInterps/InterpretedChunksDecoder4Analyzer.hpp"
 #include "deserialization/morphInterps/InterpretedChunksDecoder4Generator.hpp"
+#include "DictionariesRepository.hpp"
 
 namespace morfeusz {
+    
+    using namespace std;
 
-static Deserializer<InterpsGroupsReader>& initializeDeserializer(MorfeuszProcessorType processorType) {
-    static Deserializer<InterpsGroupsReader> *analyzerDeserializer
-            = new MorphDeserializer();
-    static Deserializer<InterpsGroupsReader> *generatorDeserializer
-            = new MorphDeserializer();
-    return *(processorType == ANALYZER ? analyzerDeserializer : generatorDeserializer);
-}
-
-static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSA*>& fsasMap) {
-    for (
-            std::map<SegrulesOptions, SegrulesFSA*>::iterator it = fsasMap.begin();
-            it != fsasMap.end();
-            ++it) {
-        delete it->second;
+    static Deserializer<InterpsGroupsReader>& initializeDeserializer(MorfeuszProcessorType processorType) {
+        static Deserializer<InterpsGroupsReader> *analyzerDeserializer
+                = new MorphDeserializer();
+        static Deserializer<InterpsGroupsReader> *generatorDeserializer
+                = new MorphDeserializer();
+        return *(processorType == ANALYZER ? analyzerDeserializer : generatorDeserializer);
     }
-    fsasMap.clear();
-}
 
-Environment::Environment(
-        Charset charset,
-        MorfeuszProcessorType processorType,
-        const unsigned char* fsaFileStartPtr)
-: currentCharsetConverter(getCharsetConverter(charset)),
-caseConverter(),
-tagset(fsaFileStartPtr, currentCharsetConverter),
-fsaFileStartPtr(fsaFileStartPtr),
-fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
-separatorsList(getSeparatorsList(fsaFileStartPtr)),
-segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
-currSegrulesOptions(getDefaultSegrulesOptions(fsaFileStartPtr)),
-currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap, fsaFileStartPtr)),
-isFromFile(false),
-chunksDecoder(
-processorType == ANALYZER
-? (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Analyzer(*this)
-: (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Generator(*this)),
-processorType(processorType),
-casePatternHelper(new CasePatternHelper()) {
-}
-
-const CharsetConverter* Environment::getCharsetConverter(Charset charset) const {
-    switch (charset) {
-        case UTF8:
-            return &UTF8CharsetConverter::getInstance();
-        case ISO8859_2:
-            return &ISO8859_2_CharsetConverter::getInstance();
-        case CP1250:
-            return &Windows_1250_CharsetConverter::getInstance();
-        case CP852:
-            return &CP852_CharsetConverter::getInstance();
-        default:
-            throw MorfeuszException("invalid charset");
+    static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSA*>& fsasMap) {
+        for (
+                std::map<SegrulesOptions, SegrulesFSA*>::iterator it = fsasMap.begin();
+                it != fsasMap.end();
+                ++it) {
+            delete it->second;
+        }
+        fsasMap.clear();
     }
-}
 
-Environment::~Environment() {
-    delete this->fsa;
-    if (this->isFromFile) {
-        deleteSegrulesFSAs(this->segrulesFSAsMap);
-        delete this->fsaFileStartPtr;
+    Environment::Environment(MorfeuszProcessorType processorType)
+    : currentCharsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
+    caseConverter(),
+    dictionary(DictionariesRepository::instance.getDefaultDictionary(processorType)),
+    idResolver(dictionary->idResolver),
+    currSegrulesOptions(dictionary->defaultSegrulesOptions),
+    currSegrulesFSA(dictionary->defaultSegrulesFSA),
+    //tagset(fsaFileStartPtr, currentCharsetConverter),
+    //fsaFileStartPtr(fsaFileStartPtr),
+    //fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
+    //separatorsList(getSeparatorsList(fsaFileStartPtr)),
+    //segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
+    //currSegrulesOptions(getDefaultSegrulesOptions(fsaFileStartPtr)),
+    //currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap, fsaFileStartPtr)),
+    //isFromFile(false),
+    chunksDecoder(
+    processorType == ANALYZER
+    ? (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Analyzer(*this)
+    : (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Generator(*this)),
+    processorType(processorType),
+    casePatternHelper(new CasePatternHelper()) {
     }
-    delete this->chunksDecoder;
-    delete this->casePatternHelper;
-}
 
-void Environment::setCharset(Charset charset) {
-    this->currentCharsetConverter = this->getCharsetConverter(charset);
-    this->tagset.setCharsetConverter(currentCharsetConverter);
-}
-
-const CharsetConverter& Environment::getCharsetConverter() const {
-    return *this->currentCharsetConverter;
-}
-
-const CaseConverter& Environment::getCaseConverter() const {
-    return this->caseConverter;
-}
-
-void Environment::setTagset(IdResolverImpl& tagset) {
-    this->tagset = tagset;
-    this->tagset.setCharsetConverter(currentCharsetConverter);
-}
-
-const IdResolverImpl& Environment::getTagset() const {
-    return this->tagset;
-}
-
-void Environment::setDictionaryFile(const std::string& filename) {
-    if (this->isFromFile) {
-        delete this->fsa;
-        deleteSegrulesFSAs(this->segrulesFSAsMap);
-        delete this->fsaFileStartPtr;
+    const CharsetConverter* Environment::getCharsetConverter(Charset charset) const {
+        switch (charset) {
+            case UTF8:
+                return &UTF8CharsetConverter::getInstance();
+            case ISO8859_2:
+                return &ISO8859_2_CharsetConverter::getInstance();
+            case CP1250:
+                return &Windows_1250_CharsetConverter::getInstance();
+            case CP852:
+                return &CP852_CharsetConverter::getInstance();
+            default:
+                throw MorfeuszException("invalid charset");
+        }
     }
-    this->fsaFileStartPtr = readFile<unsigned char>(filename.c_str());
-    this->fsa = FSA< InterpsGroupsReader > ::getFSA(fsaFileStartPtr, initializeDeserializer(this->processorType));
-    this->separatorsList = getSeparatorsList(fsaFileStartPtr);
-    this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
-    this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
-    this->isFromFile = true;
-    this->tagset = IdResolverImpl(fsaFileStartPtr, currentCharsetConverter);
-}
 
-const SegrulesFSA& Environment::getCurrentSegrulesFSA() const {
-    return *(this->currSegrulesFSA);
-}
-
-const FSAType& Environment::getFSA() const {
-    return *(this->fsa);
-}
-
-const InterpretedChunksDecoder& Environment::getInterpretedChunksDecoder() const {
-    return *(this->chunksDecoder);
-}
-
-void Environment::setSegrulesOption(const std::string& option, const std::string& value) {
-    if (this->currSegrulesOptions.find(option) == this->currSegrulesOptions.end()) {
-        throw MorfeuszException("Invalid segmentation option '"+option+"'");
+    Environment::~Environment() {
+        //    delete this->fsa;
+        //    if (this->isFromFile) {
+        //        deleteSegrulesFSAs(this->segrulesFSAsMap);
+        //        delete this->fsaFileStartPtr;
+        //    }
+        delete this->chunksDecoder;
+        delete this->casePatternHelper;
     }
-    SegrulesOptions prevOptions = this->currSegrulesOptions;
-    this->currSegrulesOptions[option] = value;
-    if (this->segrulesFSAsMap.find(this->currSegrulesOptions) == this->segrulesFSAsMap.end()) {
-        this->currSegrulesOptions = prevOptions;
-        throw MorfeuszException("Invalid '"+option+"' option value: '"+value+"'");
+
+    void Environment::setCharset(Charset charset) {
+        this->currentCharsetConverter = this->getCharsetConverter(charset);
+        this->idResolver.setCharsetConverter(currentCharsetConverter);
     }
-    this->currSegrulesFSA = this->segrulesFSAsMap.find(this->currSegrulesOptions)->second;
-}
 
-MorfeuszProcessorType Environment::getProcessorType() const {
-    return this->processorType;
-}
+    const CharsetConverter& Environment::getCharsetConverter() const {
+        return *this->currentCharsetConverter;
+    }
 
-void Environment::setCaseSensitive(bool caseSensitive) {
-    this->casePatternHelper->setCaseSensitive(caseSensitive);
-}
+    const CaseConverter& Environment::getCaseConverter() const {
+        return this->caseConverter;
+    }
 
-const CasePatternHelper& Environment::getCasePatternHelper() const {
-    return *this->casePatternHelper;
-}
+    //void Environment::setTagset(IdResolverImpl& tagset) {
+    //    this->tagset = tagset;
+    //    this->tagset.setCharsetConverter(currentCharsetConverter);
+    //}
 
-bool Environment::isSeparator(uint32_t codepoint) const {
-    return binary_search(
-            this->separatorsList.begin(), 
-            this->separatorsList.end(), 
-            codepoint);
-}
+    const IdResolverImpl& Environment::getIdResolver() const {
+        return this->idResolver;
+    }
+
+    //void Environment::setDictionaryFile(const std::string& filename) {
+    //    if (this->isFromFile) {
+    //        delete this->fsa;
+    //        deleteSegrulesFSAs(this->segrulesFSAsMap);
+    //        delete this->fsaFileStartPtr;
+    //    }
+    //    this->fsaFileStartPtr = readFile<unsigned char>(filename.c_str());
+    //    this->fsa = FSA< InterpsGroupsReader > ::getFSA(fsaFileStartPtr, initializeDeserializer(this->processorType));
+    //    this->separatorsList = getSeparatorsList(fsaFileStartPtr);
+    //    this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
+    //    this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
+    //    this->isFromFile = true;
+    //    this->tagset = IdResolverImpl(fsaFileStartPtr, currentCharsetConverter);
+    //}
+
+    const SegrulesFSA& Environment::getCurrentSegrulesFSA() const {
+        return *(this->currSegrulesFSA);
+    }
+
+    const FSAType& Environment::getFSA() const {
+        return *(this->dictionary->fsa);
+    }
+
+    const InterpretedChunksDecoder& Environment::getInterpretedChunksDecoder() const {
+        return *(this->chunksDecoder);
+    }
+
+    void Environment::setSegrulesOption(const std::string& option, const std::string& value) {
+        if (this->currSegrulesOptions.find(option) == this->currSegrulesOptions.end()) {
+            throw MorfeuszException("Invalid segmentation option '" + option + "'");
+        }
+        SegrulesOptions prevOptions = this->currSegrulesOptions;
+        this->currSegrulesOptions[option] = value;
+        if (this->dictionary->segrulesFSAsMap.find(this->currSegrulesOptions) == this->dictionary->segrulesFSAsMap.end()) {
+            this->currSegrulesOptions = prevOptions;
+            
+            throw MorfeuszException("Invalid \"" + option + "\" option: \"" + value + "\". Possible values: "+getAvailableOptionsAsString(option));
+        }
+        this->currSegrulesFSA = this->dictionary->segrulesFSAsMap.find(this->currSegrulesOptions)->second;
+    }
+
+    MorfeuszProcessorType Environment::getProcessorType() const {
+        return this->processorType;
+    }
+
+    void Environment::setCaseSensitive(bool caseSensitive) {
+        this->casePatternHelper->setCaseSensitive(caseSensitive);
+    }
+
+    const CasePatternHelper& Environment::getCasePatternHelper() const {
+        return *this->casePatternHelper;
+    }
+
+    bool Environment::isSeparator(uint32_t codepoint) const {
+        return binary_search(
+                this->dictionary->separatorsList.begin(),
+                this->dictionary->separatorsList.end(),
+                codepoint);
+    }
+
+    bool Environment::isUsable() const {
+        return this->dictionary != NULL;
+    }
+
+    void Environment::setDictionary(const std::string& dictName) {
+        this->dictionary = DictionariesRepository::instance.getDictionary(dictName, this->processorType);
+
+        idResolver = dictionary->idResolver;
+        this->idResolver.setCharsetConverter(currentCharsetConverter);
+        currSegrulesOptions = dictionary->defaultSegrulesOptions;
+        currSegrulesFSA = dictionary->defaultSegrulesFSA;
+    }
+    
+    string Environment::getAvailableOptionsAsString(const string& option) const {
+        const set<string>* options;
+        if (option == "aggl") {
+            options = &dictionary->availableAgglOptions;
+        }
+        else {
+            options = &dictionary->availablePraetOptions;
+        }
+        string res;
+        set<string>::const_iterator it = options->begin();
+        while (it != options->end()) {
+            if (!res.empty()) {
+                res += ", ";
+            }
+            res += '"';
+            res += *it;
+            res += '"';
+            ++it;
+        }
+        return res;
+    }
+    
+    const set<string>& Environment::getAvailableAgglOptions() const {
+        return this->dictionary->availableAgglOptions;
+    }
+
+    const set<string>& Environment::getAvailablePraetOptions() const {
+        return this->dictionary->availablePraetOptions;
+    }
 
 }

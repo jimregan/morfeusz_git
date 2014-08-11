@@ -11,4 +11,6 @@ extern const char HOMONYM_SEPARATOR = ':';
 
 extern const char LABELS_SEPARATOR = '|';
 
+extern const char FILESYSTEM_PATH_SEPARATOR = '/';
+
 }
