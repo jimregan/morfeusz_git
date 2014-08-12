@@ -72,7 +72,7 @@ def _parseOptions():
                         #~ default=False,
                         #~ action='store_true',
                         #~ help='this option is ignored and exists only for backwards compatibility')
-    parser.add_option('--dict-name',
+    parser.add_option('--dict',
                         dest='dictName',
                         help='the name of result dictionary')
     parser.add_option('--dict-dir',

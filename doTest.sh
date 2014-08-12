@@ -7,14 +7,16 @@ DIR=$3
 
 echo "build test FSA for $DIR"
 
-TMP_DICTIONARY=`mktemp`
+TMP_DICTIONARY=`mktemp -d`
+DICT_NAME=test
+
 python fsabuilder/morfeusz_builder \
-    --$WHAT \
+    --only-$WHAT \
     --input-files $DIR/dictionary.tab \
-    -o $TMP_DICTIONARY \
+    --dict $DICT_NAME \
+    --dict-dir $TMP_DICTIONARY \
     --tagset-file=$DIR/tagset.dat \
-    --segments-file=$DIR/segmentation.dat \
-    --serialization-method=V1
+    --segments-file=$DIR/segmentation.dat
 
 echo "testing $DIR"
 
@@ -23,7 +25,7 @@ OUTPUT=$DIR/output.txt
 TMP_OUTPUT=`mktemp`
 ARGS=`cat $DIR/ARGS`
 
-$CMD -i $TMP_DICTIONARY $ARGS < $INPUT > $TMP_OUTPUT
+$CMD --dict-dir $TMP_DICTIONARY --dict $DICT_NAME $ARGS < $INPUT > $TMP_OUTPUT
 
 if [ $? -ne 0 ]
 then
