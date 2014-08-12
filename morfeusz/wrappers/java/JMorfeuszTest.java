@@ -1,6 +1,7 @@
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.junit.After;
@@ -52,12 +53,11 @@ public class JMorfeuszTest {
         try {
             res.get(2);
             fail();
-        }
-        catch (IndexOutOfBoundsException ex) {
-            
+        } catch (IndexOutOfBoundsException ex) {
+
         }
     }
-    
+
     @Test
     public void testAnalyzeAsIterator() {
         ResultsIterator it = morfeusz.analyseAsIterator("Aaaa żżżż");
@@ -68,9 +68,8 @@ public class JMorfeuszTest {
         try {
             it.next();
             fail();
-        }
-        catch (NoSuchElementException ex) {
-            
+        } catch (NoSuchElementException ex) {
+
         }
     }
 
@@ -78,7 +77,7 @@ public class JMorfeuszTest {
     public void testInvalidAgglOption() {
         morfeusz.setAggl("XXXXYYYYZZZZ");
     }
-    
+
     @Test(expected = MorfeuszException.class)
     public void testInvalidPraetOption() {
         morfeusz.setPraet("XXXXYYYYZZZZ");
@@ -94,18 +93,21 @@ public class JMorfeuszTest {
         morfeusz.setCaseHandling(null);
     }
 
-    @Test(expected = IOException.class)
-    public void testNonExistingDictionaryFile() throws IOException {
-        fail("not implemented yet");
-//        File tmpFile = File.createTempFile("morfeusz_invalid_dict", ".test");
-//        tmpFile.delete();
-//        morfeusz.setGeneratorDictionary(tmpFile.getAbsolutePath());
+    @Test(expected = MorfeuszException.class)
+    public void testNonExistingDictionary() throws IOException {
+        morfeusz.setDictionary("ee2rmtsq");
     }
 
     @Test(expected = IOException.class)
-    public void testInvalidDictionaryFile() throws IOException {
-        fail("not implemented yet");
-//        File tmpFile = File.createTempFile("morfeusz_invalid_dict", ".test");
-//        morfeusz.setGeneratorDictionary(tmpFile.getAbsolutePath());
+    public void testInvalidDictionary() throws Exception {
+        String dictName = "6J1vMiqY";
+        File tmpFile = new File(dictName + "-a.dict");
+        assertTrue(tmpFile.createNewFile());
+        tmpFile.deleteOnExit();
+        try (PrintStream out = new PrintStream(tmpFile)) {
+            out.print("IzEne9FXuc");
+        }
+        morfeusz.getDictionarySearchPaths().add(0, ".");
+        morfeusz.setDictionary(dictName);
     }
 }

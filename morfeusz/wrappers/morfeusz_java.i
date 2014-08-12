@@ -147,9 +147,19 @@ import java.util.ArrayList;
         jenv->ThrowNew(clazz, "Invalid file format");
         return $null;
     }
+    catch(morfeusz::MorfeuszException & e) {
+        jclass clazz = jenv->FindClass("pl/waw/ipipan/morfeusz/MorfeuszException");
+        jenv->ThrowNew(clazz, e.what());
+        return $null;
+    }
     catch(std::ios_base::failure & e) {
         jclass clazz = jenv->FindClass("java/io/IOException");
         jenv->ThrowNew(clazz, e.what());
+        return $null;
+    }
+    catch(...) {
+        jclass clazz = jenv->FindClass("java/lang/RuntimeException");
+        jenv->ThrowNew(clazz, "Unknown exception");
         return $null;
     }
 }

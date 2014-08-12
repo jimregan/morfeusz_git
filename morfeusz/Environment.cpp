@@ -173,8 +173,8 @@ namespace morfeusz {
     }
 
     void Environment::setDictionary(const std::string& dictName) {
+        cerr << "SETTING DICT: " << dictName << endl;
         this->dictionary = DictionariesRepository::instance.getDictionary(dictName, this->processorType);
-
         idResolver = dictionary->idResolver;
         this->idResolver.setCharsetConverter(currentCharsetConverter);
         currSegrulesOptions = dictionary->defaultSegrulesOptions;

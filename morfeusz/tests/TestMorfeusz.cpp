@@ -101,27 +101,28 @@ void TestMorfeusz::testAnalyzeVector1() {
     CPPUNIT_ASSERT_EQUAL(string("AAAAbbbbCCCC"), res[0].lemma);
 }
 
-static inline string prepareErrorneusTmpFile() {
-    char* filename = tmpnam(NULL);
+static inline string prepareErrorneusDictFile(const string& dictName) {
+    string filename = dictName + "-a.dict";
     ofstream out;
-    out.open(filename);
+    out.open(filename.c_str());
     out << "asfasdfa" << endl;
-    out.close();
-    return string(filename);
+    return filename;
 }
 
-void TestMorfeusz::testOpenInvalidFile() {
-    CPPUNIT_FAIL("not implemented yet");
-//    cerr << "testOpenInvalidFile" << endl;
-//    string filename(prepareErrorneusTmpFile());
-//    CPPUNIT_ASSERT_THROW(morfeusz->setAnalyzerDictionary(filename), FileFormatException);
+void TestMorfeusz::testOpenInvalidDict() {
+    cerr << "testOpenInvalidDict" << endl;
+    string dictName = "asdfasdfasdfa";
+    string filename = prepareErrorneusDictFile(dictName);
+    morfeusz->dictionarySearchPaths.push_front(".");
+    cerr << "still alive..." << endl;
+    CPPUNIT_ASSERT_THROW(morfeusz->setDictionary(dictName), FileFormatException);
+    remove(filename.c_str());
 }
 
-void TestMorfeusz::testOpenNonExistentFile() {
-    CPPUNIT_FAIL("not implemented yet");
+void TestMorfeusz::testOpenNonExistentDict() {
 //    cerr << "testOpenNonExistentFile" << endl;
 //    string filename(tmpnam(NULL));
-//    CPPUNIT_ASSERT_THROW(morfeusz->setAnalyzerDictionary(filename), std::ios_base::failure);
+    CPPUNIT_ASSERT_THROW(morfeusz->setDictionary("asdfasdfa"), MorfeuszException);
 }
 
 void TestMorfeusz::testSetInvalidAgglOption() {

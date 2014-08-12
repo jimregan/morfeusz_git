@@ -6,21 +6,15 @@ if (SKIP_DICTIONARY_BUILDING)
     message ("SKIPPING dictionary building")
 else ()
     add_custom_command (
-            OUTPUT "${ANALYZER_DICTIONARY_CPP}"
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --analyzer --input-files="${INPUT_DICTIONARIES}" -o "${ANALYZER_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
-            DEPENDS "${INPUT_DICTIONARY}"
-            COMMENT "Building default dictionary C++ file"
-    )
-    add_custom_command (
-            OUTPUT "${GENERATOR_DICTIONARY_CPP}"
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --generator --input-files="${INPUT_DICTIONARIES}" -o "${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" --cpp --serialization-method=V1
+            OUTPUT "${ANALYZER_DICTIONARY_CPP}" "${GENERATOR_DICTIONARY_CPP}"
+            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --analyzer-cpp="${ANALYZER_DICTIONARY_CPP}" --generator-cpp="${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary C++ file"
     )
 endif()
 
-add_custom_target ( analyzer-dictionary DEPENDS "${INPUT_DICTIONARY_CPP}")
-add_custom_target ( generator-dictionary DEPENDS "${INPUT_SYNTH_DICTIONARY_CPP}")
+add_custom_target ( analyzer-dictionary DEPENDS "${ANALYZER_DICTIONARY_CPP}")
+add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_CPP}")
 add_custom_target ( dictionaries DEPENDS analyzer-dictionary generator-dictionary)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )

@@ -76,18 +76,20 @@ class TestSequenceFunctions(unittest.TestCase):
             pass
         
     def testNonExistingDictionaryFile(self):
-        _, path = tempfile.mkstemp()
-        os.remove(path)
         try:
-            self.morfeusz.setGeneratorDictionary(path)
+            self.morfeusz.setDictionary("1P4sEBuWv")
             self.fail()
         except IOError:
             pass
     
     def testInvalidDictionaryFile(self):
-        _, path = tempfile.mkstemp()
+        dirpath = tempfile.mkdtemp()
+        dictName = '6J1vMiqY'
+        path = os.path.join(dirpath, dictName + '-a.dict')
+        with open(path, "a+") as f:
+            f.write('ee2rmtsq')
         try:
-            self.morfeusz.setGeneratorDictionary(path)
+            self.morfeusz.setDictionary(dictName)
             self.fail()
         except IOError:
             pass

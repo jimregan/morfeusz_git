@@ -156,14 +156,6 @@ namespace morfeusz {
         return getAnyEnvironment().getAvailablePraetOptions();
     }
 
-    //    void MorfeuszImpl::setAnalyzerDictionary(const string& filename) {
-    //        this->analyzerEnv.setDictionaryFile(filename);
-    //    }
-    //
-    //    void MorfeuszImpl::setGeneratorDictionary(const string& filename) {
-    //        this->generatorEnv.setDictionaryFile(filename);
-    //    }
-
     MorfeuszImpl::~MorfeuszImpl() {
     }
 

@@ -23,8 +23,8 @@ def _checkOption(opt, parser, msg):
         parser.print_help()
         exit(1)
 
-def _checkExactlyOneOptionSet(optsList, parser, msg):
-    if optsList.count(True) != 1:
+def _checkCondition(cond, parser, msg):
+    if not cond:
         print >> sys.stderr, msg
         parser.print_help()
         exit(1)
@@ -42,6 +42,11 @@ def _checkOpen(filename, mode):
         print >> sys.stderr, str(ex)
         exit(1)
 
+def _getDictFilename(opts, isGenerator):
+    typeCode = 's' if isGenerator else 'a'
+    fname = '%s-%s.dict' % (opts.dictName, typeCode)
+    return os.path.join(opts.dictDir, fname)
+
 def _parseOptions():
     """
     Parses commandline args
@@ -53,7 +58,7 @@ def _parseOptions():
                         action='callback',
                         callback=_parseListCallback,
                         metavar='FILES',
-                        help='comma separated list of files')
+                        help='comma separated list of dictionary files')
     parser.add_option('--tagset-file',
                         dest='tagsetFile',
                         metavar='FILE',
@@ -62,37 +67,45 @@ def _parseOptions():
                         dest='segmentsFile',
                         metavar='FILE',
                         help='path to the file with segment rules')
-    parser.add_option('--trim-supneg',
-                        dest='trimSupneg',
-                        default=False,
-                        action='store_true',
-                        help='this option is ignored and exists only for backwards compatibility')
-    parser.add_option('-o', '--output-file',
-                        dest='outputFile',
+    #~ parser.add_option('--trim-supneg',
+                        #~ dest='trimSupneg',
+                        #~ default=False,
+                        #~ action='store_true',
+                        #~ help='this option is ignored and exists only for backwards compatibility')
+    parser.add_option('--dict-name',
+                        dest='dictName',
+                        help='the name of result dictionary')
+    parser.add_option('--dict-dir',
+                        dest='dictDir',
                         metavar='FILE',
-                        help='path to output file')
-    parser.add_option('-a', '--analyzer',
-                        dest='analyzer',
+                        default=os.getcwd(),
+                        help='path to output directory (the default is current dir)')
+    parser.add_option('--only-analyzer',
+                        dest='onlyAnalyzer',
                         action='store_true',
                         default=False,
-                        help='Generate FSA for morphological analysis')
-    parser.add_option('-g', '--generator',
-                        dest='generator',
+                        help='Generate dictionary for morphological analysis only (default is both analysis and synthesis)')
+    parser.add_option('--only-generator',
+                        dest='onlyGenerator',
                         action='store_true',
                         default=False,
-                        help='Generate FSA for morphological synthesis')
-    parser.add_option('--cpp',
-                        dest='cpp',
-                        action='store_true',
-                        default=False,
-                        help='Encode binary data in c++ file')
-    parser.add_option('--use-arrays',
-                        dest='useArrays',
-                        action='store_true',
-                        default=False,
-                        help='store states reachable by 2 transitions in arrays (should speed up recognition, available only when --serialization-method=V1)')
+                        help='Generate dictionary for morphological synthesis only (default is both analysis and synthesis)')
+    parser.add_option('--analyzer-cpp',
+                        dest='analyzerCpp',
+                        metavar='FILE',
+                        help='Encode analyzer dictionary data in given c++ file')
+    parser.add_option('--generator-cpp',
+                        dest='generatorCpp',
+                        metavar='FILE',
+                        help='Encode generator dictionary data in given c++ file')
+    #~ parser.add_option('--use-arrays',
+                        #~ dest='useArrays',
+                        #~ action='store_true',
+                        #~ default=False,
+                        #~ help='store states reachable by 2 transitions in arrays (should speed up recognition, available only when --serialization-method=V1)')
     parser.add_option('--serialization-method',
                         dest='serializationMethod',
+                        default='V1',
                         help="FSA serialization method: \
                         SIMPLE - fixed-length transitions, fastest and weakest compression \
                         V1 - variable-length transitions, compressed labels - strongest compression \
@@ -102,9 +115,12 @@ def _parseOptions():
                         #~ action='store_true', 
                         #~ default=False,
                         #~ help='visualize result')
-    parser.add_option('--train-file',
-                        dest='trainFile',
-                        help='A text file used for training. Should contain words from some large corpus - one word in each line')
+    parser.add_option('--analyzer-train-file',
+                        dest='analyzerTrainFile',
+                        help='A text file used for analyzer training. Should contain words from some large corpus - one word in each line. Resulting analysis automaton should be faster with proper train file.')
+    parser.add_option('--generator-train-file',
+                        dest='generatorTrainFile',
+                        help='A text file used for generator training. Should contain words from some large corpus - one word in each line. Resulting synthesis automaton should be faster with proper train file.')
     parser.add_option('--debug',
                         dest='debug',
                         action='store_true',
@@ -119,22 +135,33 @@ def _parseOptions():
     opts, args = parser.parse_args()
     
     _checkOption(opts.inputFiles, parser, "Input file is missing")
-    _checkOption(opts.outputFile, parser, "Output file is missing")
+    _checkOption(opts.dictDir, parser, "Output dictionary dir is missing")
+    _checkCondition((opts.onlyAnalyzer, opts.onlyGenerator) != (True, True), 
+                              parser, 'Cannot set both --only-analyzer and --only-generator')
+    writeCpp = {opts.analyzerCpp, opts.generatorCpp} != {None}
+    _checkCondition(opts.dictName or writeCpp, parser, "Dictionary name is missing")
+    _checkCondition(opts.onlyGenerator or opts.analyzerCpp or not writeCpp, parser, "Analyzer .cpp output file path is missing")
+    _checkCondition(opts.onlyAnalyzer or opts.generatorCpp or not writeCpp, parser, "Generator .cpp output file path is missing")
+    #~ _checkCondition((opts.dictName, opts.outputCpp) != (None, None), 
+                              #~ parser, 'Must set at least one of: --dict-name, --output-cpp')
+    #~ _checkOption(opts.outputFile, parser, "Output file is missing")
     _checkOption(opts.tagsetFile, parser, "Tagset file is missing")
-    _checkOption(opts.serializationMethod, parser, "Serialization method file is missing")
-    _checkExactlyOneOptionSet([opts.analyzer, opts.generator], 
-                              parser, 'Must set exactly one FSA type: --analyzer or --generator')
+    _checkOption(opts.segmentsFile, parser, "Segmentation file is missing")
+    #~ _checkOption(opts.serializationMethod, parser, "Serialization method file is missing")
+    #~ _checkExactlyOneOptionSet([opts.analyzer, opts.generator], 
+                              #~ parser, 'Must set exactly one FSA type: --analyzer or --generator')
     
     _checkOpen(opts.tagsetFile, 'r')
+    _checkOpen(opts.segmentsFile, 'r')
     for filename in opts.inputFiles:
         _checkOpen(filename, 'r')
-    _checkOpen(opts.outputFile, 'w')
-    _checkOption(opts.segmentsFile, parser, "Segment rules file is missing")
-    if opts.analyzer:
-        _checkOpen(opts.segmentsFile, 'r')
+    if not opts.onlyGenerator:
+        _checkOpen(_getDictFilename(opts, isGenerator=False), 'w')
+    if not opts.onlyAnalyzer:
+        _checkOpen(_getDictFilename(opts, isGenerator=True), 'w')
     
-    if not opts.serializationMethod.upper() in [SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2]:
-        print >> sys.stderr, '--serialization-method must be one of ('+str([SerializationMethod.SIMPLE, SerializationMethod.V1, SerializationMethod.V2])+')'
+    if not opts.serializationMethod.upper() in [SerializationMethod.SIMPLE, SerializationMethod.V1]:
+        print >> sys.stderr, '--serialization-method must be one of ('+str([SerializationMethod.SIMPLE, SerializationMethod.V1])+')'
         parser.print_help()
         exit(1)
     
@@ -211,49 +238,43 @@ def buildGeneratorFromPoliMorf(inputFiles, tagset, segmentRulesManager):
     _printStats(fsa)
     return fsa, encoder.qualifiersMap
 
+def _doBuildDictionaryPart(opts, isGenerator):
+    tagset = Tagset(opts.tagsetFile)
+    rulesParserVersion = rulesParser.RulesParser.PARSE4ANALYZER if not isGenerator else rulesParser.RulesParser.PARSE4GENERATOR
+    segmentRulesManager = rulesParser.RulesParser(tagset, rulesParserVersion).parse(opts.segmentsFile)
+    fsa, qualifiersMap = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
+    segmentationRulesData = segmentRulesManager.serialize()
+    
+    if opts.analyzerTrainFile:
+        logging.info('training with '+opts.analyzerTrainFile+' ...')
+        fsa.train(_readTrainData(opts.analyzerTrainFile))
+        logging.info('done training')
+    
+    serializer = Serializer.getSerializer(opts.serializationMethod, fsa, tagset, qualifiersMap, segmentationRulesData)
+    if opts.generatorCpp and isGenerator:
+        serializer.serialize2CppFile(opts.generatorCpp, isGenerator=isGenerator)
+    if opts.analyzerCpp and not isGenerator:
+        serializer.serialize2CppFile(opts.analyzerCpp, isGenerator=isGenerator)
+    
+    if opts.dictDir:
+        serializer.serialize2BinaryFile(_getDictFilename(opts, isGenerator=isGenerator), isGenerator=isGenerator)
+    
+    logging.info('total FSA size (in bytes): '+str(fsa.initialState.reverseOffset))
+
 def main(opts):
     if opts.debug:
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.INFO)
     
-    if opts.analyzer:
-        logging.info('*** building analyzer ***')
-    else:
-        logging.info('*** building generator ***')
-    
     logging.info('reading tagset from %s', opts.tagsetFile)
     tagset = Tagset(opts.tagsetFile)
-    rulesType = rulesParser.RulesParser.PARSE4ANALYZER if opts.analyzer else rulesParser.RulesParser.PARSE4GENERATOR
-    segmentRulesManager = rulesParser.RulesParser(tagset, rulesType).parse(opts.segmentsFile)
-    segmentationRulesData = segmentRulesManager.serialize()
     
-    if opts.analyzer:
-        fsa, qualifiersMap = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
-    else:
-        fsa, qualifiersMap = buildGeneratorFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
-    if opts.trainFile:
-        logging.info('training with '+opts.trainFile+' ...')
-        fsa.train(_readTrainData(opts.trainFile))
-        logging.info('done training')
-        
-#     serializer = {
-#                   SerializationMethod.SIMPLE: SimpleSerializer,
-#                   SerializationMethod.V1: VLengthSerializer1,
-#                   SerializationMethod.V2: VLengthSerializer2,
-#                   }[opts.serializationMethod](fsa)
-    serializer = Serializer.getSerializer(opts.serializationMethod, fsa, tagset, qualifiersMap, segmentationRulesData)
-    
-    if opts.cpp:
-        serializer.serialize2CppFile(opts.outputFile, isGenerator=opts.generator)
-    else:
-        serializer.serialize2BinaryFile(opts.outputFile, isGenerator=opts.generator)
-    
-    logging.info('total FSA size (in bytes): '+str(fsa.initialState.reverseOffset))
-#     {
-#      OutputFormat.CPP: serializer.serialize2CppFile,
-#      OutputFormat.BINARY: serializer.serialize2BinaryFile
-#      }[opts.outputFormat](opts.outputFile)
+    if not opts.onlyGenerator:
+        _doBuildDictionaryPart(opts, isGenerator=False)
+
+    if not opts.onlyGenerator:
+        _doBuildDictionaryPart(opts, isGenerator=True)
 
 if __name__ == '__main__':
     import os

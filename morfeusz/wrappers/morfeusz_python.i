@@ -23,6 +23,27 @@
     }
 }
 
+%exception morfeusz::Morfeusz::setDictionary {
+    try{
+        $action
+    }
+    catch(const std::ios_base::failure& e) {
+        SWIG_exception(SWIG_IOError, const_cast<char*>(e.what()));
+    }
+    catch(const morfeusz::MorfeuszException& e) {
+        SWIG_exception(SWIG_IOError, const_cast<char*>(e.what()));
+    }
+    catch(const std::invalid_argument& e) {
+        SWIG_exception(SWIG_ValueError, const_cast<char*>(e.what()));
+    }
+    catch(const std::string& e) {
+        SWIG_exception(SWIG_RuntimeError, const_cast<char*>(e.c_str()));
+    }
+    catch(...) {
+        SWIG_exception(SWIG_RuntimeError, "Unknown exception");
+    }
+}
+
 %ignore morfeusz::MorfeuszException;
 %ignore morfeusz::FileFormatException;
 

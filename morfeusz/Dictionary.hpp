@@ -24,9 +24,9 @@ namespace morfeusz {
 
     struct Dictionary {
         Dictionary(const unsigned char* ptr, MorfeuszProcessorType processorType);
-
-        IdResolverImpl idResolver;
+        
         FSAType* fsa;
+        IdResolverImpl idResolver;
         std::vector<uint32_t> separatorsList;
         std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;
         SegrulesOptions defaultSegrulesOptions;

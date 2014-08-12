@@ -33,8 +33,8 @@ namespace morfeusz {
     }
 
     Dictionary::Dictionary(const unsigned char* fsaFileStartPtr, MorfeuszProcessorType processorType)
-    : idResolver(fsaFileStartPtr, &UTF8CharsetConverter::getInstance()),
-    fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
+    : fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
+    idResolver(fsaFileStartPtr, &UTF8CharsetConverter::getInstance()),
     separatorsList(getSeparatorsList(fsaFileStartPtr)),
     segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
     defaultSegrulesOptions(getDefaultSegrulesOptions(fsaFileStartPtr)),
