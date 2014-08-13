@@ -25,6 +25,8 @@ namespace morfeusz {
     struct Dictionary {
         Dictionary(const unsigned char* ptr, MorfeuszProcessorType processorType);
         
+        bool isCompatibleWith(const Dictionary& other) const;
+        
         FSAType* fsa;
         IdResolverImpl idResolver;
         std::vector<uint32_t> separatorsList;

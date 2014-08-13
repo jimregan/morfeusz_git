@@ -6,16 +6,17 @@ set (Morfeusz_VERSION_MAJOR 2)
 set (Morfeusz_VERSION_MINOR 0)
 set (Morfeusz_VERSION_PATCH 0)
 set (Morfeusz_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
-if (VERSION_SUFFIX)
-    set (Morfeusz_VERSION_TWEAK "${VERSION_SUFFIX}")
+if (DEFAULT_DICT_NAME)
+    set (Morfeusz_VERSION_TWEAK "${DEFAULT_DICT_NAME}")
     set (Morfeusz_VERSION "${Morfeusz_VERSION}_${Morfeusz_VERSION_TWEAK}")
 endif ()
-set (CMAKE_BUILD_TYPE Debug)
+set (CMAKE_BUILD_TYPE Release)
 #~ set (CMAKE_SKIP_RPATH ON)
 
 message ("Version=${Morfeusz_VERSION}")
 
 add_definitions (-DMORFEUSZ2_VERSION="${Morfeusz_VERSION}")
+add_definitions (-DDEFAULT_DICT_NAME="${DEFAULT_DICT_NAME}")
 add_definitions (-DBUILDING_MORFEUSZ)
 
 if (NOT CMAKE_CROSSCOMPILING AND NOT SKIP_TESTING)
@@ -34,7 +35,8 @@ elseif ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set (ARCHITECTURE "amd64")
 else ()
-    message (FATAL_ERROR "Invalid architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+    set (ARCHITECTURE "${CMAKE_SYSTEM_PROCESSOR}")
+#    message (FATAL_ERROR "Invalid architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif ()
 
 # PROJECT_VERSION
@@ -157,11 +159,6 @@ include (CPack)
 ##### END initialize some vars #####
 file (COPY fsabuilder doTest.sh testJavaWrapper.sh testPythonWrapper.sh morfeusz/wrappers/python/test.py DESTINATION .)
 
-#~ configure_file (
-  #~ "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_version.h.in"
-  #~ "${PROJECT_BINARY_DIR}/morfeusz2_version.h"
-#~ )
-#~ include_directories("${PROJECT_BINARY_DIR}" )
 ###### add main sources ########
 
 add_subdirectory (morfeusz)
@@ -175,10 +172,23 @@ macro (test_analyzer analyzerDir)
     add_test(TestAnalyzer_${dirname} ./doTest.sh morfeusz analyzer ${analyzerDir})
 endmacro()
 
+macro (test_generator generatorDir)
+    message ("adding test dir ${generatorDir}")
+    get_filename_component (dirname ${generatorTestDir} NAME)
+    add_test(TestGenerator_${dirname} ./doTest.sh morfeusz generator ${generatorDir})
+endmacro()
+
 file (GLOB analyzerTestDirs "tests/analyzer/*")
 if (UNIX)
     foreach (analyzerTestDir ${analyzerTestDirs})
         test_analyzer(${analyzerTestDir})
+    endforeach()
+endif()
+
+file (GLOB generatorTestDirs "tests/generator/*")
+if (UNIX)
+    foreach (generatorTestDir ${generatorTestDirs})
+        test_generator(${generatorTestDir})
     endforeach()
 endif()
 

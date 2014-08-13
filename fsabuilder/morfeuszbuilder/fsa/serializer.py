@@ -21,17 +21,19 @@ class Serializer(object):
     def __init__(self, fsa):
         self._fsa = fsa
         self.tagset = None
+        self.namesMap = None
         self.qualifiersMap = None
         self.segmentationRulesData = None
     
     @staticmethod
-    def getSerializer(serializationMethod, fsa, tagset, qualifiersMap, segmentationRulesData):
+    def getSerializer(serializationMethod, fsa, tagset, namesMap, qualifiersMap, segmentationRulesData):
         res = {
             SerializationMethod.SIMPLE: SimpleSerializer,
             SerializationMethod.V1: VLengthSerializer1,
             SerializationMethod.V2: VLengthSerializer2,
         }[serializationMethod](fsa)
         res.tagset = tagset
+        res.namesMap = namesMap
         res.qualifiersMap = qualifiersMap
         res.segmentationRulesData = segmentationRulesData
         return res
@@ -77,8 +79,10 @@ class Serializer(object):
         raise NotImplementedError('Not implemented')
     
     def fsa2bytearray(self, isGenerator):
-        tagsetData = self.serializeTagset(self.tagset)
+        tagsetData = self._serializeTags(self.tagset.tag2tagnum)
+        tagsetData.extend(self._serializeTags(self.namesMap))
         qualifiersData = self.serializeQualifiersMap()
+        #~ qualifiersData = self._serializeTags(self.qualifiersMap)
         segmentationRulesData = self.segmentationRulesData
         res = bytearray()
         res.extend(self.serializePrologue())
@@ -103,24 +107,26 @@ class Serializer(object):
         return res
     
     # serialize tagset data
-    def serializeTagset(self, tagset):
-        res = bytearray()
-        if tagset:
-            res.extend(self._serializeTags(tagset._tag2tagnum))
-            res.extend(self._serializeTags(tagset._name2namenum))
-        return res
+    #~ def serializeTagset(self, tagset):
+        #~ res = bytearray()
+        #~ if tagset:
+            #~ res.extend(self._serializeTags(tagset._tag2tagnum))
+            #~ res.extend(self._serializeTags(tagset._name2namenum))
+        #~ return res
     
     def serializeQualifiersMap(self):
-        res = bytearray()
-        res.extend(htons(len(self.qualifiersMap)))
         label2labelId = dict([ (u'|'.join(qualifiers), n) for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n) ])
-        res.extend(self._serializeTags(label2labelId))
+        return self._serializeTags(label2labelId)
+        #~ res = bytearray()
+        #~ res.extend(htons(len(self.qualifiersMap)))
+        #~ label2labelId = dict([ (u'|'.join(qualifiers), n) for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n) ])
+        #~ res.extend(self._serializeTags(label2labelId))
         #~ for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n):
             #~ res.append(len(qualifiers))
             #~ for q in qualifiers:
                 #~ res.extend(q.encode('utf8'))
                 #~ res.append(0)
-        return res
+        #~ return res
     
     def serializePrologue(self):
         res = bytearray()

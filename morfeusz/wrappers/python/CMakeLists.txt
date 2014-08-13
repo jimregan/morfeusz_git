@@ -69,7 +69,6 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         DEPENDS package-python-deb-build
     )
     list (APPEND PACKAGE_DEPENDS package-python-deb)
-    message ("PACKAGE_DEPENDS=${PACKAGE_DEPENDS}")
     add_custom_target (package-python
         DEPENDS pymorfeusz ${PACKAGE_DEPENDS})
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND NOT CMAKE_CROSSCOMPILING)

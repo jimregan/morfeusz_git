@@ -43,7 +43,7 @@ public:
      * @param morfeuszProcessor
      * @param fileStartPtr
      */
-    explicit Environment(MorfeuszProcessorType morfeuszProcessor);
+    explicit Environment(MorfeuszProcessorType morfeuszProcessor, bool usable);
     
     /**
      * Sets charset for this environment.
@@ -90,11 +90,11 @@ public:
     const IdResolverImpl& getIdResolver() const;
     
     /**
-     * Sets dictionary file used by this environment.
+     * Sets dictionary by this environment.
      * 
-     * @param filename - filename of the dictionary
+     * @param dict - pointer to the dictionary
      */
-    void setDictionary(const std::string& dictName);
+    void setDictionary(const Dictionary* dict);
     
     /**
      * Sets segmentation rules option.
@@ -156,6 +156,7 @@ public:
     
     virtual ~Environment();
 private:
+    bool usable;
     const CharsetConverter* currentCharsetConverter;
     const CaseConverter caseConverter;
     

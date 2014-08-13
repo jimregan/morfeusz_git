@@ -22,6 +22,7 @@
 #include "const.hpp"
 #include "charset/utf8.h"
 #include "ChunkBounds.hpp"
+#include "DictionariesRepository.hpp"
 
 // TODO - konstruktor kopiujący działający Tak-Jak-Trzeba
 
@@ -114,9 +115,10 @@ namespace morfeusz {
     }
 
     MorfeuszImpl::MorfeuszImpl(MorfeuszUsage usage)
-    : usage(usage),
-    analyzerEnv(ANALYZER),
-    generatorEnv(GENERATOR),
+    : currDictionary(),
+    usage(usage),
+    analyzerEnv(ANALYZER, usage != GENERATE_ONLY),
+    generatorEnv(GENERATOR, usage != ANALYSE_ONLY),
     options(createDefaultOptions()),
     accum(),
     notMatchingCaseSegs(0),
@@ -131,19 +133,42 @@ namespace morfeusz {
     }
 
     void MorfeuszImpl::setDictionary(const string& dictName) {
-        if (usage == ANALYSE_ONLY || usage == BOTH_ANALYSE_AND_GENERATE) {
-            analyzerEnv.setDictionary(dictName);
-        }
-        if (usage == GENERATE_ONLY || usage == BOTH_ANALYSE_AND_GENERATE) {
-            generatorEnv.setDictionary(dictName);
+
+        if (dictName != currDictionary) {
+
+            doSetDictionary(dictName);
+
+            currDictionary = dictName;
         }
     }
-    
+
+    void MorfeuszImpl::doSetDictionary(const string& dictName) {
+        switch (usage) {
+            case BOTH_ANALYSE_AND_GENERATE:
+            {
+                const Dictionary* analyzerDict = DictionariesRepository::instance.getDictionary(dictName, ANALYZER);
+                const Dictionary* generatorDict = DictionariesRepository::instance.getDictionary(dictName, GENERATOR);
+                if (analyzerDict->isCompatibleWith(*generatorDict)) {
+                    analyzerEnv.setDictionary(analyzerDict);
+                    generatorEnv.setDictionary(generatorDict);
+                } else {
+                    throw MorfeuszException("Analyzer and generator dictionaries are incompatible");
+                }
+            }
+                break;
+            case ANALYSE_ONLY:
+                analyzerEnv.setDictionary(DictionariesRepository::instance.getDictionary(dictName, ANALYZER));
+                break;
+            case GENERATE_ONLY:
+                generatorEnv.setDictionary(DictionariesRepository::instance.getDictionary(dictName, GENERATOR));
+                break;
+        }
+    }
+
     const Environment& MorfeuszImpl::getAnyEnvironment() const {
         if (analyzerEnv.isUsable()) {
             return analyzerEnv;
-        }
-        else {
+        } else {
             return generatorEnv;
         }
     }

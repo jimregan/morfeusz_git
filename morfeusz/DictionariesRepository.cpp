@@ -6,6 +6,7 @@
  */
 
 #include <fstream>
+#include "morfeusz2.h"
 #include "DictionariesRepository.hpp"
 #include "data/default_fsa.hpp"
 #include "const.hpp"
@@ -40,7 +41,7 @@ namespace morfeusz {
         DictionariesRepository::RepositoryEntry defaultEntry;
         defaultEntry.analyzerDictionary = new Dictionary(DEFAULT_FSA, ANALYZER);
         defaultEntry.generatorDictionary = new Dictionary(DEFAULT_SYNTH_FSA, GENERATOR);
-        res[string()] = defaultEntry;
+        res[Morfeusz::getDefaultDictName()] = defaultEntry;
         return res;
     }
 
@@ -49,8 +50,7 @@ namespace morfeusz {
     }
 
     const Dictionary* DictionariesRepository::getDefaultDictionary(MorfeuszProcessorType processorType) {
-        static string emptyString;
-        return this->getDictionary(emptyString, processorType);
+        return this->getDictionary(Morfeusz::getDefaultDictName(), processorType);
     }
 
     Dictionary* DictionariesRepository::RepositoryEntry::getDictionary(MorfeuszProcessorType processorType) const {

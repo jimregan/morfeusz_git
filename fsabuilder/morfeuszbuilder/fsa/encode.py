@@ -21,7 +21,7 @@ class Encoder(object):
         '''
         self.lowercase = lowercase
         self.encoding = encoding
-        self.qualifiersMap = { frozenset(): 0}
+        #~ self.qualifiersMap = { frozenset(): 0}
     
     def encodeWord(self, word, lowercase=True):
         assert type(word) == unicode
@@ -47,19 +47,20 @@ class Encoder(object):
                             u'Too many segment types. The limit is %d' % limits.MAX_SEGMENT_TYPES)
         return bytearray([typenum])
     
-    def _encodeQualifiers(self, qualifiers):
-        res = bytearray()
-        key = frozenset(qualifiers)
-        if key in self.qualifiersMap:
-            n = self.qualifiersMap[key]
-        else:
-            n = len(self.qualifiersMap)
-            self.qualifiersMap[key] = n
-        exceptions.validate(
-                            n <= limits.MAX_QUALIFIERS_COMBINATIONS, 
-                            u'Too many qualifiers combinations. The limit is %d' % limits.MAX_QUALIFIERS_COMBINATIONS)
-        res.extend(htons(n))
-        return res
+    #~ def _encodeQualifiers(self, qualifiers):
+        #~ res = bytearray()
+        #~ key = frozenset(qualifiers)
+        #~ if key in self.qualifiersMap:
+        #~ exceptions.validate(key in self.qualifiersMap, u'Unknown qualifiers: %s' % qualifiers)
+        #~ n = self.qualifiersMap[key]
+        #~ else:
+            #~ n = len(self.qualifiersMap)
+            #~ self.qualifiersMap[key] = n
+        #~ exceptions.validate(
+                            #~ n <= limits.MAX_QUALIFIERS_COMBINATIONS, 
+                            #~ u'Too many qualifiers combinations. The limit is %d' % limits.MAX_QUALIFIERS_COMBINATIONS)
+        #~ res.extend(htons(n))
+        #~ return res
     
     def _hasUpperPrefix(self, casePattern):
         for i in range(len(casePattern) + 1):
@@ -213,7 +214,7 @@ class MorphEncoder(Encoder):
                 encodedInterpsList.extend(self._encodeCasePattern(interp.encodedForm.casePattern))
             encodedInterpsList.extend(htons(interp.tagnum))
             encodedInterpsList.append(interp.namenum)
-            encodedInterpsList.extend(self._encodeQualifiers(interp.qualifiers))
+            encodedInterpsList.extend(htons(interp.qualifiers))
         
         res.extend(htons(len(encodedInterpsList)))
         res.extend(encodedInterpsList)
@@ -238,7 +239,7 @@ class Encoder4Generator(Encoder):
             encodedInterpsList.extend(serializeString(interp.encodedForm.suffixToAdd))
             encodedInterpsList.extend(htons(interp.tagnum))
             encodedInterpsList.append(interp.namenum)
-            encodedInterpsList.extend(self._encodeQualifiers(interp.qualifiers))
+            encodedInterpsList.extend(htons(interp.qualifiers))
         
         res.extend(htons(len(encodedInterpsList)))
         res.extend(encodedInterpsList)

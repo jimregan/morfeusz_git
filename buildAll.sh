@@ -3,36 +3,30 @@
 set -e -o pipefail
 
 if [ "$#" -ne 3 ]; then
-    echo "Must provide exactly 3 arguments: <CROSSMORFEUSZ_ROOT> <INPUT_DICTIONARIES> <VERSION_SUFFIX>"
+    echo "Must provide exactly 3 arguments: <CROSSMORFEUSZ_ROOT> <INPUT_DICTIONARIES> <DEFAULT_DICT_NAME>"
     exit 1
 fi
 
 export CROSSMORFEUSZ_ROOT="$1"
 export INPUT_DICTIONARIES="$2"
-export VERSION_SUFFIX="$3"
+export DEFAULT_DICT_NAME="$3"
 export ANALYZER_DICTIONARY_CPP=`mktemp`.cpp
 export GENERATOR_DICTIONARY_CPP=`mktemp`.cpp
+export DICT_DIR=`mktemp -d`
 
 function buildDictionaries {
     
-    INPUT_TAGSET=input/sgjp-morfeusz.tagset
+    INPUT_TAGSET=input/morfeusz-sgjp.tagset
     SEGMENT_RULES_FILE=input/segmenty.dat
     
     python fsabuilder/morfeusz_builder \
-        --analyzer \
         --input-files="$INPUT_DICTIONARIES" \
         --tagset-file="$INPUT_TAGSET" \
         --segments-file="$SEGMENT_RULES_FILE" \
-        --cpp --serialization-method=V1 \
-        -o "$ANALYZER_DICTIONARY_CPP"
-    
-    python fsabuilder/morfeusz_builder \
-        --generator \
-        --input-files="$INPUT_DICTIONARIES" \
-        --tagset-file="$INPUT_TAGSET" \
-        --segments-file="$SEGMENT_RULES_FILE" \
-        --cpp --serialization-method=V1 \
-        -o "$GENERATOR_DICTIONARY_CPP"
+        --analyzer-cpp="$ANALYZER_DICTIONARY_CPP" \
+        --generator-cpp="$GENERATOR_DICTIONARY_CPP" \
+        --dict="$DEFAULT_DICT_NAME" \
+        --dict-dir="$DICT_DIR"
     
     echo "DONE building dictionaries" >&2
 }
@@ -62,7 +56,7 @@ function build {
         -D TARGET_DIR=$targetDir \
         -D ANALYZER_DICTIONARY_CPP=$ANALYZER_DICTIONARY_CPP \
         -D GENERATOR_DICTIONARY_CPP=$GENERATOR_DICTIONARY_CPP \
-        -D VERSION_SUFFIX=$VERSION_SUFFIX \
+        -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
         -D SKIP_DICTIONARY_BUILDING=1 \
         $srcDir 2>&1
     echo "building $toolchain" >&2
@@ -97,6 +91,6 @@ buildDictionaries 2>&1 | log All all
     echo "build Windows amd64 package package-java 2>&1 | log Windows amd64"
     echo "build Windows i386 package package-java 2>&1 | log Windows i386"
     echo "build Darwin amd64 package package-java 2>&1 | log Darwin amd64"
-} | xargs -n1 -P3 -d$'\n' bash -c
+} | xargs -n1 -P2 -d$'\n' bash -c
 
 

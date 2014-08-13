@@ -54,7 +54,6 @@ endif ()
 
 # build jmorfeusz
 file(GLOB_RECURSE JAVA_SOURCES "${JAVA_SRC_DIR}" "${JAVA_SRC_DIR}/*.java")
-message("SOURCES: ${JAVA_SOURCES}")
 add_jar (jmorfeusz
     SOURCES "${JAVA_SOURCES}"
     ENTRY_POINT pl/waw/ipipan/morfeusz/app/App

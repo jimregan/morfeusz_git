@@ -11,6 +11,11 @@ namespace morfeusz {
         static string version = MORFEUSZ2_VERSION;
         return version;
     }
+    
+    string Morfeusz::getDefaultDictName() {
+        static string dictName = DEFAULT_DICT_NAME;
+        return dictName;
+    }
 
     Morfeusz* Morfeusz::createInstance(MorfeuszUsage usage) {
         return new MorfeuszImpl(usage);

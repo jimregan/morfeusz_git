@@ -108,6 +108,12 @@ namespace morfeusz {
          * @return 
          */
         static std::string getVersion();
+        
+        /**
+         * Returns a string containing default dictionary name.
+         * @return 
+         */
+        static std::string getDefaultDictName();
 
         /**
          * Creates actual instance of Morfeusz class.

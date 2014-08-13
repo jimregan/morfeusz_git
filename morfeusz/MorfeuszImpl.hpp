@@ -189,7 +189,10 @@ namespace morfeusz {
         void ensureIsGenerator() const;
         
         const Environment& getAnyEnvironment() const;
+        
+        void doSetDictionary(const std::string& dictName);
 
+        std::string currDictionary;
         MorfeuszUsage usage;
         Environment analyzerEnv;
         Environment generatorEnv;

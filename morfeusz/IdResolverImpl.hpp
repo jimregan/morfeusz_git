@@ -44,7 +44,9 @@ namespace morfeusz {
             std::vector<std::string> id2String;
             std::map<std::string, int> string2Id;
         };
-
+        
+        bool isCompatibleWith(const IdResolverImpl& other) const;
+        
     private:
 
         IdStringMapping tags;

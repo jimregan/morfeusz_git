@@ -15,6 +15,7 @@ from morfeuszbuilder.fsa.fsa import FSA
 from morfeuszbuilder.fsa.serializer import Serializer, SerializationMethod
 from morfeuszbuilder.tagset.tagset import Tagset
 from morfeuszbuilder.segrules import rulesParser
+from morfeuszbuilder.utils import exceptions, limits
 from optparse import OptionParser
 
 def _checkOption(opt, parser, msg):
@@ -168,7 +169,6 @@ def _parseOptions():
     return opts
 
 def _concatFiles(inputFiles):
-#     return open(inputFiles[0], 'r')
     for inputFile in inputFiles:
         if inputFile:
             with open(inputFile, 'r') as f:
@@ -178,14 +178,31 @@ def _concatFiles(inputFiles):
                     else:
                         logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % line.strip().decode('utf8'))
 
-def _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager):
+def _readNamesAndQualifiers(inputFiles):
+    names = set([u''])
+    qualifiers = set([tuple(frozenset([u'']))])
+    for line in _concatFiles(inputFiles):
+        line = line.strip().decode('utf8')
+        if line:
+            _, _, _, name, qualifier = convertinput.parseLine(line)
+            names.add(name)
+            qualifiers.add(tuple(sorted(qualifier.split(u'|'))))
+    namesMap = dict([(name, idx) for idx, name in enumerate(sorted(list(names)))])
+    qualifiersMap = dict([(frozenset(quals), idx) for idx, quals in enumerate(sorted(list(qualifiers)))])
+    exceptions.validate(
+                    len(qualifiersMap) <= limits.MAX_QUALIFIERS_COMBINATIONS, 
+                    u'Too many qualifiers combinations. The limit is %d' % limits.MAX_QUALIFIERS_COMBINATIONS)
+    
+    return namesMap, qualifiersMap
+
+def _readPolimorfInput4Analyzer(inputFiles, tagset, namesMap, qualifiersMap, encoder, segmentRulesManager):
     logging.info('reading analyzer data from %s', str(inputFiles))
-    for entry in convertinput.PolimorfConverter4Analyzer(tagset, encoder, 'utf8', segmentRulesManager).convert(_concatFiles(inputFiles)):
+    for entry in convertinput.PolimorfConverter4Analyzer(tagset, namesMap, qualifiersMap, encoder, 'utf8', segmentRulesManager).convert(_concatFiles(inputFiles)):
         yield entry
 
-def _readPolimorfInput4Generator(inputFiles, tagset, encoder, segmentRulesManager):
+def _readPolimorfInput4Generator(inputFiles, tagset, namesMap, qualifiersMap, encoder, segmentRulesManager):
     logging.info('reading generator data from %s', str(inputFiles))
-    for entry in convertinput.PolimorfConverter4Generator(tagset, encoder, 'utf8', segmentRulesManager).convert(_concatFiles(inputFiles)):
+    for entry in convertinput.PolimorfConverter4Generator(tagset, namesMap, qualifiersMap, encoder, 'utf8', segmentRulesManager).convert(_concatFiles(inputFiles)):
         yield entry
 
 def _readTrainData(trainFile):
@@ -210,10 +227,10 @@ def _printStats(fsa):
     logging.info('sink states num: '+str(sinkNum))
     logging.info('array states num: '+str(arrayNum))
 
-def buildAnalyzerFromPoliMorf(inputFiles, tagset, segmentRulesManager):
+def buildAnalyzerFromPoliMorf(inputFiles, tagset, namesMap, qualifiersMap, segmentRulesManager):
     encoder = encode.MorphEncoder()
     fsa = FSA(encoder, tagset)
-    for word, data in _readPolimorfInput4Analyzer(inputFiles, tagset, encoder, segmentRulesManager):
+    for word, data in _readPolimorfInput4Analyzer(inputFiles, tagset, namesMap, qualifiersMap, encoder, segmentRulesManager):
 #         print word, data
         fsa.addEntry(word, data)
         del word
@@ -223,12 +240,12 @@ def buildAnalyzerFromPoliMorf(inputFiles, tagset, segmentRulesManager):
     logging.info('Analyzer FSA stats:')
     logging.info('------')
     _printStats(fsa)
-    return fsa, encoder.qualifiersMap
+    return fsa
 
-def buildGeneratorFromPoliMorf(inputFiles, tagset, segmentRulesManager):
+def buildGeneratorFromPoliMorf(inputFiles, tagset, namesMap, qualifiersMap, segmentRulesManager):
     encoder = encode.Encoder4Generator()
     fsa = FSA(encoder, tagset)
-    inputData = _readPolimorfInput4Generator(inputFiles, tagset, encoder, segmentRulesManager)
+    inputData = _readPolimorfInput4Generator(inputFiles, tagset, namesMap, qualifiersMap, encoder, segmentRulesManager)
     for word, data in inputData:
         fsa.addEntry(word, data)
     fsa.close()
@@ -236,21 +253,32 @@ def buildGeneratorFromPoliMorf(inputFiles, tagset, segmentRulesManager):
     logging.info('Generator FSA stats:')
     logging.info('------')
     _printStats(fsa)
-    return fsa, encoder.qualifiersMap
+    return fsa
 
-def _doBuildDictionaryPart(opts, isGenerator):
-    tagset = Tagset(opts.tagsetFile)
+def _doBuildDictionaryPart(opts, tagset, namesMap, qualifiersMap, isGenerator):
+    
+    logging.info('reading segmentation rules')
     rulesParserVersion = rulesParser.RulesParser.PARSE4ANALYZER if not isGenerator else rulesParser.RulesParser.PARSE4GENERATOR
     segmentRulesManager = rulesParser.RulesParser(tagset, rulesParserVersion).parse(opts.segmentsFile)
-    fsa, qualifiersMap = buildAnalyzerFromPoliMorf(opts.inputFiles, tagset, segmentRulesManager)
     segmentationRulesData = segmentRulesManager.serialize()
+    logging.info('done reading segmentation rules')
     
-    if opts.analyzerTrainFile:
-        logging.info('training with '+opts.analyzerTrainFile+' ...')
+    logging.info('building automaton')
+    buildFunction = buildAnalyzerFromPoliMorf if not isGenerator else buildGeneratorFromPoliMorf
+    fsa = buildFunction(opts.inputFiles, tagset, namesMap, qualifiersMap, segmentRulesManager)
+    logging.info('done building automaton')
+    
+    if not isGenerator and opts.analyzerTrainFile:
+        logging.info('training analyzer automaton with '+opts.analyzerTrainFile+' ...')
         fsa.train(_readTrainData(opts.analyzerTrainFile))
         logging.info('done training')
     
-    serializer = Serializer.getSerializer(opts.serializationMethod, fsa, tagset, qualifiersMap, segmentationRulesData)
+    if isGenerator and opts.generatorTrainFile:
+        logging.info('training generator automaton with '+opts.generatorTrainFile+' ...')
+        fsa.train(_readTrainData(opts.analyzerTrainFile))
+        logging.info('done training')
+    
+    serializer = Serializer.getSerializer(opts.serializationMethod, fsa, tagset, namesMap, qualifiersMap, segmentationRulesData)
     if opts.generatorCpp and isGenerator:
         serializer.serialize2CppFile(opts.generatorCpp, isGenerator=isGenerator)
     if opts.analyzerCpp and not isGenerator:
@@ -267,14 +295,19 @@ def main(opts):
     else:
         logging.basicConfig(level=logging.INFO)
     
-    logging.info('reading tagset from %s', opts.tagsetFile)
+    logging.info('reading tagset')
     tagset = Tagset(opts.tagsetFile)
+    logging.info('done reading tagset')
+    
+    logging.info('reading names and qualifiers')
+    namesMap, qualifiersMap = _readNamesAndQualifiers(opts.inputFiles)
+    logging.info('done reading names and qualifiers')
     
     if not opts.onlyGenerator:
-        _doBuildDictionaryPart(opts, isGenerator=False)
+        _doBuildDictionaryPart(opts, tagset, namesMap, qualifiersMap, isGenerator=False)
 
-    if not opts.onlyGenerator:
-        _doBuildDictionaryPart(opts, isGenerator=True)
+    if not opts.onlyAnalyzer:
+        _doBuildDictionaryPart(opts, tagset, namesMap, qualifiersMap, isGenerator=True)
 
 if __name__ == '__main__':
     import os

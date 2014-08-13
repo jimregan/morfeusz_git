@@ -38,8 +38,9 @@ namespace morfeusz {
         fsasMap.clear();
     }
 
-    Environment::Environment(MorfeuszProcessorType processorType)
-    : currentCharsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
+    Environment::Environment(MorfeuszProcessorType processorType, bool usable)
+    : usable(usable),
+    currentCharsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
     caseConverter(),
     dictionary(DictionariesRepository::instance.getDefaultDictionary(processorType)),
     idResolver(dictionary->idResolver),
@@ -169,11 +170,11 @@ namespace morfeusz {
     }
 
     bool Environment::isUsable() const {
-        return this->dictionary != NULL;
+        return usable;
     }
 
-    void Environment::setDictionary(const std::string& dictName) {
-        this->dictionary = DictionariesRepository::instance.getDictionary(dictName, this->processorType);
+    void Environment::setDictionary(const Dictionary* dict) {
+        this->dictionary = dict;
         idResolver = dictionary->idResolver;
         this->idResolver.setCharsetConverter(currentCharsetConverter);
         currSegrulesOptions = dictionary->defaultSegrulesOptions;
@@ -209,5 +210,4 @@ namespace morfeusz {
     const set<string>& Environment::getAvailablePraetOptions() const {
         return this->dictionary->availablePraetOptions;
     }
-
 }

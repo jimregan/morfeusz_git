@@ -130,4 +130,10 @@ namespace morfeusz {
     size_t IdResolverImpl::getLabelsCount() const {
         return this->labels.id2String.size();
     }
+    
+    bool IdResolverImpl::isCompatibleWith(const IdResolverImpl& other) const {
+        return this->tags.id2String == other.tags.id2String 
+                && this->names.id2String == other.names.id2String
+                && this->labels.id2String == other.labels.id2String;
+    }
 }

@@ -42,4 +42,12 @@ namespace morfeusz {
     availableAgglOptions(getAvailableOptions(segrulesFSAsMap, "aggl")),
     availablePraetOptions(getAvailableOptions(segrulesFSAsMap, "praet")) {
     }
+    
+    bool Dictionary::isCompatibleWith(const Dictionary& other) const {
+        return this->idResolver.isCompatibleWith(other.idResolver)
+                && this->availableAgglOptions == other.availableAgglOptions
+                && this->availablePraetOptions == other.availablePraetOptions
+                && this->defaultSegrulesOptions == other.defaultSegrulesOptions
+                && this->separatorsList == other.separatorsList;
+    }
 }
