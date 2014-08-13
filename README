@@ -101,6 +101,7 @@ TARGET_DIR - a dir where packages built by CMake are put in
 ANALYZER_DICTIONARY_CPP - a file where analyzer embedded C++ dictionary file is read/written to
 GENERATOR_DICTIONARY_CPP - a file where generator embedded C++ dictionary file is read/written to
 SKIP_DICTIONARY_BUILDING - if set, the dictionary-building part of the build process is skipped
+DEFAULT_DICT_NAME - default dictionary name
 
 Execute like following:
 cmake -D INPUT_TAGSET=<file1> -D INPUT_DICTIONARIES="<dict_file1>,<dict_file2>" ..
