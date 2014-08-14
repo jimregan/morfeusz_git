@@ -94,17 +94,71 @@ Customizing build process
 ***************
 
 Optional CMake variables:
+
 INPUT_TAGSET - tagset file
-INPUT_DICTIONARIES - comma-separated list of dictionary files (can use empty one from input/empty.txt)
 SEGMENT_RULES_FILE - segmentation rules file
-TARGET_DIR - a dir where packages built by CMake are put in
+
+INPUT_DICTIONARIES - comma-separated list of dictionary files (can use empty one from input/empty.txt)
 ANALYZER_DICTIONARY_CPP - a file where analyzer embedded C++ dictionary file is read/written to
 GENERATOR_DICTIONARY_CPP - a file where generator embedded C++ dictionary file is read/written to
 SKIP_DICTIONARY_BUILDING - if set, the dictionary-building part of the build process is skipped
 DEFAULT_DICT_NAME - default dictionary name
+DEFAULT_DICT_DIR - a directory where dictionaries are read/written to
+SKIP_DICTIONARY_BUILDING - do not build dictionaries. Use the ones provided by DEFAULT_DICT_DIR or ANALYZER/GENERATOR_DICTIONARY_CPP options.
+EMBEDDED_DEFAULT_DICT - embed default dictionary into morfeusz library code (implicitly set for Windows and OSX builds).
 
-Execute like following:
-cmake -D INPUT_TAGSET=<file1> -D INPUT_DICTIONARIES="<dict_file1>,<dict_file2>" ..
+CMAKE_INSTALL_PREFIX - where to install morfeusz (on Linux default is /usr/local)
+TARGET_DIR - a dir where packages built by CMake are put in
+
+***************
+Customizing build process - examples
+***************
+----------
+Only build dictionary with default tagset and segmentation rules and given input data:
+----------
+
+cmake \
+    -D INPUT_DICTIONARIES=/path/to/dict1.tab,/path/to/dict2.tab \
+    -D DEFAULT_DICT_DIR=/path/to/dict/dir \
+    -D DEFAULT_DICT_NAME=my_dictionary \
+    ..
+make dictionary
+
+----------
+Build and install in users home directory (on Linux):
+----------
+cmake \
+    -D INPUT_DICTIONARIES=/path/to/dict1.tab,/path/to/dict2.tab \
+    -D CMAKE_INSTALL_PREFIX=$HOME \
+    -D DEFAULT_DICT_NAME=my_dictionary \
+    ..
+make
+make install
+
+----------
+Build packages with embedded dictionary data (TGZ for all systems and installer for Windows).
+Resulting packages will be put in current dir:
+----------
+cmake \
+    -D INPUT_DICTIONARIES=/path/to/dict1.tab,/path/to/dict2.tab \
+    -D DEFAULT_DICT_NAME=my_dictionary \
+    -D EMBEDDED_DEFAULT_DICT=1 \
+    ..
+make
+make package
+
+----------
+Build packages with dictionary data in separate files (creates only DEB on Linux).
+Resulting package will be put in /path/to/target/dir:
+----------
+cmake \
+    -D INPUT_DICTIONARIES=/path/to/dict1,/path/to/dict2 \
+    -D DEFAULT_DICT_NAME=my_dictionary \
+    -D TARGET_DIR=/path/to/target/dir \
+    ..
+make
+make package
+
 
 **************************
 Notes on cross-compilation
