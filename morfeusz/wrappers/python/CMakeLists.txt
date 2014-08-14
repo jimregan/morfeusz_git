@@ -38,7 +38,7 @@ add_custom_command (OUTPUT ${OUTPUT}
                        ARGS ${SETUP_PY} build
                        DEPENDS generate_python_wrapper generate_python_setup_file libmorfeusz)
 
-add_custom_target (build_python_wrapper ALL
+add_custom_target (build_python_wrapper
         DEPENDS ${OUTPUT})
 
 add_custom_target (pymorfeusz
