@@ -5,7 +5,7 @@ Compilation - prerequisites
 
 This tutorial assumes that build process is performed on Linux 64bit machine (preferably from Debian/Ubuntu family).
 
-sudo apt-get install build-essential autotools-dev python python-setuptools python-stdeb python-pip python-all-dev python-pyparsing devscripts
+sudo apt-get install build-essential autotools-dev python python-setuptools python-stdeb python-pip python-all-dev python-pyparsing devscripts libcppunit-dev
 sudo pip install pyinstaller
 
 For cross compiling:
