@@ -12,7 +12,6 @@
 #include <stdexcept>
 #include "fsa/fsa.hpp"
 #include "utils.hpp"
-#include "data/default_fsa.hpp"
 #include "MorfeuszImpl.hpp"
 #include "deserialization/morphInterps/InterpretedChunksDecoder.hpp"
 #include "charset/CharsetConverter.hpp"
@@ -146,8 +145,8 @@ namespace morfeusz {
         switch (usage) {
             case BOTH_ANALYSE_AND_GENERATE:
             {
-                const Dictionary* analyzerDict = DictionariesRepository::instance.getDictionary(dictName, ANALYZER);
-                const Dictionary* generatorDict = DictionariesRepository::instance.getDictionary(dictName, GENERATOR);
+                const Dictionary* analyzerDict = DictionariesRepository::getInstance().getDictionary(dictName, ANALYZER);
+                const Dictionary* generatorDict = DictionariesRepository::getInstance().getDictionary(dictName, GENERATOR);
                 if (analyzerDict->isCompatibleWith(*generatorDict)) {
                     analyzerEnv.setDictionary(analyzerDict);
                     generatorEnv.setDictionary(generatorDict);
@@ -157,10 +156,10 @@ namespace morfeusz {
             }
                 break;
             case ANALYSE_ONLY:
-                analyzerEnv.setDictionary(DictionariesRepository::instance.getDictionary(dictName, ANALYZER));
+                analyzerEnv.setDictionary(DictionariesRepository::getInstance().getDictionary(dictName, ANALYZER));
                 break;
             case GENERATE_ONLY:
-                generatorEnv.setDictionary(DictionariesRepository::instance.getDictionary(dictName, GENERATOR));
+                generatorEnv.setDictionary(DictionariesRepository::getInstance().getDictionary(dictName, GENERATOR));
                 break;
         }
     }

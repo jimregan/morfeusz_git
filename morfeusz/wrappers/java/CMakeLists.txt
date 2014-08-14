@@ -59,7 +59,7 @@ add_jar (jmorfeusz
     ENTRY_POINT pl/waw/ipipan/morfeusz/app/App
     DEPENDS libjmorfeusz generate-java-wrapper)
 
-add_custom_target(generate-javadoc ALL
+add_custom_target(generate-javadoc
     COMMAND javadoc
         -d "${CMAKE_CURRENT_BINARY_DIR}/jmorfeusz_javadoc"
         -sourcepath "${CMAKE_CURRENT_BINARY_DIR}"
@@ -69,7 +69,7 @@ add_custom_target(generate-javadoc ALL
         pl.waw.ipipan.morfeusz
     DEPENDS jmorfeusz)
 
-add_custom_target(package-javadoc ALL
+add_custom_target(package-javadoc
     COMMAND mkdir -p "${TARGET_DIR}" && ${CMAKE_COMMAND} -E tar "cfvz" "${TARGET_DIR}/jmorfeusz_javadoc.tgz" "${CMAKE_CURRENT_BINARY_DIR}/jmorfeusz_javadoc"
     DEPENDS generate-javadoc)
 

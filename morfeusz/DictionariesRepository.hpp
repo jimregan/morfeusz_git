@@ -28,9 +28,7 @@ namespace morfeusz {
         
         static std::string getDictionaryFilename(const std::string& name, MorfeuszProcessorType processorType);
         
-        static DictionariesRepository instance;
-        
-        static std::list<std::string>& dictionarySearchPaths;
+        static DictionariesRepository& getInstance();
         
     private:
         

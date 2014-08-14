@@ -9,15 +9,50 @@ set (Morfeusz_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Mor
 if (DEFAULT_DICT_NAME)
     set (Morfeusz_VERSION_TWEAK "${DEFAULT_DICT_NAME}")
     set (Morfeusz_VERSION "${Morfeusz_VERSION}_${Morfeusz_VERSION_TWEAK}")
+elseif (INPUT_DICTIONARIES)
+    message (FATAL_ERROR "DEFAULT_DICT_NAME option is missing.")
+else ()
+    message (WARNING "Will build WITHOUT DICTIONARY. Set INPUT_DICTIONARIES option to build with dictionary.")
 endif ()
 set (CMAKE_BUILD_TYPE Release)
 #~ set (CMAKE_SKIP_RPATH ON)
 
 message ("Version=${Morfeusz_VERSION}")
 
+if (NOT "${CMAKE_SYSTEM_NAME}" MATCHES "Linux" OR "${INPUT_DICTIONARIES}" STREQUAL "")
+    set (EMBEDDED_DEFAULT_DICT 1)
+endif ()
+
+# INPUT_DICTIONARY_CPP
+if (EMBEDDED_DEFAULT_DICT)
+    if (NOT ANALYZER_DICTIONARY_CPP)
+        set (ANALYZER_DICTIONARY_CPP "default_fsa.cpp")
+    endif ()
+    if (NOT GENERATOR_DICTIONARY_CPP)
+        set (GENERATOR_DICTIONARY_CPP "default_synth_fsa.cpp")
+    endif ()
+else ()
+    if (NOT DEFAULT_DICT_DIR)
+        set (DEFAULT_DICT_DIR "${CMAKE_CURRENT_BINARY_DIR}/morfeusz")
+    endif ()
+    set (DEFAULT_DICT_INSTALL_DIR "share/morfeusz/dictionaries")
+endif ()
+
 add_definitions (-DMORFEUSZ2_VERSION="${Morfeusz_VERSION}")
-add_definitions (-DDEFAULT_DICT_NAME="${DEFAULT_DICT_NAME}")
+add_definitions (-DMORFEUSZ_DEFAULT_DICT_NAME="${DEFAULT_DICT_NAME}")
 add_definitions (-DBUILDING_MORFEUSZ)
+if (EMBEDDED_DEFAULT_DICT)
+    add_definitions (-DMORFEUSZ_EMBEDDED_DEFAULT_DICT )
+else ()
+    if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr" OR "${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")
+        add_definitions (-DMORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/${DEFAULT_DICT_INSTALL_DIR}")
+        add_definitions (-DMORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/${DEFAULT_DICT_INSTALL_DIR}")
+    else ()
+        add_definitions (-DMORFEUSZ_DICTIONARY_SEARCH_PATH1="${CMAKE_INSTALL_PREFIX}/${DEFAULT_DICT_INSTALL_DIR}")
+        add_definitions (-DMORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/local/${DEFAULT_DICT_INSTALL_DIR}")
+        add_definitions (-DMORFEUSZ_DICTIONARY_SEARCH_PATH3="/usr/${DEFAULT_DICT_INSTALL_DIR}")
+    endif ()
+endif ()
 
 if (NOT CMAKE_CROSSCOMPILING AND NOT SKIP_TESTING)
     enable_testing()
@@ -44,26 +79,17 @@ endif ()
 
 ### USER DEFINED VARIABLES
 
-# INPUT_DICTIONARY_CPP
-if (NOT ANALYZER_DICTIONARY_CPP)
-    set (ANALYZER_DICTIONARY_CPP "default_fsa.cpp")
-endif ()
-
-if (NOT GENERATOR_DICTIONARY_CPP)
-    set (GENERATOR_DICTIONARY_CPP "default_synth_fsa.cpp")
-endif ()
-
 #~ if (CPP_DICTIONARIES_DIR)
     #~ set (INPUT_DICTIONARY_CPP "${CPP_DICTIONARIES_DIR}/${INPUT_DICTIONARY_CPP}")
     #~ set (INPUT_SYNTH_DICTIONARY_CPP "${CPP_DICTIONARIES_DIR}/${INPUT_SYNTH_DICTIONARY_CPP}")
 #~ endif ()
 
 if (NOT INPUT_DICTIONARIES)
-   if (EMPTY_INPUT_DICTIONARY)
+#   if (EMPTY_INPUT_DICTIONARY)
     set (INPUT_DICTIONARIES ${PROJECT_SOURCE_DIR}/input/empty.txt)
-   else ()
-    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/sgjp-hom.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
-   endif ()
+#   else ()
+#    set (INPUT_DICTIONARIES "${PROJECT_SOURCE_DIR}/input/sgjp-hom.tab,${PROJECT_SOURCE_DIR}/input/dodatki.tab")
+#   endif ()
 endif ()
 
 # INPUT_TAGSET
@@ -167,13 +193,13 @@ add_subdirectory (fsabuilder)
 ########## add tests ##########
 
 macro (test_analyzer analyzerDir)
-    message ("adding test dir ${analyzerDir}")
+#    message ("adding test dir ${analyzerDir}")
     get_filename_component (dirname ${analyzerTestDir} NAME)
     add_test(TestAnalyzer_${dirname} ./doTest.sh morfeusz analyzer ${analyzerDir})
 endmacro()
 
 macro (test_generator generatorDir)
-    message ("adding test dir ${generatorDir}")
+#    message ("adding test dir ${generatorDir}")
     get_filename_component (dirname ${generatorTestDir} NAME)
     add_test(TestGenerator_${dirname} ./doTest.sh morfeusz generator ${generatorDir})
 endmacro()

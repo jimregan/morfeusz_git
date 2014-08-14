@@ -53,7 +53,7 @@ namespace morfeusz {
          */
         CONTINUOUS_NUMBERING = 202
     };
-
+    
     enum CaseHandling {
         /**
          * Case-sensitive but allows interpretations that do not match case but there are no alternatives

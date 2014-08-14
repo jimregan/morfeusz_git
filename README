@@ -47,13 +47,13 @@ make
 Testing
 ***************
 
-To compile and run tests you must have cppunit library installed t
+To compile and run tests you must have cppunit library installed.
 To test if everything is working type:
 
 make build-tests
 make test
 
-If the tests fail, you can see errors by invoking:
+If some tests fail, you can see errors by invoking:
 
 ctest --output-on-failure
 

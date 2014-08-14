@@ -8,7 +8,9 @@
 #include <fstream>
 #include "morfeusz2.h"
 #include "DictionariesRepository.hpp"
+#ifdef MORFEUSZ_EMBEDDED_DEFAULT_DICT
 #include "data/default_fsa.hpp"
+#endif
 #include "const.hpp"
 #include "utils.hpp"
 
@@ -16,9 +18,10 @@ namespace morfeusz {
 
     using namespace std;
 
-    DictionariesRepository DictionariesRepository::instance;
-
-    list<string>& DictionariesRepository::dictionarySearchPaths = Morfeusz::dictionarySearchPaths;
+    DictionariesRepository& DictionariesRepository::getInstance() {
+        static DictionariesRepository res;
+        return res;
+    }
 
     string DictionariesRepository::getDictionaryFilename(const std::string& name, MorfeuszProcessorType processorType) {
         string processorTypeSuffix;
@@ -38,10 +41,12 @@ namespace morfeusz {
 
     map<std::string, DictionariesRepository::RepositoryEntry> DictionariesRepository::getDefaultEntriesMap() {
         map<std::string, DictionariesRepository::RepositoryEntry> res;
+#ifdef MORFEUSZ_EMBEDDED_DEFAULT_DICT
         DictionariesRepository::RepositoryEntry defaultEntry;
         defaultEntry.analyzerDictionary = new Dictionary(DEFAULT_FSA, ANALYZER);
         defaultEntry.generatorDictionary = new Dictionary(DEFAULT_SYNTH_FSA, GENERATOR);
         res[Morfeusz::getDefaultDictName()] = defaultEntry;
+#endif
         return res;
     }
 
@@ -101,8 +106,8 @@ namespace morfeusz {
     }
 
     bool DictionariesRepository::tryToLoadDictionary(const string& name, MorfeuszProcessorType processorType) {
-        list<string>::const_iterator it = dictionarySearchPaths.begin();
-        while (it != dictionarySearchPaths.end()) {
+        list<string>::const_iterator it = Morfeusz::dictionarySearchPaths.begin();
+        while (it != Morfeusz::dictionarySearchPaths.end()) {
             string dirpath = *it;
             string filepath = dirpath + FILESYSTEM_PATH_SEPARATOR + getDictionaryFilename(name, processorType);
             if (fileExists(filepath)) {

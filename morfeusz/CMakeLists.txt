@@ -5,17 +5,30 @@
 if (SKIP_DICTIONARY_BUILDING)
     message ("SKIPPING dictionary building")
 else ()
-    add_custom_command (
+    if (EMBEDDED_DEFAULT_DICT)
+        add_custom_command (
             OUTPUT "${ANALYZER_DICTIONARY_CPP}" "${GENERATOR_DICTIONARY_CPP}"
             COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --analyzer-cpp="${ANALYZER_DICTIONARY_CPP}" --generator-cpp="${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
             DEPENDS "${INPUT_DICTIONARY}"
-            COMMENT "Building default dictionary C++ file"
-    )
+            COMMENT "Building default dictionary C++ files"
+        )
+        add_custom_target ( analyzer-dictionary DEPENDS "${ANALYZER_DICTIONARY_CPP}")
+        add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_CPP}")
+        add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
+    else ()
+        set (ANALYZER_DICTIONARY_FILE "${DEFAULT_DICT_DIR}/${DEFAULT_DICT_NAME}-a.dict")
+        set (GENERATOR_DICTIONARY_FILE "${DEFAULT_DICT_DIR}/${DEFAULT_DICT_NAME}-s.dict")
+        add_custom_command (
+            OUTPUT "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" 
+            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --dict-dir="${DEFAULT_DICT_DIR}"  --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
+            DEPENDS "${INPUT_DICTIONARY}"
+            COMMENT "Building default dictionary files"
+        )
+        add_custom_target ( analyzer-dictionary DEPENDS "${ANALYZER_DICTIONARY_FILE}")
+        add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_FILE}")
+        add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
+    endif ()
 endif()
-
-add_custom_target ( analyzer-dictionary DEPENDS "${ANALYZER_DICTIONARY_CPP}")
-add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_CPP}")
-add_custom_target ( dictionaries DEPENDS analyzer-dictionary generator-dictionary)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
@@ -23,8 +36,6 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 set(SRC_FILES 
     const.cpp
-    ${ANALYZER_DICTIONARY_CPP}
-    ${GENERATOR_DICTIONARY_CPP}
     Dictionary.cpp
     DictionariesRepository.cpp
     Environment.cpp
@@ -53,11 +64,15 @@ set(SRC_FILES
     c_api/ResultsManager.cpp
 )
 
+if (EMBEDDED_DEFAULT_DICT)
+    list (APPEND SRC_FILES "${ANALYZER_DICTIONARY_CPP}" "${GENERATOR_DICTIONARY_CPP}")
+    set_source_files_properties ( SOURCE "${ANALYZER_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
+    set_source_files_properties ( SOURCE "${GENERATOR_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
+endif ()
+
 file (GLOB TEST_SRC_FILES tests/*.cpp)
 
 add_library (libmorfeusz SHARED ${SRC_FILES})
-set_source_files_properties ( SOURCE "${ANALYZER_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
-set_source_files_properties ( SOURCE "${GENERATOR_DICTIONARY_CPP}" PROPERTIES GENERATED TRUE)
 set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz2")
 
 add_executable (morfeusz_analyzer morfeusz_analyzer.cpp)
@@ -83,6 +98,10 @@ else ()
 endif ()
 
 install (FILES morfeusz2.h morfeusz2_c.h DESTINATION include)
+if (NOT EMBEDDED_DEFAULT_DICT)
+    add_dependencies (libmorfeusz dictionary)
+    install (FILES "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" DESTINATION "${DEFAULT_DICT_INSTALL_DIR}")
+endif ()
 install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
 install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)
 

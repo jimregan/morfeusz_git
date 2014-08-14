@@ -229,8 +229,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
           </preprocessorList>
         </ccTool>
       </item>
@@ -244,8 +245,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
           </preprocessorList>
         </ccTool>
       </item>
@@ -348,8 +350,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>morfeusz_perl_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -403,8 +406,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -418,8 +422,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -433,8 +438,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -448,8 +454,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -463,8 +470,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -478,8 +486,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -493,8 +502,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -650,8 +660,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>libjmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -729,8 +740,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -744,8 +756,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -759,8 +772,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -774,8 +788,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -789,8 +804,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -804,8 +820,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -819,8 +836,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -834,8 +852,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -849,8 +868,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -905,8 +925,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -959,8 +980,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -974,8 +996,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
@@ -988,8 +1011,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
@@ -1010,8 +1034,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
@@ -1026,8 +1051,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
@@ -1040,8 +1066,9 @@
           </incDir>
           <preprocessorList>
             <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>DEFAULT_DICT_NAME=""</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>

@@ -42,7 +42,7 @@ namespace morfeusz {
     : usable(usable),
     currentCharsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
     caseConverter(),
-    dictionary(DictionariesRepository::instance.getDefaultDictionary(processorType)),
+    dictionary(DictionariesRepository::getInstance().getDefaultDictionary(processorType)),
     idResolver(dictionary->idResolver),
     currSegrulesOptions(dictionary->defaultSegrulesOptions),
     currSegrulesFSA(dictionary->defaultSegrulesFSA),
