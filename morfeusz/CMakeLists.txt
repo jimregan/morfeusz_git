@@ -2,6 +2,11 @@
 
 ########## generate default dictionary data #################
 
+if (NOT EMBEDDED_DEFAULT_DICT)
+    set (ANALYZER_DICTIONARY_FILE "${DEFAULT_DICT_DIR}/${DEFAULT_DICT_NAME}-a.dict")
+    set (GENERATOR_DICTIONARY_FILE "${DEFAULT_DICT_DIR}/${DEFAULT_DICT_NAME}-s.dict")
+endif ()
+
 if (SKIP_DICTIONARY_BUILDING)
     message ("SKIPPING dictionary building")
 else ()
@@ -12,23 +17,24 @@ else ()
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary C++ files"
         )
-        add_custom_target ( analyzer-dictionary DEPENDS "${ANALYZER_DICTIONARY_CPP}")
-        add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_CPP}")
-        add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
     else ()
-        set (ANALYZER_DICTIONARY_FILE "${DEFAULT_DICT_DIR}/${DEFAULT_DICT_NAME}-a.dict")
-        set (GENERATOR_DICTIONARY_FILE "${DEFAULT_DICT_DIR}/${DEFAULT_DICT_NAME}-s.dict")
         add_custom_command (
             OUTPUT "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" 
             COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --dict-dir="${DEFAULT_DICT_DIR}"  --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary files"
         )
-        add_custom_target ( analyzer-dictionary DEPENDS "${ANALYZER_DICTIONARY_FILE}")
-        add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_FILE}")
-        add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
     endif ()
 endif()
+
+if (EMBEDDED_DEFAULT_DICT)
+    add_custom_target ( analyzer-dictionary DEPENDS "${ANALYZER_DICTIONARY_CPP}")
+    add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_CPP}")
+else ()
+    add_custom_target ( analyzer-dictionary DEPENDS "${ANALYZER_DICTIONARY_FILE}")
+    add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_FILE}")
+endif ()
+add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 

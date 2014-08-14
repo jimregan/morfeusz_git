@@ -11,7 +11,7 @@ if (DEFAULT_DICT_NAME)
     set (Morfeusz_VERSION "${Morfeusz_VERSION}_${Morfeusz_VERSION_TWEAK}")
 elseif (INPUT_DICTIONARIES)
     message (FATAL_ERROR "DEFAULT_DICT_NAME option is missing.")
-else ()
+elseif (NOT SKIP_DICTIONARY_BUILDING)
     message (WARNING "Will build WITHOUT DICTIONARY. Set INPUT_DICTIONARIES option to build with dictionary.")
 endif ()
 set (CMAKE_BUILD_TYPE Release)
@@ -19,8 +19,9 @@ set (CMAKE_BUILD_TYPE Release)
 
 message ("Version=${Morfeusz_VERSION}")
 
-if (NOT "${CMAKE_SYSTEM_NAME}" MATCHES "Linux" OR "${INPUT_DICTIONARIES}" STREQUAL "")
+if (NOT "${CMAKE_SYSTEM_NAME}" MATCHES "Linux" OR ((NOT INPUT_DICTIONARIES) AND NOT (SKIP_DICTIONARY_BUILDING)))
     set (EMBEDDED_DEFAULT_DICT 1)
+    message (WARNING "Implicitly setting EMBEDDED_DEFAULT_DICT variable to TRUE")
 endif ()
 
 # INPUT_DICTIONARY_CPP
