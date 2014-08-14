@@ -11,9 +11,12 @@ if (SKIP_DICTIONARY_BUILDING)
     message ("SKIPPING dictionary building")
 else ()
     if (EMBEDDED_DEFAULT_DICT)
+        if (DEFAULT_DICT_DIR)
+            set (ADDITIONAL_CMD --dict-dir="${DEFAULT_DICT_DIR}" --dict="${DEFAULT_DICT_NAME}")
+        endif ()
         add_custom_command (
             OUTPUT "${ANALYZER_DICTIONARY_CPP}" "${GENERATOR_DICTIONARY_CPP}"
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --analyzer-cpp="${ANALYZER_DICTIONARY_CPP}" --generator-cpp="${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
+            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --analyzer-cpp="${ANALYZER_DICTIONARY_CPP}" --generator-cpp="${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" ${ADDITIONAL_CMD}
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary C++ files"
         )

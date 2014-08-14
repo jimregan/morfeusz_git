@@ -24,6 +24,11 @@ message ("Version=${Morfeusz_VERSION}")
 #    message (WARNING "Implicitly setting EMBEDDED_DEFAULT_DICT variable to TRUE")
 #endif ()
 
+if ( (NOT "${CMAKE_SYSTEM_NAME}" MATCHES "Linux") OR ((NOT INPUT_DICTIONARIES) AND NOT (SKIP_DICTIONARY_BUILDING)))
+    set (EMBEDDED_DEFAULT_DICT 1)
+    message (WARNING "Implicitly setting EMBEDDED_DEFAULT_DICT variable to TRUE")
+endif ()
+
 # INPUT_DICTIONARY_CPP
 if (EMBEDDED_DEFAULT_DICT)
     if (NOT ANALYZER_DICTIONARY_CPP)
