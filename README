@@ -50,7 +50,9 @@ Testing
 To compile and run tests you must have cppunit library installed.
 To test if everything is working type:
 
-make build-tests
+make
+make package-java ### to also test Java wrapper
+make package-python ### to also test Python wrapper
 make test
 
 If some tests fail, you can see errors by invoking:

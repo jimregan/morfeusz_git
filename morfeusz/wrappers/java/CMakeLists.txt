@@ -11,11 +11,11 @@ include_directories (${CMAKE_SOURCE_DIR}/morfeusz)
 set (SWIG_JAVA_OUTFILE "${CMAKE_CURRENT_BINARY_DIR}/swigJAVA.cpp")
 file (COPY pl DESTINATION .)
 
-set (JAVA_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}/pl/waw/ipipan/morfeusz")
+set (JAVA_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}/pl/sgjp/morfeusz")
 
 add_custom_command (
     OUTPUT ${SWIG_JAVA_OUTFILE}
-    COMMAND swig -java -c++ -package pl.waw.ipipan.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${JAVA_SRC_DIR} ${CMAKE_SOURCE_DIR}/morfeusz/wrappers/morfeusz.i
+    COMMAND swig -java -c++ -package pl.sgjp.morfeusz  -o ${SWIG_JAVA_OUTFILE} -outdir ${JAVA_SRC_DIR} ${CMAKE_SOURCE_DIR}/morfeusz/wrappers/morfeusz.i
     DEPENDS libmorfeusz
 )
 add_custom_target(generate-java-wrapper ALL
@@ -56,7 +56,7 @@ endif ()
 file(GLOB_RECURSE JAVA_SOURCES "${JAVA_SRC_DIR}" "${JAVA_SRC_DIR}/*.java")
 add_jar (jmorfeusz
     SOURCES "${JAVA_SOURCES}"
-    ENTRY_POINT pl/waw/ipipan/morfeusz/app/App
+    ENTRY_POINT pl/sgjp/morfeusz/app/App
     DEPENDS libjmorfeusz generate-java-wrapper)
 
 add_custom_target(generate-javadoc
@@ -66,7 +66,7 @@ add_custom_target(generate-javadoc
         -windowtitle "JMorfeusz - Morfeusz Java binding"
         -use
         -link http://docs.oracle.com/javase/7/docs/api/
-        pl.waw.ipipan.morfeusz
+        pl.sgjp.morfeusz
     DEPENDS jmorfeusz)
 
 add_custom_target(package-javadoc

@@ -1,9 +1,9 @@
-package pl.waw.ipipan.morfeusz.app;
+package pl.sgjp.morfeusz.app;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import pl.waw.ipipan.morfeusz.MorphInterpretation;
-import pl.waw.ipipan.morfeusz.Morfeusz;
+import pl.sgjp.morfeusz.MorphInterpretation;
+import pl.sgjp.morfeusz.Morfeusz;
 
 /**
  *

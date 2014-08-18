@@ -135,6 +135,9 @@ import java.util.ArrayList;
 %}
 
 %rename(_dictionarySearchPaths) morfeusz::Morfeusz::dictionarySearchPaths;
+%rename(_getAvailableAgglOptions) morfeusz::Morfeusz::getAvailableAgglOptions;
+%rename(_getAvailablePraetOptions) morfeusz::Morfeusz::getAvailablePraetOptions;
+
 %rename(_getLabels) morfeusz::IdResolver::getLabels;
 %ignore morfeusz::FileFormatException;
 
@@ -148,7 +151,7 @@ import java.util.ArrayList;
         return $null;
     }
     catch(morfeusz::MorfeuszException & e) {
-        jclass clazz = jenv->FindClass("pl/waw/ipipan/morfeusz/MorfeuszException");
+        jclass clazz = jenv->FindClass("pl/sgjp/morfeusz/MorfeuszException");
         jenv->ThrowNew(clazz, e.what());
         return $null;
     }
@@ -163,22 +166,6 @@ import java.util.ArrayList;
         return $null;
     }
 }
-
-//%javaexception("java.io.IOException") morfeusz::Morfeusz::setGeneratorDictionary {
-//    try {
-//        $action
-//    }
-//    catch(morfeusz::FileFormatException & e) {
-//        jclass clazz = jenv->FindClass("java/io/IOException");
-//        jenv->ThrowNew(clazz, "Invalid file format");
-//        return $null;
-//    }
-//    catch(std::ios_base::failure & e) {
-//        jclass clazz = jenv->FindClass("java/io/IOException");
-//        jenv->ThrowNew(clazz, e.what());
-//        return $null;
-//    }
-//}
 
 %javaexception("java.util.NoSuchElementException") morfeusz::ResultsIterator::next {
     try {
@@ -196,7 +183,7 @@ import java.util.ArrayList;
         $action
     }
     catch(const morfeusz::MorfeuszException& e) {
-        jclass clazz = jenv->FindClass("pl/waw/ipipan/morfeusz/MorfeuszException");
+        jclass clazz = jenv->FindClass("pl/sgjp/morfeusz/MorfeuszException");
         jenv->ThrowNew(clazz, e.what());
         return $null;
     }
@@ -272,6 +259,24 @@ import java.util.ArrayList;
     public static List<String> getDictionarySearchPaths() {
         return get_dictionarySearchPaths();
     }
+    
+    /**
+     * Get list of possible agglutination rules.
+     * 
+     * @return modifiable list of paths
+     */
+    public List<String> getAvailableAgglOptions() {
+        return java.util.Collections.unmodifiableList(_getAvailableAgglOptions());
+    }
+    
+    /**
+     * Get list of possible past-tense segmentation rules.
+     * 
+     * @return modifiable list of paths
+     */
+    public List<String> getAvailablePraetOptions() {
+        return java.util.Collections.unmodifiableList(_getAvailablePraetOptions());
+    }
 %}
 
 %typemap(javacode) morfeusz::ResultsIterator %{
@@ -307,6 +312,8 @@ import java.util.ArrayList;
 
 // should be overwritten by getDictionarySearchPaths() in typemap(javacode)
 %javamethodmodifiers morfeusz::Morfeusz::dictionarySearchPaths "private";
+%javamethodmodifiers morfeusz::Morfeusz::getAvailableAgglOptions "private";
+%javamethodmodifiers morfeusz::Morfeusz::getAvailablePraetOptions "private";
 
 // should be overwritten by getLabels() in typemap(javacode)
 %javamethodmodifiers morfeusz::IdResolver::getLabels "private";

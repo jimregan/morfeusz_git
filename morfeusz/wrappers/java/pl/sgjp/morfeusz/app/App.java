@@ -1,8 +1,8 @@
-package pl.waw.ipipan.morfeusz.app;
+package pl.sgjp.morfeusz.app;
 
-import pl.waw.ipipan.morfeusz.Morfeusz;
-import pl.waw.ipipan.morfeusz.MorfeuszUsage;
-import pl.waw.ipipan.morfeusz.ResultsIterator;
+import pl.sgjp.morfeusz.Morfeusz;
+import pl.sgjp.morfeusz.MorfeuszUsage;
+import pl.sgjp.morfeusz.ResultsIterator;
 
 /**
  * Hello world!

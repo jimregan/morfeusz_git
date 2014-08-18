@@ -10,11 +10,11 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import pl.waw.ipipan.morfeusz.Morfeusz;
-import pl.waw.ipipan.morfeusz.MorfeuszUsage;
-import pl.waw.ipipan.morfeusz.MorfeuszException;
-import pl.waw.ipipan.morfeusz.MorphInterpretation;
-import pl.waw.ipipan.morfeusz.ResultsIterator;
+import pl.sgjp.morfeusz.Morfeusz;
+import pl.sgjp.morfeusz.MorfeuszUsage;
+import pl.sgjp.morfeusz.MorfeuszException;
+import pl.sgjp.morfeusz.MorphInterpretation;
+import pl.sgjp.morfeusz.ResultsIterator;
 
 /**
  *
