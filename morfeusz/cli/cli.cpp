@@ -23,7 +23,7 @@ namespace morfeusz {
                 ? "Morfeusz analyzer"
                 : "Morfeusz generator";
         opt.syntax = string(argv[0]) + " [OPTIONS]";
-        opt.example = string(argv[0]) + " --aggl strict --praet split --input /path/to/file.fsa\n\n";
+        opt.example = string(argv[0]) + " --aggl strict --praet split --dict sgjp --dict-dir /tmp/dictionaries\n\n";
         //	opt.footer = "Morfeusz Copyright (C) 2014\n";
 
         opt.add(
