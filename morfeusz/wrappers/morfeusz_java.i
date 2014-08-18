@@ -137,6 +137,7 @@ import java.util.ArrayList;
 %rename(_dictionarySearchPaths) morfeusz::Morfeusz::dictionarySearchPaths;
 %rename(_getAvailableAgglOptions) morfeusz::Morfeusz::getAvailableAgglOptions;
 %rename(_getAvailablePraetOptions) morfeusz::Morfeusz::getAvailablePraetOptions;
+%rename(_setDictionary) morfeusz::Morfeusz::setDictionary;
 
 %rename(_getLabels) morfeusz::IdResolver::getLabels;
 %ignore morfeusz::FileFormatException;
@@ -216,6 +217,8 @@ import java.util.ArrayList;
     /**
      * Analyze given text and return the results as list.
      * 
+     * NOT THREAD-SAFE (must have exclusive access to this instance).
+     * 
      * @param text text for morphological analysis.
      * @return list containing the results of morphological analysis
     */
@@ -227,6 +230,8 @@ import java.util.ArrayList;
 
     /**
      * Perform morphological synthesis on a given lemma.
+     * 
+     * NOT THREAD-SAFE (must have exclusive access to this instance).
      * 
      * @param lemma lemma to be synthesized
      * @return list containing results of the morphological synthesis
@@ -241,6 +246,8 @@ import java.util.ArrayList;
      * Perform morphological synthesis on a given lemma.
      * Limit results to interpretations with the specified tag.
      * 
+     * NOT THREAD-SAFE (must have exclusive access to this instance).
+     * 
      * @param lemma lemma to be analysed
      * @param tagnum tag number of result interpretations
      * @return list containing results of the morphological synthesis
@@ -254,6 +261,8 @@ import java.util.ArrayList;
     /**
      * Get list of paths for dictionaries searching
      * 
+     * The returned list is NOT THREAD-SAFE (must have exclusive acces to modify it).
+     * 
      * @return modifiable list of paths
      */
     public static List<String> getDictionarySearchPaths() {
@@ -262,6 +271,8 @@ import java.util.ArrayList;
     
     /**
      * Get list of possible agglutination rules.
+     * 
+     * NOT THREAD-SAFE (must have exclusive access to this instance).
      * 
      * @return modifiable list of paths
      */
@@ -272,10 +283,27 @@ import java.util.ArrayList;
     /**
      * Get list of possible past-tense segmentation rules.
      * 
+     * NOT THREAD-SAFE (must have exclusive access to this instance).
+     * 
      * @return modifiable list of paths
      */
     public List<String> getAvailablePraetOptions() {
         return java.util.Collections.unmodifiableList(_getAvailablePraetOptions());
+    }
+    
+    /**
+     * Set dictionary to be used with this instance.
+     * 
+     * NOT THREAD-SAFE (must have exclusive access to this instance).
+     * 
+     * @param dictName new dictionary name
+     */
+    public void setDictionary(String dictName) throws IOException {
+        
+        synchronized (Morfeusz.class) {
+            _setDictionary(dictName);
+        }
+        
     }
 %}
 
@@ -314,6 +342,7 @@ import java.util.ArrayList;
 %javamethodmodifiers morfeusz::Morfeusz::dictionarySearchPaths "private";
 %javamethodmodifiers morfeusz::Morfeusz::getAvailableAgglOptions "private";
 %javamethodmodifiers morfeusz::Morfeusz::getAvailablePraetOptions "private";
+%javamethodmodifiers morfeusz::Morfeusz::setDictionary "private";
 
 // should be overwritten by getLabels() in typemap(javacode)
 %javamethodmodifiers morfeusz::IdResolver::getLabels "private";

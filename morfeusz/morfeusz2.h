@@ -119,12 +119,15 @@ namespace morfeusz {
          * Creates actual instance of Morfeusz class.
          * The caller is responsible for destroying it.
          * 
-         * @return 
+         * @remarks NOT THREAD-SAFE (affects ALL Morfeusz instances)
+         * @return new instance of Morfeusz.
          */
         static Morfeusz* createInstance(MorfeuszUsage usage);
         
         /**
-         * Creates exact copy of Morfeusz object
+         * Creates exact copy of Morfeusz object.
+         * 
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual Morfeusz* clone() const = 0;
 
@@ -136,6 +139,7 @@ namespace morfeusz {
          * Copies the text under the hood - use analyze(const char*) if you want to avoid this.
          * 
          * @param text - text for morphological analysis.
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          * @return - iterator over morphological analysis results
          */
         virtual ResultsIterator* analyse(const std::string& text) const = 0;
@@ -146,6 +150,7 @@ namespace morfeusz {
          * 
          * 
          * @param text - text for morphological analysis. This pointer must not be deleted before returned ResultsIterator object.
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          * @return - iterator over morphological analysis results
          */
         virtual ResultsIterator* analyse(const char* text) const = 0;
@@ -155,6 +160,7 @@ namespace morfeusz {
          * 
          * @param text - text to be analyzed
          * @param result - results vector
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void analyse(const std::string& text, std::vector<MorphInterpretation>& result) const = 0;
 
@@ -163,6 +169,7 @@ namespace morfeusz {
          * 
          * @param lemma - lemma to be analyzed
          * @param result - results vector
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const = 0;
 
@@ -173,6 +180,7 @@ namespace morfeusz {
          * @param lemma - lemma to be analyzed
          * @param tag - tag of result interpretations
          * @param result - results vector
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void generate(const std::string& lemma, int tagId, std::vector<MorphInterpretation>& result) const = 0;
 
@@ -180,6 +188,7 @@ namespace morfeusz {
          * Set encoding for input and output string objects.
          * 
          * @param encoding
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setCharset(Charset encoding) = 0;
 
@@ -187,6 +196,7 @@ namespace morfeusz {
          * Select agglutination rules
          * 
          * @param aggl
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setAggl(const std::string& aggl) = 0;
 
@@ -194,6 +204,7 @@ namespace morfeusz {
          * Select past tense segmentation
          * 
          * @param praet
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setPraet(const std::string& praet) = 0;
 
@@ -201,6 +212,7 @@ namespace morfeusz {
          * Set case handling.
          * 
          * @param caseSensitive
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setCaseHandling(CaseHandling caseHandling) = 0;
 
@@ -208,6 +220,7 @@ namespace morfeusz {
          * Set token numbering policy.
          * 
          * @param numbering
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setTokenNumbering(TokenNumbering numbering) = 0;
 
@@ -215,6 +228,7 @@ namespace morfeusz {
          * Set whitespace handling.
          * 
          * @param numbering
+         * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setWhitespaceHandling(WhitespaceHandling whitespaceHandling) = 0;
 
@@ -239,6 +253,7 @@ namespace morfeusz {
          * either within this instance, or any other in the same application.
          * 
          * @param dictName dictionary name
+         * @remarks NOT THREAD-SAFE (affects ALL Morfeusz instances)
          */
         virtual void setDictionary(const std::string& dictName) = 0;
 
@@ -380,6 +395,22 @@ namespace morfeusz {
 
         inline bool isWhitespace() const {
             return tagId == 1;
+        }
+        
+        inline const std::string& getTag(const Morfeusz& morfeusz) const {
+            return morfeusz.getIdResolver().getTag(this->tagId);
+        }
+        
+        inline const std::string& getName(const Morfeusz& morfeusz) const {
+            return morfeusz.getIdResolver().getName(this->nameId);
+        }
+        
+        inline const std::string& getLabelsAsString(const Morfeusz& morfeusz) const {
+            return morfeusz.getIdResolver().getLabelsAsString(this->labelsId);
+        }
+        
+        inline const std::set<std::string>& getLabels(const Morfeusz& morfeusz) const {
+            return morfeusz.getIdResolver().getLabels(this->labelsId);
         }
 
         int startNode;

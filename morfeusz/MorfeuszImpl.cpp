@@ -114,7 +114,7 @@ namespace morfeusz {
     }
 
     MorfeuszImpl::MorfeuszImpl(MorfeuszUsage usage)
-    : currDictionary(),
+    : currDictionary(MORFEUSZ_DEFAULT_DICT_NAME),
     usage(usage),
     analyzerEnv(ANALYZER, usage != GENERATE_ONLY),
     generatorEnv(GENERATOR, usage != ANALYSE_ONLY),
