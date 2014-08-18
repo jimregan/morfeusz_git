@@ -316,7 +316,7 @@ namespace morfeusz {
     };
 
     /**
-     * Represents a tagset
+     * Represents mappings for tags, names and labels.
      */
     class DLLIMPORT IdResolver {
     public:
@@ -422,9 +422,7 @@ namespace morfeusz {
      0    1       2   3
 
      Note that the word 'zostałem' got broken into 2 separate segments.
-
-     The structure below describes one edge of this DAG:
-
+     * One MorphInterpretation instance describes one edge of this DAG.
      */
     struct DLLIMPORT MorphInterpretation {
         /**

@@ -134,6 +134,41 @@ import java.util.ArrayList;
  */
 %}
 
+%typemap(javaimports) morfeusz::MorphInterpretation %{
+/**
+ * <p>The result of morphological analysis or synthesis</p>
+ * 
+ * <p>
+ * The result of analysis is  a directed acyclic graph with numbered
+ * nodes representing positions  in text (points _between_ segments)
+ * and edges representing interpretations of segments that span from
+ * one node to another.  E.g.,
+ * <pre>
+ * {0,1,"ja","ja","ppron12:sg:nom:m1.m2.m3.f.n1.n2:pri"}
+ *       |
+ *       |      {1,2,"został","zostać","praet:sg:m1.m2.m3:perf"}
+ *       |      |
+ *     __|  ____|   __{2,3,"em","być","aglt:sg:pri:imperf:wok"}
+ *    /  \ /     \ / \
+ *   * Ja * został*em *
+ *   0    1       2   3
+ * </pre>
+ * </p>
+ * 
+ * <p>
+ * Note that the word 'zostałem' got broken into 2 separate segments.
+ * </p>
+
+ * <p>One MorphInterpretation instance describes one edge of this DAG.</p>
+ */
+%}
+
+%typemap(javaimports) morfeusz::IdResolver %{
+/**
+ * Represents mappings for tags, names and labels.
+ */
+%}
+
 %rename(_dictionarySearchPaths) morfeusz::Morfeusz::dictionarySearchPaths;
 %rename(_getAvailableAgglOptions) morfeusz::Morfeusz::getAvailableAgglOptions;
 %rename(_getAvailablePraetOptions) morfeusz::Morfeusz::getAvailablePraetOptions;
@@ -235,6 +270,7 @@ import java.util.ArrayList;
      * 
      * @param lemma lemma to be synthesized
      * @return list containing results of the morphological synthesis
+     * @throws MorfeuszException when given parameter contains whitespaces
      */
     public List<MorphInterpretation> generate(String lemma) {
         InterpsList res = new InterpsList();
@@ -251,6 +287,7 @@ import java.util.ArrayList;
      * @param lemma lemma to be analysed
      * @param tagnum tag number of result interpretations
      * @return list containing results of the morphological synthesis
+     * @throws MorfeuszException when given parameter contains whitespaces
      */
     public List<MorphInterpretation> generate(String lemma, int tagnum) {
         InterpsList res = new InterpsList();
@@ -297,6 +334,8 @@ import java.util.ArrayList;
      * NOT THREAD-SAFE (must have exclusive access to this instance).
      * 
      * @param dictName new dictionary name
+     * @throws IOException when IO error occurs when trying to read dictionary
+     * @throws MorfeuszException when there is no such dictionary
      */
     public void setDictionary(String dictName) throws IOException {
         

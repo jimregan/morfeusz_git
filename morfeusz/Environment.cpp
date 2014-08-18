@@ -20,24 +20,6 @@ namespace morfeusz {
     
     using namespace std;
 
-    static Deserializer<InterpsGroupsReader>& initializeDeserializer(MorfeuszProcessorType processorType) {
-        static Deserializer<InterpsGroupsReader> *analyzerDeserializer
-                = new MorphDeserializer();
-        static Deserializer<InterpsGroupsReader> *generatorDeserializer
-                = new MorphDeserializer();
-        return *(processorType == ANALYZER ? analyzerDeserializer : generatorDeserializer);
-    }
-
-    static void deleteSegrulesFSAs(std::map<SegrulesOptions, SegrulesFSA*>& fsasMap) {
-        for (
-                std::map<SegrulesOptions, SegrulesFSA*>::iterator it = fsasMap.begin();
-                it != fsasMap.end();
-                ++it) {
-            delete it->second;
-        }
-        fsasMap.clear();
-    }
-
     Environment::Environment(MorfeuszProcessorType processorType, bool usable)
     : usable(usable),
     currentCharsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
@@ -46,14 +28,6 @@ namespace morfeusz {
     idResolver(dictionary->idResolver),
     currSegrulesOptions(dictionary->defaultSegrulesOptions),
     currSegrulesFSA(dictionary->defaultSegrulesFSA),
-    //tagset(fsaFileStartPtr, currentCharsetConverter),
-    //fsaFileStartPtr(fsaFileStartPtr),
-    //fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
-    //separatorsList(getSeparatorsList(fsaFileStartPtr)),
-    //segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
-    //currSegrulesOptions(getDefaultSegrulesOptions(fsaFileStartPtr)),
-    //currSegrulesFSA(getDefaultSegrulesFSA(segrulesFSAsMap, fsaFileStartPtr)),
-    //isFromFile(false),
     chunksDecoder(
     processorType == ANALYZER
     ? (InterpretedChunksDecoder*) new InterpretedChunksDecoder4Analyzer(*this)
@@ -78,11 +52,6 @@ namespace morfeusz {
     }
 
     Environment::~Environment() {
-        //    delete this->fsa;
-        //    if (this->isFromFile) {
-        //        deleteSegrulesFSAs(this->segrulesFSAsMap);
-        //        delete this->fsaFileStartPtr;
-        //    }
         delete this->chunksDecoder;
         delete this->casePatternHelper;
     }
@@ -100,29 +69,9 @@ namespace morfeusz {
         return this->caseConverter;
     }
 
-    //void Environment::setTagset(IdResolverImpl& tagset) {
-    //    this->tagset = tagset;
-    //    this->tagset.setCharsetConverter(currentCharsetConverter);
-    //}
-
     const IdResolverImpl& Environment::getIdResolver() const {
         return this->idResolver;
     }
-
-    //void Environment::setDictionaryFile(const std::string& filename) {
-    //    if (this->isFromFile) {
-    //        delete this->fsa;
-    //        deleteSegrulesFSAs(this->segrulesFSAsMap);
-    //        delete this->fsaFileStartPtr;
-    //    }
-    //    this->fsaFileStartPtr = readFile<unsigned char>(filename.c_str());
-    //    this->fsa = FSA< InterpsGroupsReader > ::getFSA(fsaFileStartPtr, initializeDeserializer(this->processorType));
-    //    this->separatorsList = getSeparatorsList(fsaFileStartPtr);
-    //    this->segrulesFSAsMap = createSegrulesFSAsMap(this->fsaFileStartPtr);
-    //    this->currSegrulesFSA = getDefaultSegrulesFSA(this->segrulesFSAsMap, this->fsaFileStartPtr);
-    //    this->isFromFile = true;
-    //    this->tagset = IdResolverImpl(fsaFileStartPtr, currentCharsetConverter);
-    //}
 
     const SegrulesFSA& Environment::getCurrentSegrulesFSA() const {
         return *(this->currSegrulesFSA);

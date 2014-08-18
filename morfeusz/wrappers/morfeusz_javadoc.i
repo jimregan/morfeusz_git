@@ -1,4 +1,4 @@
-%javamethodmodifiers morfeusz::Morfeusz::createInstance() "
+%javamethodmodifiers morfeusz::Morfeusz::createInstance "
     /**
      * Creates actual instance of Morfeusz class.
      * 
@@ -32,6 +32,7 @@
      * NOT THREAD-SAFE (must have exclusive access to this instance).
      * 
      * @param aggl aggl value
+     * @throws MorfeuszException when invalid aggl parameter provided
      */
     public";
 
@@ -42,6 +43,7 @@
      * NOT THREAD-SAFE (must have exclusive access to this instance).
      * 
      * @param praet praet value
+     * @throws MorfeuszException when invalid praet parameter provided
      */
     public";
 

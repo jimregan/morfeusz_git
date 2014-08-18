@@ -162,15 +162,9 @@ private:
     
     const Dictionary* dictionary;
     IdResolverImpl idResolver;
-//    IdResolverImpl tagset;
-//    
-//    const unsigned char* fsaFileStartPtr;
-//    const FSAType* fsa;
-//    std::vector<uint32_t> separatorsList;
-//    std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;
+
     SegrulesOptions currSegrulesOptions;
     const SegrulesFSA* currSegrulesFSA;
-//    bool isFromFile;
     
     const InterpretedChunksDecoder* chunksDecoder;
     MorfeuszProcessorType processorType;

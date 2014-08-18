@@ -66,6 +66,7 @@ add_custom_target(generate-javadoc
         -windowtitle "JMorfeusz - Morfeusz Java binding"
         -use
         -link http://docs.oracle.com/javase/7/docs/api/
+        -charset utf8
         pl.sgjp.morfeusz
     DEPENDS jmorfeusz)
 
