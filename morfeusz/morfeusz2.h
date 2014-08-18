@@ -170,6 +170,7 @@ namespace morfeusz {
          * @param lemma - lemma to be analyzed
          * @param result - results vector
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
+         * @throws MorfeuszException - when lemma parameter contains whitespaces.
          */
         virtual void generate(const std::string& lemma, std::vector<MorphInterpretation>& result) const = 0;
 
@@ -181,6 +182,7 @@ namespace morfeusz {
          * @param tag - tag of result interpretations
          * @param result - results vector
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
+         * @throws MorfeuszException - when lemma parameter contains whitespaces or tagId is outside tagset.
          */
         virtual void generate(const std::string& lemma, int tagId, std::vector<MorphInterpretation>& result) const = 0;
 
@@ -197,6 +199,7 @@ namespace morfeusz {
          * 
          * @param aggl
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
+         * @throws MorfeuszException - for invalid aggl parameter.
          */
         virtual void setAggl(const std::string& aggl) = 0;
 
@@ -205,6 +208,7 @@ namespace morfeusz {
          * 
          * @param praet
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
+         * @throws MorfeuszException - for invalid aggl praet parameter.
          */
         virtual void setPraet(const std::string& praet) = 0;
 
@@ -254,11 +258,14 @@ namespace morfeusz {
          * 
          * @param dictName dictionary name
          * @remarks NOT THREAD-SAFE (affects ALL Morfeusz instances)
+         * @throws MorfeuszException - when dictionary not found.
+         * @throws std::ios_base::failure - when IO error occurred when loading given dictionary.
          */
         virtual void setDictionary(const std::string& dictName) = 0;
 
         /**
          * List of paths where current Morfeusz instance will look for dictionaries.
+         * Modifying it is NOT THREAD-SAFE.
          */
         static std::list<std::string> dictionarySearchPaths;
 
@@ -284,8 +291,24 @@ namespace morfeusz {
 
     class DLLIMPORT ResultsIterator {
     public:
+        /**
+         * 
+         * @return true iff this iterator contains more elements.
+         */
         virtual bool hasNext() = 0;
+        
+        /**
+         * 
+         * @return the element, that will be returned in next next() invocation.
+         * @throws std::out_of_range when this iterator has already reached the end.
+         */
         virtual const MorphInterpretation& peek() = 0;
+        
+        /**
+         * 
+         * @return next analysis result.
+         * @throws std::out_of_range when this iterator has already reached the end.
+         */
         virtual MorphInterpretation next() = 0;
 
         virtual ~ResultsIterator() {
@@ -303,6 +326,7 @@ namespace morfeusz {
          * 
          * @param tagNum - tag index in the tagset.
          * @return - the tag
+         * @throws std::out_of_range when invalid tagId is provided.
          */
         virtual const std::string& getTag(const int tagId) const = 0;
 
@@ -311,6 +335,7 @@ namespace morfeusz {
          * Throws MorfeuszException when none exists.
          * 
          * @return identifier for given tag
+         * @throws MorfeuszException when invalid tag parameter is provided.
          */
         virtual int getTagId(const std::string& tag) const = 0;
 
@@ -319,6 +344,7 @@ namespace morfeusz {
          * 
          * @param nameNum - name index in the tagset.
          * @return - the named entity type
+         * @throws std::out_of_range when invalid nameId is provided.
          */
         virtual const std::string& getName(const int nameId) const = 0;
 
@@ -327,29 +353,53 @@ namespace morfeusz {
          * Throws MorfeuszException when none exists.
          * 
          * @return identifier for given named entity
+         * @throws MorfeuszException when invalid name parameter is provided.
          */
         virtual int getNameId(const std::string& name) const = 0;
 
+        /**
+         * Returns labels string for given labelsId.
+         * 
+         * @param labelsId
+         * @return labels as string
+         * @throws std::out_of_range when invalid labelsId is provided.
+         */
         virtual const std::string& getLabelsAsString(int labelsId) const = 0;
 
+        /**
+         * Returns labels as set of strings for given labelsId.
+         * @param labelsId
+         * @return labels as set of strings
+         * @throws std::out_of_range when invalid labelsId is provided.
+         */
         virtual const std::set<std::string>& getLabels(int labelsId) const = 0;
 
+        /**
+         * Get labelsId for given labels as string.
+         * 
+         * @param labelsStr
+         * @return labelsId
+         * @throws MorfeuszException when invalid tag is provided.
+         */
         virtual int getLabelsId(const std::string& labelsStr) const = 0;
 
         /**
-         * Returs number of tags this tagset contains.
+         * Returns number of tags this tagset contains.
          * 
          * @return 
          */
         virtual size_t getTagsCount() const = 0;
 
         /**
-         * Returs number of named entity types this tagset contains.
+         * Returns number of named entity types this tagset contains.
          * 
          * @return 
          */
         virtual size_t getNamesCount() const = 0;
 
+        /**
+         * Returns number of different labels combinations.
+         */
         virtual size_t getLabelsCount() const = 0;
 
         virtual ~IdResolver() {
@@ -389,26 +439,58 @@ namespace morfeusz {
          */
         static MorphInterpretation createWhitespace(int startNode, int endNode, const std::string& orth);
 
+        /**
+         * 
+         * @return true iff this instance represents an unknown word.
+         */
         inline bool isIgn() const {
             return tagId == 0;
         }
 
+        /**
+         * 
+         * @return true iff this instance represents a whitespace.
+         */
         inline bool isWhitespace() const {
             return tagId == 1;
         }
         
+        /**
+         * Get tag as string.
+         * 
+         * @param morfeusz Morfeusz instance this interpretation was created by.
+         * @return 
+         */
         inline const std::string& getTag(const Morfeusz& morfeusz) const {
             return morfeusz.getIdResolver().getTag(this->tagId);
         }
         
+        /**
+         * Get name as string.
+         * 
+         * @param morfeusz Morfeusz instance this interpretation was created by.
+         * @return 
+         */
         inline const std::string& getName(const Morfeusz& morfeusz) const {
             return morfeusz.getIdResolver().getName(this->nameId);
         }
         
+        /**
+         * Get labels as string.
+         * 
+         * @param morfeusz Morfeusz instance this interpretation was created by.
+         * @return 
+         */
         inline const std::string& getLabelsAsString(const Morfeusz& morfeusz) const {
             return morfeusz.getIdResolver().getLabelsAsString(this->labelsId);
         }
         
+        /**
+         * Get tag as set of strings.
+         * 
+         * @param morfeusz Morfeusz instance this interpretation was created by.
+         * @return 
+         */
         inline const std::set<std::string>& getLabels(const Morfeusz& morfeusz) const {
             return morfeusz.getIdResolver().getLabels(this->labelsId);
         }

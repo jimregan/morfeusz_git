@@ -551,6 +551,10 @@ namespace morfeusz {
     void MorfeuszImpl::generate(const std::string& lemma, int tagId, vector<MorphInterpretation>& result) const {
 
         ensureIsGenerator();
+        
+        if (tagId >= this->generatorEnv.getIdResolver().getTagsCount()) {
+            throw MorfeuszException("Invalid tagId (outside of tagset)");
+        }
 
         vector<MorphInterpretation> partRes;
         this->generate(lemma, partRes);

@@ -33,9 +33,9 @@ void printMorphResults(const Morfeusz& morfeusz, const std::vector<MorphInterpre
         printf("%s,%s,%s,%s,%s",
                 mi.orth.c_str(),
                 mi.lemma.c_str(),
-                morfeusz.getIdResolver().getTag(mi.tagId).c_str(),
-                mi.nameId == 0 ? "_" : morfeusz.getIdResolver().getName(mi.nameId).c_str(),
-                mi.labelsId == 0 ? "_" : morfeusz.getIdResolver().getLabelsAsString(mi.labelsId).c_str());
+                mi.getTag(morfeusz).c_str(),
+                mi.nameId == 0 ? "_" : mi.getName(morfeusz).c_str(),
+                mi.labelsId == 0 ? "_" : mi.getLabelsAsString(morfeusz).c_str());
         prevStart = mi.startNode;
         prevEnd = mi.endNode;
     }
