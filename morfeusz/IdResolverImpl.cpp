@@ -46,6 +46,15 @@ namespace morfeusz {
         }
         createReverseMapping(mapping);
     }
+    
+    IdResolverImpl::IdResolverImpl()
+    : tags(),
+    names(),
+    labels(),
+    labelsAsSets(),
+    charsetConverter(&UTF8CharsetConverter::getInstance()) {
+        
+    }
 
     IdResolverImpl::IdResolverImpl(const unsigned char* ptr, const CharsetConverter* charsetConverter)
     : tags(),

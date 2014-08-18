@@ -11,9 +11,10 @@
 using namespace std;
 using namespace morfeusz;
 
-static Morfeusz* morfeuszInstance = Morfeusz::createInstance(ANALYSE_ONLY);
-static vector<MorphInterpretation> results;
-static ResultsManager resultsManager(morfeuszInstance);
+static Morfeusz* getMorfeuszInstance() {
+    static Morfeusz* morfeuszInstance = Morfeusz::createInstance(ANALYSE_ONLY);
+    return morfeuszInstance;
+}
 
 extern "C" DLLIMPORT
 char* morfeusz_about() {
@@ -22,12 +23,16 @@ char* morfeusz_about() {
 
 extern "C" DLLIMPORT
 InterpMorf* morfeusz_analyse(char *tekst) {
+    Morfeusz* morfeuszInstance = getMorfeuszInstance();
+    static ResultsManager resultsManager(morfeuszInstance);
+    static vector<MorphInterpretation> results;
     results.clear();
     morfeuszInstance->analyse(string(tekst), results);
     return resultsManager.convertResults(results);
 }
 
 static inline int setEncodingOption(int value) {
+    Morfeusz* morfeuszInstance = getMorfeuszInstance();
     switch (value) {
         case MORFEUSZ_UTF_8:
             morfeuszInstance->setCharset(UTF8);
@@ -48,6 +53,7 @@ static inline int setEncodingOption(int value) {
 }
 
 static inline int setWhitespaceOption(int value) {
+    Morfeusz* morfeuszInstance = getMorfeuszInstance();
     switch (value) {
         case MORFEUSZ_KEEP_WHITESPACE:
             morfeuszInstance->setWhitespaceHandling(KEEP_WHITESPACES);
@@ -65,6 +71,7 @@ static inline int setWhitespaceOption(int value) {
 }
 
 static inline int setCaseOption(int value) {
+    Morfeusz* morfeuszInstance = getMorfeuszInstance();
     switch (value) {
         case MORFEUSZ_STRICT_CASE:
             morfeuszInstance->setCaseHandling(STRICTLY_CASE_SENSITIVE);
@@ -82,6 +89,7 @@ static inline int setCaseOption(int value) {
 }
 
 static inline int setTokenNumberingOption(int value) {
+    Morfeusz* morfeuszInstance = getMorfeuszInstance();
     switch (value) {
         case MORFEUSZ_CONTINUOUS_TOKEN_NUMBERING:
             morfeuszInstance->setTokenNumbering(CONTINUOUS_NUMBERING);

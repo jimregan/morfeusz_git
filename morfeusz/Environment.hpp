@@ -43,7 +43,7 @@ public:
      * @param morfeuszProcessor
      * @param fileStartPtr
      */
-    explicit Environment(MorfeuszProcessorType morfeuszProcessor, bool usable);
+    Environment(const std::string& dictName, MorfeuszProcessorType morfeuszProcessor, bool usable);
     
     /**
      * Sets charset for this environment.

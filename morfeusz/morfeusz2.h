@@ -122,7 +122,16 @@ namespace morfeusz {
          * @remarks NOT THREAD-SAFE (affects ALL Morfeusz instances)
          * @return new instance of Morfeusz.
          */
-        static Morfeusz* createInstance(MorfeuszUsage usage);
+        static Morfeusz* createInstance(MorfeuszUsage usage=BOTH_ANALYSE_AND_GENERATE);
+        
+        /**
+         * Creates actual instance of Morfeusz class with possibly non-default dictionary.
+         * The caller is responsible for destroying it.
+         * 
+         * @remarks NOT THREAD-SAFE (affects ALL Morfeusz instances)
+         * @return new instance of Morfeusz.
+         */
+        static Morfeusz* createInstance(const std::string& dictName, MorfeuszUsage usage=BOTH_ANALYSE_AND_GENERATE);
         
         /**
          * Creates exact copy of Morfeusz object.

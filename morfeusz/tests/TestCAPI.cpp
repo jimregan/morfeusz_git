@@ -30,7 +30,7 @@ void TestCAPI::tearDown() {
 void TestCAPI::testTwoSimpleInvocations() {
     cerr << "testTwoSimpleInvocations" << endl;
 
-    char* text = const_cast<char*> (string("AAaaBBbbCCcc DDDD.").c_str());
+    char* text = const_cast<char*> ("AAaaBBbbCCcc DDDD.");
     InterpMorf* results = morfeusz_analyse(text);
     CPPUNIT_ASSERT_EQUAL(0, results[0].p);
     CPPUNIT_ASSERT_EQUAL(1, results[0].k);

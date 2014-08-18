@@ -63,15 +63,15 @@
         return res;
     }
     
-    static morfeusz::Morfeusz* morfeusz::Morfeusz::createAnalyzerInstance() {
+    static morfeusz::Morfeusz* morfeusz::Morfeusz::createAnalyzerInstance(const std::string& dictName=morfeusz::Morfeusz::getDefaultDictName()) {
         return morfeusz::Morfeusz::createInstance(morfeusz::ANALYSE_ONLY);
     }
     
-    static morfeusz::Morfeusz* morfeusz::Morfeusz::createGeneratorInstance() {
+    static morfeusz::Morfeusz* morfeusz::Morfeusz::createGeneratorInstance(const std::string& dictName=morfeusz::Morfeusz::getDefaultDictName()) {
         return morfeusz::Morfeusz::createInstance(morfeusz::GENERATE_ONLY);
     }
     
-    static morfeusz::Morfeusz* morfeusz::Morfeusz::createInstance() {
+    static morfeusz::Morfeusz* morfeusz::Morfeusz::createInstance(const std::string& dictName=morfeusz::Morfeusz::getDefaultDictName()) {
         return morfeusz::Morfeusz::createInstance(morfeusz::BOTH_ANALYSE_AND_GENERATE);
     }
 };

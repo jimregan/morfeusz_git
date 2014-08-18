@@ -113,11 +113,11 @@ namespace morfeusz {
         return ic;
     }
 
-    MorfeuszImpl::MorfeuszImpl(MorfeuszUsage usage)
-    : currDictionary(MORFEUSZ_DEFAULT_DICT_NAME),
+    MorfeuszImpl::MorfeuszImpl(const string& dictName, MorfeuszUsage usage)
+    : currDictionary(dictName),
     usage(usage),
-    analyzerEnv(ANALYZER, usage != GENERATE_ONLY),
-    generatorEnv(GENERATOR, usage != ANALYSE_ONLY),
+    analyzerEnv(dictName, ANALYZER, usage != GENERATE_ONLY),
+    generatorEnv(dictName, GENERATOR, usage != ANALYSE_ONLY),
     options(createDefaultOptions()),
     accum(),
     notMatchingCaseSegs(0),
@@ -181,6 +181,7 @@ namespace morfeusz {
     }
 
     MorfeuszImpl::~MorfeuszImpl() {
+        cerr << "DELETE MorfeuszImpl" << endl;
     }
 
     const char* getWordEndPtr(const TextReader& reader, const Environment& env) {

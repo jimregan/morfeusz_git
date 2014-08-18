@@ -25,7 +25,11 @@ namespace morfeusz {
     struct Dictionary {
         Dictionary(const unsigned char* ptr, MorfeuszProcessorType processorType);
         
+        Dictionary();
+        
         bool isCompatibleWith(const Dictionary& other) const;
+        
+        static Dictionary* getEmpty();
         
         FSAType* fsa;
         IdResolverImpl idResolver;

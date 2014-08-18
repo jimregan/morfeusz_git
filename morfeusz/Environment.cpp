@@ -17,14 +17,16 @@
 #include "DictionariesRepository.hpp"
 
 namespace morfeusz {
-    
+
     using namespace std;
 
-    Environment::Environment(MorfeuszProcessorType processorType, bool usable)
+    Environment::Environment(const string& dictName, MorfeuszProcessorType processorType, bool usable)
     : usable(usable),
     currentCharsetConverter(getCharsetConverter(DEFAULT_MORFEUSZ_CHARSET)),
     caseConverter(),
-    dictionary(DictionariesRepository::getInstance().getDefaultDictionary(processorType)),
+    dictionary(usable
+    ? DictionariesRepository::getInstance().getDictionary(dictName, processorType)
+    : Dictionary::getEmpty()),
     idResolver(dictionary->idResolver),
     currSegrulesOptions(dictionary->defaultSegrulesOptions),
     currSegrulesFSA(dictionary->defaultSegrulesFSA),
@@ -86,17 +88,19 @@ namespace morfeusz {
     }
 
     void Environment::setSegrulesOption(const std::string& option, const std::string& value) {
-        if (this->currSegrulesOptions.find(option) == this->currSegrulesOptions.end()) {
-            throw MorfeuszException("Invalid segmentation option '" + option + "'");
+        if (this->isUsable()) {
+            if (this->currSegrulesOptions.find(option) == this->currSegrulesOptions.end()) {
+                throw MorfeuszException("Invalid segmentation option '" + option + "'");
+            }
+            SegrulesOptions prevOptions = this->currSegrulesOptions;
+            this->currSegrulesOptions[option] = value;
+            if (this->dictionary->segrulesFSAsMap.find(this->currSegrulesOptions) == this->dictionary->segrulesFSAsMap.end()) {
+                this->currSegrulesOptions = prevOptions;
+
+                throw MorfeuszException("Invalid \"" + option + "\" option: \"" + value + "\". Possible values: " + getAvailableOptionsAsString(option));
+            }
+            this->currSegrulesFSA = this->dictionary->segrulesFSAsMap.find(this->currSegrulesOptions)->second;
         }
-        SegrulesOptions prevOptions = this->currSegrulesOptions;
-        this->currSegrulesOptions[option] = value;
-        if (this->dictionary->segrulesFSAsMap.find(this->currSegrulesOptions) == this->dictionary->segrulesFSAsMap.end()) {
-            this->currSegrulesOptions = prevOptions;
-            
-            throw MorfeuszException("Invalid \"" + option + "\" option: \"" + value + "\". Possible values: "+getAvailableOptionsAsString(option));
-        }
-        this->currSegrulesFSA = this->dictionary->segrulesFSAsMap.find(this->currSegrulesOptions)->second;
     }
 
     MorfeuszProcessorType Environment::getProcessorType() const {
@@ -129,13 +133,12 @@ namespace morfeusz {
         currSegrulesOptions = dictionary->defaultSegrulesOptions;
         currSegrulesFSA = dictionary->defaultSegrulesFSA;
     }
-    
+
     string Environment::getAvailableOptionsAsString(const string& option) const {
         const set<string>* options;
         if (option == "aggl") {
             options = &dictionary->availableAgglOptions;
-        }
-        else {
+        } else {
             options = &dictionary->availablePraetOptions;
         }
         string res;
@@ -151,7 +154,7 @@ namespace morfeusz {
         }
         return res;
     }
-    
+
     const set<string>& Environment::getAvailableAgglOptions() const {
         return this->dictionary->availableAgglOptions;
     }

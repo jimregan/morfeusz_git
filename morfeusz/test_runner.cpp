@@ -14,8 +14,13 @@
 
 #include "tests/TestCAPI.hpp"
 #include "tests/TestMorfeusz.hpp"
+#include "morfeusz2.h"
 
 int main() {
+    
+    morfeusz::Morfeusz::dictionarySearchPaths.push_front(".");
+    morfeusz::Morfeusz::dictionarySearchPaths.push_front("morfeusz");
+    
     CPPUNIT_NS::TestRunner runner;
     CPPUNIT_NS::TestResult controller;
     CPPUNIT_NS::TestResultCollector result;

@@ -52,7 +52,7 @@ namespace morfeusz {
      */
     class MorfeuszImpl : public Morfeusz {
     public:
-        MorfeuszImpl(MorfeuszUsage usage);
+        MorfeuszImpl(const std::string& dictName, MorfeuszUsage usage);
 //
 //        void setAnalyzerDictionary(const std::string& filename);
 //

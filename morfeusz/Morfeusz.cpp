@@ -18,11 +18,14 @@ namespace morfeusz {
     }
 
     Morfeusz* Morfeusz::createInstance(MorfeuszUsage usage) {
-        return new MorfeuszImpl(usage);
+        return new MorfeuszImpl(Morfeusz::getDefaultDictName(), usage);
+    }
+    
+    Morfeusz* Morfeusz::createInstance(const std::string& dictName, MorfeuszUsage usage) {
+        return new MorfeuszImpl(dictName, usage);
     }
 
     Morfeusz::~Morfeusz() {
-
     }
 
     static list<string> initializeDictionarySearchPaths() {

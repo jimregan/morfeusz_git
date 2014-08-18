@@ -31,6 +31,22 @@ namespace morfeusz {
         }
         return res;
     }
+    
+    Dictionary* Dictionary::getEmpty() {
+        static Dictionary* dict = new Dictionary();
+        return dict;
+    }
+    
+    Dictionary::Dictionary()
+    : fsa(NULL),
+    idResolver(),
+    separatorsList(),
+    segrulesFSAsMap(),
+    defaultSegrulesOptions(),
+    defaultSegrulesFSA(NULL),
+    availableAgglOptions(),
+    availablePraetOptions() {
+    }
 
     Dictionary::Dictionary(const unsigned char* fsaFileStartPtr, MorfeuszProcessorType processorType)
     : fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),

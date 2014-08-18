@@ -33,7 +33,7 @@ namespace morfeusz {
                 0, // Delimiter if expecting multiple args.
                 "Display usage instructions.\n", // Help description.
                 "-h", // Flag token. 
-//                "-help", // Flag token.
+                //                "-help", // Flag token.
                 "--help" // Flag token.
                 );
 
@@ -44,7 +44,7 @@ namespace morfeusz {
                 0, // Delimiter if expecting multiple args.
                 "dictionary name\n", // Help description.
                 "-d", // Flag token. 
-//                "-dict", // Flag token.
+                //                "-dict", // Flag token.
                 "--dict" // Flag token.
                 );
 
@@ -54,7 +54,7 @@ namespace morfeusz {
                 1, // Number of args expected.
                 0, // Delimiter if expecting multiple args.
                 "directory containing the dictionary (optional)\n", // Help description.
-//                "-dict-dir", // Flag token. 
+                //                "-dict-dir", // Flag token. 
                 "--dict-dir" // Flag token.
                 );
 
@@ -65,7 +65,7 @@ namespace morfeusz {
                 0, // Delimiter if expecting multiple args.
                 "select agglutination rules\n", // Help description.
                 "-a", // Flag token. 
-//                "-aggl", // Flag token.
+                //                "-aggl", // Flag token.
                 "--aggl" // Flag token.
                 );
 
@@ -76,7 +76,7 @@ namespace morfeusz {
                 0, // Delimiter if expecting multiple args.
                 "select past tense segmentation\n", // Help description.
                 "-p", // Flag token. 
-//                "-praet", // Flag token.
+                //                "-praet", // Flag token.
                 "--praet" // Flag token.
                 );
 
@@ -87,7 +87,7 @@ namespace morfeusz {
                 0, // Delimiter if expecting multiple args.
                 "input/output charset (UTF8, ISO8859_2, CP1250, CP852)\n", // Help description.
                 "-c", // Flag token. 
-//                "-charset", // Flag token.
+                //                "-charset", // Flag token.
                 "--charset" // Flag token.
                 );
 
@@ -101,7 +101,7 @@ namespace morfeusz {
 * CONDITIONALLY_CASE_SENSITIVE - Case-sensitive but allows interpretations that do not match case when there is no alternative\n\
 * STRICTLY_CASE_SENSITIVE - strictly case-sensitive\n\
 * IGNORE_CASE - ignores case\n", // Help description.
-//                    "-case-handling", // Flag token.
+                    //                    "-case-handling", // Flag token.
                     "--case-handling" // Flag token.
                     );
             opt.add(
@@ -112,7 +112,7 @@ namespace morfeusz {
                     "token numbering strategy\n\
 * SEPARATE_NUMBERING - Start from 0 and reset counter for every line\n\
 * CONTINUOUS_NUMBERING - start from 0 and never reset counter\n", // Help description.
-//                    "-token-numbering", // Flag token.
+                    //                    "-token-numbering", // Flag token.
                     "--token-numbering" // Flag token.
                     );
             opt.add(
@@ -124,7 +124,7 @@ namespace morfeusz {
 SKIP_WHITESPACES - ignore whitespaces\n \
 APPEND_WHITESPACES - append whitespaces to preceding segment\n\
 KEEP_WHITESPACES - whitespaces are separate segments\n", // Help description.
-//                    "-whitespace-handling", // Flag token.
+                    //                    "-whitespace-handling", // Flag token.
                     "--whitespace-handling" // Flag token.
                     );
         }
@@ -135,7 +135,7 @@ KEEP_WHITESPACES - whitespaces are separate segments\n", // Help description.
                 0, // Number of args expected.
                 0, // Delimiter if expecting multiple args.
                 "show some debug information.\n", // Help description.
-//                "-debug", // Flag token.
+                //                "-debug", // Flag token.
                 "--debug" // Flag token.
                 );
 
@@ -212,24 +212,29 @@ KEEP_WHITESPACES - whitespaces are separate segments\n", // Help description.
     }
 
     Morfeusz* initializeMorfeusz(ezOptionParser& opt, MorfeuszProcessorType processorType) {
-        Morfeusz& morfeusz = *Morfeusz::createInstance(processorType == ANALYZER ? ANALYSE_ONLY : GENERATE_ONLY);
+        if (opt.isSet("--dict-dir")) {
+            string dictDir;
+            opt.get("--dict-dir")->getString(dictDir);
+            //            Morfeusz::dictionarySearchPaths.clear();
+            Morfeusz::dictionarySearchPaths.push_front(dictDir);
+            cerr << "Setting dictionary search path to: " << dictDir << endl;
+        } else {
+            Morfeusz::dictionarySearchPaths.push_front(".");
+            cerr << "Setting dictionary search path to: ." << endl;
+        }
+
+        string dictName;
+        if (opt.isSet("-d")) {
+            opt.get("-d")->getString(dictName);
+            cerr << "Using dictionary: " << dictName << endl;
+        }
+        else {
+            dictName = Morfeusz::getDefaultDictName();
+            cerr << "Using dictionary: " << dictName << " (default)" << endl;
+        }
+
+        Morfeusz& morfeusz = *Morfeusz::createInstance(dictName, processorType == ANALYZER ? ANALYSE_ONLY : GENERATE_ONLY);
         try {
-            if (opt.isSet("--dict-dir")) {
-                string dictDir;
-                opt.get("--dict-dir")->getString(dictDir);
-                Morfeusz::dictionarySearchPaths.clear();
-                Morfeusz::dictionarySearchPaths.push_front(dictDir);
-                cerr << "Setting dictionary search path to: " << dictDir << endl;
-            }
-            else {
-                Morfeusz::dictionarySearchPaths.push_front(".");
-            }
-            if (opt.isSet("-d")) {
-                string dictName;
-                opt.get("-d")->getString(dictName);
-                morfeusz.setDictionary(dictName);
-                cerr << "Using dictionary: " << dictName << endl;
-            }
             if (opt.isSet("-a")) {
                 string aggl;
                 opt.get("-a")->getString(aggl);
@@ -280,8 +285,7 @@ KEEP_WHITESPACES - whitespaces are separate segments\n", // Help description.
             morfeusz.setCharset(CP852);
 #endif
             return &morfeusz;
-        }
-        catch (const MorfeuszException& ex) {
+        } catch (const MorfeuszException& ex) {
             cerr << "Failed to start Morfeusz: " << ex.what() << endl;
             exit(1);
         }

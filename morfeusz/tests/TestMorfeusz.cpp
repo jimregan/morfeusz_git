@@ -11,6 +11,7 @@
 #include <vector>
 #include <fstream>
 #include <stdexcept>
+#include <iostream>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TestMorfeusz);
 
@@ -24,11 +25,14 @@ TestMorfeusz::~TestMorfeusz() {
 }
 
 void TestMorfeusz::setUp() {
+    cerr << "SET UP" << endl;
     morfeusz = Morfeusz::createInstance(BOTH_ANALYSE_AND_GENERATE);
+    cerr << "SET UP done" << endl;
 }
 
 void TestMorfeusz::tearDown() {
-    delete morfeusz;
+    cerr << "TEAR DOWN" << endl;
+//    delete morfeusz;
 }
 
 void TestMorfeusz::testAnalyzeIterate1() {
