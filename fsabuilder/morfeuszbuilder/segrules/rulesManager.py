@@ -7,6 +7,7 @@ import logging
 from morfeuszbuilder.utils.serializationUtils import htons, htonl
 from morfeuszbuilder.utils import serializationUtils
 from morfeuszbuilder.utils import exceptions
+import shiftOrthMagic
 
 class RulesManager(object):
     
@@ -15,6 +16,7 @@ class RulesManager(object):
         self.segtypes = segtypes
         self.separatorsList = separatorsList
         self.defaultOptions = None
+        self.shiftOrthMagic = shiftOrthMagic.ShiftOrthMagic()
     
     def _options2Key(self, optionsMap):
         return frozenset(optionsMap.items())

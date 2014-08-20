@@ -181,7 +181,6 @@ namespace morfeusz {
     }
 
     MorfeuszImpl::~MorfeuszImpl() {
-        cerr << "DELETE MorfeuszImpl" << endl;
     }
 
     const char* getWordEndPtr(const TextReader& reader, const Environment& env) {
@@ -339,6 +338,9 @@ namespace morfeusz {
             const string& homonymId,
             const InterpsGroup& ig,
             vector<SegrulesState>& newSegrulesStates) const {
+        if (this->options.debug) {
+            std::cerr << "FOUND interps group, segmentType=" << (int) ig.type << std::endl;
+        }
         bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
         if (caseMatches || options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
 

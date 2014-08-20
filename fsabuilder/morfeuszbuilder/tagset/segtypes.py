@@ -186,6 +186,9 @@ class Segtypes(object):
         if res is None:
             res = self._tagnum2Segnum.get(tagnum, None)
         return res
+
+    def getMaxSegnum(self):
+        return max(self.segnum2Segtype.keys())
     
 class SegtypePattern(object):
     

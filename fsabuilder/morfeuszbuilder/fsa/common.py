@@ -80,7 +80,8 @@ class Interpretation4Analyzer(object):
                 tuple(self.encodedForm.casePattern),
                 tuple(self.orthCasePattern),
                 self.tagnum, 
-                self.namenum)
+                self.namenum,
+                self.typenum)
     
     def __eq__(self, other):
         if isinstance(other, Interpretation4Analyzer):
@@ -109,7 +110,8 @@ class Interpretation4Generator(object):
                 self.encodedForm.cutLength, 
                 tuple(self.encodedForm.suffixToAdd),
 #                 tuple(self.encodedForm.casePattern), 
-                self.namenum)
+                self.namenum,
+                self.typenum)
     
     def __eq__(self, other):
         if isinstance(other, Interpretation4Generator):

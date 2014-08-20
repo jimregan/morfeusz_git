@@ -14,9 +14,10 @@ def _mergeEntries(inputLines, lowercase):
     for key, interp in inputLines:
         key = key.lower() if lowercase else key
 #         print 'key=', key, 'interp=', interp
-        if not key:
-            print 'key=', key, 'interp=', interp
-            assert key
+#         if not key:
+#             print 'key=', key, 'interp=', interp
+#             assert key
+        assert key
         if prevKey and prevKey == key:
             prevInterps.append(interp)
         else:
@@ -64,6 +65,15 @@ class PolimorfConverter4Analyzer(object):
                 typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
                 qualifiers = qualifier.split('|') if qualifier else frozenset([u''])
                 qualsnum = self.qualifiersMap[frozenset(qualifiers)]
+
+                assert not (
+                    self.segmentRulesManager.shiftOrthMagic.shouldReplaceLemmaWithOrth(typenum)
+                    and self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum) != None)
+
+                if self.segmentRulesManager.shiftOrthMagic.shouldReplaceLemmaWithOrth(typenum):
+                    # print 'replace %s %s %s %d with %s %s %s %d' % (orth, base, tag, typenum, orth, orth, tag, typenum)
+                    base = orth
+
                 yield '\t'.join((
                             orth.encode(self.inputEncoding),
                             base.encode(self.inputEncoding),
@@ -71,7 +81,18 @@ class PolimorfConverter4Analyzer(object):
                             str(namenum),
                             str(typenum), 
                             str(qualsnum)))
-                            #~ qualifier.encode(self.inputEncoding)))
+
+                if self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum) != None:
+                    # print 'add to existing %s %s %s %d also this: %s %s %s %d' % (orth, base, tag, typenum, orth, orth, tag, self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum))
+                    base = orth
+                    typenum = self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum)
+                    yield '\t'.join((
+                            orth.encode(self.inputEncoding),
+                            base.encode(self.inputEncoding),
+                            str(tagnum),
+                            str(namenum),
+                            str(typenum),
+                            str(qualsnum)))
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
@@ -89,7 +110,7 @@ class PolimorfConverter4Analyzer(object):
                 #~ qualifiers = qualifierStr.split('|') if qualifierStr else []
                 qualsnum = int(qualsnum)
                 yield (orth, Interpretation4Analyzer(orth, base, tagnum, namenum, typenum, qualsnum))
-    
+
     def convert(self, inputLines):
         return _mergeEntries(self._reallyParseLines(self._sortLines(self._partiallyParseLines(inputLines))), lowercase=True)
 
@@ -120,15 +141,11 @@ class PolimorfConverter4Generator(object):
                     qualifiers = qualifier.split('|') if qualifier else frozenset([u''])
                     qualsnum = self.qualifiersMap[frozenset(qualifiers)]
                     typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
-                    
-                    #~ print '\t'.join((
-                                #~ orth.encode(self.inputEncoding), 
-                                #~ base.encode(self.inputEncoding), 
-                                #~ str(tagnum), 
-                                #~ str(namenum), 
-                                #~ str(typenum),
-                                #~ homonymId.encode(self.inputEncoding), 
-                                #~ qualifier.encode(self.inputEncoding)))
+
+                    if self.segmentRulesManager.shiftOrthMagic.shouldReplaceLemmaWithOrth(typenum):
+                        # print 'replace %s %s %s %d with %s %s %s %d' % (orth, base, tag, typenum, orth, orth, tag, typenum)
+                        base = orth
+
                     yield '\t'.join((
                                 orth.encode(self.inputEncoding), 
                                 base.encode(self.inputEncoding), 
@@ -136,6 +153,18 @@ class PolimorfConverter4Generator(object):
                                 str(namenum), 
                                 str(typenum),
                                 homonymId.encode(self.inputEncoding), 
+                                str(qualsnum)))
+
+                    if self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum) != None:
+                        base = orth
+                        typenum = self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum)
+                        yield '\t'.join((
+                                orth.encode(self.inputEncoding),
+                                base.encode(self.inputEncoding),
+                                str(tagnum),
+                                str(namenum),
+                                str(typenum),
+                                homonymId.encode(self.inputEncoding),
                                 str(qualsnum)))
                 else:
                     logging.warn('Ignoring line: "%s" - contains empty lemma', line.strip())

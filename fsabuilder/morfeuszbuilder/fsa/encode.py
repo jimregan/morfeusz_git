@@ -47,21 +47,6 @@ class Encoder(object):
                             u'Too many segment types. The limit is %d' % limits.MAX_SEGMENT_TYPES)
         return bytearray([typenum])
     
-    #~ def _encodeQualifiers(self, qualifiers):
-        #~ res = bytearray()
-        #~ key = frozenset(qualifiers)
-        #~ if key in self.qualifiersMap:
-        #~ exceptions.validate(key in self.qualifiersMap, u'Unknown qualifiers: %s' % qualifiers)
-        #~ n = self.qualifiersMap[key]
-        #~ else:
-            #~ n = len(self.qualifiersMap)
-            #~ self.qualifiersMap[key] = n
-        #~ exceptions.validate(
-                            #~ n <= limits.MAX_QUALIFIERS_COMBINATIONS, 
-                            #~ u'Too many qualifiers combinations. The limit is %d' % limits.MAX_QUALIFIERS_COMBINATIONS)
-        #~ res.extend(htons(n))
-        #~ return res
-    
     def _hasUpperPrefix(self, casePattern):
         for i in range(len(casePattern) + 1):
             if all(casePattern[:i]) and not any(casePattern[i:]):
@@ -98,7 +83,6 @@ class Encoder(object):
         assert type(interpsList) == frozenset
         
         segnum2Interps = self._groupInterpsByType(interpsList)
-        
         
         res = bytearray()
         
