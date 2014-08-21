@@ -20,6 +20,8 @@ struct SegrulesState {
     bool weak;
     bool shiftOrthFromPrevious;
     bool sink;
+    
+    static SegrulesState SINK_STATE;
 };
 
 inline bool operator<(const SegrulesState& s1, const SegrulesState& s2) {
@@ -35,11 +37,10 @@ public:
         initialTransitions = createInitialTransitionsVector();
     }
 
-    void proceedToNext(
+    SegrulesState proceedToNext(
             const unsigned char segnum,
             const SegrulesState& state,
-            bool atEndOfWord,
-            std::vector<SegrulesState>& res) const;
+            bool atEndOfWord) const;
 
     virtual ~SegrulesFSA() {
     }
@@ -47,22 +48,20 @@ public:
     SegrulesState initialState;
 private:
     const unsigned char* ptr;
-    std::vector< std::vector<SegrulesState> > initialTransitions;
+    std::vector< SegrulesState > initialTransitions;
 
     SegrulesState transition2State(const unsigned char* transitionPtr) const;
     
-    std::vector< std::vector<SegrulesState> > createInitialTransitionsVector();
+    std::vector< SegrulesState > createInitialTransitionsVector();
     
-    void doProceedFromInitialState(
+    SegrulesState doProceedFromInitialState(
             const unsigned char segnum,
-            bool atEndOfWord,
-            std::vector<SegrulesState>& res) const;
+            bool atEndOfWord) const;
     
-    void doProceedFromNonInitialState(
+    SegrulesState doProceedFromNonInitialState(
             const unsigned char segnum,
             const SegrulesState& state,
-            bool atEndOfWord,
-            std::vector<SegrulesState>& res) const;
+            bool atEndOfWord) const;
 };
 
 }

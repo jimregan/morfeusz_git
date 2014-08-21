@@ -310,7 +310,7 @@ namespace morfeusz {
         }
         StateType state = env.getFSA().getInitialState();
         string homonymId;
-        vector<SegrulesState> newSegrulesStates;
+//        vector<SegrulesState> newSegrulesStates;
         while (!reader.isAtWhitespace()) {
             feedState(env, state, reader);
             reader.next();
@@ -324,7 +324,7 @@ namespace morfeusz {
             if (state.isAccepting()) {
                 InterpsGroupsReader& igReader = const_cast<InterpsGroupsReader&> (state.getValue());
                 while (igReader.hasNext()) {
-                    processInterpsGroup(env, reader, reader.isAtWhitespace(), segrulesState, homonymId, igReader.getNext(), newSegrulesStates);
+                    processInterpsGroup(env, reader, reader.isAtWhitespace(), segrulesState, homonymId, igReader.getNext());
                 }
             }
         }
@@ -336,32 +336,44 @@ namespace morfeusz {
             bool isAtWhitespace,
             const SegrulesState& segrulesState,
             const string& homonymId,
-            const InterpsGroup& ig,
-            vector<SegrulesState>& newSegrulesStates) const {
+            const InterpsGroup& ig) const {
         if (this->options.debug) {
             std::cerr << "FOUND interps group, segmentType=" << (int) ig.type << std::endl;
         }
         bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
         if (caseMatches || options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
 
-            env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace, newSegrulesStates);
-            if (!newSegrulesStates.empty()) {
-                for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
-                    const SegrulesState& newSegrulesState = newSegrulesStates[i];
+            SegrulesState newSegrulesState = env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace);
+            if (!newSegrulesState.sink) {
+                InterpretedChunk ic(
+                        createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
 
-                    InterpretedChunk ic(
-                            createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
-
-                    processInterpretedChunk(
-                            env,
-                            reader,
-                            isAtWhitespace,
-                            caseMatches,
-                            newSegrulesState,
-                            ic);
-                }
-                newSegrulesStates.resize(0);
-            } else if (this->options.debug) {
+                processInterpretedChunk(
+                        env,
+                        reader,
+                        isAtWhitespace,
+                        caseMatches,
+                        newSegrulesState,
+                        ic);
+            }
+//            if (!newSegrulesStates.empty()) {
+//                for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
+//                    const SegrulesState& newSegrulesState = newSegrulesStates[i];
+//
+//                    InterpretedChunk ic(
+//                            createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
+//
+//                    processInterpretedChunk(
+//                            env,
+//                            reader,
+//                            isAtWhitespace,
+//                            caseMatches,
+//                            newSegrulesState,
+//                            ic);
+//                }
+//                newSegrulesStates.resize(0);
+//            } 
+            else if (this->options.debug) {
                 std::cerr << "NOT ACCEPTING (segmentation)" << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
             }
         } else if (this->options.debug) {
@@ -554,7 +566,7 @@ namespace morfeusz {
     void MorfeuszImpl::generate(const std::string& lemma, int tagId, vector<MorphInterpretation>& result) const {
 
         ensureIsGenerator();
-        
+
         if (tagId >= this->generatorEnv.getIdResolver().getTagsCount()) {
             throw MorfeuszException("Invalid tagId (outside of tagset)");
         }

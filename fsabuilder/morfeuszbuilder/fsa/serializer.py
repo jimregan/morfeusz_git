@@ -44,7 +44,7 @@ class Serializer(object):
     
     # get the Morfeusz file format version that is being encoded
     def getVersion(self):
-        return 19
+        return 20
     
     def serialize2CppFile(self, fname, isGenerator, headerFilename="data/default_fsa.hpp"):
         res = []
@@ -79,7 +79,9 @@ class Serializer(object):
         raise NotImplementedError('Not implemented')
     
     def fsa2bytearray(self, isGenerator):
-        tagsetData = self._serializeTags(self.tagset.tag2tagnum)
+        tagsetData = bytearray()
+        tagsetData.extend(serializeString(self.tagset.tagsetId))
+        tagsetData.extend(self._serializeTags(self.tagset.tag2tagnum))
         tagsetData.extend(self._serializeTags(self.namesMap))
         qualifiersData = self.serializeQualifiersMap()
         #~ qualifiersData = self._serializeTags(self.qualifiersMap)

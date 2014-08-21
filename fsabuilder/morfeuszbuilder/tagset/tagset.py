@@ -5,6 +5,7 @@ Created on 17 lut 2014
 '''
 
 import codecs
+import re
 from morfeuszbuilder.utils.exceptions import FSABuilderException
 
 class Tagset(object):
@@ -14,6 +15,7 @@ class Tagset(object):
     SEP = '\t'
     
     def __init__(self, filename=None, encoding='utf8'):
+        self.tagsetId = None
         self.tag2tagnum = {}
         #~ self._name2namenum = {}
         if filename:
@@ -25,7 +27,13 @@ class Tagset(object):
         with codecs.open(filename, 'r', encoding) as f:
             for linenum, line in enumerate(f, start=1):
                 line = line.strip('\n\r')
-                if line == u'[TAGS]':
+                if linenum == 1:
+                    match = re.match(r'\#\!TAGSET-ID\s+(.*)$', line)
+                    if match:
+                        self.tagsetId = match.group(1)
+                    else:
+                        raise FSABuilderException('missing TAGSET-ID in first line of tagset file')
+                elif line == u'[TAGS]':
                     insideTags = True
                 #~ elif line == u'[NAMES]':
                     #~ addingTo = Tagset.NAMES

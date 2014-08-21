@@ -24,6 +24,8 @@ namespace morfeusz {
         IdResolverImpl();
         
         void setCharsetConverter(const CharsetConverter* charsetConverter);
+        
+        const std::string getTagsetId() const;
 
         const std::string& getTag(const int tagId) const;
         int getTagId(const std::string& tag) const;
@@ -50,7 +52,7 @@ namespace morfeusz {
         bool isCompatibleWith(const IdResolverImpl& other) const;
         
     private:
-
+        std::string tagsetId;
         IdStringMapping tags;
         IdStringMapping names;
         IdStringMapping labels;

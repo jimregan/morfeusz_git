@@ -53,10 +53,6 @@ namespace morfeusz {
     class MorfeuszImpl : public Morfeusz {
     public:
         MorfeuszImpl(const std::string& dictName, MorfeuszUsage usage);
-//
-//        void setAnalyzerDictionary(const std::string& filename);
-//
-//        void setGeneratorDictionary(const std::string& filename);
 
         virtual ~MorfeuszImpl();
 
@@ -128,8 +124,7 @@ namespace morfeusz {
                 bool isAtWhitespace,
                 const SegrulesState& segrulesState,
                 const std::string& homonymId,
-                const InterpsGroup& ig,
-                std::vector<SegrulesState>& newSegrulesStates) const;
+                const InterpsGroup& ig) const;
 
         void processInterpretedChunk(
                 const Environment& env,

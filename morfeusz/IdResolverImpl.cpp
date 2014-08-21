@@ -48,7 +48,8 @@ namespace morfeusz {
     }
     
     IdResolverImpl::IdResolverImpl()
-    : tags(),
+    : tagsetId(),
+    tags(),
     names(),
     labels(),
     labelsAsSets(),
@@ -57,7 +58,8 @@ namespace morfeusz {
     }
 
     IdResolverImpl::IdResolverImpl(const unsigned char* ptr, const CharsetConverter* charsetConverter)
-    : tags(),
+    : tagsetId(),
+    tags(),
     names(),
     labels(),
     labelsAsSets(),
@@ -65,6 +67,7 @@ namespace morfeusz {
         uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
         const unsigned char* currPtr = ptr + FSA_DATA_OFFSET + fsaSize + 4;
 
+        this->tagsetId = readString(currPtr);
         readTags(currPtr, this->tags.id2String);
         createReverseMapping(this->tags);
 
@@ -80,7 +83,7 @@ namespace morfeusz {
 
         setCharsetConverter(charsetConverter);
     }
-
+    
     // FIXME - probably should not convert whole tagset on every setCharsetConverter method invocation.
 
     void IdResolverImpl::setCharsetConverter(const CharsetConverter* charsetConverter) {
@@ -98,6 +101,10 @@ namespace morfeusz {
 //        }
 
         this->charsetConverter = charsetConverter;
+    }
+    
+    const string IdResolverImpl::getTagsetId() const {
+        
     }
 
     const string& IdResolverImpl::getTag(const int tagId) const {
@@ -141,7 +148,8 @@ namespace morfeusz {
     }
     
     bool IdResolverImpl::isCompatibleWith(const IdResolverImpl& other) const {
-        return this->tags.id2String == other.tags.id2String 
+        return this->tagsetId == other.tagsetId
+                && this->tags.id2String == other.tags.id2String 
                 && this->names.id2String == other.names.id2String
                 && this->labels.id2String == other.labels.id2String;
     }

@@ -329,6 +329,13 @@ namespace morfeusz {
      */
     class DLLIMPORT IdResolver {
     public:
+        
+        /**
+         * Returns current TAGSET-ID (as specified in first line of tagset file)
+         * 
+         * @return tagset id string
+         */
+        virtual const std::string getTagsetId() const = 0;
 
         /**
          * Returns tag (denoted by its index).
