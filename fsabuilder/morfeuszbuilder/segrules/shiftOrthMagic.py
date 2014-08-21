@@ -1,5 +1,4 @@
 
-import sys
 import logging
 
 class ShiftOrthMagic(object):
@@ -22,14 +21,12 @@ class ShiftOrthMagic(object):
     def doShiftOrthMagic(self, resultsMap, segtypesHelper, shiftOrthSegtypes, nonShiftOrthSegtypes):
 
         nextNewSegnum = segtypesHelper.getMaxSegnum() + 1
-
         additionalIdsMap = {}
 
         for segtype in (shiftOrthSegtypes & nonShiftOrthSegtypes):
             oldSegnum = segtypesHelper.getSegnum4Segtype(segtype)
             if not oldSegnum in self._bothShiftAndNonShiftSegnums:
                 self._bothShiftAndNonShiftSegnums[oldSegnum] = nextNewSegnum
-                logging.info('')
                 additionalIdsMap[nextNewSegnum] = (segtype + '>')
                 nextNewSegnum += 1
 

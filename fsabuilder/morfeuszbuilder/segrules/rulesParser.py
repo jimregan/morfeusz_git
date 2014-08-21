@@ -68,6 +68,7 @@ class RulesParser(object):
                                                      filename, 
                                                      rule.linenum, 
                                                      'This rule allows empty segments sequence to be accepted')
+                rule.validate(filename)
                 if self.rulesType == RulesParser.PARSE4GENERATOR:
                     additionalRules = rule.getAdditionalAtomicRules4Generator()
                     for rule in additionalRules:
@@ -183,13 +184,6 @@ class RulesParser(object):
         parsedRule = pyparseString.pyparseString(rule, lineNum, line, filename)[0]
 #         print parsedRule, '-->', parsedRule.transformToGeneratorVersion()
         return parsedRule
-
-    # def doGeneratorMagic(self, resultsMap):
-    #     print resultsMap
-    #     for _, rules in resultsMap.iteritems():
-    #         for rule in list(rules):
-    #             rules.extend(rule.getAdditionalAtomicRules4Generator())
-    #     print resultsMap
 
     def doShiftOrthMagic(self, resultsMap, rulesManager):
 

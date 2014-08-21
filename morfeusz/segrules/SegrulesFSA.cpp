@@ -1,6 +1,7 @@
 
 
 #include <vector>
+#include <cassert>
 #include "SegrulesFSA.hpp"
 
 using namespace std;
@@ -42,6 +43,7 @@ void SegrulesFSA::doProceedFromNonInitialState(
         std::vector<SegrulesState>& res) const {
     const unsigned char* currPtr = ptr + state.offset + 1;
     const unsigned char transitionsNum = *currPtr++;
+    assert(transitionsNum <= 1);
     for (int i = 0; i < transitionsNum; i++) {
         if (*currPtr == segnum) {
             SegrulesState newState = this->transition2State(currPtr);
@@ -71,6 +73,7 @@ vector< vector<SegrulesState> > SegrulesFSA::createInitialTransitionsVector() {
     vector< vector<SegrulesState> > res(256, vector<SegrulesState>());
     const unsigned char* currPtr = ptr + initialState.offset + 1;
     const unsigned char transitionsNum = *currPtr++;
+    assert(transitionsNum <= 1);
     for (int i = 0; i < transitionsNum; i++) {
         unsigned char segnum = *currPtr;
         res[segnum].push_back(this->transition2State(currPtr));
