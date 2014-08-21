@@ -8,41 +8,44 @@ using namespace std;
 
 namespace morfeusz {
 
-    SegrulesState SegrulesState::SINK_STATE = {
+    SegrulesState SegrulesState::FAILED_STATE = {
         0, // offset
         false, // accepting
         false, // weak
         false, // shift orth
-        true // sink
+        true, // sink
+        true, // failed
     };
 
-    SegrulesState SegrulesFSA::proceedToNext(
+    void SegrulesFSA::proceedToNext(
             const unsigned char segnum,
             const SegrulesState& state,
-            bool atEndOfWord) const {
+            bool atEndOfWord,
+            SegrulesState& resState) const {
+        assert(!state.failed);
         if (state.offset == 0) {
-            return doProceedFromInitialState(segnum, atEndOfWord);
+            doProceedFromInitialState(segnum, atEndOfWord, resState);
         } else {
-            return doProceedFromNonInitialState(segnum, state, atEndOfWord);
+            doProceedFromNonInitialState(segnum, state, atEndOfWord, resState);
         }
     }
 
-    SegrulesState SegrulesFSA::doProceedFromInitialState(
+    void SegrulesFSA::doProceedFromInitialState(
             const unsigned char segnum,
-            bool atEndOfWord) const {
+            bool atEndOfWord,
+            SegrulesState& resState) const {
         const SegrulesState& newState = initialTransitions[segnum];
         if ((atEndOfWord && newState.accepting)
                 || (!atEndOfWord && !newState.sink)) {
-            return newState;
-        } else {
-            return SegrulesState::SINK_STATE;
+            resState = newState;
         }
     }
 
-    SegrulesState SegrulesFSA::doProceedFromNonInitialState(
+    void SegrulesFSA::doProceedFromNonInitialState(
             const unsigned char segnum,
             const SegrulesState& state,
-            bool atEndOfWord) const {
+            bool atEndOfWord,
+            SegrulesState& resState) const {
         const unsigned char* currPtr = ptr + state.offset + 1;
         const unsigned char transitionsNum = *currPtr++;
         for (int i = 0; i < transitionsNum; i++) {
@@ -50,14 +53,11 @@ namespace morfeusz {
                 SegrulesState newState = this->transition2State(currPtr);
                 if ((atEndOfWord && newState.accepting)
                         || (!atEndOfWord && !newState.sink)) {
-                    return newState;
-                } else {
-                    return SegrulesState::SINK_STATE;
+                    resState = newState;
                 }
             }
             currPtr += 4;
         }
-        return SegrulesState::SINK_STATE;
     }
 
     SegrulesState SegrulesFSA::transition2State(const unsigned char* transitionPtr) const {
@@ -69,12 +69,13 @@ namespace morfeusz {
         res.offset = readInt16(transitionPtr);
         res.accepting = *(ptr + res.offset) & ACCEPTING_FLAG;
         res.weak = *(ptr + res.offset) & WEAK_FLAG;
-        res.sink = !res.accepting && *(ptr + res.offset + 1) == 0;
+        res.sink = *(ptr + res.offset + 1) == 0;
+        res.failed = !res.accepting && res.sink;
         return res;
     }
 
     vector< SegrulesState > SegrulesFSA::createInitialTransitionsVector() {
-        vector< SegrulesState > res(256, SegrulesState());
+        vector< SegrulesState > res(256, SegrulesState::FAILED_STATE);
         const unsigned char* currPtr = ptr + initialState.offset + 1;
         const unsigned char transitionsNum = *currPtr++;
         for (int i = 0; i < transitionsNum; i++) {

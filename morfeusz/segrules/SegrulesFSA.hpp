@@ -20,8 +20,9 @@ struct SegrulesState {
     bool weak;
     bool shiftOrthFromPrevious;
     bool sink;
+    bool failed;
     
-    static SegrulesState SINK_STATE;
+    static SegrulesState FAILED_STATE;
 };
 
 inline bool operator<(const SegrulesState& s1, const SegrulesState& s2) {
@@ -32,15 +33,16 @@ class SegrulesFSA {
 public:
 
     SegrulesFSA(const unsigned char* ptr) : initialState(), ptr(ptr), initialTransitions() {
-        SegrulesState state = {0, false, false, false, false};
+        SegrulesState state = {0, false, false, false, false, false};
         initialState = state;
         initialTransitions = createInitialTransitionsVector();
     }
 
-    SegrulesState proceedToNext(
+    void proceedToNext(
             const unsigned char segnum,
             const SegrulesState& state,
-            bool atEndOfWord) const;
+            bool atEndOfWord,
+            SegrulesState& resState) const;
 
     virtual ~SegrulesFSA() {
     }
@@ -54,14 +56,16 @@ private:
     
     std::vector< SegrulesState > createInitialTransitionsVector();
     
-    SegrulesState doProceedFromInitialState(
+    void doProceedFromInitialState(
             const unsigned char segnum,
-            bool atEndOfWord) const;
+            bool atEndOfWord,
+            SegrulesState& resState) const;
     
-    SegrulesState doProceedFromNonInitialState(
+    void doProceedFromNonInitialState(
             const unsigned char segnum,
             const SegrulesState& state,
-            bool atEndOfWord) const;
+            bool atEndOfWord,
+            SegrulesState& resState) const;
 };
 
 }

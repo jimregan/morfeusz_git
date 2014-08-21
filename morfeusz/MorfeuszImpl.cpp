@@ -342,9 +342,9 @@ namespace morfeusz {
         }
         bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
         if (caseMatches || options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
-
-            SegrulesState newSegrulesState = env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace);
-            if (!newSegrulesState.sink) {
+            SegrulesState newSegrulesState = SegrulesState::FAILED_STATE;
+            env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace, newSegrulesState);
+            if (!newSegrulesState.failed) {
                 InterpretedChunk ic(
                         createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
 
@@ -356,27 +356,11 @@ namespace morfeusz {
                         newSegrulesState,
                         ic);
             }
-//            if (!newSegrulesStates.empty()) {
-//                for (unsigned int i = 0; i < newSegrulesStates.size(); i++) {
-//                    const SegrulesState& newSegrulesState = newSegrulesStates[i];
-//
-//                    InterpretedChunk ic(
-//                            createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
-//
-//                    processInterpretedChunk(
-//                            env,
-//                            reader,
-//                            isAtWhitespace,
-//                            caseMatches,
-//                            newSegrulesState,
-//                            ic);
-//                }
-//                newSegrulesStates.resize(0);
-//            } 
             else if (this->options.debug) {
                 std::cerr << "NOT ACCEPTING (segmentation)" << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
             }
-        } else if (this->options.debug) {
+        } 
+        else if (this->options.debug) {
             std::cerr << "NOT ACCEPTING (case)" << debugAccum(accum) << debugInterpsGroup(ig.type, reader.getWordStartPtr(), reader.getCurrPtr()) << std::endl;
         }
     }
