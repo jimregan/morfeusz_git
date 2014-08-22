@@ -27,9 +27,9 @@ dig
 samodz
 
 [lexemes]
-kropka	.:interp
-przecinek	,:interp
-dywiz	-:interp
+kropka	.	interp
+przecinek	,	interp
+dywiz	-	interp
 
 [tags]
 dig	dig

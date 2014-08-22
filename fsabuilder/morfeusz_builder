@@ -180,15 +180,15 @@ def _concatFiles(inputFiles):
 
 def _readNamesAndQualifiers(inputFiles):
     names = set([u''])
-    qualifiers = set([tuple(frozenset([u'']))])
+    qualifiers = set([frozenset()])
     for line in _concatFiles(inputFiles):
         line = line.strip().decode('utf8')
         if line:
             _, _, _, name, qualifier = convertinput.parseLine(line)
             names.add(name)
-            qualifiers.add(tuple(sorted(qualifier.split(u'|'))))
+            qualifiers.add(convertinput.parseQualifiers(qualifier))
     namesMap = dict([(name, idx) for idx, name in enumerate(sorted(list(names)))])
-    qualifiersMap = dict([(frozenset(quals), idx) for idx, quals in enumerate(sorted(list(qualifiers)))])
+    qualifiersMap = dict([(quals, idx) for idx, quals in enumerate(sorted(qualifiers, key=lambda q: tuple(sorted(q))))])
     exceptions.validate(
                     len(qualifiersMap) <= limits.MAX_QUALIFIERS_COMBINATIONS, 
                     u'Too many qualifiers combinations. The limit is %d' % limits.MAX_QUALIFIERS_COMBINATIONS)
@@ -259,7 +259,7 @@ def _doBuildDictionaryPart(opts, tagset, namesMap, qualifiersMap, isGenerator):
     
     logging.info('reading segmentation rules')
     rulesParserVersion = rulesParser.RulesParser.PARSE4ANALYZER if not isGenerator else rulesParser.RulesParser.PARSE4GENERATOR
-    segmentRulesManager = rulesParser.RulesParser(tagset, rulesParserVersion).parse(opts.segmentsFile)
+    segmentRulesManager = rulesParser.RulesParser(tagset, namesMap, qualifiersMap, rulesParserVersion).parse(opts.segmentsFile)
     segmentationRulesData = segmentRulesManager.serialize()
     logging.info('done reading segmentation rules')
     

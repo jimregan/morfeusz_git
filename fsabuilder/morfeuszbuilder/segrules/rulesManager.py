@@ -33,8 +33,8 @@ class RulesManager(object):
     def addDFA(self, optionsMap, dfa):
         self.options2DFA[self._options2Key(optionsMap)] = dfa
     
-    def lexeme2SegmentTypeNum(self, lemma, tagnum):
-        res = self.segtypes.lexeme2Segnum(lemma, tagnum)
+    def lexeme2SegmentTypeNum(self, lemma, tagnum, namenum, labelsnum):
+        res = self.segtypes.lexeme2Segnum(lemma, tagnum, namenum, labelsnum)
         if res is None:
             raise ValueError()
         else:

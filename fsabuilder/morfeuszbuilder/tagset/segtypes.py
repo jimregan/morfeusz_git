@@ -5,7 +5,7 @@ Created on 17 lut 2014
 '''
 import re
 import logging
-import sys
+import itertools
 from morfeuszbuilder.utils import exceptions
 
 def _cutHomonymFromLemma(lemma):
@@ -15,19 +15,25 @@ def _cutHomonymFromLemma(lemma):
 
 class Segtypes(object):
     
-    def __init__(self, tagset, segrulesConfigFile):
+    def __init__(self, tagset, namesMap, labelsMap, segrulesConfigFile):
         
         self.tagset = tagset
+        self.namesMap = namesMap
+        self.labelsMap = labelsMap
+        self._reverseLabelsMap = dict([(v, k) for (k, v) in labelsMap.iteritems()])
         
         self.filename = segrulesConfigFile.filename
         
-        self.segtypes = set()
-        self.segtype2Segnum = {}
-        self.segnum2Segtype = {}
+        self.segtypes = []
+        # self.segtype2Segnum = {}
+        # self.segnum2Segtype = {}
         self.patternsList = []
-        
-        self._tagnum2Segnum = {}
-        self._lemmaTagnum2Segnum = {}
+
+        # (lemma, tagnum) -> [namenum, labelsnum, segnum]
+        self._segnumsMap = {}
+
+        # self._tagnum2Segnum = {}
+        # self._lemmaTagnum2Segnum = {}
         
         self._readSegtypes(segrulesConfigFile)
         self._readLexemes(segrulesConfigFile)
@@ -38,10 +44,8 @@ class Segtypes(object):
 #         print self._tagnum2Segnum
         logging.info('segment number -> segment type')
         logging.info('------------------------------')
-        logging.info(str(self.segnum2Segtype))
+        logging.info(dict(enumerate(self.segtypes)))
         logging.info('------------------------------')
-        
-#         self._debugSegnums()
         
     def _validate(self, msg, lineNum, cond):
         if not cond:
@@ -58,155 +62,171 @@ class Segtypes(object):
                            u'Segment type already defined: "%s"' % line, 
                            lineNum,
                            line not in self.segtypes)
-            self.segtypes.add(line)
-                
-    
+            self.segtypes.append(line)
+
     def _readTags(self, segrulesConfigFile):
         gotWildcardPattern = False
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('tags'):
-            splitLine = re.split(r'\s+', line.strip())
+            self._parsePattern(lineNum, line, withLemma=False)
             self._validate(
-                           u'Line in [tags] section must contain exactly two fields - segment type and tag pattern', 
-                           lineNum,
-                           len(splitLine) == 2)
-            segtype, pattern = splitLine
-            self._validate(
-                           u'Undeclared segment type: "%s"' % segtype,
-                           lineNum,
-                           segtype in self.segtypes)
-            self._validate(
-                           u'Segment type must be a lowercase alphanumeric with optional underscores',
-                           lineNum,
-                           re.match(r'[a-z_]+', segtype))
-            self._validate(
-                           u'Pattern must contain only ":", "%", "." and lowercase alphanumeric letters',
-                           lineNum,
-                           re.match(r'[a-z_\.\:\%]+', pattern))
-            
-            self._validate(
-                           u'Pattern that matches everything must be the last one',
-                           lineNum - 1,
-                           not gotWildcardPattern)
-            
-            if segtype in self.segtype2Segnum:
-                segnum = self.segtype2Segnum[segtype]
-            else:
-                segnum = len(self.segtype2Segnum)
-                self.segtype2Segnum[segtype] = segnum
-            
-            segtypePattern = SegtypePattern(None, pattern, segnum)
-            
-            self._validate(
-                           u'There is no tag that matches pattern "%s".' % pattern,
-                           lineNum,
-                           any([segtypePattern.tryToMatch(None, tag) != -1 for tag in self.tagset.getAllTags()]))
-            
-            self.patternsList.append(segtypePattern)
-            
-            gotWildcardPattern = gotWildcardPattern or pattern == '%'
-        
-        self.segnum2Segtype = dict([(v, k) for (k, v) in self.segtype2Segnum.iteritems()])
+                u'Pattern that matches everything must be the last one',
+                lineNum - 1,
+                not gotWildcardPattern)
+            gotWildcardPattern = gotWildcardPattern or self.patternsList[-1].isWildcardPattern()
+
+        self._validate(
+            u'There must be a pattern that matches everything at the end of [tags] section',
+            lineNum,
+            self.patternsList[-1].isWildcardPattern())
     
     def _readLexemes(self, segrulesConfigFile):
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('lexemes'):
-            split = re.split(r'\s+', line.strip())
+            self._parsePattern(lineNum, line, withLemma=True)
+
+    def _parseAdditionalConstraints(self, lineNum, fields):
+        res = {}
+        for f in fields:
+            match = re.match(r'(name|labels)=([\w_]+)', f, re.U)
             self._validate(
-                           u'Line in [lexemes] section must contain exactly two fields - segment type and lexeme pattern',
-                           lineNum,
-                           len(split) == 2)
-            segtype, pattern = split
+                        u'invalid name or labels constraint: "%s"' % f,
+                        lineNum,
+                        match)
+            key = match.group(1)
+            value = match.group(2)
             self._validate(
-                           u'Undeclared segment type: "%s"' % segtype,
-                           lineNum,
-                           segtype in self.segtypes)
-            self._validate(
-                           u'Segment type must be a lowercase alphanumeric with optional underscores',
-                           lineNum,
-                           re.match(r'[a-z_]+', segtype))
-            self._validate(
-                           u'Pattern must contain encodedForm and part-of-speech fields',
-                           lineNum,
-                           re.match(r'.+?\:[a-z_]+', pattern, re.U))
-            
-            if segtype in self.segtype2Segnum:
-                segnum = self.segtype2Segnum[segtype]
-            else:
-                segnum = len(self.segtype2Segnum)
-                self.segtype2Segnum[segtype] = segnum
-            
-            lemma, pos = pattern.split(':', 1)
-            
-            segtypePattern = SegtypePattern(lemma, pos + ':%', segnum)
-            
-            self._validate(
-                           u'There is no tag that matches pattern "%s".' % (pos + ':%'),
-                           lineNum,
-                           any([segtypePattern.tryToMatch(lemma, tag) != -1 for tag in self.tagset.getAllTags()]))
-            
-            self.patternsList.append(segtypePattern)
-    
-    def _debugSegnums(self):
-        for tagnum, segnum in self._tagnum2Segnum.items():
-            print self.tagset.getTag4Tagnum(tagnum), '-->', self.segnum2Segtype[segnum]
-        
-        for (base, tagnum), segnum in self._lemmaTagnum2Segnum.items():
-            print base, self.tagset.getTag4Tagnum(tagnum), '-->', self.segnum2Segtype[segnum]
-    
-    def _indexSegnums(self):
-#         logging.info('indexing segment type numbers...')
-        # index tags
-        for tag in self.tagset.getAllTags():
-            tagnum = self.tagset.getTagnum4Tag(tag)
-            for p in self.patternsList:
-                segnum = p.tryToMatch(None, tag)
-                if segnum >= 0 and tagnum not in self._tagnum2Segnum:
-                    self._tagnum2Segnum[tagnum] = segnum
-        
-        # index lexemes
-        for p in self.patternsList:
-            if p.lemma:
-                for tag in self.tagset.getAllTags():
-                    tagnum = self.tagset.getTagnum4Tag(tag)
-                    if not (p.lemma, tagnum) in self._lemmaTagnum2Segnum:
-                        segnum = p.tryToMatch(p.lemma, tag)
-                        if segnum != -1:
-                            self._lemmaTagnum2Segnum[(p.lemma, tagnum)] = segnum
-#         logging.info('indexing segment type numbers - done')
-#         self._debugSegnums()
-    
-    def hasSegtype(self, segTypeString):
-        return segTypeString in self.segtype2Segnum
-    
-    def getSegnum4Segtype(self, segTypeString):
-        return self.segtype2Segnum[segTypeString]
-    
-    def lexeme2Segnum(self, lemma, tagnum):
-        lemma = _cutHomonymFromLemma(lemma)
-        res = self._lemmaTagnum2Segnum.get((lemma, tagnum), None)
-        if res is None:
-            res = self._tagnum2Segnum.get(tagnum, None)
+                u'%s already specified' % key,
+                lineNum,
+                key not in res)
+            if key == 'labels':
+                if value:
+                    value = frozenset(value.split(u'|'))
+                else:
+                    value = frozenset()
+            res[key] = value
         return res
 
+    def _parsePattern(self, lineNum, line, withLemma):
+        split = re.split(r'\s+', line.strip())
+        if withLemma:
+            self._validate(
+                u'Line in [lexemes] section must contain 3 to 5 fields - segment type, lemma, tag pattern and optional constraints on name and labels',
+                lineNum,
+                len(split) in [3, 4, 5])
+            segtype = split[0]
+            lemma = split[1]
+            pattern = split[2]
+            additionalConstraints = self._parseAdditionalConstraints(lineNum, split[3:])
+        else:
+            self._validate(
+                u'Line in [tags] section must contain 2 to 4 fields - segment type, tag pattern and optional constraints on name and labels',
+                lineNum,
+                len(split) in [2, 3, 4])
+            segtype = split[0]
+            lemma = None
+            pattern = split[1]
+            additionalConstraints = self._parseAdditionalConstraints(lineNum, split[2:])
+        self._validate(
+            u'Undeclared segment type: "%s"' % segtype,
+            lineNum,
+            segtype in self.segtypes)
+        segnum = self.segtypes.index(segtype)
+
+        self._validate(
+            u'Pattern must contain only ":", "%", "." and lowercase alphanumeric letters',
+            lineNum,
+            re.match(r'[a-z_\.\:\%]+', pattern))
+
+        segtypePattern = SegtypePattern(
+            lemma,
+            pattern,
+            additionalConstraints.get('name', u''),
+            additionalConstraints.get('labels', frozenset()),
+            segnum)
+        # print 'segtypePattern', repr(str(segtypePattern))
+        self._validate(
+            u'There is no tag that matches pattern "%s".' % (pattern),
+            lineNum,
+            any([segtypePattern.tryToMatch(lemma, tag) != -1 for tag in self.tagset.getAllTags()]))
+        self.patternsList.append(segtypePattern)
+
+    def _getAllExistingLabelsnumCombinations(self, labels):
+        if labels:
+            for labelsCombination, labelsnum in self.labelsMap.iteritems():
+                if labels <= labelsCombination:
+                    yield labelsnum
+        else:
+            yield 0
+
+    def _indexOnePattern(self, p):
+
+        for tag in self.tagset.getAllTags():
+            segnum = p.tryToMatch(p.lemma, tag)
+            if segnum != -1:
+                tagnum = self.tagset.getTagnum4Tag(tag)
+                self._segnumsMap.setdefault((p.lemma, tagnum), [])
+                namenum = self.namesMap[p.name]
+                for labelsnum in self._getAllExistingLabelsnumCombinations(p.labels):
+                    self._segnumsMap[(p.lemma, tagnum)].append((namenum, labelsnum, segnum))
+
+    def _indexSegnums(self):
+        logging.info('indexing segment type numbers...')
+
+        # index lexemes
+        for p in self.patternsList:
+            self._indexOnePattern(p)
+
+        # logging.info(self._segnumsMap)
+    
+    def hasSegtype(self, segTypeString):
+        # return segTypeString in self.segtype2Segnum
+        return segTypeString in self.segtypes
+    
+    def getSegnum4Segtype(self, segTypeString):
+        return self.segtypes.index(segTypeString)
+        # return self.segtype2Segnum[segTypeString]
+    
+    def lexeme2Segnum(self, lemma, tagnum, namenum, labelsnum):
+
+        if (lemma, tagnum) in self._segnumsMap:
+            for (n, l, segnum) in self._segnumsMap[(lemma, tagnum)]:
+                if (n, l) == (namenum, labelsnum) \
+                        or (n, l) == (0, 0)\
+                        or (n == 0 and l == labelsnum)\
+                        or (l == 0 and n == namenum):
+                    return segnum
+
+        if not lemma is None:
+            return self.lexeme2Segnum(None, tagnum, namenum, labelsnum)
+        else:
+            assert False
+
     def getMaxSegnum(self):
-        return max(self.segnum2Segtype.keys())
+        return len(self.segtypes) - 1
     
 class SegtypePattern(object):
     
-    def __init__(self, lemma, pattern, segnum):
+    def __init__(self, lemma, pattern, name, labels, segnum):
         self.lemma = _cutHomonymFromLemma(lemma)
         self.pattern = pattern
+        self.name = name
+        self.labels = labels
         self.segnum = segnum
-    
+
     def tryToMatch(self, lemma, tag):
-#         tag2Match = tag + ':' if not tag.endswith(':') else tag
-#         print tag2Match
         patterns2Match = []
         patterns2Match.append(self.pattern.replace('%', '.*'))
         patterns2Match.append(re.sub(r'\:\%$', '', self.pattern).replace('%', '.*'))
-        lemma = _cutHomonymFromLemma(lemma)
-        if (self.lemma is None or self.lemma == lemma) \
-        and any([re.match(p, tag) for p in patterns2Match]):
+        # patterns2Match.append(re.sub(r'$', ':%', self.pattern).replace('%', '.*'))
+        if self.lemma is None:
+            lemma = None
+        if any([re.match('^'+p+'$', tag) for p in patterns2Match]) \
+                and self.lemma == lemma:
             return self.segnum
         else:
-#             print 'NOT match', lemma.encode('utf8') if lemma else '%', tag, self.segnum
             return -1
+
+    def isWildcardPattern(self):
+        return (self.lemma, self.pattern, self.name, self.labels) == (None, '%', u'', frozenset())
+
+    def __str__(self):
+        return u'%s %s %s %s -> %d' % (self.lemma, self.pattern, self.name, self.labels, self.segnum)

@@ -13,8 +13,10 @@ class RulesParser(object):
     PARSE4GENERATOR = 1
     PARSE4ANALYZER = 2
     
-    def __init__(self, tagset, rulesType):
+    def __init__(self, tagset, namesMap, labelsMap, rulesType):
         self.tagset = tagset
+        self.namesMap = namesMap
+        self.labelsMap = labelsMap
         assert rulesType in (RulesParser.PARSE4GENERATOR, RulesParser.PARSE4ANALYZER)
         self.rulesType = rulesType
     
@@ -43,7 +45,7 @@ class RulesParser(object):
                                                     'segment types', 
                                                     'separator chars'])
         key2Defs = self._getKey2Defs(segtypesConfigFile)
-        segtypesHelper = segtypes.Segtypes(self.tagset, segtypesConfigFile)
+        segtypesHelper = segtypes.Segtypes(self.tagset, self.namesMap, self.labelsMap, segtypesConfigFile)
         separatorsList = separatorChars.parseSeparatorChars(segtypesConfigFile) \
             if self.rulesType == RulesParser.PARSE4ANALYZER \
             else []

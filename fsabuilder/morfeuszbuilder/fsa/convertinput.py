@@ -43,6 +43,12 @@ def parseLine(line):
         raise ValueError('input line "%s" does not have 3, 4 or 5 tab-separated fields' % line)
     return orth, base, tag, name, qualifier
 
+def parseQualifiers(string):
+    if string:
+        return frozenset(string.split(u'|'))
+    else:
+        return frozenset()
+
 class PolimorfConverter4Analyzer(object):
     
     def __init__(self, tagset, namesMap, qualifiersMap, encoder, inputEncoding, segmentRulesManager):
@@ -62,9 +68,9 @@ class PolimorfConverter4Analyzer(object):
                 
                 tagnum = self.tagset.getTagnum4Tag(tag)
                 namenum = self.namesMap[name]
-                typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
-                qualifiers = qualifier.split('|') if qualifier else frozenset([u''])
-                qualsnum = self.qualifiersMap[frozenset(qualifiers)]
+                qualifiers = parseQualifiers(qualifier)
+                qualsnum = self.qualifiersMap[qualifiers]
+                typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum, namenum, qualsnum)
 
                 assert not (
                     self.segmentRulesManager.shiftOrthMagic.shouldReplaceLemmaWithOrth(typenum)
@@ -138,9 +144,9 @@ class PolimorfConverter4Generator(object):
                             base, homonymId = assumedBase, assumedHomonymId
                     tagnum = self.tagset.getTagnum4Tag(tag)
                     namenum = self.namesMap[name]
-                    qualifiers = qualifier.split('|') if qualifier else frozenset([u''])
-                    qualsnum = self.qualifiersMap[frozenset(qualifiers)]
-                    typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum)
+                    qualifiers = parseQualifiers(qualifier)
+                    qualsnum = self.qualifiersMap[qualifiers]
+                    typenum = self.segmentRulesManager.lexeme2SegmentTypeNum(base, tagnum, namenum, qualsnum)
 
                     if self.segmentRulesManager.shiftOrthMagic.shouldReplaceLemmaWithOrth(typenum):
                         # print 'replace %s %s %s %d with %s %s %s %d' % (orth, base, tag, typenum, orth, orth, tag, typenum)
