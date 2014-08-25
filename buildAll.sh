@@ -72,7 +72,7 @@ function build {
             $srcDir 2>&1
     else
         echo "setting default ACL to prevent control-file-has-bad-permissions lintian error"
-        setfacl -R -d -m o::r -m g::rx -m u::rwx .
+        setfacl -R -d -m o::rx -m g::rx -m u::rwx .
         
         cmake -D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
             -D CMAKE_TOOLCHAIN_FILE=$toolchain \
