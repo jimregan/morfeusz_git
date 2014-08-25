@@ -128,35 +128,13 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set (CMAKE_EXE_LINKER_FLAGS "-s -Os -static-libstdc++ -static-libgcc")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98")
-    if ("${INSTALL_NAME_TOOL}" STREQUAL "")
+    if (NOT INSTALL_NAME_TOOL)
         set (INSTALL_NAME_TOOL install_name_tool)
     endif ()
     #~ set (CMAKE_INSTALL_NAME_DIR @executable_path)
     #~ set (CMAKE_BUILD_WITH_INSTALL_RPATH ON)
     #~ set (MACOSX_RPATH TRUE)
 endif ()
-
-########## Setup RPATH ##########
-
-# use, i.e. don't skip the full RPATH for the build tree
-#set (CMAKE_SKIP_BUILD_RPATH  FALSE)
-
-# when building, don't use the install RPATH already
-# (but later on when installing)
-set (CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-
-#set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-
-# add the automatically determined parts of the RPATH
-# which point to directories outside the build tree to the install RPATH
-set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-
-# the RPATH to be used when installing, but only if it's not a system directory
-#~ list (FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-#~ if ("${isSystemDir}" STREQUAL "-1")
-   #~ SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-#~ endif ()
 
 ########## Configure CPack ##########
 
