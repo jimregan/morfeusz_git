@@ -60,7 +60,7 @@ function build {
         then
             CPACK_GENERATOR=TGZ
         fi
-        cmake -D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
+        CMAKE_ARGS=-D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
             -D CMAKE_TOOLCHAIN_FILE=$toolchain \
             -D TARGET_DIR=$targetDir \
             -D ANALYZER_DICTIONARY_CPP=$ANALYZER_DICTIONARY_CPP \
@@ -68,13 +68,16 @@ function build {
             -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
             -D EMBEDDED_DEFAULT_DICT=1 \
-            -D CPACK_GENERATOR=$CPACK_GENERATOR \
             $srcDir 2>&1
+        if [ "$CPACK_GENERATOR" != "" ]
+        then
+            CMAKE_ARGS=$CPACK_GENERATOR $CMAKE_ARGS
+        fi
     else
         echo "setting default ACL to prevent control-file-has-bad-permissions lintian error"
         setfacl -R -d -m o::rx -m g::rx -m u::rwx .
         
-        cmake -D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
+        CMAKE_ARGS=-D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
             -D CMAKE_TOOLCHAIN_FILE=$toolchain \
             -D TARGET_DIR=$targetDir \
             -D DEFAULT_DICT_DIR=$DICT_DIR \
