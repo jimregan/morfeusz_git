@@ -67,11 +67,10 @@ function build {
             -D GENERATOR_DICTIONARY_CPP=$GENERATOR_DICTIONARY_CPP \
             -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
-            -D EMBEDDED_DEFAULT_DICT=1 \
-            $srcDir 2>&1
+            -D EMBEDDED_DEFAULT_DICT=1
         if [ "$CPACK_GENERATOR" != "" ]
         then
-            CMAKE_ARGS=$CPACK_GENERATOR $CMAKE_ARGS
+            CMAKE_ARGS=$CMAKE_ARGS -D CPACK_GENERATOR=$CPACK_GENERATOR
         fi
     else
         echo "setting default ACL to prevent control-file-has-bad-permissions lintian error"
@@ -83,9 +82,9 @@ function build {
             -D DEFAULT_DICT_DIR=$DICT_DIR \
             -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
-            -D CPACK_GENERATOR=DEB \
-            $srcDir 2>&1
+            -D CPACK_GENERATOR=DEB
     fi
+    cmake $CMAKE_ARGS $srcDir 2>&1
     echo "building $toolchain" >&2
     make
     make $targets
