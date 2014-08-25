@@ -60,29 +60,29 @@ function build {
         then
             CPACK_GENERATOR=TGZ
         fi
-        CMAKE_ARGS=-D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
+        CMAKE_ARGS="-D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
             -D CMAKE_TOOLCHAIN_FILE=$toolchain \
             -D TARGET_DIR=$targetDir \
             -D ANALYZER_DICTIONARY_CPP=$ANALYZER_DICTIONARY_CPP \
             -D GENERATOR_DICTIONARY_CPP=$GENERATOR_DICTIONARY_CPP \
             -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
-            -D EMBEDDED_DEFAULT_DICT=1
+            -D EMBEDDED_DEFAULT_DICT=1"
         if [ "$CPACK_GENERATOR" != "" ]
         then
-            CMAKE_ARGS=$CMAKE_ARGS -D CPACK_GENERATOR=$CPACK_GENERATOR
+            CMAKE_ARGS="$CMAKE_ARGS -D CPACK_GENERATOR=$CPACK_GENERATOR"
         fi
     else
         echo "setting default ACL to prevent control-file-has-bad-permissions lintian error"
         setfacl -R -d -m o::rx -m g::rx -m u::rwx .
         
-        CMAKE_ARGS=-D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
+        CMAKE_ARGS="-D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
             -D CMAKE_TOOLCHAIN_FILE=$toolchain \
             -D TARGET_DIR=$targetDir \
             -D DEFAULT_DICT_DIR=$DICT_DIR \
             -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
-            -D CPACK_GENERATOR=DEB
+            -D CPACK_GENERATOR=DEB"
     fi
     cmake $CMAKE_ARGS $srcDir 2>&1
     echo "building $toolchain" >&2
