@@ -35,12 +35,14 @@ function build {
     set -e -o pipefail
     os=$1
     arch=$2
+    embedded=$3
+    shift
     shift
     shift
     targets=$@
     
     srcDir=`pwd`
-    buildDir=buildall/$os-$arch
+    buildDir=buildall/$os-$arch-$embedded
     targetDir=$srcDir/target
     toolchain=$srcDir/toolchains/Toolchain-$os-$arch.cmake
     
@@ -51,14 +53,36 @@ function build {
     mkdir -p $buildDir
     mkdir -p $targetDir
     cd $buildDir
-    cmake -D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
-        -D CMAKE_TOOLCHAIN_FILE=$toolchain \
-        -D TARGET_DIR=$targetDir \
-        -D ANALYZER_DICTIONARY_CPP=$ANALYZER_DICTIONARY_CPP \
-        -D GENERATOR_DICTIONARY_CPP=$GENERATOR_DICTIONARY_CPP \
-        -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
-        -D SKIP_DICTIONARY_BUILDING=1 \
-        $srcDir 2>&1
+    
+    if [ "$embedded" = true ]
+    then
+        if [ "$os" == "Linux" ]
+        then
+            CPACK_GENERATOR=TGZ
+        fi
+        cmake -D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
+            -D CMAKE_TOOLCHAIN_FILE=$toolchain \
+            -D TARGET_DIR=$targetDir \
+            -D ANALYZER_DICTIONARY_CPP=$ANALYZER_DICTIONARY_CPP \
+            -D GENERATOR_DICTIONARY_CPP=$GENERATOR_DICTIONARY_CPP \
+            -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
+            -D SKIP_DICTIONARY_BUILDING=1 \
+            -D EMBEDDED_DEFAULT_DICT=1 \
+            -D CPACK_GENERATOR=$CPACK_GENERATOR \
+            $srcDir 2>&1
+    else
+        echo "setting default ACL to prevent control-file-has-bad-permissions lintian error"
+        setfacl -R -d -m o::r -m g::rx -m u::rwx .
+        
+        cmake -D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
+            -D CMAKE_TOOLCHAIN_FILE=$toolchain \
+            -D TARGET_DIR=$targetDir \
+            -D DEFAULT_DICT_DIR=$DICT_DIR \
+            -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
+            -D SKIP_DICTIONARY_BUILDING=1 \
+            -D CPACK_GENERATOR=DEB \
+            $srcDir 2>&1
+    fi
     echo "building $toolchain" >&2
     make
     make $targets
@@ -86,11 +110,13 @@ mkdir -p log
 buildDictionaries 2>&1 | log All all
 
 {
-    echo "build Linux amd64 package package-java package-python package-builder 2>&1 | log Linux amd64"
-    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 package package-java 2>&1 | log Linux i386"
-    echo "build Windows amd64 package package-java 2>&1 | log Windows amd64"
-    echo "build Windows i386 package package-java 2>&1 | log Windows i386"
-    echo "build Darwin amd64 package package-java 2>&1 | log Darwin amd64"
+    echo "build Linux amd64 true package package-java package-python package-builder 2>&1 | log Linux-tgz amd64"
+    echo "build Linux amd64 false package 2>&1 | log Linux-deb amd64"
+    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true package package-java 2>&1 | log Linux-tgz i386"
+    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false package 2>&1 | log Linux-deb i386"
+    echo "build Windows amd64 true package package-java 2>&1 | log Windows amd64"
+    echo "build Windows i386 true package package-java 2>&1 | log Windows i386"
+    echo "build Darwin amd64 true package package-java 2>&1 | log Darwin amd64"
 } | xargs -n1 -P2 -d$'\n' bash -c
 
 

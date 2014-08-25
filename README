@@ -67,6 +67,14 @@ Create packages for target platform:
 
 make package
 
+------------------------------
+Note on building DEB packages:
+------------------------------
+Before running "make package" set default access rights on build directory 
+in order to avoid "control-file-has-bad-permissions" lintian error:
+
+setfacl -R -d -m o::r -m g::rx -m u::rwx .
+
 Create packages with Java bindings for target platform:
 
 make package-java
@@ -108,6 +116,7 @@ DEFAULT_DICT_NAME - default dictionary name
 DEFAULT_DICT_DIR - a directory where dictionaries are read/written to
 SKIP_DICTIONARY_BUILDING - do not build dictionaries. Use the ones provided by DEFAULT_DICT_DIR or ANALYZER/GENERATOR_DICTIONARY_CPP options.
 EMBEDDED_DEFAULT_DICT - embed default dictionary into morfeusz library code (implicitly set for Windows and OSX builds).
+CPACK_GENERATOR - manually set which package type to build (see http://www.cmake.org/Wiki/CMake:CPackPackageGenerators for available options)
 
 CMAKE_INSTALL_PREFIX - where to install morfeusz (on Linux default is /usr/local)
 TARGET_DIR - a dir where packages built by CMake are put in
