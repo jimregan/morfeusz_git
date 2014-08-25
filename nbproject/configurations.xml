@@ -168,9 +168,8 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++98"/>
+        <element flagsID="0" commonFlags="-std=c++98 -O3"/>
         <element flagsID="1" commonFlags="-std=c++98 -O3 -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++98 -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
         <includeAdditional>true</includeAdditional>
@@ -192,7 +191,6 @@
             <pElem>build/fsa</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
@@ -213,7 +211,6 @@
             <pElem>build/fsa</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>NDEBUG</Elem>
             <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
@@ -225,34 +222,12 @@
           </undefinedList>
         </ccTool>
       </item>
-      <item path="build/morfeusz/default_fsa.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>morfeusz</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
-            <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
-          </preprocessorList>
-        </ccTool>
+      <item path="build/morfeusz/default_fsa.cpp" ex="true" tool="3" flavor2="4">
       </item>
       <item path="build/morfeusz/default_synth_fsa.cpp"
-            ex="false"
-            tool="1"
+            ex="true"
+            tool="3"
             flavor2="4">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>morfeusz</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
-            <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="build/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
       </item>
@@ -262,23 +237,16 @@
             flavor2="8">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>/usr/lib/jvm/default-java/include</pElem>
             <pElem>build/morfeusz/java</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>jmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -288,20 +256,12 @@
             flavor2="4">
         <ccTool flags="1">
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>/usr/lib/perl/5.14/CORE</pElem>
             <pElem>build/morfeusz/perl</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>morfeusz_perl_EXPORTS</Elem>
           </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
         </ccTool>
       </item>
       <item path="build/morfeusz/morfeuszPYTHON_wrap.cxx"
@@ -310,23 +270,16 @@
             flavor2="8">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>/usr/include/python2.7</pElem>
             <pElem>build/morfeusz/python</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>_morfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -336,31 +289,18 @@
             flavor2="4">
       </item>
       <item path="build/morfeusz/wrappers/java/swigJAVA.cpp"
-            ex="false"
-            tool="1"
+            ex="true"
+            tool="3"
             flavor2="4">
       </item>
       <item path="build/morfeusz/wrappers/morfeuszPERL_wrap.cxx"
-            ex="false"
-            tool="1"
+            ex="true"
+            tool="3"
             flavor2="4">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>/usr/lib/perl/5.14/CORE</pElem>
-            <pElem>build/morfeusz/wrappers/perl</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>BUILDING_MORFEUSZ</Elem>
-            <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
-            <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
-            <Elem>morfeusz_perl_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="build/morfeusz/wrappers/python/swigPYTHON.cpp"
-            ex="false"
-            tool="1"
+            ex="true"
+            tool="3"
             flavor2="4">
       </item>
       <item path="build1/morfeusz/java/swigJAVA.cpp" ex="false" tool="1" flavor2="4">
@@ -368,35 +308,15 @@
       <item path="default_fsa.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>morfeusz/build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
-          </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
         </ccTool>
       </item>
       <item path="default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>morfeusz/build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
-          </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
         </ccTool>
       </item>
       <folder path="0/c_api">
@@ -409,8 +329,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -425,6 +345,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -439,6 +361,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -453,8 +377,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -469,14 +393,9 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>libmorfeusz_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/deserialization/morphInterps">
-        <ccTool>
-          <preprocessorList>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
@@ -490,8 +409,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -507,6 +426,7 @@
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -640,16 +560,17 @@
           <output>${TESTDIR}/TestFiles/f9</output>
         </linkerTool>
       </folder>
+      <folder path="build">
+        <ccTool>
+          <preprocessorList>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
       <folder path="build/morfeusz">
         <ccTool>
           <incDir>
             <pElem>morfeusz</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="build/morfeusz/wrappers/java">
-        <ccTool>
-          <incDir>
             <pElem>/usr/lib/jvm/default-java/include</pElem>
           </incDir>
           <preprocessorList>
@@ -667,9 +588,6 @@
             <pElem>build</pElem>
             <pElem>/usr/include/python2.7</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="java">
@@ -695,28 +613,30 @@
       </folder>
       <folder path="morfeusz">
         <ccTool>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>libmorfeusz_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="morfeusz/java">
-        <ccTool>
           <incDir>
             <pElem>build</pElem>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
             <pElem>build/fsa</pElem>
-            <pElem>/usr/lib/jvm/default-java/include</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>_OPTIMIZE__=1</Elem>
-            <Elem>libjmorfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
+        </ccTool>
+      </folder>
+      <folder path="morfeusz/java">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/lib/jvm/default-java/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>libjmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="morfeusz/python">
@@ -730,7 +650,7 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -740,12 +660,13 @@
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/Dictionary.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -755,12 +676,13 @@
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/Environment.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -770,12 +692,13 @@
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/IdResolverImpl.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -784,14 +707,14 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/InflexionGraph.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -800,14 +723,14 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/Morfeusz.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -817,12 +740,13 @@
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/MorfeuszImpl.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -832,12 +756,13 @@
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/MorphInterpretation.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -847,12 +772,13 @@
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/ResultsIteratorImpl.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -862,71 +788,54 @@
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
             <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/c_api/ResultsManager.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/case/CaseConverter.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool>
-          <preprocessorList>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/case/CasePatternHelper.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="2">
-          <preprocessorList>
-            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/case/caseconv.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool>
-          <preprocessorList>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/charset/CharsetConverter.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool>
-          <preprocessorList>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/charset/TextReader.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
-          <preprocessorList>
-            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/charset/conversion_tables.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool>
-          <preprocessorList>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -935,8 +844,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -945,43 +854,43 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool>
-          <preprocessorList>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/deserialization/MorphDeserializer.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool>
-          <preprocessorList>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="morfeusz/deserialization/morphInterps/InterpretedChunksDecoder.cpp"
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/deserialization/morphInterps/InterpretedChunksDecoder4Analyzer.cpp"
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/deserialization/morphInterps/InterpretedChunksDecoder4Generator.cpp"
             ex="false"
             tool="1"
             flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/fsa/const.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/morfeusz2_c.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="2">
+        <ccTool flags="1">
           <incDir>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
@@ -990,8 +899,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
@@ -1006,8 +915,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </item>
@@ -1021,14 +930,18 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="morfeusz/segrules/SegrulesFSA.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/test_runner.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="0">
@@ -1040,8 +953,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </item>
@@ -1057,8 +970,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </item>
@@ -1072,8 +985,8 @@
             <Elem>BUILDING_MORFEUSZ</Elem>
             <Elem>MORFEUSZ2_VERSION="2.0.0_dupa"</Elem>
             <Elem>MORFEUSZ_DEFAULT_DICT_NAME="dupa"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH1="/usr/local/share/morfeusz/dictionaries"</Elem>
-            <Elem>MORFEUSZ_DICTIONARY_SEARCH_PATH2="/usr/share/morfeusz/dictionaries"</Elem>
+            <Elem>MORFEUSZ_EMBEDDED_DEFAULT_DICT</Elem>
+            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </item>

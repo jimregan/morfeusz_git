@@ -282,9 +282,7 @@ namespace morfeusz {
                             ic.textStartPtr == reader.getWordStartPtr()
                             ? reader.getChunkStartPtr()
                             : ic.textStartPtr;
-                    ic.chunkEndPtr = (ic.textEndPtr == chunkBounds.wordEndPtr)
-                            ? chunkBounds.wordEndPtr
-                            : ic.textEndPtr;
+                    ic.chunkEndPtr = chunkBounds.chunkEndPtr;
                     interpretedChunksDecoder.decode(srcNode, targetNode, ic, results);
                 }
                 srcNode++;
@@ -292,10 +290,12 @@ namespace morfeusz {
             if (results.size() == initialResultsSize) {
                 this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
             }
-        } else if (env.getProcessorType() == ANALYZER
+        } 
+        else if (env.getProcessorType() == ANALYZER
                 && !insideIgnHandler) {
             this->handleIgnChunk(env, chunkBounds, startNodeNum, results);
-        } else {
+        } 
+        else {
             this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
         }
     }
