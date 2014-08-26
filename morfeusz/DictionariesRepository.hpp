@@ -33,6 +33,7 @@ namespace morfeusz {
     private:
         
         struct RepositoryEntry {
+            RepositoryEntry(): analyzerDictionary(NULL), generatorDictionary(NULL) {}
             Dictionary* analyzerDictionary;
             Dictionary* generatorDictionary;
             Dictionary* getDictionary(MorfeuszProcessorType processorType) const;

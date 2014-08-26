@@ -16,13 +16,12 @@ using namespace std;
 using namespace morfeusz;
 
 int main(int argc, const char** argv) {
-    cerr << "Morfeusz analyzer, version: " << MORFEUSZ2_VERSION << endl;
+    cerr << "Morfeusz analyzer, version: " << Morfeusz::getVersion() << endl;
     ez::ezOptionParser& opt = *getOptions(argc, argv, ANALYZER);
     Morfeusz* morfeusz = initializeMorfeusz(opt, ANALYZER);
     string line;
     vector<MorphInterpretation> res;
     while (getline(cin, line)) {
-//        printf("%s\n", line.c_str());
         res.clear();
         morfeusz->analyse(line, res);
         printMorphResults(*morfeusz, res, true);

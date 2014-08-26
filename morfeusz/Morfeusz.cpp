@@ -8,19 +8,20 @@ namespace morfeusz {
     using namespace std;
 
     string Morfeusz::getVersion() {
-        static string version = MORFEUSZ2_VERSION;
-        return version;
+        //        string version = MORFEUSZ2_VERSION;
+        cerr << "VERSION" << endl;
+        return string(MORFEUSZ2_VERSION);
     }
 
     string Morfeusz::getDefaultDictName() {
-        static string dictName = MORFEUSZ_DEFAULT_DICT_NAME;
-        return dictName;
+        //        string dictName = MORFEUSZ_DEFAULT_DICT_NAME;
+        return string(MORFEUSZ_DEFAULT_DICT_NAME);
     }
 
     Morfeusz* Morfeusz::createInstance(MorfeuszUsage usage) {
         return new MorfeuszImpl(Morfeusz::getDefaultDictName(), usage);
     }
-    
+
     Morfeusz* Morfeusz::createInstance(const std::string& dictName, MorfeuszUsage usage) {
         return new MorfeuszImpl(dictName, usage);
     }

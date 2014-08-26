@@ -276,7 +276,7 @@ namespace morfeusz {
          * List of paths where current Morfeusz instance will look for dictionaries.
          * Modifying it is NOT THREAD-SAFE.
          */
-        static std::vector<std::string>& getDictionarySearchPaths();
+        static std::list<std::string> dictionarySearchPaths;
 
         /**
          * Get available parameters for "setAggl" method.

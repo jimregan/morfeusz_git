@@ -19,8 +19,8 @@ namespace morfeusz {
     using namespace std;
 
     DictionariesRepository& DictionariesRepository::getInstance() {
-        static DictionariesRepository res;
-        return res;
+        static DictionariesRepository* res = new DictionariesRepository();
+        return *res;
     }
 
     string DictionariesRepository::getDictionaryFilename(const std::string& name, MorfeuszProcessorType processorType) {

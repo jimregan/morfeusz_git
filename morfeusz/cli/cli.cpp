@@ -121,9 +121,9 @@ namespace morfeusz {
                     1, // Number of args expected.
                     0, // Delimiter if expecting multiple args.
                     "whitespace handling strategy.\n \
-SKIP_WHITESPACES - ignore whitespaces\n \
-APPEND_WHITESPACES - append whitespaces to preceding segment\n\
-KEEP_WHITESPACES - whitespaces are separate segments\n", // Help description.
+* SKIP_WHITESPACES - ignore whitespaces\n \
+* APPEND_WHITESPACES - append whitespaces to preceding segment\n\
+* KEEP_WHITESPACES - whitespaces are separate segments\n", // Help description.
                     //                    "-whitespace-handling", // Flag token.
                     "--whitespace-handling" // Flag token.
                     );

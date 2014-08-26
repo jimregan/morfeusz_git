@@ -30,8 +30,6 @@ namespace morfeusz {
     template <class T>
     inline static const T& getFromMap(map<string, T> string2T, const string& key, const char* errMsg) {
         if (string2T.count(key) != 0) {
-//            map<string, T>::const_iterator it;
-//            it = string2T.find(key);
             return string2T.find(key)->second;
         }
         else {
@@ -90,21 +88,12 @@ namespace morfeusz {
         convertCharset(charsetConverter, this->tags);
         convertCharset(charsetConverter, this->names);
         convertCharset(charsetConverter, this->labels);
-//        for (unsigned int i = 0; i < tags.id2String.size(); i++) {
-//            tags.id2String[i] = charsetConverter->fromUTF8(
-//                    this->charsetConverter->toUTF8(tags[i]));
-//        }
-//
-//        for (unsigned int j = 0; j < names.id2String.size(); j++) {
-//            names[j] = charsetConverter->fromUTF8(
-//                    this->charsetConverter->toUTF8(names[j]));
-//        }
 
         this->charsetConverter = charsetConverter;
     }
     
     const string IdResolverImpl::getTagsetId() const {
-        
+        return this->tagsetId;
     }
 
     const string& IdResolverImpl::getTag(const int tagId) const {

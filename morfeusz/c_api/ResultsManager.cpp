@@ -21,7 +21,7 @@ namespace morfeusz {
     }
 
     ResultsManager::~ResultsManager() {
-        delete results;
+        delete[] results;
     }
 
     InterpMorf* ResultsManager::convertResults(const std::vector<MorphInterpretation>& res) {

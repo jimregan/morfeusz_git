@@ -9,6 +9,7 @@
 #define	INTERPSGROUP_HPP
 
 #include <stdint.h>
+#include <stddef.h>
 
 namespace morfeusz {
 

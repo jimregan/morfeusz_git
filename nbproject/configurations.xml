@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="94">
+<configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="build"
                    displayName="build"
@@ -794,45 +794,29 @@
         </ccTool>
       </item>
       <item path="morfeusz/c_api/ResultsManager.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/case/CaseConverter.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/case/CasePatternHelper.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/case/caseconv.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/charset/CharsetConverter.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/charset/TextReader.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/charset/conversion_tables.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
@@ -854,40 +838,28 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/deserialization/MorphDeserializer.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/deserialization/morphInterps/InterpretedChunksDecoder.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/deserialization/morphInterps/InterpretedChunksDecoder4Analyzer.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/deserialization/morphInterps/InterpretedChunksDecoder4Generator.cpp"
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/fsa/const.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/morfeusz2_c.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
@@ -936,12 +908,8 @@
         </ccTool>
       </item>
       <item path="morfeusz/segrules/SegrulesFSA.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/segrules/segrules.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="morfeusz/test_runner.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="0">
