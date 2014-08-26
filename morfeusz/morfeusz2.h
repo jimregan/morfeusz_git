@@ -276,7 +276,7 @@ namespace morfeusz {
          * List of paths where current Morfeusz instance will look for dictionaries.
          * Modifying it is NOT THREAD-SAFE.
          */
-        static std::list<std::string> dictionarySearchPaths;
+        static std::vector<std::string>& getDictionarySearchPaths();
 
         /**
          * Get available parameters for "setAggl" method.
@@ -441,6 +441,10 @@ namespace morfeusz {
      * One MorphInterpretation instance describes one edge of this DAG.
      */
     struct DLLIMPORT MorphInterpretation {
+        
+        MorphInterpretation()
+        : startNode(0), endNode(0), orth(), lemma(), tagId(0), nameId(0), labelsId(0) {}
+        
         /**
          * Creates new instance with "ign" tag (meaning: "not found in the dictionary")
          */
