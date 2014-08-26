@@ -8,15 +8,6 @@ using namespace std;
 
 namespace morfeusz {
 
-    SegrulesState SegrulesState::FAILED_STATE = {
-        0, // offset
-        false, // accepting
-        false, // weak
-        false, // shift orth
-        true, // sink
-        true, // failed
-    };
-
     void SegrulesFSA::proceedToNext(
             const unsigned char segnum,
             const SegrulesState& state,
@@ -75,7 +66,7 @@ namespace morfeusz {
     }
 
     vector< SegrulesState > SegrulesFSA::createInitialTransitionsVector() {
-        vector< SegrulesState > res(256, SegrulesState::FAILED_STATE);
+        vector< SegrulesState > res(256, SegrulesState());
         const unsigned char* currPtr = ptr + initialState.offset + 1;
         const unsigned char transitionsNum = *currPtr++;
         for (int i = 0; i < transitionsNum; i++) {

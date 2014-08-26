@@ -22,7 +22,7 @@ struct SegrulesState {
     bool sink;
     bool failed;
     
-    static SegrulesState FAILED_STATE;
+    SegrulesState() : offset(0), accepting(false), weak(false), shiftOrthFromPrevious(false), sink(true), failed(true) {}
 };
 
 inline bool operator<(const SegrulesState& s1, const SegrulesState& s2) {
@@ -33,7 +33,12 @@ class SegrulesFSA {
 public:
 
     SegrulesFSA(const unsigned char* ptr) : initialState(), ptr(ptr), initialTransitions() {
-        SegrulesState state = {0, false, false, false, false, false};
+        SegrulesState state;
+        state.accepting = false;
+        state.weak = false;
+        state.shiftOrthFromPrevious = false;
+        state.sink = false;
+        state.failed = false;
         initialState = state;
         initialTransitions = createInitialTransitionsVector();
     }

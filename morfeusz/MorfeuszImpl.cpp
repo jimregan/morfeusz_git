@@ -150,7 +150,8 @@ namespace morfeusz {
                 if (analyzerDict->isCompatibleWith(*generatorDict)) {
                     analyzerEnv.setDictionary(analyzerDict);
                     generatorEnv.setDictionary(generatorDict);
-                } else {
+                } 
+                else {
                     throw MorfeuszException("Analyzer and generator dictionaries are incompatible");
                 }
             }
@@ -313,10 +314,10 @@ namespace morfeusz {
 //        vector<SegrulesState> newSegrulesStates;
         while (!reader.isAtWhitespace()) {
             feedState(env, state, reader);
-            reader.next();
             if (state.isSink()) {
                 return;
             }
+            reader.next();
             if (env.getProcessorType() == GENERATOR && reader.getCurrPtr() != reader.getEndPtr() && reader.peek() == (uint32_t) HOMONYM_SEPARATOR) {
                 homonymId = env.getCharsetConverter().fromUTF8(string(reader.getCurrPtr() + 1, reader.getEndPtr()));
                 reader.proceedToEnd();
@@ -342,7 +343,7 @@ namespace morfeusz {
         }
         bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
         if (caseMatches || options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
-            SegrulesState newSegrulesState = SegrulesState::FAILED_STATE;
+            SegrulesState newSegrulesState;
             env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace, newSegrulesState);
             if (!newSegrulesState.failed) {
                 InterpretedChunk ic(
@@ -411,7 +412,7 @@ namespace morfeusz {
             int startNodeNum,
             std::vector<MorphInterpretation>& results) const {
         const char* currInput = chunkBounds.chunkStartPtr;
-        const char* prevInput;
+        const char* prevInput = currInput;
         uint32_t codepoint = 0x00;
         bool separatorFound = false;
         while (currInput != chunkBounds.chunkEndPtr) {
