@@ -16,7 +16,7 @@
 namespace morfeusz {
 
 static inline std::vector<char> initializeWhitespaces() {
-    std::vector<char> res(0x3000, false);
+    std::vector<char> res(0x3000 + 1, false);
     res[0x0000] = true; // NULL
     res[0x0009] = true; // CHARACTER TABULATION
     res[0x000A] = true; // LINE FEED (LF)
