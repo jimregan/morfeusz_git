@@ -34,9 +34,6 @@ namespace morfeusz {
 
     enum Charset {
         UTF8 = 11,
-        //    UTF16LE,
-        //    UTF16BE,
-        //    UTF32,
         ISO8859_2 = 12,
         CP1250 = 13,
         CP852 = 14
@@ -44,7 +41,7 @@ namespace morfeusz {
 
     enum TokenNumbering {
         /**
-         * Start from 0. Reset counter for every invocation of Morfeusz::analyze
+         * Start from 0. Reset counter for every invocation of Morfeusz::analyze (this is default)
          */
         SEPARATE_NUMBERING = 201,
 
@@ -56,7 +53,7 @@ namespace morfeusz {
     
     enum CaseHandling {
         /**
-         * Case-sensitive but allows interpretations that do not match case but there are no alternatives
+         * Case-sensitive but allows interpretations that do not match case but there are no alternatives (this is default)
          */
         CONDITIONALLY_CASE_SENSITIVE = 100,
 
@@ -73,7 +70,7 @@ namespace morfeusz {
 
     enum WhitespaceHandling {
         /**
-         * Ignore whitespaces
+         * Ignore whitespaces (this is default)
          */
         SKIP_WHITESPACES = 301,
 
@@ -210,7 +207,7 @@ namespace morfeusz {
         virtual Charset getCharset() const = 0;
 
         /**
-         * Select agglutination rules
+         * Select agglutination rules.
          * 
          * @param aggl
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
