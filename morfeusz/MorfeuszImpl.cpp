@@ -571,15 +571,27 @@ namespace morfeusz {
         this->analyzerEnv.setCharset(charset);
         this->generatorEnv.setCharset(charset);
     }
+    
+    Charset MorfeuszImpl::getCharset() const {
+        return this->options.encoding;
+    }
 
     void MorfeuszImpl::setAggl(const std::string& aggl) {
         this->analyzerEnv.setSegrulesOption("aggl", aggl);
         this->generatorEnv.setSegrulesOption("aggl", aggl);
     }
+    
+    string MorfeuszImpl::getAggl() const {
+        return getAnyEnvironment().getSegrulesOption("aggl");
+    }
 
     void MorfeuszImpl::setPraet(const std::string& praet) {
         this->analyzerEnv.setSegrulesOption("praet", praet);
         this->generatorEnv.setSegrulesOption("praet", praet);
+    }
+    
+    string MorfeuszImpl::getPraet() const {
+        return getAnyEnvironment().getSegrulesOption("praet");
     }
 
     void MorfeuszImpl::setCaseHandling(CaseHandling caseHandling) {
@@ -594,6 +606,10 @@ namespace morfeusz {
         this->options.caseHandling = caseHandling;
         this->analyzerEnv.setCaseSensitive(caseHandling != IGNORE_CASE);
     }
+    
+    CaseHandling MorfeuszImpl::getCaseHandling() const {
+        return this->options.caseHandling;
+    }
 
     void MorfeuszImpl::setTokenNumbering(TokenNumbering tokenNumbering) {
         switch (tokenNumbering) {
@@ -606,6 +622,10 @@ namespace morfeusz {
         this->options.tokenNumbering = tokenNumbering;
         nextNodeNum = 0;
     }
+    
+    TokenNumbering MorfeuszImpl::getTokenNumbering() const {
+        return this->options.tokenNumbering;
+    }
 
     void MorfeuszImpl::setWhitespaceHandling(WhitespaceHandling whitespaceHandling) {
         switch (whitespaceHandling) {
@@ -617,6 +637,10 @@ namespace morfeusz {
                 throw std::invalid_argument("Invalid whitespaceHandling option");
         }
         this->options.whitespaceHandling = whitespaceHandling;
+    }
+    
+    WhitespaceHandling MorfeuszImpl::getWhitespaceHandling() const {
+        return this->options.whitespaceHandling;
     }
 
     void MorfeuszImpl::setDebug(bool debug) {

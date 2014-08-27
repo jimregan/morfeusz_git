@@ -67,16 +67,28 @@ namespace morfeusz {
         void generate(const std::string& lemma, int tagId, std::vector<MorphInterpretation>& result) const;
 
         void setCharset(Charset encoding);
+        
+        Charset getCharset() const;
 
         void setAggl(const std::string& aggl);
+        
+        std::string getAggl() const;
 
         void setPraet(const std::string& praet);
+        
+        std::string getPraet() const;
 
         void setCaseHandling(CaseHandling caseHandling);
+        
+        CaseHandling getCaseHandling() const;
 
         void setTokenNumbering(TokenNumbering tokenNumbering);
         
+        TokenNumbering getTokenNumbering() const;
+        
         void setWhitespaceHandling(WhitespaceHandling whitespaceHandling);
+        
+        WhitespaceHandling getWhitespaceHandling() const;
         
         void setDebug(bool debug);
 

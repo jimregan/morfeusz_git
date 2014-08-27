@@ -32,7 +32,7 @@ void TestMorfeusz::setUp() {
 
 void TestMorfeusz::tearDown() {
     cerr << "TEAR DOWN" << endl;
-//    delete morfeusz;
+    //    delete morfeusz;
 }
 
 void TestMorfeusz::testAnalyzeIterate1() {
@@ -51,25 +51,25 @@ void TestMorfeusz::testAnalyzeIterateWithWhitespaceHandlingKEEP() {
     cerr << "testAnalyzeIterateWithWhitespaceHandlingKEEP" << endl;
     morfeusz->setWhitespaceHandling(KEEP_WHITESPACES);
     ResultsIterator* it = morfeusz->analyse(" AAAAbbbbCCCC  DDDDeeee.\t");
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string(" "), it->next().orth);
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string("AAAAbbbbCCCC"), it->next().orth);
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string("  "), it->next().orth);
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string("DDDDeeee"), it->next().orth);
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string("."), it->next().orth);
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string("\t"), it->next().orth);
-    
+
     CPPUNIT_ASSERT(!it->hasNext());
     CPPUNIT_ASSERT_THROW(it->peek(), std::out_of_range);
     CPPUNIT_ASSERT_THROW(it->next(), std::out_of_range);
@@ -80,16 +80,16 @@ void TestMorfeusz::testAnalyzeIterateWithWhitespaceHandlingAPPEND() {
     cerr << "testAnalyzeIterateWithWhitespaceHandlingAPPEND" << endl;
     morfeusz->setWhitespaceHandling(APPEND_WHITESPACES);
     ResultsIterator* it = morfeusz->analyse(" AAAAbbbbCCCC  DDDDeeee.\t");
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string(" AAAAbbbbCCCC  "), it->next().orth);
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string("DDDDeeee"), it->next().orth);
-    
+
     CPPUNIT_ASSERT(it->hasNext());
     CPPUNIT_ASSERT_EQUAL(string(".\t"), it->next().orth);
-    
+
     CPPUNIT_ASSERT(!it->hasNext());
     CPPUNIT_ASSERT_THROW(it->peek(), std::out_of_range);
     CPPUNIT_ASSERT_THROW(it->next(), std::out_of_range);
@@ -124,8 +124,8 @@ void TestMorfeusz::testOpenInvalidDict() {
 }
 
 void TestMorfeusz::testOpenNonExistentDict() {
-//    cerr << "testOpenNonExistentFile" << endl;
-//    string filename(tmpnam(NULL));
+    //    cerr << "testOpenNonExistentFile" << endl;
+    //    string filename(tmpnam(NULL));
     CPPUNIT_ASSERT_THROW(morfeusz->setDictionary("asdfasdfa"), MorfeuszException);
 }
 
@@ -174,4 +174,17 @@ void TestMorfeusz::testWhitespaceHandlingAPPEND() {
     CPPUNIT_ASSERT_EQUAL(string("DDDDeeee\t"), res[1].orth);
     CPPUNIT_ASSERT_EQUAL(string("DDDDeeee"), res[1].lemma);
     CPPUNIT_ASSERT_EQUAL(0, res[1].tagId);
+}
+
+void TestMorfeusz::testDefaultWhitespaceHandling() {
+    CPPUNIT_ASSERT_EQUAL(morfeusz::SKIP_WHITESPACES, morfeusz->getWhitespaceHandling());
+}
+
+void TestMorfeusz::testDefaultCaseHandling() {
+    CPPUNIT_ASSERT_EQUAL(morfeusz::CONDITIONALLY_CASE_SENSITIVE, morfeusz->getCaseHandling());
+    
+}
+void TestMorfeusz::testDefaultTokenNumbering() {
+    CPPUNIT_ASSERT_EQUAL(morfeusz::SEPARATE_NUMBERING, morfeusz->getTokenNumbering());
+    
 }

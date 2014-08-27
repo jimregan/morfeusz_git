@@ -9,13 +9,111 @@ using namespace ez;
 
 namespace morfeusz {
 
-    static inline void printCLIUsage(ezOptionParser& opt, ostream& out) {
+    static Charset DEFAULT_CHARSET4CONSOLE =
+#if defined(_WIN64) || defined(_WIN32)
+            CP852;
+#else
+            UTF8;
+#endif
+
+    static inline void printCLIUsage(int argc, const char** argv, MorfeuszProcessorType processorType, ezOptionParser& opt, ostream& out) {
         string usage;
         opt.getUsage(usage);
         out << usage;
     }
 
-    ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType processorType) {
+    static inline void setDictionarySearchPaths(ezOptionParser& opt, bool showOutput) {
+        if (opt.isSet("--dict-dir")) {
+            string dictDir;
+            opt.get("--dict-dir")->getString(dictDir);
+            //            Morfeusz::dictionarySearchPaths.clear();
+            Morfeusz::dictionarySearchPaths.push_front(dictDir);
+            if (showOutput) 
+                cerr << "Setting dictionary search path to: " << dictDir << endl;
+        } else {
+            Morfeusz::dictionarySearchPaths.push_front(".");
+            if (showOutput) 
+                cerr << "Setting dictionary search path to: ." << endl;
+        }
+    }
+
+    static inline string getDictName(ezOptionParser& opt, bool showOutput) {
+        string dictName;
+        if (opt.isSet("-d")) {
+            opt.get("-d")->getString(dictName);
+            if (showOutput) 
+                cerr << "Using dictionary: " << dictName << endl;
+        } else {
+            dictName = Morfeusz::getDefaultDictName();
+            if (showOutput) 
+                cerr << "Using dictionary: " << dictName << " (default)" << endl;
+        }
+        return dictName;
+    }
+
+    static Morfeusz* getMorfeusz4Help(int argc, const char** argv, MorfeuszProcessorType processorType) {
+        ezOptionParser* opt = new ezOptionParser();
+        opt->add(
+                "", // Default.
+                0, // Required?
+                1, // Number of args expected.
+                0, // Delimiter if expecting multiple args.
+                "dictionary name\n", // Help description.
+                "-d", // Flag token. 
+                //                "-dict", // Flag token.
+                "--dict" // Flag token.
+                );
+
+        opt->add(
+                "", // Default.
+                0, // Required?
+                1, // Number of args expected.
+                0, // Delimiter if expecting multiple args.
+                "directory containing the dictionary (default is current dir)\n", // Help description.
+                //                "-dict-dir", // Flag token. 
+                "--dict-dir" // Flag token.
+                );
+        string dictName = Morfeusz::getDefaultDictName();
+        opt->parse(argc, argv);
+        setDictionarySearchPaths(*opt, false);
+        dictName = getDictName(*opt, false);
+        delete opt;
+        Morfeusz* morfeusz = Morfeusz::createInstance(
+                dictName,
+                processorType == ANALYZER
+                ? ANALYSE_ONLY
+                : GENERATE_ONLY);
+        morfeusz->setDictionary(dictName);
+        return morfeusz;
+    }
+
+    static string getOptionsString(const set<string>& opts, const string& defaultOpt) {
+        string res;
+        for (set<string>::const_iterator it = opts.begin(); it != opts.end(); ++it) {
+            res += " * " + *it;
+            if (*it == defaultOpt) {
+                res += " (default)";
+            }
+            res += "\n";
+        }
+        return res;
+    }
+
+    static const char* getPraetOptionsString(int argc, const char** argv, MorfeuszProcessorType processorType) {
+        Morfeusz* morfeusz = getMorfeusz4Help(argc, argv, processorType);
+        string res = "select past tense segmentation (provide --dict and optionally --dict-dir options to see values for given custom dictionary):\n";
+        res += getOptionsString(morfeusz->getAvailablePraetOptions(), morfeusz->getPraet());
+        return (new string(res))->c_str();
+    }
+
+    static const char* getAgglOptionsString(int argc, const char** argv, MorfeuszProcessorType processorType) {
+        Morfeusz* morfeusz = getMorfeusz4Help(argc, argv, processorType);
+        string res = "select agglutination rules (provide --dict and optionally --dict-dir options to see values for given custom dictionary):\n";
+        res += getOptionsString(morfeusz->getAvailableAgglOptions(), morfeusz->getAggl());
+        return (new string(res))->c_str();
+    }
+
+    static ezOptionParser* doGetOptions(int argc, const char** argv, MorfeuszProcessorType processorType) {
 
         ezOptionParser& opt = *(new ezOptionParser());
 
@@ -53,7 +151,7 @@ namespace morfeusz {
                 0, // Required?
                 1, // Number of args expected.
                 0, // Delimiter if expecting multiple args.
-                "directory containing the dictionary (optional)\n", // Help description.
+                "directory containing the dictionary (default is current dir)\n", // Help description.
                 //                "-dict-dir", // Flag token. 
                 "--dict-dir" // Flag token.
                 );
@@ -63,7 +161,7 @@ namespace morfeusz {
                 0, // Required?
                 1, // Number of args expected.
                 0, // Delimiter if expecting multiple args.
-                "select agglutination rules\n", // Help description.
+                getAgglOptionsString(argc, argv, processorType), // Help description.
                 "-a", // Flag token. 
                 //                "-aggl", // Flag token.
                 "--aggl" // Flag token.
@@ -74,7 +172,7 @@ namespace morfeusz {
                 0, // Required?
                 1, // Number of args expected.
                 0, // Delimiter if expecting multiple args.
-                "select past tense segmentation\n", // Help description.
+                getPraetOptionsString(argc, argv, processorType), // Help description.
                 "-p", // Flag token. 
                 //                "-praet", // Flag token.
                 "--praet" // Flag token.
@@ -85,7 +183,9 @@ namespace morfeusz {
                 0, // Required?
                 1, // Number of args expected.
                 0, // Delimiter if expecting multiple args.
-                "input/output charset (UTF8, ISO8859_2, CP1250, CP852)\n", // Help description.
+                DEFAULT_CHARSET4CONSOLE == CP852
+                ? "input/output charset:\n * UTF8\n * ISO8859_2\n * CP1250\n * CP852 (default)\n"
+                : "input/output charset:\n * UTF8 (default)\n * ISO8859_2\n * CP1250\n * CP852\n", // Help description.
                 "-c", // Flag token. 
                 //                "-charset", // Flag token.
                 "--charset" // Flag token.
@@ -98,9 +198,9 @@ namespace morfeusz {
                     1, // Number of args expected.
                     0, // Delimiter if expecting multiple args.
                     "case handling strategy\n\
-* CONDITIONALLY_CASE_SENSITIVE - Case-sensitive but allows interpretations that do not match case when there is no alternative\n\
-* STRICTLY_CASE_SENSITIVE - strictly case-sensitive\n\
-* IGNORE_CASE - ignores case\n", // Help description.
+ * CONDITIONALLY_CASE_SENSITIVE (default) - Case-sensitive but allows interpretations that do not match case when there is no alternative\n\
+ * STRICTLY_CASE_SENSITIVE - strictly case-sensitive\n\
+ * IGNORE_CASE - ignores case\n", // Help description.
                     //                    "-case-handling", // Flag token.
                     "--case-handling" // Flag token.
                     );
@@ -110,8 +210,8 @@ namespace morfeusz {
                     1, // Number of args expected.
                     0, // Delimiter if expecting multiple args.
                     "token numbering strategy\n\
-* SEPARATE_NUMBERING - Start from 0 and reset counter for every line\n\
-* CONTINUOUS_NUMBERING - start from 0 and never reset counter\n", // Help description.
+ * SEPARATE_NUMBERING (default) - Start from 0 and reset counter for every line\n\
+ * CONTINUOUS_NUMBERING - start from 0 and never reset counter\n", // Help description.
                     //                    "-token-numbering", // Flag token.
                     "--token-numbering" // Flag token.
                     );
@@ -120,10 +220,10 @@ namespace morfeusz {
                     0, // Required?
                     1, // Number of args expected.
                     0, // Delimiter if expecting multiple args.
-                    "whitespace handling strategy.\n \
-* SKIP_WHITESPACES - ignore whitespaces\n \
-* APPEND_WHITESPACES - append whitespaces to preceding segment\n\
-* KEEP_WHITESPACES - whitespaces are separate segments\n", // Help description.
+                    "whitespace handling strategy.\n\
+ * SKIP_WHITESPACES (default) - ignore whitespaces\n\
+ * APPEND_WHITESPACES - append whitespaces to preceding segment\n\
+ * KEEP_WHITESPACES - whitespaces are separate segments\n", // Help description.
                     //                    "-whitespace-handling", // Flag token.
                     "--whitespace-handling" // Flag token.
                     );
@@ -153,10 +253,14 @@ namespace morfeusz {
 
 
         if (opt.isSet("-h")) {
-            printCLIUsage(opt, cout);
+            printCLIUsage(argc, argv, processorType, opt, cout);
             exit(0);
         }
         return &opt;
+    }
+
+    ezOptionParser* getOptions(int argc, const char** argv, MorfeuszProcessorType processorType) {
+        return doGetOptions(argc, argv, processorType);
     }
 
     static Charset getCharset(const string& encodingStr) {
@@ -212,26 +316,9 @@ namespace morfeusz {
     }
 
     Morfeusz* initializeMorfeusz(ezOptionParser& opt, MorfeuszProcessorType processorType) {
-        if (opt.isSet("--dict-dir")) {
-            string dictDir;
-            opt.get("--dict-dir")->getString(dictDir);
-            //            Morfeusz::dictionarySearchPaths.clear();
-            Morfeusz::dictionarySearchPaths.push_front(dictDir);
-            cerr << "Setting dictionary search path to: " << dictDir << endl;
-        } else {
-            Morfeusz::dictionarySearchPaths.push_front(".");
-            cerr << "Setting dictionary search path to: ." << endl;
-        }
 
-        string dictName;
-        if (opt.isSet("-d")) {
-            opt.get("-d")->getString(dictName);
-            cerr << "Using dictionary: " << dictName << endl;
-        }
-        else {
-            dictName = Morfeusz::getDefaultDictName();
-            cerr << "Using dictionary: " << dictName << " (default)" << endl;
-        }
+        setDictionarySearchPaths(opt, true);
+        string dictName(getDictName(opt, true));
 
         Morfeusz& morfeusz = *Morfeusz::createInstance(dictName, processorType == ANALYZER ? ANALYSE_ONLY : GENERATE_ONLY);
         try {
@@ -280,10 +367,7 @@ namespace morfeusz {
                     morfeusz.setWhitespaceHandling(getWhitespaceHandling(whitespaceHandling));
                 }
             }
-
-#if defined(_WIN64) || defined(_WIN32)
-            morfeusz.setCharset(CP852);
-#endif
+            morfeusz.setCharset(DEFAULT_CHARSET4CONSOLE);
             return &morfeusz;
         } catch (const MorfeuszException& ex) {
             cerr << "Failed to start Morfeusz: " << ex.what() << endl;

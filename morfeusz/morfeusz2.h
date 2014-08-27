@@ -202,6 +202,12 @@ namespace morfeusz {
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setCharset(Charset encoding) = 0;
+        
+        /**
+         * Get charset used for input and output string objects.
+         * @return 
+         */
+        virtual Charset getCharset() const = 0;
 
         /**
          * Select agglutination rules
@@ -211,6 +217,12 @@ namespace morfeusz {
          * @throws MorfeuszException - for invalid aggl parameter.
          */
         virtual void setAggl(const std::string& aggl) = 0;
+        
+        /**
+         * Get current agglutination rules option
+         * @return 
+         */
+        virtual std::string getAggl() const = 0;
 
         /**
          * Select past tense segmentation
@@ -220,6 +232,12 @@ namespace morfeusz {
          * @throws MorfeuszException - for invalid aggl praet parameter.
          */
         virtual void setPraet(const std::string& praet) = 0;
+        
+        /**
+         * Get current past tense segmentation option
+         * @return 
+         */
+        virtual std::string getPraet() const = 0;
 
         /**
          * Set case handling.
@@ -228,6 +246,12 @@ namespace morfeusz {
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setCaseHandling(CaseHandling caseHandling) = 0;
+        
+        /**
+         * Get case handling policy.
+         * @return 
+         */
+        virtual CaseHandling getCaseHandling() const = 0;
 
         /**
          * Set token numbering policy.
@@ -236,6 +260,12 @@ namespace morfeusz {
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setTokenNumbering(TokenNumbering numbering) = 0;
+        
+        /**
+         * Get token numbering policy.
+         * @return 
+         */
+        virtual TokenNumbering getTokenNumbering() const = 0;
 
         /**
          * Set whitespace handling.
@@ -244,6 +274,12 @@ namespace morfeusz {
          * @remarks NOT THREAD-SAFE (must have exclusive access to this instance. Does not affect other Morfeusz instances).
          */
         virtual void setWhitespaceHandling(WhitespaceHandling whitespaceHandling) = 0;
+        
+        /**
+         * Get whitespace handling.
+         * @return 
+         */
+        virtual WhitespaceHandling getWhitespaceHandling() const = 0;
 
         /**
          * Set debug option value.

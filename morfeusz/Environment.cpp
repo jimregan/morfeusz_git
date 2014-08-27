@@ -102,6 +102,13 @@ namespace morfeusz {
             this->currSegrulesFSA = this->dictionary->segrulesFSAsMap.find(this->currSegrulesOptions)->second;
         }
     }
+    
+    string Environment::getSegrulesOption(const std::string& option) const {
+        if (this->currSegrulesOptions.find(option) == this->currSegrulesOptions.end()) {
+                throw MorfeuszException("Invalid segmentation option '" + option + "'");
+            }
+        return this->currSegrulesOptions.find(option)->second;
+    }
 
     MorfeuszProcessorType Environment::getProcessorType() const {
         return this->processorType;

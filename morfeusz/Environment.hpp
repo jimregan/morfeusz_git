@@ -105,6 +105,14 @@ public:
     void setSegrulesOption(const std::string& option, const std::string& value);
     
     /**
+     * Gets current segmentation rules option.
+     * 
+     * @param option
+     * @param value
+     */
+    std::string getSegrulesOption(const std::string& option) const;
+    
+    /**
      * Gets segmentation rules automaton.
      * 
      * @return 

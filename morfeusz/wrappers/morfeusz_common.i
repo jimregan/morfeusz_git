@@ -4,6 +4,7 @@ namespace morfeusz {
     %ignore Morfeusz::analyse(const char*) const;
     %ignore Morfeusz::analyse(const std::string&) const;
     %ignore Morfeusz::setCharset(Charset);
+    %ignore Morfeusz::getCharset() const;
     %ignore Morfeusz::setDebug(bool);
     %ignore Charset;
     

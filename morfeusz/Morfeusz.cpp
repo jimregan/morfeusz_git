@@ -8,13 +8,10 @@ namespace morfeusz {
     using namespace std;
 
     string Morfeusz::getVersion() {
-        //        string version = MORFEUSZ2_VERSION;
-        cerr << "VERSION" << endl;
         return string(MORFEUSZ2_VERSION);
     }
 
     string Morfeusz::getDefaultDictName() {
-        //        string dictName = MORFEUSZ_DEFAULT_DICT_NAME;
         return string(MORFEUSZ_DEFAULT_DICT_NAME);
     }
 

@@ -25,6 +25,9 @@ class TestMorfeusz : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST(testSetInvalidPraetOption);
     CPPUNIT_TEST(testWhitespaceHandlingKEEP);
     CPPUNIT_TEST(testWhitespaceHandlingAPPEND);
+    CPPUNIT_TEST(testDefaultWhitespaceHandling);
+    CPPUNIT_TEST(testDefaultCaseHandling);
+    CPPUNIT_TEST(testDefaultTokenNumbering);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -45,6 +48,9 @@ private:
     void testSetInvalidPraetOption();
     void testWhitespaceHandlingKEEP();
     void testWhitespaceHandlingAPPEND();
+    void testDefaultWhitespaceHandling();
+    void testDefaultCaseHandling();
+    void testDefaultTokenNumbering();
     
     morfeusz::Morfeusz* morfeusz;
 };

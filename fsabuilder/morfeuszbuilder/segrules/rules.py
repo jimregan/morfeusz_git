@@ -198,7 +198,7 @@ class ConcatRule(ComplexRule):
                 raise ConfigFileException(
                     filename,
                     self.linenum,
-                    u'If the rightmost subrule of concatenation "%s" is with ">", than all rules must be with ">"' % str(self))
+                    u'If the rightmost subrule of concatenation "%s" is with ">", than all subrules must be with ">"' % str(self))
 
 class OrRule(ComplexRule):
     
