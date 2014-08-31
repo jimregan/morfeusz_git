@@ -25,7 +25,8 @@ static const unsigned char FIRST_BYTE_OFFSET_MASK = 0x1F; // 0b00011111;
 
 template <class T>
 std::vector<unsigned char> CompressedFSA2<T>::initializeChar2PopularCharIdx(const unsigned char* ptr) {
-    return std::vector<unsigned char>();
+    std::vector<unsigned char> res;
+    return res;
     //    return std::vector<unsigned char>(ptr + getPopularCharsOffset(), ptr + getPopularCharsOffset() + 256);
 }
 

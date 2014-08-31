@@ -52,7 +52,8 @@ FSA<T>::FSA(const unsigned char* initialStatePtr, const Deserializer<T>& deseria
 
 template <class T>
 State<T> FSA<T>::getInitialState() const {
-    return State<T>();
+    State<T> state;
+    return state;
 }
 
 template <class T>

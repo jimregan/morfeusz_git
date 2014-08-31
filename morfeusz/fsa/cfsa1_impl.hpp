@@ -26,7 +26,6 @@ static const unsigned int CFSA1_INITIAL_ARRAY_STATE_OFFSET = 257;
 
 struct StateData2 {
     unsigned int transitionsNum;
-    //    bool isArray;
     bool isAccepting;
 };
 
@@ -38,7 +37,6 @@ struct TransitionData2 {
 static inline StateData2 readStateData(const unsigned char*& ptr) {
     StateData2 res;
     unsigned char firstByte = readInt8(ptr);
-    //    res.isArray = firstByte & CFSA1_ARRAY_FLAG;
     res.isAccepting = firstByte & CFSA1_ACCEPTING_FLAG;
     res.transitionsNum = firstByte & CFSA1_TRANSITIONS_NUM_MASK;
     if (res.transitionsNum == CFSA1_TRANSITIONS_NUM_MASK) {
@@ -57,7 +55,8 @@ static inline TransitionData2 readTransitionFirstByte(const unsigned char*& ptr)
 
 template <class T>
 std::vector<unsigned char> CompressedFSA1<T>::initializeChar2PopularCharIdx(const unsigned char* ptr) {
-    return std::vector<unsigned char>(ptr, ptr + CFSA1_INITIAL_ARRAY_STATE_OFFSET);
+    std::vector<unsigned char> res(ptr, ptr + CFSA1_INITIAL_ARRAY_STATE_OFFSET);
+    return res;
 }
 
 template <class T>

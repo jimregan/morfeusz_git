@@ -93,7 +93,8 @@ bool InflexionGraph::canMergeNodes(unsigned int node1, unsigned int node2) {
 
 set<InflexionGraph::Path> InflexionGraph::getPossiblePaths(unsigned int node) {
     if (node == UINT_MAX || node == this->graph.size() - 1) {
-        return set<InflexionGraph::Path>();
+        set<InflexionGraph::Path> res;
+        return res;
     }
     else {
         set<InflexionGraph::Path> res;
