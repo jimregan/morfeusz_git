@@ -39,7 +39,7 @@ namespace morfeusz {
         while (resultsArraySize <= size) {
             resultsArraySize *= 2;
         }
-        delete results;
+        delete[] results;
         results = new InterpMorf[resultsArraySize];
     }
 
