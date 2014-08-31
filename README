@@ -117,6 +117,7 @@ DEFAULT_DICT_DIR - a directory where dictionaries are read/written to
 SKIP_DICTIONARY_BUILDING - do not build dictionaries. Use the ones provided by DEFAULT_DICT_DIR or ANALYZER/GENERATOR_DICTIONARY_CPP options.
 EMBEDDED_DEFAULT_DICT - embed default dictionary into morfeusz library code (implicitly set for Windows and OSX builds).
 CPACK_GENERATOR - manually set which package type to build (see http://www.cmake.org/Wiki/CMake:CPackPackageGenerators for available options)
+DICT_VERSION - dictionary version
 
 CMAKE_INSTALL_PREFIX - where to install morfeusz (on Linux default is /usr/local)
 TARGET_DIR - a dir where packages built by CMake are put in
@@ -169,6 +170,17 @@ cmake \
     ..
 make
 make package
+
+----------
+Build DEB with dictionary "my_dictionary" (dependent on morfeusz2) but without executable, includes and shared lib:
+----------
+cmake \
+    -D INPUT_DICTIONARIES=/path/to/dict1,/path/to/dict2 \
+    -D DEFAULT_DICT_NAME=my_dictionary \
+    -D DICT_VERSION=dict_version
+    -D TARGET_DIR=/path/to/target/dir \
+    ..
+make dictionary-deb
 
 
 **************************
