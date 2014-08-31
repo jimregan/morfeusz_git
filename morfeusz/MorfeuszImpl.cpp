@@ -283,7 +283,10 @@ namespace morfeusz {
                             ic.textStartPtr == reader.getWordStartPtr()
                             ? reader.getChunkStartPtr()
                             : ic.textStartPtr;
-                    ic.chunkEndPtr = chunkBounds.chunkEndPtr;
+                    ic.chunkEndPtr = 
+                            ic.textEndPtr == chunkBounds.wordEndPtr
+                            ? chunkBounds.chunkEndPtr
+                            : ic.textEndPtr;
                     interpretedChunksDecoder.decode(srcNode, targetNode, ic, results);
                 }
                 srcNode++;
