@@ -38,6 +38,9 @@ else ()
     add_custom_target ( generator-dictionary DEPENDS "${GENERATOR_DICTIONARY_FILE}")
 endif ()
 add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
+add_custom_target ( dictionary-deb
+        COMMAND "${PROJECT_SOURCE_DIR}/createDictionaryDeb.sh" "${DEFAULT_DICT_DIR}" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${TARGET_DIR}"
+        DEPENDS dictionary)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
@@ -106,17 +109,21 @@ else ()
     set (TARGET_LIB_DIR lib)
 endif ()
 
-install (FILES morfeusz2.h morfeusz2_c.h DESTINATION include)
+# INSTALL
+
 if (NOT EMBEDDED_DEFAULT_DICT)
     add_dependencies (libmorfeusz dictionary)
     install (FILES "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" DESTINATION "${DEFAULT_DICT_INSTALL_DIR}")
 endif ()
-install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
-install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)
 
+if (NOT ONLY_DICTIONARY)
+    install (FILES morfeusz2.h morfeusz2_c.h DESTINATION include)
+    install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
+    install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)
+endif ()
 # TESTING
 
-if (NOT CMAKE_CROSSCOMPILING AND NOT SKIP_TESTING)
+if (NOT CMAKE_CROSSCOMPILING AND NOT SKIP_TESTING AND NOT ONLY_DICTIONARY)
     find_library(CPPUNIT_LIB cppunit)
     if(${CPPUNIT_LIB} STREQUAL "CPPUNIT_LIB-NOTFOUND")
         message(FATAL_ERROR "Couldn't find cppunit library. Please install cppunit or add -D SKIP_TESTING=1 option.")
