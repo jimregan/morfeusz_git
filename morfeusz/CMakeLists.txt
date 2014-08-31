@@ -116,11 +116,10 @@ if (NOT EMBEDDED_DEFAULT_DICT)
     install (FILES "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" DESTINATION "${DEFAULT_DICT_INSTALL_DIR}")
 endif ()
 
-if (NOT ONLY_DICTIONARY)
-    install (FILES morfeusz2.h morfeusz2_c.h DESTINATION include)
-    install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
-    install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)
-endif ()
+install (FILES morfeusz2.h morfeusz2_c.h DESTINATION include)
+install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})
+install (TARGETS morfeusz_analyzer morfeusz_generator DESTINATION bin)
+
 # TESTING
 
 if (NOT CMAKE_CROSSCOMPILING AND NOT SKIP_TESTING AND NOT ONLY_DICTIONARY)

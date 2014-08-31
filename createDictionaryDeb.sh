@@ -30,4 +30,4 @@ EOL
 
 chmod 0644 "$CONTROL_FILE"
 
-dpkg-deb --build "$PKG_DIR" "$TARGET_DIR"
+fakeroot dpkg-deb --build "$PKG_DIR" "$TARGET_DIR"
