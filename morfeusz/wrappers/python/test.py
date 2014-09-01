@@ -54,6 +54,9 @@ class TestSequenceFunctions(unittest.TestCase):
         except RuntimeError:
             pass
     
+    def testValidCaseHandling(self):
+        self.morfeusz.setCaseHandling(morfeusz2.IGNORE_CASE)
+
     def testInvalidCaseHandling(self):
         try:
             self.morfeusz.setCaseHandling(0)

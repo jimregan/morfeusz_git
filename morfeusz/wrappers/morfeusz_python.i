@@ -55,24 +55,12 @@
     }
 };
 
-%ignore morfeusz::Morfeusz::createInstance(morfeusz::MorfeuszUsage);
+//%ignore morfeusz::Morfeusz::createInstance(morfeusz::MorfeuszUsage);
 %extend morfeusz::Morfeusz {
     std::vector<morfeusz::MorphInterpretation> morfeusz::Morfeusz::_generateByTagId(const std::string& lemma, int tagId) const {
         std::vector<morfeusz::MorphInterpretation> res;
         $self->generate(lemma, tagId, res);
         return res;
-    }
-    
-    static morfeusz::Morfeusz* morfeusz::Morfeusz::createAnalyzerInstance(const std::string& dictName=morfeusz::Morfeusz::getDefaultDictName()) {
-        return morfeusz::Morfeusz::createInstance(morfeusz::ANALYSE_ONLY);
-    }
-    
-    static morfeusz::Morfeusz* morfeusz::Morfeusz::createGeneratorInstance(const std::string& dictName=morfeusz::Morfeusz::getDefaultDictName()) {
-        return morfeusz::Morfeusz::createInstance(morfeusz::GENERATE_ONLY);
-    }
-    
-    static morfeusz::Morfeusz* morfeusz::Morfeusz::createInstance(const std::string& dictName=morfeusz::Morfeusz::getDefaultDictName()) {
-        return morfeusz::Morfeusz::createInstance(morfeusz::BOTH_ANALYSE_AND_GENERATE);
     }
 };
 
@@ -88,7 +76,7 @@ def next(self):
 
 def analyse_iter(self, text):
     """
-    Analyse given text and return an iterator over MorphInterpretation as a result.
+    Analyse given text and return an iterator over MorphInterpretation objects as a result.
     """
     return $action(self, text)
 %}
@@ -101,6 +89,72 @@ def analyse(self, text):
     res = InterpsList()
     $action(self, text, res)
     return res
+%}
+
+%feature("shadow") morfeusz::Morfeusz::setAggl %{
+def setAggl(self, optionString):
+    """
+    Select agglutination rules option
+    """
+    $action(self, optionString.encode('utf8'))
+%}
+
+%feature("shadow") morfeusz::Morfeusz::setPraet %{
+def setPraet(self, optionString):
+    """
+    Select past tense segmentation
+    """
+    $action(self, optionString.encode('utf8'))
+%}
+
+%feature("shadow") morfeusz::Morfeusz::setCaseHandling %{
+def setCaseHandling(self, option):
+    """
+    Set case handling option (valid options are CONDITIONALLY_CASE_SENSITIVE, STRICTLY_CASE_SENSITIVE, IGNORE_CASE)
+    """
+    $action(self, option)
+%}
+
+%feature("shadow") morfeusz::Morfeusz::setTokenNumbering %{
+def setTokenNumbering(self, option):
+    """
+    Set token numbering option (valid options are SEPARATE_NUMBERING, CONTINUOUS_NUMBERING)
+    """
+    $action(self, option)
+%}
+
+%feature("shadow") morfeusz::Morfeusz::setWhitespaceHandling %{
+def setWhitespaceHandling(self, option):
+    """
+    Set whitespace handling handling option (valid options are SKIP_WHITESPACES, KEEP_WHITESPACES, APPEND_WHITESPACES)
+    """
+    $action(self, option)
+%}
+
+%feature("shadow") morfeusz::Morfeusz::setDictionary %{
+def setDictionary(self, dictName):
+    """
+    Set dictionary to be used by this instance (by name)
+    """
+    $action(self, dictName.encode('utf8'))
+%}
+
+%feature("shadow") morfeusz::Morfeusz::createInstance(morfeusz::MorfeuszUsage) %{
+@staticmethod
+def _createInstance(usage):
+    return $action(usage)
+%}
+
+%feature("shadow") morfeusz::Morfeusz::createInstance(const std::string&, morfeusz::MorfeuszUsage) %{
+@staticmethod
+def createInstance(dictName=None, usage=BOTH_ANALYSE_AND_GENERATE):
+    """
+    Creates new instance of Morfeusz class. Usage may be BOTH_ANALYZE_AND_GENERATE (default), ONLY_ANALYSE and ONLY_GENERATE.
+    """
+    if dictName is None:
+        return Morfeusz._createInstance(usage)
+    else:
+        return $action(dictName.encode('utf8'), usage)
 %}
 
 %feature("shadow") morfeusz::Morfeusz::_generateByTagId %{
@@ -150,6 +204,56 @@ def generate(self, lemma, tagId=None):
             self._lemma = val.encode('utf8')
     %}
 };
+
+%feature("shadow") morfeusz::MorphInterpretation::getTag %{
+def getTag(self, morfeusz):
+    """
+    Returns tag as string.
+    """
+    return $action(self, morfeusz)
+%}
+
+%feature("shadow") morfeusz::MorphInterpretation::getName %{
+def getName(self, morfeusz):
+    """
+    Returns this interpretation named entity as string
+    """
+    return $action(self, morfeusz)
+%}
+
+%feature("shadow") morfeusz::MorphInterpretation::getLabelsAsString %{
+def getLabelsAsUnicode(self, morfeusz):
+    """
+    Returns this interpretation labels as string
+    """
+    return $action(self, morfeusz).decode('utf8')
+%}
+
+%feature("shadow") morfeusz::MorphInterpretation::getLabels %{
+def getLabels(self, morfeusz):
+    """
+    Returns this interpretation labels as a set of strings
+    """
+    return { l.decode('utf8') for l in $action(self, morfeusz) }
+%}
+
+%feature("shadow") morfeusz::MorphInterpretation::createIgn %{
+@staticmethod
+def createIgn(startNode, endNode, orth, lemma):
+    """
+    Creates unknown interpretation
+    """
+    return $action(self, startNode, endNode, orth.encode('utf8'), lemma.encode('utf8'))
+%}
+
+%feature("shadow") morfeusz::MorphInterpretation::createWhitespace %{
+@staticmethod
+def createWhitespace(startNode, endNode, orth):
+    """
+    Creates whitespace interpretation
+    """
+    return $action(self, startNode, endNode, orth.encode('utf8'))
+%}
 
 %feature("shadow") morfeusz::IdResolver::getTag %{
 def getTag(self, tagId):
