@@ -119,6 +119,9 @@ namespace std {
 %rename(_setDictionary) morfeusz::Morfeusz::setDictionary;
 
 %rename(_getLabels) morfeusz::IdResolver::getLabels;
+
+%rename(_getLabels) morfeusz::MorphInterpretation::getLabels;
+
 %ignore morfeusz::FileFormatException;
 
 %javaexception("java.io.IOException") morfeusz::Morfeusz::setDictionary {
@@ -304,6 +307,13 @@ namespace std {
     
     public java.util.Collection<java.lang.String> getLabels(int labelsId) {
         return _getLabels(labelsId);
+    }
+%}
+
+%typemap(javacode) morfeusz::MorphInterpretation %{
+    
+    public java.util.Collection<java.lang.String> getLabels(Morfeusz morfeusz) {
+        return _getLabels(morfeusz);
     }
 %}
 
