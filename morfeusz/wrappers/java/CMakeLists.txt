@@ -22,7 +22,7 @@ add_custom_target(generate-java-wrapper ALL
     DEPENDS ${SWIG_JAVA_OUTFILE})
 
 add_library (libjmorfeusz SHARED ${SWIG_JAVA_OUTFILE})
-add_dependencies (libjmorfeusz generate_java_wrapper)
+add_dependencies (libjmorfeusz generate-java-wrapper)
 set_target_properties (libjmorfeusz PROPERTIES OUTPUT_NAME "jmorfeusz")
 target_link_libraries (libjmorfeusz ${JAVA_LIBRARIES} libmorfeusz)
 

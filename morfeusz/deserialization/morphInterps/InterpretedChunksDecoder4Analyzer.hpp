@@ -9,6 +9,7 @@
 #define	INTERPRETEDCHUNKSDECODER4ANALYZER_HPP
 
 #include "InterpretedChunksDecoder.hpp"
+#include "InterpretedChunk.hpp"
 
 namespace morfeusz {
 

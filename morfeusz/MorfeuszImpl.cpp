@@ -314,7 +314,6 @@ namespace morfeusz {
         }
         StateType state = env.getFSA().getInitialState();
         string homonymId;
-//        vector<SegrulesState> newSegrulesStates;
         while (!reader.isAtWhitespace()) {
             feedState(env, state, reader);
             if (state.isSink()) {
@@ -390,7 +389,8 @@ namespace morfeusz {
                 cerr << "ACCEPTING " << debugAccum(accum) << endl;
             }
             graph.addPath(accum, newSegrulesState.weak || notMatchingCaseSegs > 0);
-        } else {
+        } 
+        else {
             assert(!newSegrulesState.sink);
             TextReader newReader(reader.getCurrPtr(), reader.getEndPtr(), env);
             doProcessOneWord(env, newReader, newSegrulesState);

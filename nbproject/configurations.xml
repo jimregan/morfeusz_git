@@ -299,22 +299,16 @@
             flavor2="8">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>/usr/lib/jvm/default-java/include</pElem>
             <pElem>build/morfeusz/java</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>jmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -324,20 +318,12 @@
             flavor2="4">
         <ccTool flags="1">
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>/usr/lib/perl/5.14/CORE</pElem>
             <pElem>build/morfeusz/perl</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>morfeusz_perl_EXPORTS</Elem>
           </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
         </ccTool>
       </item>
       <item path="build/morfeusz/morfeuszPYTHON_wrap.cxx"
@@ -346,22 +332,16 @@
             flavor2="8">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>/usr/include/python2.7</pElem>
             <pElem>build/morfeusz/python</pElem>
           </incDir>
           <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
             <Elem>__PIC__=2</Elem>
             <Elem>__pic__=2</Elem>
             <Elem>_morfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__GCC_HAVE_DWARF2_CFI_ASM=1</Elem>
-            <Elem>__NO_INLINE__</Elem>
           </undefinedList>
         </ccTool>
       </item>
@@ -408,35 +388,15 @@
       <item path="default_fsa.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>morfeusz/build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
-          </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
         </ccTool>
       </item>
       <item path="default_synth_fsa.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
           <incDir>
-            <pElem>build</pElem>
-            <pElem>morfeusz</pElem>
-            <pElem>build/morfeusz</pElem>
-            <pElem>build/fsa</pElem>
             <pElem>morfeusz/build/morfeusz</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>_OPTIMIZE__=1</Elem>
-          </preprocessorList>
-          <undefinedList>
-            <Elem>__NO_INLINE__</Elem>
-          </undefinedList>
         </ccTool>
       </item>
       <folder path="0/c_api">
@@ -756,28 +716,30 @@
       </folder>
       <folder path="morfeusz">
         <ccTool>
-          <preprocessorList>
-            <Elem>NDEBUG</Elem>
-            <Elem>libmorfeusz_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="morfeusz/java">
-        <ccTool>
           <incDir>
             <pElem>build</pElem>
             <pElem>morfeusz</pElem>
             <pElem>build/morfeusz</pElem>
             <pElem>build/fsa</pElem>
-            <pElem>/usr/lib/jvm/default-java/include</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>NDEBUG</Elem>
             <Elem>_OPTIMIZE__=1</Elem>
-            <Elem>libjmorfeusz_EXPORTS</Elem>
+            <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
           <undefinedList>
             <Elem>__NO_INLINE__</Elem>
           </undefinedList>
+        </ccTool>
+      </folder>
+      <folder path="morfeusz/java">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/lib/jvm/default-java/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>libjmorfeusz_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="morfeusz/python">

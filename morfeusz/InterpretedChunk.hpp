@@ -34,7 +34,7 @@ struct InterpretedChunk {
     const char* textEndPtr;
     
     /**
-     * Pointer to end of this chunks text (exclusive)
+     * Pointer to start of this chunks text (exclusive)
      * including preceding whitespaces if whitespace-handling set to APPEND
      */
     const char* chunkStartPtr;
