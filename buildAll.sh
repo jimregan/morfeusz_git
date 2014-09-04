@@ -2,14 +2,15 @@
 
 set -e -o pipefail
 
-if [ "$#" -ne 3 ]; then
-    echo "Must provide exactly 3 arguments: <CROSSMORFEUSZ_ROOT> <INPUT_DICTIONARIES> <DEFAULT_DICT_NAME>"
+if [ "$#" -ne 4 ]; then
+    echo "Must provide exactly 3 arguments: <CROSSMORFEUSZ_ROOT> <INPUT_DICTIONARIES> <DEFAULT_DICT_NAME> <DICT_VERSION>"
     exit 1
 fi
 
 export CROSSMORFEUSZ_ROOT="$1"
 export INPUT_DICTIONARIES="$2"
 export DEFAULT_DICT_NAME="$3"
+export DICT_VERSION="$4"
 export ANALYZER_DICTIONARY_CPP=`mktemp`.cpp
 export GENERATOR_DICTIONARY_CPP=`mktemp`.cpp
 export DICT_DIR=`mktemp -d`
@@ -67,7 +68,8 @@ function build {
             -D GENERATOR_DICTIONARY_CPP=$GENERATOR_DICTIONARY_CPP \
             -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
-            -D EMBEDDED_DEFAULT_DICT=1"
+            -D EMBEDDED_DEFAULT_DICT=1 \
+            -D DICT_VERSION=$DICT_VERSION"
         if [ "$CPACK_GENERATOR" != "" ]
         then
             CMAKE_ARGS="$CMAKE_ARGS -D CPACK_GENERATOR=$CPACK_GENERATOR"
@@ -82,7 +84,8 @@ function build {
             -D DEFAULT_DICT_DIR=$DICT_DIR \
             -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
-            -D CPACK_GENERATOR=DEB"
+            -D CPACK_GENERATOR=DEB \
+            -D DICT_VERSION=$DICT_VERSION"
     fi
     cmake $CMAKE_ARGS $srcDir 2>&1
     echo "building $toolchain" >&2
