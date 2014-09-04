@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 if [ "$#" -ne 4 ]; then
-    echo "Must provide exactly 3 arguments: <CROSSMORFEUSZ_ROOT> <INPUT_DICTIONARIES> <DEFAULT_DICT_NAME> <DICT_VERSION>"
+    echo "Must provide exactly 4 arguments: <CROSSMORFEUSZ_ROOT> <INPUT_DICTIONARIES> <DEFAULT_DICT_NAME> <DICT_VERSION>"
     exit 1
 fi
 
