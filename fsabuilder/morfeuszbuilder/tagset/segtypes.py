@@ -86,7 +86,7 @@ class Segtypes(object):
     def _parseAdditionalConstraints(self, lineNum, fields):
         res = {}
         for f in fields:
-            match = re.match(r'(name|labels)=([\w_]+)', f, re.U)
+            match = re.match(r'(name|labels)=([\S]+)', f, re.U)
             self._validate(
                         u'invalid name or labels constraint: "%s"' % f,
                         lineNum,
@@ -164,7 +164,7 @@ class Segtypes(object):
             if segnum != -1:
                 tagnum = self.tagset.getTagnum4Tag(tag)
                 self._segnumsMap.setdefault((p.lemma, tagnum), [])
-                namenum = self.namesMap[p.name]
+                namenum = self.namesMap.get(p.name, -1)
                 for labelsnum in self._getAllExistingLabelsnumCombinations(p.labels):
                     self._segnumsMap[(p.lemma, tagnum)].append((namenum, labelsnum, segnum))
 
@@ -174,7 +174,7 @@ class Segtypes(object):
         # index lexemes
         for p in self.patternsList:
             self._indexOnePattern(p)
-
+        #~ print 'DEBUG', self._segnumsMap[(None, 23)]
         # logging.info(self._segnumsMap)
     
     def hasSegtype(self, segTypeString):
@@ -186,7 +186,6 @@ class Segtypes(object):
         # return self.segtype2Segnum[segTypeString]
     
     def lexeme2Segnum(self, lemma, tagnum, namenum, labelsnum):
-
         if (lemma, tagnum) in self._segnumsMap:
             for (n, l, segnum) in self._segnumsMap[(lemma, tagnum)]:
                 if (n, l) == (namenum, labelsnum) \
@@ -206,7 +205,8 @@ class Segtypes(object):
 class SegtypePattern(object):
     
     def __init__(self, lemma, pattern, name, labels, segnum):
-        self.lemma = _cutHomonymFromLemma(lemma)
+        #~ self.lemma = _cutHomonymFromLemma(lemma)
+        self.lemma = lemma
         self.pattern = pattern
         self.name = name
         self.labels = labels
