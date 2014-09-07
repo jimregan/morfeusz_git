@@ -38,13 +38,7 @@ namespace morfeusz {
         res.debug = false;
         return res;
     }
-
-    static void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
-        to.prefixChunks.push_back(from);
-        to.textStartPtr = from.textStartPtr;
-        from.orthWasShifted = true;
-    }
-
+    
     static string debugInterpsGroup(unsigned char type, const char* startPtr, const char* endPtr) {
         stringstream res;
         res << "(" << (int) type << ", " << string(startPtr, endPtr) << "), ";
@@ -54,10 +48,18 @@ namespace morfeusz {
     static string debugAccum(vector<InterpretedChunk>& accum) {
         stringstream res;
         for (unsigned int i = 0; i < accum.size(); i++) {
-            res << debugInterpsGroup(accum[i].segmentType, accum[i].textStartPtr, accum[i].textEndPtr);
+            res << debugInterpsGroup(accum[i].segmentType, accum[i].textNoPrefixesStartPtr, accum[i].textEndPtr);
             //        res << "(" << (int) accum[i].interpsGroup.type << ", " << string(accum[i].chunkStartPtr, accum[i].chunkStartPtr) << "), ";
         }
         return res.str();
+    }
+
+    static void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
+        to.prefixChunks.insert(to.prefixChunks.end(), from.prefixChunks.begin(), from.prefixChunks.end());
+//        from.prefixChunks.resize(0);
+        to.prefixChunks.push_back(from);
+        to.textStartPtr = from.textStartPtr;
+        from.orthWasShifted = true;
     }
 
     static void feedStateDirectly(
@@ -101,7 +103,8 @@ namespace morfeusz {
         const unsigned char* interpsEndPtr = ig.ptr + ig.size;
         InterpretedChunk ic;
         ic.segmentType = ig.type;
-        ic.textStartPtr = reader.getWordStartPtr();
+        ic.textStartPtr = reader.getWordStartPtr(); // may be changed later in doShiftOrth(...) function
+        ic.textNoPrefixesStartPtr = ic.textStartPtr;
         ic.textEndPtr = homonymId.empty() ? reader.getCurrPtr() : reader.getCurrPtr() - homonymId.length() - 1;
         ic.interpsGroupPtr = ig.ptr;
         ic.interpsEndPtr = interpsEndPtr;
@@ -386,7 +389,7 @@ namespace morfeusz {
         if (isAtWhitespace) {
             assert(newSegrulesState.accepting);
             if (this->options.debug) {
-                cerr << "ACCEPTING " << debugAccum(accum) << endl;
+                cerr << "ACCEPTING " << debugAccum(accum) << " prefixChunks: " << debugAccum(accum.back().prefixChunks) << endl;
             }
             graph.addPath(accum, newSegrulesState.weak || notMatchingCaseSegs > 0);
         } 

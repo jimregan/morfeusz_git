@@ -10,7 +10,7 @@ from morfeuszbuilder.utils import exceptions
 from pyparseString import pyparseString
 
 identifier = Word(alphas, bodyChars=alphanums+u'_>*+{},')
-define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + identifier + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
+define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + Word(alphas, bodyChars=alphanums+u'_') + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
 ifdef = Keyword('#ifdef').suppress() + identifier + LineEnd() + StringEnd()
 endif = Keyword('#endif').suppress() + LineEnd() + StringEnd()
 
@@ -48,6 +48,7 @@ def _tryToSubstituteArgDefine(s, t, defines):
         return ' '.join(t)
 
 def _tryToSubstituteNonArgDefine(s, t, defines):
+    
     defineName = t[0]
     
     if defineName in defines and not defines[defineName].hasArg():
@@ -56,6 +57,7 @@ def _tryToSubstituteNonArgDefine(s, t, defines):
         return defineName
 
 def _processLine(lineNum, line, defines, filename):
+    #~ print 'PROCESS', line.strip()
     if line.strip():
         
         rule = Forward()
@@ -69,7 +71,11 @@ def _processLine(lineNum, line, defines, filename):
         rule.setParseAction(lambda s, l, t: ' '.join(t))
         defineInstance.setParseAction(lambda s, l, t: _tryToSubstituteArgDefine(s, t, defines))
         localId.setParseAction(lambda s, l, t: _tryToSubstituteNonArgDefine(s, t, defines))
-        return pyparseString(rule, lineNum, line, filename)[0]
+        res = pyparseString(rule, lineNum, line, filename)[0]
+        if res.strip() != line.strip():
+            return _processLine(lineNum, res, defines, filename)
+        else:
+            return line
     else:
         return line
 
@@ -82,6 +88,7 @@ def preprocess(inputLines, defs, filename):
             if len(parsedDefine) == 2:
                 name, val = parsedDefine
                 defines[name] = NonArgDefine(name, val)
+                #~ print 'DEFINE', name, '-->', val
             else:
                 name, arg, val = parsedDefine
                 localDefines = defines.copy()

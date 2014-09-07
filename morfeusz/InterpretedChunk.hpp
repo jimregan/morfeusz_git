@@ -24,9 +24,14 @@ struct InterpretedChunk {
     unsigned char segmentType;
     
     /**
-     * Pointer to start of this chunks text
+     * Pointer to start of word containing this chunk (possibly including prefixes text)
      */
     const char* textStartPtr;
+    
+    /**
+     * Pointer to start of this chunks text
+     */
+    const char* textNoPrefixesStartPtr;
     
     /**
      * Pointer to end of this chunks text (exclusive)
@@ -35,7 +40,7 @@ struct InterpretedChunk {
     
     /**
      * Pointer to start of this chunks text (exclusive)
-     * including preceding whitespaces if whitespace-handling set to APPEND
+     * possibly including preceding whitespaces if whitespace-handling set to APPEND
      */
     const char* chunkStartPtr;
     

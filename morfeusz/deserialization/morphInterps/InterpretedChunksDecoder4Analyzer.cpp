@@ -37,7 +37,6 @@ namespace morfeusz {
             int nonPrefixCodepointsNum,
             bool forPrefix,
             string& res) const {
-        //    assert(nonPrefixCodepointsNum > orth.size());
         unsigned int prefixSegmentsOrthLength = forPrefix
                 ? 0
                 : (unsigned int) normalizedCodepoints.size() - nonPrefixCodepointsNum;
@@ -97,7 +96,6 @@ namespace morfeusz {
             const InterpretedChunk& prefixChunk = chunk.prefixChunks[i];
             ei.orthCasePattern.insert(ei.orthCasePattern.begin(), prefixChunk.codepointsNum, false);
             ei.value.casePattern.insert(ei.value.casePattern.begin(), prefixChunk.codepointsNum, false);
-            addPrefixLengthToCasePatterns(prefixChunk, ei);
         }
     }
 
@@ -114,11 +112,11 @@ namespace morfeusz {
             normalizedCodepoints.push_back(env.getCaseConverter().toLower(cp));
         }
         EncodedInterpretation ei = this->decodeEncodedInterp(ptr, *params.chunk.interpsGroupPtr);
-
+        
         if (!params.chunk.forceIgnoreCase && !ei.orthCasePattern.empty() && !params.chunk.prefixChunks.empty()) {
             addPrefixLengthToCasePatterns(params.chunk, ei);
         }
-
+        
         if (params.chunk.forceIgnoreCase || env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
             string lemma(params.lemma4Prefixes);
             lemma.reserve(lemma.size() + normalizedCodepoints.size());
@@ -151,7 +149,7 @@ namespace morfeusz {
     bool InterpretedChunksDecoder4Analyzer::tryToGetLemma4OnePrefix(const InterpretedChunk& prefixChunk, std::string& lemma4Prefixes) const {
         orthCodepoints.resize(0);
         normalizedCodepoints.resize(0);
-        const char* currTextPtr = prefixChunk.textStartPtr;
+        const char* currTextPtr = prefixChunk.textNoPrefixesStartPtr;
         while (currTextPtr != prefixChunk.textEndPtr) {
             uint32_t cp = env.getCharsetConverter().next(currTextPtr, prefixChunk.textEndPtr);
             orthCodepoints.push_back(cp);
