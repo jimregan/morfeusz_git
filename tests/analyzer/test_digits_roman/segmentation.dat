@@ -25,12 +25,11 @@ moze_interp( dig>* dig )
 #define rzymskie1	( (romandigI> romandigX) | romandigV | (romandigV> one_to_three(romandigI)) | (romandigI> romandigV) | one_to_three(romandigI) )
 #define rzymskie10	( (romandigX> romandigC) | romandigL | (romandigL> one_to_three(romandigX)) | (romandigX> romandigL) | one_to_three(romandigX) )
 #define rzymskie100	( (romandigC> romandigM) | romandigD | (romandigD> one_to_three(romandigC)) | (romandigC> romandigD) | one_to_three(romandigC) )
+#define rzymskie1000	( one_to_three(romandigM) )
 
 #define rzymskie1_shift	( (romandigI> romandigX>) | (romandigV> romandigI>{0,3}) | (romandigI> romandigV>) | romandigI>{1,3} )
 #define rzymskie10_shift	( (romandigX> romandigC>) | (romandigL> romandigX>{0,3}) | (romandigX> romandigL>) | romandigX>{1,3} )
 #define rzymskie100_shift	( (romandigC> romandigM>) | (romandigD> romandigC>{0,3}) | (romandigC> romandigD>) | romandigC>{1,3} )
-
-#define rzymskie1000	( one_to_three(romandigM) )
 #define rzymskie1000_shift	( romandigM>{1,3} )
 
 #define liczba_rzymska  ((rzymskie1000_shift? rzymskie100_shift? rzymskie10_shift? rzymskie1) | (rzymskie1000_shift? rzymskie100_shift? rzymskie10) | (rzymskie1000_shift? rzymskie100) | rzymskie1000)
