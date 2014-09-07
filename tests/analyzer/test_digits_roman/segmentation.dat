@@ -20,8 +20,6 @@ moze_interp( dig>* dig )
 
 ### LICZBY RZYMSKIE - reguły - START
 
-# TODO - zrobić z tego makro romandigI>{0,3}
-
 #define	one_to_three(rdig)	(rdig>{0,2} rdig)
 
 #define rzymskie1	( (romandigI> romandigX) | (romandigV> one_to_three(romandigI)) | (romandigI> romandigV) | one_to_three(romandigI) )
@@ -39,7 +37,7 @@ moze_interp( dig>* dig )
 
 
 # Liczby rzymskie
-liczba_rzymska
+moze_interp(liczba_rzymska)
 
 ### LICZBY RZYMSKIE - reguły - KONIEC
 
@@ -49,6 +47,8 @@ kropka
 przecinek
 dywiz
 dig
+
+### LICZBY RZYMSKIE - typy segmentów - START
 romandigI
 romandigV
 romandigX
@@ -56,6 +56,8 @@ romandigL
 romandigC
 romandigD
 romandigM
+### LICZBY RZYMSKIE - typy segmentów - KONIEC
+
 samodz
 
 [lexemes]
