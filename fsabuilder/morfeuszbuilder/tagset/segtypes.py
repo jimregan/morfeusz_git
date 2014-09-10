@@ -8,10 +8,16 @@ import logging
 import itertools
 from morfeuszbuilder.utils import exceptions
 
-def _cutHomonymFromLemma(lemma):
-    if lemma:
-        lemma = lemma.split(':')[0] if lemma and len(lemma) > 1 else lemma
-    return lemma
+def _getLemmaHomonymPair(lemma):
+    if lemma is None:
+        return (None, None)
+    elif u':' in lemma:
+        if lemma.replace(u':', '') == '':
+            return (lemma, None)
+        else:
+            return lemma.split(u':', 1)
+    else:
+        return (lemma, None)
 
 class Segtypes(object):
     
@@ -29,7 +35,7 @@ class Segtypes(object):
         # self.segnum2Segtype = {}
         self.patternsList = []
 
-        # (lemma, tagnum) -> [namenum, labelsnum, segnum]
+        # (lemma, tagnum) -> [homonym, namenum, labelsnum, segnum]
         self._segnumsMap = {}
 
         # self._tagnum2Segnum = {}
@@ -146,7 +152,7 @@ class Segtypes(object):
         self._validate(
             u'There is no tag that matches pattern "%s".' % (pattern),
             lineNum,
-            any([segtypePattern.tryToMatch(lemma, tag) != -1 for tag in self.tagset.getAllTags()]))
+            any([segtypePattern.tryToMatchTag(tag) != -1 for tag in self.tagset.getAllTags()]))
         self.patternsList.append(segtypePattern)
 
     def _getAllExistingLabelsnumCombinations(self, labels):
@@ -160,13 +166,13 @@ class Segtypes(object):
     def _indexOnePattern(self, p):
 
         for tag in self.tagset.getAllTags():
-            segnum = p.tryToMatch(p.lemma, tag)
+            segnum = p.tryToMatchTag(tag)
             if segnum != -1:
                 tagnum = self.tagset.getTagnum4Tag(tag)
                 self._segnumsMap.setdefault((p.lemma, tagnum), [])
                 namenum = self.namesMap.get(p.name, -1)
                 for labelsnum in self._getAllExistingLabelsnumCombinations(p.labels):
-                    self._segnumsMap[(p.lemma, tagnum)].append((namenum, labelsnum, segnum))
+                    self._segnumsMap[(p.lemma, tagnum)].append((p.homonym, namenum, labelsnum, segnum))
 
     def _indexSegnums(self):
         logging.info('indexing segment type numbers...')
@@ -186,15 +192,18 @@ class Segtypes(object):
         # return self.segtype2Segnum[segTypeString]
     
     def lexeme2Segnum(self, lemma, tagnum, namenum, labelsnum):
+        lemma, homonym = _getLemmaHomonymPair(lemma)
         if (lemma, tagnum) in self._segnumsMap:
-            for (n, l, segnum) in self._segnumsMap[(lemma, tagnum)]:
-                if (n, l) == (namenum, labelsnum) \
-                        or (n, l) == (0, 0)\
-                        or (n == 0 and l == labelsnum)\
-                        or (l == 0 and n == namenum):
-                    return segnum
-
-        if not lemma is None:
+            for (h, n, l, segnum) in self._segnumsMap[(lemma, tagnum)]:
+                if h == homonym:
+                    if (n, l) == (namenum, labelsnum) \
+                            or (n, l) == (0, 0) \
+                            or (n == 0 and l == labelsnum) \
+                            or (l == 0 and n == namenum):
+                        return segnum
+        if homonym is not None:
+            return self.lexeme2Segnum(lemma, tagnum, namenum, labelsnum)
+        elif lemma is not None:
             return self.lexeme2Segnum(None, tagnum, namenum, labelsnum)
         else:
             assert False
@@ -205,22 +214,21 @@ class Segtypes(object):
 class SegtypePattern(object):
     
     def __init__(self, lemma, pattern, name, labels, segnum):
-        #~ self.lemma = _cutHomonymFromLemma(lemma)
-        self.lemma = lemma
+        self.lemma = _getLemmaHomonymPair(lemma)[0]
+        self.homonym = _getLemmaHomonymPair(lemma)[1]
         self.pattern = pattern
         self.name = name
         self.labels = labels
         self.segnum = segnum
 
-    def tryToMatch(self, lemma, tag):
+    def tryToMatchTag(self, tag):
         patterns2Match = []
         patterns2Match.append(self.pattern.replace('%', '.*'))
         patterns2Match.append(re.sub(r'\:\%$', '', self.pattern).replace('%', '.*'))
         # patterns2Match.append(re.sub(r'$', ':%', self.pattern).replace('%', '.*'))
-        if self.lemma is None:
-            lemma = None
-        if any([re.match('^'+p+'$', tag) for p in patterns2Match]) \
-                and self.lemma == lemma:
+        # if self.lemma is None:
+        #     lemma = None
+        if any([re.match('^'+p+'$', tag) for p in patterns2Match]):
             return self.segnum
         else:
             return -1
