@@ -14,10 +14,8 @@ static inline void skipSeparatorsList(const unsigned char*& ptr) {
 }
 
 static inline const unsigned char* getSeparatorsListPtr(const unsigned char* ptr) {
-    const unsigned char* additionalDataPtr = ptr 
-        + FSA_DATA_OFFSET 
-        + readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
-    const unsigned char* res = additionalDataPtr + readInt32Const(additionalDataPtr) + 4;
+    const unsigned char* epiloguePtr = getEpiloguePtr(ptr);
+    const unsigned char* res = epiloguePtr + readInt32Const(epiloguePtr) + 4;
     return res;
 }
 

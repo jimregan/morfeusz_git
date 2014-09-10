@@ -132,6 +132,11 @@ namespace morfeusz {
     bool Environment::isUsable() const {
         return usable;
     }
+    
+    const Dictionary* Environment::getCurrentDictionary() const {
+        return this->dictionary;
+    }
+
 
     void Environment::setDictionary(const Dictionary* dict) {
         this->dictionary = dict;

@@ -111,6 +111,12 @@ namespace morfeusz {
          * @return 
          */
         static std::string getDefaultDictName();
+        
+        /**
+         * Returns morfeusz2 library copyright text.
+         * @return 
+         */
+        static std::string getCopyright();
 
         /**
          * Creates actual instance of Morfeusz class.
@@ -129,6 +135,20 @@ namespace morfeusz {
          * @return new instance of Morfeusz.
          */
         static Morfeusz* createInstance(const std::string& dictName, MorfeuszUsage usage=BOTH_ANALYSE_AND_GENERATE);
+        
+        /**
+         * Returns current dictionary ID.
+         * 
+         * @return dictionary ID string
+         */
+        virtual std::string getDictID() const = 0;
+        
+        /**
+         * Returns current dictionary copyright string.
+         * 
+         * @return dictionary copyright string
+         */
+        virtual std::string getDictCopyright() const = 0;
         
         /**
          * Creates exact copy of Morfeusz object.

@@ -225,9 +225,7 @@ class SegtypePattern(object):
         patterns2Match = []
         patterns2Match.append(self.pattern.replace('%', '.*'))
         patterns2Match.append(re.sub(r'\:\%$', '', self.pattern).replace('%', '.*'))
-        # patterns2Match.append(re.sub(r'$', ':%', self.pattern).replace('%', '.*'))
-        # if self.lemma is None:
-        #     lemma = None
+
         if any([re.match('^'+p+'$', tag) for p in patterns2Match]):
             return self.segnum
         else:

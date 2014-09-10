@@ -178,6 +178,55 @@ def _concatFiles(inputFiles):
                     else:
                         logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % line.strip().decode('utf8'))
 
+def _readDictIdAndCopyright(inputFiles):
+    dictId = None
+    copyright = None
+    for inputFile in inputFiles:
+        if inputFile:
+            with codecs.open(inputFile, 'r', 'utf8') as f:
+                inCopyright = False
+                for linenum, line in enumerate(f, start=1):
+                    if dictId is None and line.startswith(u'#!DICT-ID'):
+                        dictIdTag, _, dictId = line.strip().partition(u' ')[2]
+                        exceptions.validate(
+                            dictIdTag == u'#!DICT-ID',
+                            u'Dictionary ID tag must be followed by a space character and dictionary ID string')
+
+
+                    elif copyright is None and line.startswith(u'#<COPYRIGHT>'):
+                        exceptions.validate(
+                            line.strip() == u'#<COPYRIGHT>',
+                            u'%s:%d: Copyright start tag must be the only one in the line' % (inputFile, linenum))
+
+                        inCopyright = True
+                        copyright = u''
+
+                    elif line.startswith(u'#</COPYRIGHT>'):
+
+                        exceptions.validate(
+                            inCopyright,
+                            u'%s:%d: Copyright end tag must be preceded by copyright start tag' % (inputFile, linenum))
+
+                        exceptions.validate(
+                            line.strip() == u'#</COPYRIGHT>',
+                            u'%s:%d: Copyright end tag must be the only one in the line' % (inputFile, linenum))
+
+                        inCopyright = False
+
+                    elif inCopyright:
+
+                        copyright += line
+
+    if dictId is None:
+        logging.warn(u'No dictionary ID tag found')
+        dictId = u''
+
+    if copyright is None:
+        logging.warn(u'No copyright info found')
+        copyright = u''
+
+    return (dictId, copyright)
+
 def _readNamesAndQualifiers(inputFiles):
     names = set([u''])
     qualifiers = set([frozenset()])
@@ -255,7 +304,7 @@ def buildGeneratorFromPoliMorf(inputFiles, tagset, namesMap, qualifiersMap, segm
     _printStats(fsa)
     return fsa
 
-def _doBuildDictionaryPart(opts, tagset, namesMap, qualifiersMap, isGenerator):
+def _doBuildDictionaryPart(opts, dictId, copyrightTxt, tagset, namesMap, qualifiersMap, isGenerator):
     
     logging.info('reading segmentation rules')
     rulesParserVersion = rulesParser.RulesParser.PARSE4ANALYZER if not isGenerator else rulesParser.RulesParser.PARSE4GENERATOR
@@ -278,7 +327,7 @@ def _doBuildDictionaryPart(opts, tagset, namesMap, qualifiersMap, isGenerator):
         fsa.train(_readTrainData(opts.analyzerTrainFile))
         logging.info('done training')
     
-    serializer = Serializer.getSerializer(opts.serializationMethod, fsa, tagset, namesMap, qualifiersMap, segmentationRulesData)
+    serializer = Serializer.getSerializer(opts.serializationMethod, fsa, dictId, copyrightTxt, tagset, namesMap, qualifiersMap, segmentationRulesData)
     if opts.generatorCpp and isGenerator:
         serializer.serialize2CppFile(opts.generatorCpp, isGenerator=isGenerator)
     if opts.analyzerCpp and not isGenerator:
@@ -300,14 +349,15 @@ def main(opts):
     logging.info('done reading tagset')
     
     logging.info('reading names and qualifiers')
+    dictId, copyrightTxt = _readDictIdAndCopyright(opts.inputFiles)
     namesMap, qualifiersMap = _readNamesAndQualifiers(opts.inputFiles)
     logging.info('done reading names and qualifiers')
     
     if not opts.onlyGenerator:
-        _doBuildDictionaryPart(opts, tagset, namesMap, qualifiersMap, isGenerator=False)
+        _doBuildDictionaryPart(opts, dictId, copyrightTxt, tagset, namesMap, qualifiersMap, isGenerator=False)
 
     if not opts.onlyAnalyzer:
-        _doBuildDictionaryPart(opts, tagset, namesMap, qualifiersMap, isGenerator=True)
+        _doBuildDictionaryPart(opts, dictId, copyrightTxt, tagset, namesMap, qualifiersMap, isGenerator=True)
 
 if __name__ == '__main__':
     import os

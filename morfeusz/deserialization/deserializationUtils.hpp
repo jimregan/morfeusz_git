@@ -9,6 +9,7 @@
 #define	DESERIALIZATIONUTILS_HPP
 
 #include "endianness.hpp"
+#include "fsa/const.hpp"
 #include <iostream>
 #include <vector>
 
@@ -48,6 +49,10 @@ inline std::string readString(const unsigned char*& currPtr) {
     return res;
 }
 
+inline const unsigned char* getEpiloguePtr(const unsigned char* ptr) {
+    uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
+    return ptr + FSA_DATA_OFFSET + fsaSize;
+}
 }
 
 #endif	/* DESERIALIZATIONUTILS_HPP */

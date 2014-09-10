@@ -62,9 +62,13 @@ namespace morfeusz {
     labels(),
     labelsAsSets(),
     charsetConverter(charsetConverter) {
-        uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
-        const unsigned char* currPtr = ptr + FSA_DATA_OFFSET + fsaSize + 4;
-
+//        uint32_t fsaSize = readInt32Const(ptr + FSA_DATA_SIZE_OFFSET);
+//        const unsigned char* currPtr = ptr + FSA_DATA_OFFSET + fsaSize;
+        const unsigned char* currPtr = getEpiloguePtr(ptr) + 4;
+        
+        readString(currPtr); // skip dictId
+        readString(currPtr); // skip copyright
+        
         this->tagsetId = readString(currPtr);
         readTags(currPtr, this->tags.id2String);
         createReverseMapping(this->tags);

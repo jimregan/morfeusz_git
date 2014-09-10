@@ -134,6 +134,14 @@ namespace morfeusz {
         return new MorfeuszImpl(*this);
     }
 
+    string MorfeuszImpl::getDictID() const {
+        return getAnyEnvironment().getCurrentDictionary()->id;
+    }
+    
+    string MorfeuszImpl::getDictCopyright() const {
+        return getAnyEnvironment().getCurrentDictionary()->copyright;
+    }
+
     void MorfeuszImpl::setDictionary(const string& dictName) {
 
         if (dictName != currDictionary) {

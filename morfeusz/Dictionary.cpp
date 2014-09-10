@@ -39,6 +39,8 @@ namespace morfeusz {
     
     Dictionary::Dictionary()
     : fsa(NULL),
+    id(),
+    copyright(),
     idResolver(),
     separatorsList(),
     segrulesFSAsMap(),
@@ -50,6 +52,8 @@ namespace morfeusz {
 
     Dictionary::Dictionary(const unsigned char* fsaFileStartPtr, MorfeuszProcessorType processorType)
     : fsa(FSAType::getFSA(fsaFileStartPtr, initializeDeserializer(processorType))),
+    id(),
+    copyright(),
     idResolver(fsaFileStartPtr, &UTF8CharsetConverter::getInstance()),
     separatorsList(getSeparatorsList(fsaFileStartPtr)),
     segrulesFSAsMap(createSegrulesFSAsMap(fsaFileStartPtr)),
@@ -57,10 +61,14 @@ namespace morfeusz {
     defaultSegrulesFSA(getDefaultSegrulesFSA(this->segrulesFSAsMap, fsaFileStartPtr)),
     availableAgglOptions(getAvailableOptions(segrulesFSAsMap, "aggl")),
     availablePraetOptions(getAvailableOptions(segrulesFSAsMap, "praet")) {
+        const unsigned char* currPtr = getEpiloguePtr(fsaFileStartPtr) + 4;
+        this->id = readString(currPtr);
+        this->copyright = readString(currPtr);
     }
     
     bool Dictionary::isCompatibleWith(const Dictionary& other) const {
-        return this->idResolver.isCompatibleWith(other.idResolver)
+        return this->id == other.id
+                && this->idResolver.isCompatibleWith(other.idResolver)
                 && this->availableAgglOptions == other.availableAgglOptions
                 && this->availablePraetOptions == other.availablePraetOptions
                 && this->defaultSegrulesOptions == other.defaultSegrulesOptions

@@ -89,6 +89,8 @@ public:
      */
     const IdResolverImpl& getIdResolver() const;
     
+    const Dictionary* getCurrentDictionary() const;
+    
     /**
      * Sets dictionary by this environment.
      * 

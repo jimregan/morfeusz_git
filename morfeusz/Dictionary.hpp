@@ -32,6 +32,8 @@ namespace morfeusz {
         static Dictionary* getEmpty();
         
         FSAType* fsa;
+        std::string id;
+        std::string copyright;
         IdResolverImpl idResolver;
         std::vector<uint32_t> separatorsList;
         std::map<SegrulesOptions, SegrulesFSA*> segrulesFSAsMap;

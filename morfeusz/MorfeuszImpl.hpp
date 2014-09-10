@@ -56,6 +56,10 @@ namespace morfeusz {
 
         virtual ~MorfeuszImpl();
 
+        std::string getDictID() const;
+
+        std::string getDictCopyright() const;
+
         ResultsIterator* analyse(const std::string& text) const;
         
         ResultsIterator* analyse(const char* text) const;

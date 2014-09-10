@@ -9,6 +9,7 @@
 #define	CONST1_HPP
 
 #include "morfeusz2.h"
+#include <string>
 
 namespace morfeusz {
 
@@ -26,6 +27,8 @@ extern const char HOMONYM_SEPARATOR;
 extern const char LABELS_SEPARATOR;
 
 extern const char FILESYSTEM_PATH_SEPARATOR;
+
+extern const std::string COPYRIGHT_TEXT;
 
 }
 

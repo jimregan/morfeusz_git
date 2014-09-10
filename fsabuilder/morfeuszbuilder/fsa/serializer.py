@@ -20,18 +20,22 @@ class Serializer(object):
 
     def __init__(self, fsa):
         self._fsa = fsa
+        self.dictId = None
+        self.copyrightTxt = None
         self.tagset = None
         self.namesMap = None
         self.qualifiersMap = None
         self.segmentationRulesData = None
     
     @staticmethod
-    def getSerializer(serializationMethod, fsa, tagset, namesMap, qualifiersMap, segmentationRulesData):
+    def getSerializer(serializationMethod, fsa, dictId, copyrightTxt, tagset, namesMap, qualifiersMap, segmentationRulesData):
         res = {
             SerializationMethod.SIMPLE: SimpleSerializer,
             SerializationMethod.V1: VLengthSerializer1,
             SerializationMethod.V2: VLengthSerializer2,
         }[serializationMethod](fsa)
+        res.dictId = dictId
+        res.copyrightTxt = copyrightTxt
         res.tagset = tagset
         res.namesMap = namesMap
         res.qualifiersMap = qualifiersMap
@@ -44,7 +48,7 @@ class Serializer(object):
     
     # get the Morfeusz file format version that is being encoded
     def getVersion(self):
-        return 20
+        return 21
     
     def serialize2CppFile(self, fname, isGenerator, headerFilename="data/default_fsa.hpp"):
         res = []
@@ -149,11 +153,18 @@ class Serializer(object):
     
     def serializeEpilogue(self, tagsetData, qualifiersData, segmentationRulesData):
         res = bytearray()
+
+        idAndCopyright = bytearray()
+        idAndCopyright.extend(serializeString(self.dictId))
+        idAndCopyright.extend(serializeString(self.copyrightTxt))
+
         tagsetDataSize = len(tagsetData) if tagsetData else 0
         qualifiersDataSize = len(qualifiersData) if qualifiersData else 0
 #         segmentationDataSize = len(segmentationRulesData) if segmentationRulesData else 0
-        res.extend(htonl(tagsetDataSize + qualifiersDataSize))
-        
+        segrulesDataOffsetInEpilogue = tagsetDataSize + qualifiersDataSize + len(idAndCopyright)
+        res.extend(htonl(segrulesDataOffsetInEpilogue))
+
+        res.extend(idAndCopyright)
         # add additional data itself
         if tagsetData:
             assert type(tagsetData) == bytearray
