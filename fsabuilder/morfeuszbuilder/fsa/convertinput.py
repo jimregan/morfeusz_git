@@ -28,20 +28,42 @@ def _mergeEntries(inputLines, lowercase):
     if prevInterps:
         yield (prevKey, frozenset(prevInterps))
 
-def parseLine(line):
-    splitLine = line.strip().split(u'\t')
-    if len(splitLine) == 5:
-        orth, base, tag, name, qualifier = splitLine
-    elif len(splitLine) == 4:
-        orth, base, tag, name = splitLine
-        qualifier = ''
-    elif len(splitLine) == 3:
-        orth, base, tag = splitLine
-        name = ''
-        qualifier = ''
-    else:
-        raise ValueError('input line "%s" does not have 3, 4 or 5 tab-separated fields' % line)
-    return orth, base, tag, name, qualifier
+class LineParser(object):
+
+    def __init__(self):
+        self.inCopyright = False
+
+    def ignoreLine(self, line):
+        if not line:
+            return True
+        elif line.strip() == u'#<COPYRIGHT>':
+            self.inCopyright = True
+            return True
+        elif line.strip() == u'#</COPYRIGHT>':
+            self.inCopyright = False
+            return True
+        elif self.inCopyright:
+            return True
+        elif line and not ' ' in ''.join(line.split('\t')[:2]):
+            return False
+        else:
+            logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % line.strip().decode('utf8'))
+            return True
+
+    def parseLine(self, line):
+        splitLine = line.strip().split(u'\t')
+        if len(splitLine) == 5:
+            orth, base, tag, name, qualifier = splitLine
+        elif len(splitLine) == 4:
+            orth, base, tag, name = splitLine
+            qualifier = ''
+        elif len(splitLine) == 3:
+            orth, base, tag = splitLine
+            name = ''
+            qualifier = ''
+        else:
+            raise ValueError('input line "%s" does not have 3, 4 or 5 tab-separated fields' % line)
+        return orth, base, tag, name, qualifier
 
 def parseQualifiers(string):
     if string:
@@ -61,10 +83,11 @@ class PolimorfConverter4Analyzer(object):
     
     # we do it the ugly way (parse to plain text) because it is way more memory-efficient
     def _partiallyParseLines(self, inputLines):
+        lineParser = LineParser()
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip('\n')
-            if line:
-                orth, base, tag, name, qualifier = parseLine(line)
+            if not lineParser.ignoreLine(line):
+                orth, base, tag, name, qualifier = lineParser.parseLine(line)
                 
                 tagnum = self.tagset.getTagnum4Tag(tag)
                 namenum = self.namesMap[name]
@@ -132,10 +155,11 @@ class PolimorfConverter4Generator(object):
     
     # we do it the ugly way (parse to plain text) because it is way more memory-efficient
     def _partiallyParseLines(self, inputLines):
+        lineParser = LineParser()
         for line in inputLines:
             line = line.decode(self.inputEncoding).strip('\n')
-            if line:
-                orth, base, tag, name, qualifier = parseLine(line)
+            if not lineParser.ignoreLine(line):
+                orth, base, tag, name, qualifier = lineParser.parseLine(line)
                 if base:
                     homonymId = u''
                     if u':' in base:

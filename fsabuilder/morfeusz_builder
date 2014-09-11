@@ -173,10 +173,7 @@ def _concatFiles(inputFiles):
         if inputFile:
             with open(inputFile, 'r') as f:
                 for line in f:
-                    if line and not ' ' in ''.join(line.split('\t')[:2]):
-                        yield line
-                    else:
-                        logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % line.strip().decode('utf8'))
+                    yield line
 
 def _readDictIdAndCopyright(inputFiles):
     dictId = None
@@ -230,10 +227,11 @@ def _readDictIdAndCopyright(inputFiles):
 def _readNamesAndQualifiers(inputFiles):
     names = set([u''])
     qualifiers = set([frozenset()])
+    lineParser = convertinput.LineParser()
     for line in _concatFiles(inputFiles):
         line = line.strip().decode('utf8')
-        if line:
-            _, _, _, name, qualifier = convertinput.parseLine(line)
+        if not lineParser.ignoreLine(line):
+            _, _, _, name, qualifier = lineParser.parseLine(line)
             names.add(name)
             qualifiers.add(convertinput.parseQualifiers(qualifier))
     namesMap = dict([(name, idx) for idx, name in enumerate(sorted(list(names)))])

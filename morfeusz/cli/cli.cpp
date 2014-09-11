@@ -98,6 +98,11 @@ namespace morfeusz {
         }
         return res;
     }
+    
+    static string getDictCopyrightString(int argc, const char** argv, MorfeuszProcessorType processorType) {
+        Morfeusz* morfeusz = getMorfeusz4Help(argc, argv, processorType);
+        return morfeusz->getDictCopyright();
+    }
 
     static const char* getPraetOptionsString(int argc, const char** argv, MorfeuszProcessorType processorType) {
         Morfeusz* morfeusz = getMorfeusz4Help(argc, argv, processorType);
@@ -133,6 +138,26 @@ namespace morfeusz {
                 "-h", // Flag token. 
                 //                "-help", // Flag token.
                 "--help" // Flag token.
+                );
+        
+        opt.add(
+                "", // Default.
+                0, // Required?
+                0, // Number of args expected.
+                0, // Delimiter if expecting multiple args.
+                "Display morfeusz2 library copyright information.\n", // Help description.
+                //                "-help", // Flag token.
+                "--copyright" // Flag token.
+                );
+        
+        opt.add(
+                "", // Default.
+                0, // Required?
+                0, // Number of args expected.
+                0, // Delimiter if expecting multiple args.
+                "Display dictionary copyright information.\n", // Help description.
+                //                "-help", // Flag token.
+                "--dict-copyright" // Flag token.
                 );
 
         opt.add(
@@ -254,6 +279,14 @@ namespace morfeusz {
 
         if (opt.isSet("-h")) {
             printCLIUsage(argc, argv, processorType, opt, cout);
+            exit(0);
+        }
+        if (opt.isSet("--copyright")) {
+            cout << Morfeusz::getCopyright() << endl;
+            exit(0);
+        }
+        if (opt.isSet("--dict-copyright")) {
+            cout << getDictCopyrightString(argc, argv, processorType) << endl;
             exit(0);
         }
         return &opt;
