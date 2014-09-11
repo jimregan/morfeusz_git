@@ -49,7 +49,6 @@ namespace morfeusz {
         stringstream res;
         for (unsigned int i = 0; i < accum.size(); i++) {
             res << debugInterpsGroup(accum[i].segmentType, accum[i].textNoPrefixesStartPtr, accum[i].textEndPtr);
-            //        res << "(" << (int) accum[i].interpsGroup.type << ", " << string(accum[i].chunkStartPtr, accum[i].chunkStartPtr) << "), ";
         }
         return res.str();
     }
