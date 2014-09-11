@@ -55,11 +55,15 @@ namespace morfeusz {
     }
 
     static void doShiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
-        to.prefixChunks.insert(to.prefixChunks.end(), from.prefixChunks.begin(), from.prefixChunks.end());
-//        from.prefixChunks.resize(0);
+        to.prefixChunks.swap(from.prefixChunks); // from.prefixChunks are ignored anyway. Will swap them back in doUnshiftOrth
         to.prefixChunks.push_back(from);
         to.textStartPtr = from.textStartPtr;
         from.orthWasShifted = true;
+    }
+    
+    static void doUnshiftOrth(InterpretedChunk& from, InterpretedChunk& to) {
+        to.prefixChunks.swap(from.prefixChunks);
+        from.prefixChunks.pop_back();
     }
 
     static void feedStateDirectly(
@@ -359,6 +363,7 @@ namespace morfeusz {
             SegrulesState newSegrulesState;
             env.getCurrentSegrulesFSA().proceedToNext(ig.type, segrulesState, isAtWhitespace, newSegrulesState);
             if (!newSegrulesState.failed) {
+                
                 InterpretedChunk ic(
                         createChunk(ig, reader, newSegrulesState.shiftOrthFromPrevious, homonymId));
 
@@ -386,8 +391,10 @@ namespace morfeusz {
             bool caseMatches,
             const SegrulesState& newSegrulesState,
             InterpretedChunk& ic) const {
+        bool orthShifted = false;
         if (!accum.empty() && accum.back().shiftOrth) {
             doShiftOrth(accum.back(), ic);
+            orthShifted = true;
         }
         if (!caseMatches && options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
             notMatchingCaseSegs++;
@@ -407,6 +414,9 @@ namespace morfeusz {
             doProcessOneWord(env, newReader, newSegrulesState);
         }
         accum.pop_back();
+        if (orthShifted) {
+            doUnshiftOrth(accum.back(), ic);
+        }
         if (!caseMatches && options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {
             notMatchingCaseSegs--;
         }

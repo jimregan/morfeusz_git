@@ -46,8 +46,10 @@ class LineParser(object):
             return True
         elif line and not ' ' in ''.join(line.split('\t')[:2]):
             return False
+        elif line.startswith(u'#!DICT-ID'):
+            return True
         else:
-            logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % line.strip().decode('utf8'))
+            logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % (line.strip()))
             return True
 
     def parseLine(self, line):

@@ -184,12 +184,16 @@ def _readDictIdAndCopyright(inputFiles):
                 inCopyright = False
                 for linenum, line in enumerate(f, start=1):
                     if dictId is None and line.startswith(u'#!DICT-ID'):
-                        dictIdTag, _, dictId = line.strip().partition(u' ')[2]
+                        dictIdTag, _, dictId = line.strip().partition(u' ')
                         exceptions.validate(
                             dictIdTag == u'#!DICT-ID',
                             u'Dictionary ID tag must be followed by a space character and dictionary ID string')
-
-
+                        exceptions.validate(
+                            len(line.split(u' ')) > 1,
+                            u'%s:%d: Must provide DICT-ID' % (inputFile, linenum))
+                        exceptions.validate(
+                            len(line.split(u' ')) == 2,
+                            u'%s:%d: DICT-ID must not contain spaces' % (inputFile, linenum))
                     elif copyright is None and line.startswith(u'#<COPYRIGHT>'):
                         exceptions.validate(
                             line.strip() == u'#<COPYRIGHT>',
