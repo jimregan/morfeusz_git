@@ -106,7 +106,7 @@ Customizing build process
 Optional CMake variables:
 
 CMAKE_BUILD_TYPE - manually set build type (possible values Debug, Release, RelWithDebInfo and MinSizeRel). 
-Set to Debug if you want to include debugging symbols.
+Set to Debug if you want to include debugging symbols. Default value is "Release".
 
 INPUT_TAGSET - tagset file
 SEGMENT_RULES_FILE - segmentation rules file
