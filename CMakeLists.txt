@@ -22,7 +22,7 @@ elseif (INPUT_DICTIONARIES)
 elseif (NOT SKIP_DICTIONARY_BUILDING)
     message (WARNING "Will build WITHOUT DICTIONARY. Set INPUT_DICTIONARIES option to build with dictionary.")
 endif ()
-set (CMAKE_BUILD_TYPE Release)
+set (CMAKE_BUILD_TYPE Debug)
 #~ set (CMAKE_SKIP_RPATH ON)
 
 message ("Version=${Morfeusz_VERSION}")

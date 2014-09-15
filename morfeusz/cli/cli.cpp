@@ -235,7 +235,7 @@ namespace morfeusz {
                     1, // Number of args expected.
                     0, // Delimiter if expecting multiple args.
                     "token numbering strategy\n\
- * SEPARATE_NUMBERING (default) - Start from 0 and reset counter for every line\n\
+ * SEPARATE_NUMBERING (default) - Start from 0 and reset counter for each line of input text.\n\
  * CONTINUOUS_NUMBERING - start from 0 and never reset counter\n", // Help description.
                     //                    "-token-numbering", // Flag token.
                     "--token-numbering" // Flag token.

@@ -74,6 +74,7 @@ set(SRC_FILES
     deserialization/MorphDeserializer.cpp
     morfeusz2_c.cpp
     c_api/ResultsManager.cpp
+    morfeusz_analyzer_old.cpp
 )
 
 if (EMBEDDED_DEFAULT_DICT)
@@ -88,9 +89,11 @@ add_library (libmorfeusz SHARED ${SRC_FILES})
 set_target_properties (libmorfeusz PROPERTIES OUTPUT_NAME "morfeusz2")
 
 add_executable (morfeusz_analyzer morfeusz_analyzer.cpp)
+add_executable (morfeusz_analyzer_old morfeusz_analyzer_old.cpp)
 add_executable (morfeusz_generator morfeusz_generator.cpp)
 
 target_link_libraries (morfeusz_analyzer libmorfeusz)
+target_link_libraries (morfeusz_analyzer_old libmorfeusz)
 target_link_libraries (morfeusz_generator libmorfeusz)
 
 add_subdirectory (wrappers)

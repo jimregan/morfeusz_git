@@ -30,7 +30,7 @@ void TestCAPI::tearDown() {
 void TestCAPI::testTwoSimpleInvocations() {
     cerr << "testTwoSimpleInvocations" << endl;
 
-    char* text = const_cast<char*> ("AAaaBBbbCCcc DDDD.");
+    char* text = "AAaaBBbbCCcc DDDD.";
     InterpMorf* results = morfeusz_analyse(text);
     CPPUNIT_ASSERT_EQUAL(0, results[0].p);
     CPPUNIT_ASSERT_EQUAL(1, results[0].k);
@@ -51,7 +51,7 @@ void TestCAPI::testTwoSimpleInvocations() {
     //    CPPUNIT_ASSERT_EQUAL(string("ign"), string(results[2].interp));
     CPPUNIT_ASSERT_EQUAL(-1, results[3].p);
 
-    char* text1 = const_cast<char*> (string("EEeeFFff").c_str());
+    char* text1 = "EEeeFFff";
     results = morfeusz_analyse(text1);
     CPPUNIT_ASSERT_EQUAL(0, results[0].p);
     CPPUNIT_ASSERT_EQUAL(1, results[0].k);
@@ -68,7 +68,7 @@ void TestCAPI::testWhitespaceKEEP() {
 
     CPPUNIT_ASSERT_EQUAL(1, morfeusz_set_option(MORFOPT_WHITESPACE, MORFEUSZ_KEEP_WHITESPACE));
 
-    char* text = const_cast<char*> (string("AAaaBBbbCCcc  .").c_str());
+    char* text = "AAaaBBbbCCcc  .";
     InterpMorf* results = morfeusz_analyse(text);
     CPPUNIT_ASSERT_EQUAL(0, results[0].p);
     CPPUNIT_ASSERT_EQUAL(1, results[0].k);
@@ -96,7 +96,7 @@ void TestCAPI::testWhitespaceAPPEND() {
 
     CPPUNIT_ASSERT_EQUAL(1, morfeusz_set_option(MORFOPT_WHITESPACE, MORFEUSZ_APPEND_WHITESPACE));
 
-    char* text = const_cast<char*> (string("AAaaBBbbCCcc  .").c_str());
+    char* text = "AAaaBBbbCCcc  .";
     InterpMorf* results = morfeusz_analyse(text);
     CPPUNIT_ASSERT_EQUAL(0, results[0].p);
     CPPUNIT_ASSERT_EQUAL(1, results[0].k);
@@ -135,7 +135,7 @@ void TestCAPI::testTokenNumberingCONTINUOUS() {
     CPPUNIT_ASSERT_EQUAL(1, morfeusz_set_option(MORFOPT_WHITESPACE, MORFEUSZ_SKIP_WHITESPACE));
     CPPUNIT_ASSERT_EQUAL(1, morfeusz_set_option(MORFOPT_TOKEN_NUMBERING, MORFEUSZ_CONTINUOUS_TOKEN_NUMBERING));
 
-    InterpMorf* results = morfeusz_analyse(const_cast<char*>("aaaabbbb bbbbcccc."));
+    InterpMorf* results = morfeusz_analyse("aaaabbbb bbbbcccc.");
     CPPUNIT_ASSERT_EQUAL(0, results[0].p);
     CPPUNIT_ASSERT_EQUAL(1, results[0].k);
     CPPUNIT_ASSERT_EQUAL(string("aaaabbbb"), string(results[0].forma));

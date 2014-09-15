@@ -27,7 +27,8 @@ InterpMorf* morfeusz_analyse(char *tekst) {
     static ResultsManager resultsManager(morfeuszInstance);
     static vector<MorphInterpretation> results;
     results.clear();
-    morfeuszInstance->analyse(string(tekst), results);
+    string input(tekst);
+    morfeuszInstance->analyse(input, results);
     return resultsManager.convertResults(results);
 }
 
