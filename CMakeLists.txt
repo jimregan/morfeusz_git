@@ -22,7 +22,10 @@ elseif (INPUT_DICTIONARIES)
 elseif (NOT SKIP_DICTIONARY_BUILDING)
     message (WARNING "Will build WITHOUT DICTIONARY. Set INPUT_DICTIONARIES option to build with dictionary.")
 endif ()
-set (CMAKE_BUILD_TYPE Debug)
+
+if (NOT CMAKE_BUILD_TYPE)
+    set (CMAKE_BUILD_TYPE Release)
+endif ()
 #~ set (CMAKE_SKIP_RPATH ON)
 
 message ("Version=${Morfeusz_VERSION}")
@@ -126,7 +129,7 @@ endif ()
 ### Compilation and linking flags
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align -Wno-write-strings")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -O2")
     set (CMAKE_SHARED_LIBRARY_PREFIX "")
