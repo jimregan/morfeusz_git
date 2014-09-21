@@ -350,6 +350,8 @@ namespace std {
 %typemap(javaclassmodifiers) std::vector "class"
 %typemap(javaclassmodifiers) std::list "class"
 %typemap(javaclassmodifiers) std::set "class"
+%typemap(javaclassmodifiers) morfeusz::MorphInterpretation "class"
+%typemap(javaclassmodifiers) morfeusz::ResultsIterator "class"
 
 %include "enums.swg"
 
