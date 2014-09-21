@@ -113,6 +113,9 @@ namespace std {
     };
 }
 
+%rename(_MorphInterpretation) morfeusz::MorphInterpretation;
+%rename(_ResultsIterator) morfeusz::ResultsIterator;
+
 %rename(_dictionarySearchPaths) morfeusz::Morfeusz::dictionarySearchPaths;
 %rename(_getAvailableAgglOptions) morfeusz::Morfeusz::getAvailableAgglOptions;
 %rename(_getAvailablePraetOptions) morfeusz::Morfeusz::getAvailablePraetOptions;
@@ -187,14 +190,27 @@ namespace std {
     }
 }
 
-%typemap(javainterfaces) morfeusz::ResultsIterator "java.util.Iterator<MorphInterpretation>"
-%typemap(javabase) std::vector<morfeusz::MorphInterpretation> "java.util.AbstractList<MorphInterpretation>"
+//%typemap(javainterfaces) morfeusz::ResultsIterator "java.util.Iterator<_MorphInterpretation>"
+%typemap(javabase) std::vector<morfeusz::MorphInterpretation> "java.util.AbstractList<_MorphInterpretation>"
 %typemap(javabase) std::vector<std::string> "java.util.AbstractList<java.lang.String>"
 %typemap(javabase) std::list<std::string> "java.util.AbstractList<java.lang.String>"
 %typemap(javabase) std::set<std::string> "java.util.AbstractList<java.lang.String>"
 %typemap(javabase) morfeusz::MorfeuszException "java.lang.RuntimeException"
 
 %typemap(javacode) morfeusz::Morfeusz %{
+    
+    /**
+     * Analyze given text and return the results as iterator.
+     * It does not store results for whole text at once, so may be less memory-consuming for analysis of big texts.
+     * 
+     * NOT THREAD-SAFE (must have exclusive access to this instance).
+     * 
+     * @param text text for morphological analysis.
+     * @return iterator over morphological analysis results
+     */
+    public ResultsIterator analyseAsIterator(String text) {
+        return new ResultsIterator(_analyseAsIterator(text));
+    }
     
     /**
      * Analyze given text and return the results as list.
@@ -205,9 +221,9 @@ namespace std {
      * @return list containing the results of morphological analysis
     */
     public List<MorphInterpretation> analyseAsList(String text) {
-        InterpsList res = new InterpsList();
-        analyse(text, res);
-        return new ArrayList<MorphInterpretation>(res);
+        InterpsList interpsList = new InterpsList();
+        analyse(text, interpsList);
+        return MorphInterpretation.createList(interpsList);
     }
 
     /**
@@ -220,9 +236,9 @@ namespace std {
      * @throws MorfeuszException when given parameter contains whitespaces
      */
     public List<MorphInterpretation> generate(String lemma) {
-        InterpsList res = new InterpsList();
-        generate(lemma, res);
-        return new ArrayList<MorphInterpretation>(res);
+        InterpsList interpsList = new InterpsList();
+        generate(lemma, interpsList);
+        return MorphInterpretation.createList(interpsList);
     }
 
     /**
@@ -237,9 +253,9 @@ namespace std {
      * @throws MorfeuszException when given parameter contains whitespaces
      */
     public List<MorphInterpretation> generate(String lemma, int tagnum) {
-        InterpsList res = new InterpsList();
-        generate(lemma, tagnum, res);
-        return new ArrayList<MorphInterpretation>(res);
+        InterpsList interpsList = new InterpsList();
+        generate(lemma, tagnum, interpsList);
+        return MorphInterpretation.createList(interpsList);
     }
     
     /**
@@ -293,16 +309,6 @@ namespace std {
     }
 %}
 
-%typemap(javacode) morfeusz::ResultsIterator %{
-    
-    /**
-     * Removing of elements from this iterator is not supported.
-     */
-    public void remove() {
-        throw new java.lang.UnsupportedOperationException();
-    }
-%}
-
 %typemap(javacode) morfeusz::IdResolver %{
     
     public java.util.Collection<java.lang.String> getLabels(int labelsId) {
@@ -310,17 +316,18 @@ namespace std {
     }
 %}
 
-%typemap(javacode) morfeusz::MorphInterpretation %{
-    
-    public java.util.Collection<java.lang.String> getLabels(Morfeusz morfeusz) {
-        return _getLabels(morfeusz);
-    }
-%}
-
 %typemap(javafinalize) SWIGTYPE %{
     protected void finalize() {
-        if (swigCMemOwn) {
-            $moduleJNI.delete_$javaclassname(getCPtr(this));
+        delete();
+    }  
+
+    public synchronized void delete() {
+        if (swigCPtr != 0) {
+            if (swigCMemOwn) {
+                swigCMemOwn = false;
+                $moduleJNI.delete_$javaclassname(getCPtr(this));
+            }  
+            swigCPtr = 0;
         }
     }
 %}

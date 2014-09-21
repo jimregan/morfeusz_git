@@ -72,7 +72,7 @@ def next(self):
         raise StopIteration
 %}
 
-%feature("shadow") morfeusz::Morfeusz::analyseAsIterator %{
+%feature("shadow") morfeusz::Morfeusz::_analyseAsIterator %{
 
 def analyse_iter(self, text):
     """

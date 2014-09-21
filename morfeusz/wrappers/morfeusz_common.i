@@ -9,11 +9,11 @@ namespace morfeusz {
     %ignore Charset;
     
     %newobject Morfeusz::createInstance();
-    %newobject Morfeusz::analyseAsIterator(const char*) const;
+    %newobject Morfeusz::_analyseAsIterator(const char*) const;
 }
 
 %extend morfeusz::Morfeusz {
-    morfeusz::ResultsIterator* morfeusz::Morfeusz::analyseAsIterator(const char* text) const {
+    morfeusz::ResultsIterator* morfeusz::Morfeusz::_analyseAsIterator(const char* text) const {
         return dynamic_cast<const morfeusz::MorfeuszImpl*>($self)->analyseWithCopy(text);
     }
 }

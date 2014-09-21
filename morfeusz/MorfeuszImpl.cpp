@@ -324,7 +324,7 @@ namespace morfeusz {
             const SegrulesState& segrulesState) const {
         if (this->options.debug) {
             cerr << "----------" << endl;
-            cerr << "PROCESS: '" << reader.getCurrPtr() << "', already recognized: " << debugAccum(accum) << endl;
+            cerr << "doProcessOneWord: '" << reader.getCurrPtr() << "', already recognized: " << debugAccum(accum) << endl;
         }
         StateType state = env.getFSA().getInitialState();
         string homonymId;
@@ -355,7 +355,7 @@ namespace morfeusz {
             const string& homonymId,
             const InterpsGroup& ig) const {
         if (this->options.debug) {
-            std::cerr << "FOUND interps group, segmentType=" << (int) ig.type << std::endl;
+            std::cerr << "processInterpsGroup, segmentType=" << (int) ig.type << std::endl;
         }
         bool caseMatches = env.getCasePatternHelper().checkInterpsGroupOrthCasePatterns(env, reader.getWordStartPtr(), reader.getCurrPtr(), ig);
         if (caseMatches || options.caseHandling == CONDITIONALLY_CASE_SENSITIVE) {

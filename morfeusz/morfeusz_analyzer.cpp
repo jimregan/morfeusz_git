@@ -22,7 +22,7 @@ int main(int argc, const char** argv) {
     string line;
     vector<MorphInterpretation> res;
     while (getline(cin, line)) {
-        res.clear();
+        res.resize(0);
         morfeusz->analyse(line, res);
         printMorphResults(*morfeusz, res, true);
     }
