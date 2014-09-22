@@ -50,8 +50,8 @@ public class MorphInterpretation {
         this.labelsId = mi.getLabelsId();
     }
     
-    static java.util.List<MorphInterpretation> createList(InterpsList interpsList) {
-        java.util.List res = new java.util.ArrayList<>();
+static java.util.List<MorphInterpretation> createList(InterpsList interpsList) {
+	java.util.List<MorphInterpretation> res = new java.util.ArrayList<MorphInterpretation>();
         for (_MorphInterpretation mi: interpsList) {
             res.add(new MorphInterpretation(mi));
         }
