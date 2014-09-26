@@ -16,6 +16,8 @@ if (DEFAULT_DICT_NAME)
         set (DICT_VERSION "1.0")
         message (WARNING "Dictionary version is missing. Setting default value=1.0")
     endif()
+
+set (CPACK_PACKAGE_VERSION "${Morfeusz_VERSION}")
     
 elseif (INPUT_DICTIONARIES)
     message (FATAL_ERROR "DEFAULT_DICT_NAME option is missing.")
