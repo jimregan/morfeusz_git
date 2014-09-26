@@ -57,7 +57,7 @@ else ()
     set (DEFAULT_DICT_INSTALL_DIR "share/morfeusz/dictionaries")
 endif ()
 
-add_definitions (-DMORFEUSZ2_VERSION="${Morfeusz_VERSION}")
+add_definitions (-DMORFEUSZ2_VERSION="${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
 add_definitions (-DMORFEUSZ_DEFAULT_DICT_NAME="${DEFAULT_DICT_NAME}")
 add_definitions (-DBUILDING_MORFEUSZ)
 if (EMBEDDED_DEFAULT_DICT)
