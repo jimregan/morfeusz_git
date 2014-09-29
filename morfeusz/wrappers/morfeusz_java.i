@@ -259,7 +259,9 @@ namespace std {
     }
     
     /**
-     * Get list of paths for dictionaries searching
+     * Get list of paths for dictionaries searching.
+     * It is neccessary to modify this list
+     * to search for dictionaries under non-default paths.
      * 
      * The returned list is NOT THREAD-SAFE (must have exclusive acces to modify it).
      * 
