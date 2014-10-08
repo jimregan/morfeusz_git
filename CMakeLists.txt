@@ -9,7 +9,7 @@ set (Morfeusz_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Mor
 if (DEFAULT_DICT_NAME)
     set (Morfeusz_VERSION_TWEAK "${DEFAULT_DICT_NAME}")
     if (DICT_VERSION)
-        set (Morfeusz_VERSION_TWEAK "${Morfeusz_VERSION_TWEAK}-${DICT_VERSION}")
+        set (Morfeusz_VERSION_TWEAK "${Morfeusz_VERSION_TWEAK}.${DICT_VERSION}")
     endif()
     set (Morfeusz_VERSION "${Morfeusz_VERSION}.${Morfeusz_VERSION_TWEAK}")
     if (NOT DICT_VERSION)
