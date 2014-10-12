@@ -45,7 +45,7 @@ def _tryToSubstituteArgDefine(s, t, defines):
     elif defineName in defines:
         return '%s ( %s )' % (defines[defineName].val, substituteValue)
     else:
-        return ' '.join(t)
+        return '%s ( %s )' % (defineName, substituteValue)
 
 def _tryToSubstituteNonArgDefine(s, t, defines):
     
