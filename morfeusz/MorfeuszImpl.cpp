@@ -441,6 +441,8 @@ namespace morfeusz {
         while (currInput != chunkBounds.chunkEndPtr) {
             prevInput = currInput;
             const char* nonSeparatorInputEnd = prevInput;
+            
+            // advance through non-separator chars
             do {
                 codepoint = env.getCharsetConverter().next(currInput, chunkBounds.chunkEndPtr);
                 if (!env.isSeparator(codepoint)) {
@@ -448,10 +450,11 @@ namespace morfeusz {
                 }
             } while (currInput != chunkBounds.chunkEndPtr && !env.isSeparator(codepoint));
 
+            // advance through separator chars
             if (env.isSeparator(codepoint)) {
                 separatorFound = true;
                 if (nonSeparatorInputEnd != prevInput) {
-                    // there are non-separators + separators
+                    // there are some non-separators + some separators
 
                     int startNode = results.empty() ? startNodeNum : results.back().endNode;
                     // process part before separators
@@ -482,11 +485,12 @@ namespace morfeusz {
         // currInput == chunkBounds.chunkEndPtr
         if (!env.isSeparator(codepoint)) {
             if (separatorFound) {
-                // process part after separators
+                // process (remaining) non-separators
                 int startNode = results.empty() ? startNodeNum : results.back().endNode;
                 TextReader newReader4(prevInput, chunkBounds.chunkEndPtr, env);
                 this->processOneWord(env, newReader4, startNode, results, true);
             } else {
+                // no separators found at all - whole chunk is ign
                 this->appendIgnotiumToResults(env, chunkBounds, startNodeNum, results);
             }
         }
