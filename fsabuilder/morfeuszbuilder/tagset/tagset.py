@@ -47,6 +47,8 @@ class Tagset(object):
                     tag = line.split(Tagset.SEP)[1]
                     if tag in res:
                         raise FSABuilderException('duplicate tag: "%s"' % tag)
+                    if int(tagNum) in res.values():
+                        raise FSABuilderException('line %d: tagId %d assigned for tag "%s" already appeared somewhere else.' % (linenum, int(tagNum), tag))
                     res[tag] = int(tagNum)
     
     def getAllTags(self):
