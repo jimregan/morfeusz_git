@@ -7,16 +7,6 @@ praet=split composite
 
 #define moze_interp(segmenty) wsz_interp segmenty wsz_interp
 
-#define rzymskie_jednosci ( (rom_v? rom_i{1,3}) | (rom_i? rom_v) | (rom_i rom_x) )
-
-#define rzymskie_dziesiatki ( (rom_l? rom_x{1,3}) | (rom_x? rom_l) | (rom_x rom_c) )
-
-#define rzymskie_setki ( (rom_m? rom_c{1,3}) | (rom_c? rom_m) | (rom_c rom_m) )
-
-#define rzymskie_tysiace ( rom_m{1,3} )
-
-#define roman_num ((rzymskie_tysiace)? rzymskie_setki? rzymskie_dziesiatki? rzymskie_jednosci)
-
 #define rzeczowniki (subst|ger|depr)
 
 #define	adj (adj_pos|adv_pos|adj_com|adv_com)
@@ -25,6 +15,10 @@ praet=split composite
 #define aglpl (aglpl1_wok|aglpl1_nwok|aglpl2_wok|aglpl2_nwok)
 
 #define praet_sg (praet_sg_masc|praet_sg_nmasc)
+
+#define impt (impt_sg_perf|impt_sg_imperf|impt_pl_perf|impt_pl_imperf)
+
+#define fin (fin_imperf|fin_perf)
 
 # Segmenty występujące samodzielnie:
 #
@@ -107,6 +101,14 @@ moze_interp(praet_sg) !weak
 moze_interp(praet_pl) !weak
 #endif
 
+# Prefiksy czasownikowe dla form fin, rozkaźników i imiesłowów przysłówkowych
+moze_interp(prefv> fin)
+moze_interp(prefv> impt)
+moze_interp(pcon)
+moze_interp(pant)
+moze_interp(prefv> pcon)
+moze_interp(prefv> pant)
+
 
 # np. „by·ś”
 moze_interp(by (aglsg1_nwok|aglsg2_nwok))
@@ -178,24 +180,50 @@ moze_interp( nie > dywiz > subst )
 # Liczba zapisana jako ciąg cyfr:
 moze_interp( dig>* dig )
 
-# Liczba rzymska zapisana jako ciąg cyfr rzymskich:
-# (kiepskie, trzeba poprawić wyrażeniem regularnym)
-# moze_interp( roman_num )
-# roman_num
-# rzymskie_jednosci
-# rzymskie_dziesiatki
-# rzymskie_setki
-# rzymskie_tysiace
-# moze_interp( rzymskie_jednosci )
-# moze_interp( rzymskie_dziesiatki )
-# moze_interp( rzymskie_setki )
-# moze_interp( rzymskie_tysiace )
+# Liczby rzymskie
+#define	one_to_three(rdig)	(rdig>{0,2} rdig)
+
+#define rzymskie1	( (romandigI> romandigX) | (romandigV> one_to_three(romandigI)) | (romandigI> romandigV) | one_to_three(romandigI) )
+#define rzymskie10	( (romandigX> romandigC) | (romandigL> one_to_three(romandigX)) | (romandigX> romandigL) | one_to_three(romandigX) )
+#define rzymskie100	( (romandigC> romandigM) | (romandigD> one_to_three(romandigC)) | (romandigC> romandigD) | one_to_three(romandigC) )
+
+#define rzymskie1_shift	( (romandigI> romandigX>) | (romandigV> romandigI>{0,3}) | (romandigI> romandigV>) | romandigI>{1,3} )
+#define rzymskie10_shift	( (romandigX> romandigC>) | (romandigL> romandigX>{0,3}) | (romandigX> romandigL>) | romandigX>{1,3} )
+#define rzymskie100_shift	( (romandigC> romandigM>) | (romandigD> romandigC>{0,3}) | (romandigC> romandigD>) | romandigC>{1,3} )
+
+#define rzymskie1000	( one_to_three(romandigM) )
+#define rzymskie1000_shift	( romandigM>{1,3} )
+
+#define liczba_rzymska  ((rzymskie1000_shift? rzymskie100_shift? rzymskie10_shift? rzymskie1) | (rzymskie1000_shift? rzymskie100_shift? rzymskie10) | (rzymskie1000_shift? rzymskie100) | rzymskie1000)
+
+# Liczby rzymskie
+liczba_rzymska
+
 
 # Formacje prefiksalne
 #### trzeba wydzielić odpowiednie samodze!
 # rzeczownikowe
 # np. „euro·sodoma”, „e-·papieros”
 moze_interp(rzeczowniki)
+
+# nazwy własne i etnonimy — wyłączenie ze zbioru ‹rzeczowniki›
+moze_interp(wlasne)
+moze_interp(etnonimy)
+
+# połączenia nazwisk i członów nazwisk dywizem: Korwin-Mikke
+moze_interp(nazwiska)
+moze_interp(czlonynazwisk)
+moze_interp(czlonynazwisk> dywiz> nazwiska)
+moze_interp(nazwiska> dywiz> nazwiska)
+
+# Nazwy geograficzne dwuczłonowe: Bielsko-Biała, Kudowa-Zdrój.
+# Nie jest to idealne rozwiązanie, ale peszego chyba nie ma…
+moze_interp(geograficzne)
+moze_interp(geograficzne dywiz geograficzne)
+
+# prefiks z etnonimem tylko przez połączenie dywizem: pseudo-Abchaz
+moze_interp(prefs> dywiz> etnonimy)
+
 moze_interp(subst_anty_zloz)
 moze_interp( prefs> rzeczowniki ) !weak
 # wersja z dywizem, bez ‹e-›
@@ -204,18 +232,19 @@ moze_interp( pref_dyw> rzeczowniki ) !weak
 # czasownikowe np. „po·nakapywać”
 moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|impt_sg_perf|impt_pl_perf)
 moze_interp( prefv> (inf_imperf by? |praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
-# przymiotnikowe np. „do·żylny”, „euro·sodomski”, „bez·argumentowy”
+# przymiotnikowe i przysłówkowe np. „do·żylny”, 
+# „euro·sodomski”, „bez·argumentowy”
 moze_interp(ppas|adv_pos|pact)
 # moze_interp(prefa> adj)
-moze_interp( prefa> ( adj|pact|ppas ) ) !weak 
+moze_interp( prefa> ( adj|adv_pos|pact|ppas ) ) !weak 
 # wersja z dywizem, bez ‹e-›
-moze_interp( prefa> dywiz> ( adj|pact|ppas ) ) !weak 
-moze_interp( pref_dyw> ( adj|pact|ppas ) ) !weak 
+moze_interp( prefa> dywiz> ( adj|adv_pos|pact|ppas ) ) !weak 
+moze_interp( pref_dyw> ( adj|adv_pos|pact|ppas ) ) !weak 
 moze_interp( prefppas> ppas ) !weak
 
 # Apozycje z dywizem
 # np. „kobieta-prezydent”
-moze_interp( rzeczowniki (dywiz) rzeczowniki )
+moze_interp( rzeczowniki (dywiz) rzeczowniki ) !weak
 
 # Zakresy liczbowe, daty, np. 1911-1939.
 moze_interp((dig>* dig) dywiz (dig>* dig))
@@ -271,6 +300,7 @@ moze_interp(praet_pl z by (aglpl1_nwok|aglpl2_nwok))
 # dwudziestopięcioipółletni
 moze_interp( i )
 moze_interp( pol_zloz> adj_pos ) !weak
+moze_interp( pol_zloz> adv_pos ) !weak
 moze_interp( num_zloz>+ adj_pos ) !weak
 moze_interp( num_zloz>+ i> pol_zloz> adj_pos ) !weak
 
@@ -312,7 +342,7 @@ moze_interp( dig>+ dywiz> (adj_pos|adv_pos) )
 moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
 
 # liczba rzymska z formą przymiotnikową: XIX-wieczny
-# moze_interp( roman_num> dywiz> (adj_pos|adv_pos) )
+# moze_interp( liczba_rzymska> dywiz> (adj_pos|adv_pos) )
 
 # formy złoż. z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
 # moze_interp( num_zloz>+ suf_num ) !weak
@@ -329,9 +359,17 @@ moze_interp( dig>+ dywiz> suf_num )
 # ‹by› z predykatywami łącznie
 # moze_interp(pred by) !weak
 
+# BŁĘDNY ZAPISY Z «NIE» POWINNY BYĆ UWZGLĘDNIONE 
+# RACZEJ NA POZIOMIE EKSPORTU, A NIE REGUŁ SEGMENTACJI
+
 # Stopień najwyższy z ‹nie›:
 # np. „nie·naj·zieleńszy”, „nie·naj·mądrzej”
 # moze_interp( nie> naj> adj_sup ) !weak
+
+# Imiesłowy przysłówkowe z ‹nie›:
+# niepisząc, nienapisawszy
+# moze_interp( nie> pcon) !weak
+# moze_interp( nie> pant) !weak
 
 # zapis typu: 50-tych, 20-te
 # moze_interp(dig>+ dywiz> suf_ord)
@@ -369,6 +407,13 @@ adj_anty_zloz
 subst_anty_zloz
 fin_perf
 fin_imperf
+pcon
+pant
+wlasne
+etnonimy
+nazwiska
+czlonynazwisk
+geograficzne
 subst
 ger
 depr
@@ -379,6 +424,13 @@ imps_imperf
 ze
 z
 dig
+romandigI
+romandigV
+romandigX
+romandigL
+romandigC
+romandigD
+romandigM
 adja
 adj_pos
 adj_com
@@ -428,13 +480,6 @@ prep_na
 emoticon
 killfile
 pred
-rom_i
-rom_v
-rom_x
-rom_l
-rom_d
-rom_c
-rom_m
 samodz
 
 
@@ -488,6 +533,32 @@ praet_pl	winien:pl:%
 praetcond	cond:%
 fin_perf	fin:%:perf
 fin_imperf	fin:%:imperf
+pcon		pcon:%
+pant		pant:%
+wlasne		subst:%	name=imię
+nazwiska	subst:%	name=nazwisko
+geograficzne	subst:%	name=geograficzna
+wlasne		subst:%	name=budowla
+wlasne		subst:%	name=firma
+wlasne		subst:%	name=instytucja
+wlasne		subst:%	name=marka
+wlasne		subst:%	name=oprogramowanie
+wlasne		subst:%	name=organizacja
+wlasne		subst:%	name=patronimicum
+wlasne		subst:%	name=przydomek
+wlasne		subst:%	name=pseudonim
+wlasne		subst:%	name=święto
+wlasne		subst:%	name=tytuł
+wlasne		subst:%	name=własna
+wlasne		subst:%	name=osoba
+wlasne		subst:%	name=członek_rodu
+czlonynazwisk	subst:%	name=człon_nazwiska
+czlonynazwisk	subst:%	name=człon_nazwiska_(herb)
+wlasne		subst:%	name=człon_nazwy_firmy
+wlasne		subst:%	name=język_programowania
+wlasne		subst:%	name=krój_pisma
+wlasne		subst:%	name=środek_lokomocji
+etnonimy	subst:%	labels=etn.
 subst		subst:%
 ger		ger:%
 depr		depr:%
@@ -516,13 +587,6 @@ by	by	qub
 li	li	qub
 ze	+że	qub
 z	+ż	qub
-killfile	+ć	qub
-killfile	+anka	subst:%
-killfile	+owa	subst:%
-killfile	+anka	subst:%
-killfile	+ina	subst:%
-killfile	+yna	subst:%
-killfile	+ówna	subst:%
 z_aglt_by	aby	comp
 z_aglt	bowiem	comp
 z_aglt_by	by	comp
@@ -538,6 +602,8 @@ z_aglt_by	gdyby	comp
 z_aglt_nwok	gdy	adv
 z_aglt_nwok	gdzie	qub
 z_aglt_nwok	gdzie	adv
+z_aglt		gdzież	adv
+z_aglt		któż	subst:%
 z_aglt_nwok	kto	subst:%
 z_aglt_by	jakby	comp
 z_aglt_by	jakoby	comp
@@ -668,13 +734,13 @@ suf_num	+lecie	subst:%
 suf_num	+krotność	subst:%
 suf_ord	ty	adj:%
 suf_ord	y	adj:%
-rom_i	I	romandig
-rom_v	V	romandig
-rom_x	X	romandig
-rom_l	L	romandig
-rom_d	D	romandig
-rom_c	C	romandig
-rom_m	M	romandig
+romandigI	I	romandig
+romandigV	V	romandig
+romandigX	X	romandig
+romandigL	L	romandig
+romandigC	C	romandig
+romandigD	D	romandig
+romandigM	M	romandig
 ja	ja	ppron12:sg:nom:%
 ty	ty	ppron12:sg:nom:%
 my	my	ppron12:pl:nom:%

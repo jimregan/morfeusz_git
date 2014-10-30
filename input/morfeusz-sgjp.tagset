@@ -1,4 +1,4 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.5.0
+#!TAGSET-ID pl.sgjp.morfeusz-0.5.1
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -756,7 +756,7 @@
 98	burk
 # abbreviations:
 97	brev:pun
-97	brev:npun
+801	brev:npun
 # punctuation:
 235	interp
 # digits:
