@@ -1,4 +1,4 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.5.0
+#!TAGSET-ID pl.sgjp.morfeusz-0.5.1
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -135,6 +135,7 @@
 458	ppron12:sg:loc:m1.m2.m3.f.n1.n2:sec
 459	ppron12:sg:nom:m1.m2.m3.f.n1.n2:pri
 460	ppron12:sg:nom:m1.m2.m3.f.n1.n2:sec
+800	ppron12:sg:voc:m1.m2.m3.f.n1.n2:pri
 461	ppron12:sg:voc:m1.m2.m3.f.n1.n2:sec
 429	ppron12:pl:acc:_:pri
 430	ppron12:pl:acc:_:sec
@@ -755,7 +756,7 @@
 98	burk
 # abbreviations:
 97	brev:pun
-97	brev:npun
+801	brev:npun
 # punctuation:
 235	interp
 # digits:
