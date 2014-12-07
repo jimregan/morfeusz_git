@@ -116,29 +116,6 @@ set<InflexionGraph::Path> InflexionGraph::getPossiblePaths(unsigned int node) {
     }
 }
 
-/**
- * To compare results of two segmentation rules like "a> b> c" and "d> e> c"
- * 
- * @param v1
- * @param v2
- * @return 
- */
-static bool areIsomorphic(const vector<InterpretedChunk>& v1, const vector<InterpretedChunk>& v2) {
-    if (v1.size() == v2.size()) {
-        unsigned int i;
-        for (i = 0; i < v1.size(); i++) {
-            if (v1[i].chunkStartPtr != v2[i].chunkStartPtr
-                    || v1[i].chunkEndPtr != v2[i].chunkEndPtr) {
-                return false;
-            }
-        }
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 static bool containsEqualEdge(const vector<InflexionGraph::Edge>& edges, const InflexionGraph::Edge& e) {
     for (unsigned int i = 0; i < edges.size(); i++) {
         const InflexionGraph::Edge& e1 = edges[i];
@@ -147,9 +124,7 @@ static bool containsEqualEdge(const vector<InflexionGraph::Edge>& edges, const I
                 && e1.chunk.textEndPtr == e.chunk.textEndPtr
                 && e1.chunk.segmentType == e.chunk.segmentType
                 && e1.nextNode == e.nextNode
-                && e1.chunk.textNoPrefixesStartPtr == e.chunk.textNoPrefixesStartPtr
-                && e1.chunk.interpsGroupPtr == e.chunk.interpsGroupPtr
-                && areIsomorphic(e1.chunk.prefixChunks, e.chunk.prefixChunks)) {
+                && e1.chunk.interpsGroupPtr == e.chunk.interpsGroupPtr) {
             return true;
         }
     }
