@@ -149,12 +149,17 @@ class RulesParser(object):
                                     ],
                                     lineNum)
     
+    def _createNewParenWithShiftOrthRule(self, rule, lineNum, line, segtypesHelper):
+        rule.makeShiftOrthRule()
+        return rule
+    
     def _doParseOneLine(self, lineNum, line, segtypesHelper, filename):
         rule = Forward()
         tagRule = Word(alphanums+'_')
         shiftOrthRule = Word(alphanums+'_') + Suppress('>')
         parenRule = Suppress('(') + rule + Suppress(')')
-        atomicRule = tagRule ^ shiftOrthRule ^ parenRule
+        parenWithShiftOrthRule = parenRule + Suppress('>')
+        atomicRule = tagRule ^ shiftOrthRule ^ parenWithShiftOrthRule ^ parenRule
         zeroOrMoreRule = atomicRule + Suppress('*')
         oneOrMoreRule = atomicRule + Suppress('+')
         optionalRule = atomicRule + Suppress('?')
@@ -169,11 +174,14 @@ class RulesParser(object):
 #             concatRule = OneOrMore(complexRule)
 #         else:
 #             concatRule = ZeroOrMore(shiftOrthRule) + tagRule
-        rule << concatRule + Optional(CaselessLiteral('!weak'))
+        
+        rule << concatRule
+        completeRule = rule + Optional(CaselessLiteral('!weak'))
         
         tagRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], False, lineNum, line, segtypesHelper))
         shiftOrthRule.setParseAction(lambda string, loc, toks: self._createNewTagRule(toks[0], True, lineNum, line, segtypesHelper))
-#         parenRule.setParseAction(lambda string, loc, toks: toks[0])
+        parenWithShiftOrthRule.setParseAction(lambda string, loc, toks: self._createNewParenWithShiftOrthRule(toks[0], lineNum, line, segtypesHelper))
+        parenRule.setParseAction(lambda string, loc, toks: toks[0])
         zeroOrMoreRule.setParseAction(lambda string, loc, toks: rules.ZeroOrMoreRule(toks[0], lineNum))
         quantRule1.setParseAction(lambda string, loc, toks: self._createQuantRule1(toks[0], int(toks[1], 10), lineNum, line, segtypesHelper))
         quantRule2.setParseAction(lambda string, loc, toks: self._createQuantRule2(toks[0], int(toks[1], 10), int(toks[2], 10), lineNum, line, segtypesHelper))
@@ -182,8 +190,8 @@ class RulesParser(object):
         oneOrMoreRule.setParseAction(lambda string, loc, toks: rules.ConcatRule([toks[0], rules.ZeroOrMoreRule(toks[0], lineNum)], lineNum))
         oneOfRule.setParseAction(lambda string, loc, toks: rules.OrRule(list(toks), lineNum))
         concatRule.setParseAction(lambda string, loc, toks: toks[0] if len(toks) == 1 else rules.ConcatRule(list(toks), lineNum))
-        rule.setParseAction(lambda string, loc, toks: toks[0].setWeak(len(toks) == 2))
-        parsedRule = pyparseString.pyparseString(rule, lineNum, line, filename)[0]
+        completeRule.setParseAction(lambda string, loc, toks: toks[0].setWeak(len(toks) == 2))
+        parsedRule = pyparseString.pyparseString(completeRule, lineNum, line, filename)[0]
 #         print parsedRule, '-->', parsedRule.transformToGeneratorVersion()
         return parsedRule
 

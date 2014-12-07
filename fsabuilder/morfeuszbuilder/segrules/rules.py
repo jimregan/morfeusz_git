@@ -43,6 +43,9 @@ class SegmentRule(object):
 
     def getAdditionalAtomicRules4Generator(self):
         raise NotImplementedError()
+    
+    def makeShiftOrthRule(self):
+        pass
 
     def __repr__(self):
         return str(self)
@@ -83,6 +86,9 @@ class TagRule(SegmentRule):
     
     def isShiftOrthRule(self):
         return self.shiftOrth
+    
+    def makeShiftOrthRule(self):
+        self.shiftOrth = True
 
     def getAtomicRules(self):
         yield self
@@ -101,6 +107,9 @@ class UnaryRule(SegmentRule):
     
     def isShiftOrthRule(self):
         return self.child.isShiftOrthRule()
+    
+    def makeShiftOrthRule(self):
+        self.child.makeShiftOrthRule()
 
     def getAtomicRules(self):
         for leaf in self.child.getAtomicRules():
@@ -127,6 +136,10 @@ class ComplexRule(SegmentRule):
         for child in self.children:
             for leaf in child.getAtomicRules():
                 yield leaf
+    
+    def makeShiftOrthRule(self):
+        for child in self.children:
+            child.makeShiftOrthRule()
 
 class ConcatRule(ComplexRule):
     
