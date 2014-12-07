@@ -66,19 +66,19 @@ adja
 # np. „gniotł·am”
 moze_interp( praet_sg_agl (aglsg1_wok|aglsg2_wok) )
 # i wersja z prefv
-# moze_interp( prefv> praet_sg_agl (aglsg1_wok|aglsg2_wok)) !weak
+moze_interp( prefv> praet_sg_agl (aglsg1_wok|aglsg2_wok)) !weak
 # np. „czytał·em”
 moze_interp( praet_sg_masc (aglsg1_wok|aglsg2_wok))
 # i wersja z prefv
-# moze_interp(prefv> praet_sg_masc (aglsg1_wok|aglsg2_wok)) !weak
+moze_interp(prefv> praet_sg_masc (aglsg1_wok|aglsg2_wok)) !weak
 # np. czytała·ś, czytało·ś
 moze_interp( praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok))
 # i wersja z prefv
-# moze_interp(prefv> praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok)) !weak
+moze_interp(prefv> praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok)) !weak
 # np. „czytali·ście”
 moze_interp( praet_pl (aglpl1_nwok|aglpl2_nwok))
 # i wersja z prefv
-# moze_interp(prefv> praet_pl (aglpl1_nwok|aglpl2_nwok)) !weak
+moze_interp(prefv> praet_pl (aglpl1_nwok|aglpl2_nwok)) !weak
 
 
 # przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
@@ -94,14 +94,14 @@ moze_interp(praet_pl)
 # np. „gniótł·by”
 moze_interp(praet_sg_nagl by)
 # wersja z prefv:
-# moze_interp(prefv> praet_sg_nagl by) !weak
+moze_interp(prefv> praet_sg_nagl by) !weak
 # np. „czytało·by”
 moze_interp(praet_sg by)
 # wersja prefv
-# moze_interp(prefv> praet_sg by) !weak
+moze_interp(prefv> praet_sg by) !weak
 # np. „gnietli·by”
 moze_interp( praet_pl by)
-# moze_interp(prefv> praet_pl by) !weak
+moze_interp(prefv> praet_pl by) !weak
 # np. „gniótł·by·ś”
 moze_interp(praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok))
 # moze_interp(prefv> praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok)) !weak
@@ -110,7 +110,7 @@ moze_interp(praet_sg by (aglsg1_nwok|aglsg2_nwok))
 # moze_interp(prefv> praet_sg by (aglsg1_nwok|aglsg2_nwok)) !weak
 # np. „gnietli·by·śmy”
 moze_interp(praet_pl by (aglpl1_nwok|aglpl2_nwok))
-# moze_interp(prefv> praet_pl by (aglpl1_nwok|aglpl2_nwok)) !weak
+moze_interp(prefv> praet_pl by (aglpl1_nwok|aglpl2_nwok)) !weak
 #else
 moze_interp(praetcond)
 moze_interp(praetaglt)
@@ -119,12 +119,12 @@ moze_interp(praet_pl) !weak
 #endif
 
 # Prefiksy czasownikowe dla form fin, rozkaźników i imiesłowów przysłówkowych
-# moze_interp(prefv> fin) !weak
+moze_interp(prefv> fin) !weak
 # moze_interp(prefv> impt) !weak
 moze_interp(pcon)
 moze_interp(pant)
-# moze_interp(prefv> pcon) !weak
-# moze_interp(prefv> pant) !weak
+moze_interp(prefv> pcon) !weak
+moze_interp(prefv> pant) !weak
 
 
 # np. „by·ś”
@@ -248,7 +248,7 @@ moze_interp( prefs> dywiz> rzeczowniki ) !weak
 moze_interp( pref_dyw> rzeczowniki ) !weak
 # czasownikowe np. „po·nakapywać”
 moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|impt_sg_perf|impt_pl_perf)
-# moze_interp( prefv> (inf_imperf by? |praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
+moze_interp( prefv> (inf_imperf by? |praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
 # przymiotnikowe i przysłówkowe np. „do·żylny”, 
 # „euro·sodomski”, „bez·argumentowy”
 moze_interp(ppas|adv_pos|pact)
@@ -343,7 +343,7 @@ moze_interp((prep_n|prep_na) n)
 
 # Zapis łączny liczby wraz z jednostką miary, np: 5°C, 2m².
 moze_interp(miary)
-moze_interp( (dig+) miary )
+moze_interp( dig miary )
 
 # predykatywy (typ pred jest używany w regułach dla zapisów niepoprawnych poniżej)
 moze_interp(pred)
@@ -363,7 +363,7 @@ moze_interp( dig>+ dywiz> (adj_pos|adv_pos) )
 moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
 
 # liczba rzymska z formą przymiotnikową: XIX-wieczny
-moze_interp( liczba_rzymska> dywiz> (adj_pos|adv_pos) )
+moze_interp( (liczba_rzymska)> dywiz> (adj_pos|adv_pos) )
 
 # formy złoż. z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
 # moze_interp( num_zloz>+ suf_num ) !weak
@@ -452,7 +452,6 @@ romandigL
 romandigC
 romandigD
 romandigM
-liczba_rzymska
 adja
 adj_pos
 adj_com
@@ -640,7 +639,7 @@ z_aglt_by	żeby	comp
 z_aglt_nwok	to	conj
 z_aglt_nwok	chyba	qub
 z_aglt_nwok	że	qub
-z_aglt_nwok	czy	conj
+z_aglt_nwok	czy	qub
 z_aglt_by	oby	qub
 z_aglt_by	bodajby	qub
 z_aglt_nwok	co	comp
@@ -773,10 +772,10 @@ my	my	ppron12:pl:nom:%
 wy	wy	ppron12:pl:nom:%
 pref_dyw	e-+	prefa
 pref_dyw	e-+	prefs
-miary	°C	brev:%
-miary	°F	brev:%
-miary	m²	brev:%
-miary	m³	brev:%
+miary	stopień_Celsjusza	brev:%
+miary	stopień_Fahrenheita	brev:%
+miary	metr_kwadratowy	brev:%
+miary	metr_sześcienny	brev:%
 
 
 [separator chars]
