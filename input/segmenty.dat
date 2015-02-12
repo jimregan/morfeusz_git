@@ -343,7 +343,7 @@ moze_interp((prep_n|prep_na) n)
 
 # Zapis łączny liczby wraz z jednostką miary, np: 5°C, 2m².
 moze_interp(miary)
-moze_interp( dig miary )
+moze_interp( dig+ miary )
 
 # predykatywy (typ pred jest używany w regułach dla zapisów niepoprawnych poniżej)
 moze_interp(pred)
@@ -363,7 +363,8 @@ moze_interp( dig>+ dywiz> (adj_pos|adv_pos) )
 moze_interp( dig>+ przecinek> dig> dywiz> (adj_pos|adv_pos) )
 
 # liczba rzymska z formą przymiotnikową: XIX-wieczny
-moze_interp( (liczba_rzymska)> dywiz> (adj_pos|adv_pos) )
+moze_interp( (liczba_rzymska)> dywiz> adj_pos )
+moze_interp( (liczba_rzymska)> dywiz> adv_pos )
 
 # formy złoż. z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
 # moze_interp( num_zloz>+ suf_num ) !weak
@@ -452,6 +453,7 @@ romandigL
 romandigC
 romandigD
 romandigM
+liczba_rzymska
 adja
 adj_pos
 adj_com
@@ -628,6 +630,18 @@ z_aglt_nwok	gdzie	qub
 z_aglt_nwok	gdzie	adv
 z_aglt		gdzież	adv
 z_aglt		któż	subst:%
+z_aglt		czyż	qub
+z_aglt		alboż	qub
+z_aglt		ależ	qub
+z_aglt		azaliż	qub
+z_aglt		czyliż	qub
+z_aglt		czyż	qub
+z_aglt		jakżeż	qub
+z_aglt		zaliż	qub
+z_aglt_nwok	zali	qub
+z_aglt_nwok	azali	qub
+z_aglt_nwok	albo	qub
+z_aglt_nwok	czyli	qub
 z_aglt_nwok	kto	subst:%
 z_aglt_nwok	co	subst:%
 z_aglt_by	jakby	comp
@@ -776,7 +790,8 @@ miary	stopień_Celsjusza	brev:%
 miary	stopień_Fahrenheita	brev:%
 miary	metr_kwadratowy	brev:%
 miary	metr_sześcienny	brev:%
-
+miary	euro	brev:%
+miary	jen	brev:%
 
 [separator chars]
 
@@ -791,6 +806,9 @@ miary	metr_sześcienny	brev:%
 
 # .
 46
+
+# :
+58
 
 # ;
 59
