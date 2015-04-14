@@ -45,10 +45,11 @@ set (CMAKE_JAVA_TARGET_OUTPUT_NAME jmorfeusz)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     get_filename_component (LIBMORFEUSZ_DIR ${CMAKE_CURRENT_BINARY_DIR} DIRECTORY)
     add_custom_target (jmorfeusz-repair-libmorfeusz-link
-        COMMAND ${INSTALL_NAME_TOOL} -change ${LIBMORFEUSZ_DIR}/libmorfeusz2.dylib libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
+        COMMAND ${INSTALL_NAME_TOOL} -change /usr/x86_64-apple-darwin9/x86_64-apple-darwin9/lib/libstdc++.6.dylib /usr/lib/libstdc++.6.dylib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib 
+        COMMAND ${INSTALL_NAME_TOOL} -change libmorfeusz2.dylib @executable_path/libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
         DEPENDS libjmorfeusz)
     add_custom_target (jmorfeusz-repair-libjmorfeusz-id
-        COMMAND ${INSTALL_NAME_TOOL} -id libjmorfeusz.jnilib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
+        COMMAND ${INSTALL_NAME_TOOL} -id @executable_path/libjmorfeusz.jnilib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
         DEPENDS libjmorfeusz jmorfeusz-repair-libmorfeusz-link)
 endif ()
 
@@ -85,3 +86,8 @@ add_custom_target (jmorfeusz-copy-readme
 add_custom_target(package-java
     COMMAND mkdir -p "${TARGET_DIR}" && ${CMAKE_COMMAND} -E tar "cfvz" "${TARGET_DIR}/jmorfeusz-${JMORFEUSZ_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}.tar.gz" "${CMAKE_CURRENT_BINARY_DIR}/*.jar" "${CMAKE_CURRENT_BINARY_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_CURRENT_BINARY_DIR}/README"
     DEPENDS jmorfeusz package-javadoc jmorfeusz-copy-readme libjmorfeusz)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    add_custom_target(java-deb
+        COMMAND "${PROJECT_SOURCE_DIR}/createJavaDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_LIB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}")
+endif ()

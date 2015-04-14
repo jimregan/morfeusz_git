@@ -39,8 +39,18 @@ else ()
 endif ()
 add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
 add_custom_target ( dictionary-deb
-        COMMAND "${PROJECT_SOURCE_DIR}/createDictionaryDeb.sh" "${DEFAULT_DICT_DIR}" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${TARGET_DIR}"
+    COMMAND "${PROJECT_SOURCE_DIR}/createDictionaryDeb.sh" "${DEFAULT_DICT_DIR}" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${TARGET_DIR}"
         DEPENDS dictionary)
+add_custom_target ( bin-deb
+    COMMAND "${PROJECT_SOURCE_DIR}/createBinDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_LIB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}"
+        DEPENDS morfeusz_analyzer morfeusz_generator)
+add_custom_target ( lib-deb
+    COMMAND "${PROJECT_SOURCE_DIR}/createLibraryDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_LIB_VERSION}" "${ARCHITECTURE}" ${DEFAULT_DICT_NAME} "${TARGET_DIR}"
+        DEPENDS libmorfeusz)
+add_custom_target ( dev-deb
+    COMMAND "${PROJECT_SOURCE_DIR}/createDevDeb.sh" "${PROJECT_SOURCE_DIR}/morfeusz" "${Morfeusz_LIB_VERSION}" "${TARGET_DIR}"
+    DEPENDS "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2.h" "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_c.h")
+
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
@@ -100,7 +110,8 @@ add_subdirectory (wrappers)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_custom_target (morfeusz-repair-library
-        COMMAND ${INSTALL_NAME_TOOL} -id libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib
+        COMMAND ${INSTALL_NAME_TOOL} -change /usr/x86_64-apple-darwin9/x86_64-apple-darwin9/lib/libstdc++.6.dylib /usr/lib/libstdc++.6.dylib ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib
+        COMMAND ${INSTALL_NAME_TOOL} -id @executable_path/libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib
         DEPENDS libmorfeusz)
     add_dependencies (morfeusz_analyzer morfeusz-repair-library)
 endif ()
@@ -114,10 +125,10 @@ endif ()
 
 # INSTALL
 
-if (NOT EMBEDDED_DEFAULT_DICT)
-    add_dependencies (libmorfeusz dictionary)
-    install (FILES "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" DESTINATION "${DEFAULT_DICT_INSTALL_DIR}")
-endif ()
+#if (NOT EMBEDDED_DEFAULT_DICT)
+#    add_dependencies (libmorfeusz dictionary)
+#    install (FILES "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" DESTINATION "${DEFAULT_DICT_INSTALL_DIR}")
+#endif ()
 
 install (FILES morfeusz2.h morfeusz2_c.h DESTINATION include)
 install (TARGETS libmorfeusz DESTINATION ${TARGET_LIB_DIR})

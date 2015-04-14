@@ -2,10 +2,11 @@
 cmake_minimum_required (VERSION 2.8) 
 project (Morfeusz)
 
-set (Morfeusz_VERSION_MAJOR 2)
-set (Morfeusz_VERSION_MINOR 0)
+set (Morfeusz_VERSION_MAJOR 1)
+set (Morfeusz_VERSION_MINOR 9)
 set (Morfeusz_VERSION_PATCH 0)
 set (Morfeusz_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
+set (Morfeusz_LIB_VERSION "${Morfeusz_VERSION}")
 if (DEFAULT_DICT_NAME)
     set (Morfeusz_VERSION_TWEAK "${DEFAULT_DICT_NAME}")
     if (DICT_VERSION)
@@ -28,7 +29,7 @@ endif ()
 if (NOT CMAKE_BUILD_TYPE)
     set (CMAKE_BUILD_TYPE Release)
 endif ()
-#~ set (CMAKE_SKIP_RPATH ON)
+set (CMAKE_SKIP_RPATH ON)
 
 message ("Version=${Morfeusz_VERSION}")
 
@@ -57,7 +58,7 @@ else ()
     set (DEFAULT_DICT_INSTALL_DIR "share/morfeusz/dictionaries")
 endif ()
 
-add_definitions (-DMORFEUSZ2_VERSION="${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
+add_definitions (-DMORFEUSZ2_VERSION="${Morfeusz_LIB_VERSION}")
 add_definitions (-DMORFEUSZ_DEFAULT_DICT_NAME="${DEFAULT_DICT_NAME}")
 add_definitions (-DBUILDING_MORFEUSZ)
 if (EMBEDDED_DEFAULT_DICT)
@@ -94,7 +95,7 @@ else ()
 endif ()
 
 # PROJECT_VERSION
-#~ set (PROJECT_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
+#~ set (PROJECT_VERSION "${Morfeusz_LIB_VERSION}")
 
 ### USER DEFINED VARIABLES
 

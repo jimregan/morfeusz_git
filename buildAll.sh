@@ -97,6 +97,10 @@ function build {
         mv "$f" "`echo $f | sed -r 's/Linux-amd64.deb$/amd64.deb/' | sed -r 's/Linux-i386.deb/i386.deb/'`"
     done
 
+    if [ "$os" = Linux -a "$embedded" = false ]; then
+        "$srcDir/createDictionaryDeb.sh" "$DICT_DIR" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${targetDir}"
+    fi
+
     cd "$srcDir"
 }
 
@@ -116,9 +120,9 @@ buildDictionaries 2>&1 | log All all
 
 {
     echo "build Linux amd64 true package package-java package-python package-builder 2>&1 | log Linux-tgz amd64"
-    echo "build Linux amd64 false package 2>&1 | log Linux-deb amd64"
+    echo "build Linux amd64 false lib-deb bin-deb dev-deb dictionary-deb java-deb 2>&1 | log Linux-deb amd64"
     echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true package package-java 2>&1 | log Linux-tgz i386"
-    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false package 2>&1 | log Linux-deb i386"
+    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false lib-deb bin-deb java-deb 2>&1 | log Linux-deb i386"
     echo "build Windows amd64 true package package-java 2>&1 | log Windows amd64"
     echo "build Windows i386 true package package-java 2>&1 | log Windows i386"
     echo "build Darwin amd64 true package package-java 2>&1 | log Darwin amd64"
