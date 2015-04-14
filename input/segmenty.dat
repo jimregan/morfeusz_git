@@ -348,6 +348,10 @@ moze_interp( dig+ miary )
 # predykatywy (typ pred jest używany w regułach dla zapisów niepoprawnych poniżej)
 moze_interp(pred)
 
+# SKRÓTY Z KROPKĄ I BEZ
+moze_interp(brev_npun)
+moze_interp(brev_pun kropka)
+
 # REGUŁY EKSPERYMENTALNE
 # formy złoż. rzeczowników i sufiksoidów rzeczownikowych
 # moze_interp( substa> sufs ) !weak
@@ -506,6 +510,8 @@ killfile
 pred
 lewe
 prawe
+brev_pun
+brev_npun
 samodz
 
 
@@ -527,8 +533,8 @@ adv_com	adv:com
 negat	ger:%:neg
 negat	pact:%:neg
 negat	ppas:%:neg
-samotny	brev:pun
-# samotny	brev:npun
+brev_pun	brev:pun
+brev_npun	brev:npun
 # samotny	interj
 samotny	emoticon
 aglsg1_wok	aglt:sg:pri:%:wok

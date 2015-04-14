@@ -231,6 +231,10 @@ eko	eko+	prefa
 s	s+	prefv
 elektro	elektro+	prefs
 elektro	elektro+	prefa
+etno	etno+	prefs
+etno	etno+	prefa
+foto	foto+	prefs
+foto	foto+	prefa
 trans	trans+	prefa
 trans	trans+	prefs
 kontr	kontr+	prefs
@@ -262,6 +266,10 @@ anarcho	anarcho+	prefs
 anarcho	anarcho+	prefa
 antropo	antropo+	prefs
 antropo	antropo+	prefa
+cyber	cyber+	prefa
+cyber	cyber+	prefs
+choreo	choreo+	prefs
+
 łże	łże+	prefs
 łże	łże+	prefa
 wewnątrz	wewnątrz+	prefa
