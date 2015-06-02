@@ -1,4 +1,6 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.5.2
+#!TAGSET-ID pl.sgjp.morfeusz-0.5.3
+
+# największy identyfikator: 729
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -478,12 +480,18 @@
 # predicative flexeme:
 573	pred
 # gerunds
-171	ger:pl:dat.loc:n2:imperf:aff
-172	ger:pl:dat.loc:n2:imperf:neg
-173	ger:pl:dat.loc:n2:imperf.perf:aff
-174	ger:pl:dat.loc:n2:imperf.perf:neg
-175	ger:pl:dat.loc:n2:perf:aff
-176	ger:pl:dat.loc:n2:perf:neg
+171	ger:pl:dat:n2:imperf:aff
+172	ger:pl:dat:n2:imperf:neg
+173	ger:pl:dat:n2:imperf.perf:aff
+174	ger:pl:dat:n2:imperf.perf:neg
+175	ger:pl:dat:n2:perf:aff
+176	ger:pl:dat:n2:perf:neg
+724	ger:pl:loc:n2:imperf:aff
+725	ger:pl:loc:n2:imperf:neg
+726	ger:pl:loc:n2:imperf.perf:aff
+727	ger:pl:loc:n2:imperf.perf:neg
+728	ger:pl:loc:n2:perf:aff
+729	ger:pl:loc:n2:perf:neg
 177	ger:pl:gen:n2:imperf:aff
 178	ger:pl:gen:n2:imperf:neg
 179	ger:pl:gen:n2:imperf.perf:aff
