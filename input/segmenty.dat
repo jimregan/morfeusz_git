@@ -56,6 +56,21 @@ polpauza
 
 #ifdef isolated
 adja
+li
+suf_num
+miary
+aglsg1_wok
+aglsg2_wok
+aglpl1_wok
+aglpl2_wok
+aglsg1_nwok
+aglsg2_nwok
+aglpl1_nwok
+aglpl2_nwok
+brev_pun
+pol_zloz
+num_zloz
+n
 #endif
 
 
@@ -66,19 +81,19 @@ adja
 # np. „gniotł·am”
 moze_interp( praet_sg_agl (aglsg1_wok|aglsg2_wok) )
 # i wersja z prefv
-moze_interp( prefv> praet_sg_agl (aglsg1_wok|aglsg2_wok)) !weak
+# moze_interp( prefv> praet_sg_agl (aglsg1_wok|aglsg2_wok)) !weak
 # np. „czytał·em”
 moze_interp( praet_sg_masc (aglsg1_wok|aglsg2_wok))
 # i wersja z prefv
-moze_interp(prefv> praet_sg_masc (aglsg1_wok|aglsg2_wok)) !weak
+# moze_interp(prefv> praet_sg_masc (aglsg1_wok|aglsg2_wok)) !weak
 # np. czytała·ś, czytało·ś
 moze_interp( praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok))
 # i wersja z prefv
-moze_interp(prefv> praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok)) !weak
+# moze_interp(prefv> praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok)) !weak
 # np. „czytali·ście”
 moze_interp( praet_pl (aglpl1_nwok|aglpl2_nwok))
 # i wersja z prefv
-moze_interp(prefv> praet_pl (aglpl1_nwok|aglpl2_nwok)) !weak
+# moze_interp(prefv> praet_pl (aglpl1_nwok|aglpl2_nwok)) !weak
 
 
 # przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
@@ -94,14 +109,14 @@ moze_interp(praet_pl)
 # np. „gniótł·by”
 moze_interp(praet_sg_nagl by)
 # wersja z prefv:
-moze_interp(prefv> praet_sg_nagl by) !weak
+# moze_interp(prefv> praet_sg_nagl by) !weak
 # np. „czytało·by”
 moze_interp(praet_sg by)
 # wersja prefv
-moze_interp(prefv> praet_sg by) !weak
+# moze_interp(prefv> praet_sg by) !weak
 # np. „gnietli·by”
 moze_interp( praet_pl by)
-moze_interp(prefv> praet_pl by) !weak
+# moze_interp(prefv> praet_pl by) !weak
 # np. „gniótł·by·ś”
 moze_interp(praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok))
 # moze_interp(prefv> praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok)) !weak
@@ -110,7 +125,7 @@ moze_interp(praet_sg by (aglsg1_nwok|aglsg2_nwok))
 # moze_interp(prefv> praet_sg by (aglsg1_nwok|aglsg2_nwok)) !weak
 # np. „gnietli·by·śmy”
 moze_interp(praet_pl by (aglpl1_nwok|aglpl2_nwok))
-moze_interp(prefv> praet_pl by (aglpl1_nwok|aglpl2_nwok)) !weak
+# moze_interp(prefv> praet_pl by (aglpl1_nwok|aglpl2_nwok)) !weak
 #else
 moze_interp(praetcond)
 moze_interp(praetaglt)
@@ -119,12 +134,12 @@ moze_interp(praet_pl) !weak
 #endif
 
 # Prefiksy czasownikowe dla form fin, rozkaźników i imiesłowów przysłówkowych
-moze_interp(prefv> fin) !weak
+# moze_interp(prefv> fin) !weak
 # moze_interp(prefv> impt) !weak
 moze_interp(pcon)
 moze_interp(pant)
-moze_interp(prefv> pcon) !weak
-moze_interp(prefv> pant) !weak
+# moze_interp(prefv> pcon) !weak
+# moze_interp(prefv> pant) !weak
 
 
 # np. „by·ś”
@@ -248,16 +263,15 @@ moze_interp( prefs> dywiz> rzeczowniki ) !weak
 moze_interp( pref_dyw> rzeczowniki ) !weak
 # czasownikowe np. „po·nakapywać”
 moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|impt_sg_perf|impt_pl_perf)
-moze_interp( prefv> (inf_imperf by? |praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
+# moze_interp( prefv> (inf_imperf by? |praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
 # przymiotnikowe i przysłówkowe np. „do·żylny”, 
 # „euro·sodomski”, „bez·argumentowy”
 moze_interp(ppas|adv_pos|pact)
 # moze_interp(prefa> adj)
-moze_interp( prefa> ( adj|adv_pos|pact|ppas ) ) !weak 
+moze_interp( prefa> ( adj|adv_pos ) ) !weak 
 # wersja z dywizem, bez ‹e-›
-moze_interp( prefa> dywiz> ( adj|adv_pos|pact|ppas ) ) !weak 
-moze_interp( pref_dyw> ( adj|adv_pos|pact|ppas ) ) !weak 
-moze_interp( prefppas> ppas ) !weak
+moze_interp( prefa> dywiz> ( adj|adv_pos ) ) !weak 
+moze_interp( pref_dyw> ( adj|adv_pos ) ) !weak 
 
 # Apozycje z dywizem
 # np. „kobieta-prezydent”
@@ -414,7 +428,7 @@ moze_interp(niemniej)
 [segment types]
 nie
 prefs
-prefv
+# prefv
 prefa
 pref_dyw
 prefppas
@@ -518,7 +532,7 @@ samodz
 [tags]
 nie	nie
 prefs	prefs
-prefv	prefv
+# prefv	prefv
 prefa	prefa
 prefppas	prefppas
 dig	dig
@@ -634,6 +648,7 @@ z_aglt_by	gdyby	comp
 z_aglt_nwok	gdy	adv
 z_aglt_nwok	gdzie	qub
 z_aglt_nwok	gdzie	adv
+z_aglt_nwok	jeszcze	qub
 z_aglt		gdzież	adv
 z_aglt		któż	subst:%
 z_aglt		czyż	qub
@@ -644,6 +659,7 @@ z_aglt		czyliż	qub
 z_aglt		czyż	qub
 z_aglt		jakżeż	qub
 z_aglt		zaliż	qub
+z_aglt		już	qub
 z_aglt_nwok	zali	qub
 z_aglt_nwok	azali	qub
 z_aglt_nwok	albo	qub
