@@ -16,8 +16,16 @@ using namespace morfeusz;
 
 int main(int argc, const char** argv) {
     cerr << "Morfeusz generator, version: " << Morfeusz::getVersion() << endl;
-    ez::ezOptionParser& opt = *getOptions(argc, argv, GENERATOR);
-    Morfeusz* morfeusz = initializeMorfeusz(opt, GENERATOR);
+    Morfeusz* morfeusz;
+    try {
+        ez::ezOptionParser& opt = *getOptions(argc, argv, GENERATOR);
+        morfeusz = initializeMorfeusz(opt, GENERATOR);
+        delete &opt;
+    }
+    catch (const std::exception& ex) {
+        cerr << ex.what() << endl;
+        exit(1);
+    }
     string line;
     vector<MorphInterpretation> res;
     try {
@@ -33,6 +41,5 @@ int main(int argc, const char** argv) {
         exit(1);
     }
     printf("\n");
-    delete &opt;
     return 0;
 }
