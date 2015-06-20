@@ -20,11 +20,17 @@ int main(int argc, const char** argv) {
     Morfeusz* morfeusz = initializeMorfeusz(opt, GENERATOR);
     string line;
     vector<MorphInterpretation> res;
-    while (getline(cin, line)) {
-        //        printf("%s\n", line.c_str());
-        res.clear();
-        morfeusz->generate(line, res);
-        printMorphResults(*morfeusz, res, false);
+    try {
+        while (getline(cin, line)) {
+         //        printf("%s\n", line.c_str());
+            res.clear();
+            morfeusz->generate(line, res);
+            printMorphResults(*morfeusz, res, false);
+        }
+    }
+    catch (const std::exception& ex) {
+        cerr << "Failed to perform morphosyntactic synthesis: " << ex.what() << endl;
+        exit(1);
     }
     printf("\n");
     delete &opt;

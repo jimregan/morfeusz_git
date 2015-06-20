@@ -21,10 +21,16 @@ int main(int argc, const char** argv) {
     Morfeusz* morfeusz = initializeMorfeusz(opt, ANALYZER);
     string line;
     vector<MorphInterpretation> res;
-    while (getline(cin, line)) {
-        res.resize(0);
-        morfeusz->analyse(line, res);
-        printMorphResults(*morfeusz, res, true);
+    try {
+        while (getline(cin, line)) {
+            res.resize(0);
+            morfeusz->analyse(line, res);
+            printMorphResults(*morfeusz, res, true);
+        }
+    }
+    catch (const std::exception& ex) {
+        cerr << "Failed to perform morphosyntactic analysis: " << ex.what() << endl;
+        exit(1);
     }
     delete morfeusz;
     printf("\n");

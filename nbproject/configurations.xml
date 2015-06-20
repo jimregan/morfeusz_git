@@ -373,15 +373,6 @@
             ex="false"
             tool="1"
             flavor2="4">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>/usr/lib/perl/5.14/CORE</pElem>
-            <pElem>build/morfeusz/wrappers/perl</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>morfeusz_perl_EXPORTS</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="build/morfeusz/wrappers/perl/morfeuszPERL_wrap.cxx"
             ex="false"
@@ -446,6 +437,8 @@
       <folder path="0/cli">
         <ccTool>
           <preprocessorList>
+            <Elem>MORFEUSZ2_VERSION="1.9.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
             <Elem>NDEBUG</Elem>
             <Elem>libmorfeusz_EXPORTS</Elem>
           </preprocessorList>
@@ -620,8 +613,13 @@
       </folder>
       <folder path="build/morfeusz">
         <ccTool>
+          <incDir>
+            <pElem>/usr/lib/perl/5.14/CORE</pElem>
+            <pElem>build/morfeusz/wrappers/perl</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>MORFEUSZ2_VERSION="2.0.0"</Elem>
+            <Elem>morfeusz_perl_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
@@ -836,6 +834,8 @@
             flavor2="4">
       </item>
       <item path="morfeusz/cli/cli.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="morfeusz/const.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="1">
@@ -883,6 +883,8 @@
       <item path="morfeusz/morfeusz_analyzer.cpp" ex="false" tool="1" flavor2="4">
         <ccTool flags="0">
           <preprocessorList>
+            <Elem>MORFEUSZ2_VERSION="1.9.0"</Elem>
+            <Elem>MORFEUSZ_DEFAULT_DICT_NAME=""</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>

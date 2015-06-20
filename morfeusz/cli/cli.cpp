@@ -307,7 +307,7 @@ namespace morfeusz {
             return CP852;
         else {
             cerr << "Invalid encoding: '" << encodingStr << "'. Must be one of: UTF8, ISO8859_2, WINDOWS1250" << endl;
-            throw "Invalid encoding";
+            exit(1);
         }
     }
 
@@ -318,7 +318,7 @@ namespace morfeusz {
             return CONTINUOUS_NUMBERING;
         else {
             cerr << "Invalid token numbering: '" << optionStr << "'. Must be one of: SEPARATE_NUMBERING, CONTINUOUS_NUMBERING" << endl;
-            throw "Invalid token numbering";
+            exit(1);
         }
     }
 
@@ -331,7 +331,7 @@ namespace morfeusz {
             return IGNORE_CASE;
         else {
             cerr << "Invalid case handling: '" << optionStr << "'. Must be one of: CONDITIONALLY_CASE_SENSITIVE, STRICTLY_CASE_SENSITIVE, IGNORE_CASE" << endl;
-            throw "Invalid case handling";
+            exit(1);
         }
     }
 
@@ -344,7 +344,7 @@ namespace morfeusz {
             return KEEP_WHITESPACES;
         else {
             cerr << "Invalid whitespace handling: '" << optionStr << "'. Must be one of: SKIP_WHITESPACES, APPEND_WHITESPACES, KEEP_WHITESPACES" << endl;
-            throw "Invalid whitespace handling";
+            exit(1);
         }
     }
 
@@ -402,7 +402,7 @@ namespace morfeusz {
             }
             morfeusz.setCharset(DEFAULT_CHARSET4CONSOLE);
             return &morfeusz;
-        } catch (const MorfeuszException& ex) {
+        } catch (const std::exception& ex) {
             cerr << "Failed to start Morfeusz: " << ex.what() << endl;
             exit(1);
         }
