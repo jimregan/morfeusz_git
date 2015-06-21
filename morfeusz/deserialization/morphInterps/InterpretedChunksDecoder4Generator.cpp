@@ -38,6 +38,9 @@ namespace morfeusz {
             const InterpretedChunk& interpretedChunk,
             std::vector<MorphInterpretation>& out) const {
         string orthPrefix;
+        if (interpretedChunk.textStartPtr != interpretedChunk.textNoPrefixesStartPtr) {
+            orthPrefix.insert(orthPrefix.end(), interpretedChunk.textStartPtr, interpretedChunk.textNoPrefixesStartPtr);
+        }
         string lemma;
         //    convertPrefixes(interpretedChunk, orthPrefix, lemma);
         //        lemma += env.getCharsetConverter().toString(interpretedChunk.originalCodepoints);
@@ -72,7 +75,7 @@ namespace morfeusz {
         string orth = orthPrefix;
         EncodedInterpretation ei = this->deserializeInterp(ptr);
         codepoints.resize(0);
-        const char* currPtr = chunk.textStartPtr;
+        const char* currPtr = chunk.textNoPrefixesStartPtr;
         while (currPtr != chunk.textEndPtr) {
             uint32_t cp = env.getCharsetConverter().next(currPtr, chunk.textEndPtr);
             codepoints.push_back(cp);
