@@ -249,7 +249,7 @@ moze_interp(czlonynazwisk> dywiz> nazwiska)
 moze_interp(nazwiska> dywiz> nazwiska)
 
 # Nazwy geograficzne dwuczłonowe: Bielsko-Biała, Kudowa-Zdrój.
-# Nie jest to idealne rozwiązanie, ale peszego chyba nie ma…
+# Nie jest to idealne rozwiązanie, ale lepszego chyba nie ma…
 moze_interp(geograficzne)
 moze_interp(geograficzne dywiz geograficzne)
 
@@ -267,11 +267,10 @@ moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_p
 # przymiotnikowe i przysłówkowe np. „do·żylny”, 
 # „euro·sodomski”, „bez·argumentowy”
 moze_interp(ppas|adv_pos|pact)
-# moze_interp(prefa> adj)
-moze_interp( prefa> ( adj|adv_pos ) ) !weak 
+moze_interp( prefa> ( adj_pos|adv_pos ) ) !weak 
 # wersja z dywizem, bez ‹e-›
-moze_interp( prefa> dywiz> ( adj|adv_pos ) ) !weak 
-moze_interp( pref_dyw> ( adj|adv_pos ) ) !weak 
+moze_interp( prefa> dywiz> ( adj_pos|adv_pos ) ) !weak 
+moze_interp( pref_dyw> ( adj_pos|adv_pos ) ) !weak 
 
 # Apozycje z dywizem
 # np. „kobieta-prezydent”
