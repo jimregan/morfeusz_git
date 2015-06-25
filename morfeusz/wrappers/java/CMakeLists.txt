@@ -45,11 +45,16 @@ set (CMAKE_JAVA_TARGET_OUTPUT_NAME jmorfeusz)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     get_filename_component (LIBMORFEUSZ_DIR ${CMAKE_CURRENT_BINARY_DIR} DIRECTORY)
     add_custom_target (jmorfeusz-repair-libmorfeusz-link
-        COMMAND ${INSTALL_NAME_TOOL} -change /usr/x86_64-apple-darwin9/x86_64-apple-darwin9/lib/libstdc++.6.dylib /usr/lib/libstdc++.6.dylib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib 
-        COMMAND ${INSTALL_NAME_TOOL} -change libmorfeusz2.dylib @executable_path/libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
+        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/gui-libs
+        COMMAND ${INSTALL_NAME_TOOL} -change /usr/x86_64-apple-darwin9/x86_64-apple-darwin9/lib/libstdc++.6.dylib /usr/lib/libstdc++.6.dylib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
+        COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib ${CMAKE_CURRENT_BINARY_DIR}/gui-libs/
+        # COMMAND ${INSTALL_NAME_TOOL} -change libmorfeusz2.dylib libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
+        COMMAND ${INSTALL_NAME_TOOL} -change libmorfeusz2.dylib @executable_path/libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/gui-libs/libjmorfeusz.jnilib
         DEPENDS libjmorfeusz)
     add_custom_target (jmorfeusz-repair-libjmorfeusz-id
-        COMMAND ${INSTALL_NAME_TOOL} -id @executable_path/libjmorfeusz.jnilib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
+        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/gui-libs
+        COMMAND ${INSTALL_NAME_TOOL} -id libjmorfeusz.jnilib ${CMAKE_CURRENT_BINARY_DIR}/libjmorfeusz.jnilib
+        COMMAND ${INSTALL_NAME_TOOL} -id @executable_path/libjmorfeusz.jnilib ${CMAKE_CURRENT_BINARY_DIR}/gui-libs/libjmorfeusz.jnilib
         DEPENDS libjmorfeusz jmorfeusz-repair-libmorfeusz-link)
 endif ()
 

@@ -110,8 +110,11 @@ add_subdirectory (wrappers)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_custom_target (morfeusz-repair-library
+        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/gui-libs
         COMMAND ${INSTALL_NAME_TOOL} -change /usr/x86_64-apple-darwin9/x86_64-apple-darwin9/lib/libstdc++.6.dylib /usr/lib/libstdc++.6.dylib ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib
-        COMMAND ${INSTALL_NAME_TOOL} -id @executable_path/libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib
+        COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/gui-libs
+        COMMAND ${INSTALL_NAME_TOOL} -id libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/libmorfeusz2.dylib
+        COMMAND ${INSTALL_NAME_TOOL} -id @executable_path/libmorfeusz2.dylib ${CMAKE_CURRENT_BINARY_DIR}/gui-libs/libmorfeusz2.dylib
         DEPENDS libmorfeusz)
     add_dependencies (morfeusz_analyzer morfeusz-repair-library)
 endif ()
