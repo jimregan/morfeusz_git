@@ -228,6 +228,7 @@ re	re+	prefa
 re	re+	prefs
 samo	samo+	prefa
 samo	samo+	prefs
+spec	spec+	prefs
 stereo	stereo+	prefa
 stereo	stereo+	prefs
 sub	sub+	prefa
@@ -238,8 +239,12 @@ super	super+	prefs
 śród	śród+	prefs
 tele	tele+	prefa
 tele	tele+	prefs
+termo	termo+	prefs
+termo	termo+	prefa
 trans	trans+	prefa
 trans	trans+	prefs
+turbo	turbo+	prefs
+turbo	turbo+	prefa
 ultra	ultra+	prefa
 ultra	ultra+	prefs
 video	video+	prefa
