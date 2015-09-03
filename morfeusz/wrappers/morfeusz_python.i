@@ -80,7 +80,7 @@ def analyse_iter(self, text):
     """
     Analyse given text and return an iterator over MorphInterpretation objects as a result.
     """
-    return $action(self, text)
+    return $action(self, text.encode('utf-8'))
 %}
 
 %feature("shadow") morfeusz::Morfeusz::analyse %{
@@ -171,6 +171,7 @@ def generate(self, lemma, tagId=None):
     """
     Perform morphological synthesis on given text and return a list of MorphInterpretation objects.
     """
+    lemma = lemma.encode('utf-8')
     if tagId is not None:
         return self._generateByTagId(lemma, tagId)
     else:
@@ -403,13 +404,15 @@ class Morfeusz(_object):
                         yield [head] + tail
         return list(expand_dag(0))
 
+    def _interp2tuple(self, i):
+        m = self._morfeusz_obj
+        return i.orth, i.lemma, i.getTag(m), i.getName(m), i.getLabels(m)
+
     def analyse(self, text):
         m = self._morfeusz_obj
         interps = m.analyse(text)
         interp_tuples = [
-            (i.startNode, i.endNode,
-             (i.lemma, i.orth, i.getTag(m), i.getName(m), i.getLabels(m)))
-            for i in interps]
+            (i.startNode, i.endNode, self._interp2tuple(i)) for i in interps]
 
         def expand_interps():
             for start, end, interp in interp_tuples:
@@ -425,9 +428,7 @@ class Morfeusz(_object):
     def generate(self, lemma, tag_id=None):
         m = self._morfeusz_obj
         interps = m.generate(lemma, tag_id)
-        interp_tuples = [
-            (i.orth, i.lemma, i.getTag(m), i.getName(m), i.getLabels(m))
-            for i in interps]
+        interp_tuples = [self._interp2tuple(i) for i in interps]
 
         def expand_interps():
             for interp in interp_tuples:
