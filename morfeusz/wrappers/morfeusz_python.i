@@ -55,6 +55,8 @@
     }
 };
 
+%rename (_Morfeusz) morfeusz::Morfeusz;
+
 //%ignore morfeusz::Morfeusz::createInstance(morfeusz::MorfeuszUsage);
 %extend morfeusz::Morfeusz {
     std::vector<morfeusz::MorphInterpretation> morfeusz::Morfeusz::_generateByTagId(const std::string& lemma, int tagId) const {
@@ -87,7 +89,7 @@ def analyse(self, text):
     Analyse given text and return a list of MorphInterpretation objects.
     """
     res = InterpsList()
-    $action(self, text, res)
+    $action(self, text.encode('utf-8'), res)
     return res
 %}
 
@@ -216,9 +218,10 @@ def getTag(self, morfeusz):
 %feature("shadow") morfeusz::MorphInterpretation::getName %{
 def getName(self, morfeusz):
     """
-    Returns this interpretation named entity as string
+    Returns this interpretation named entity as unicode
     """
-    return $action(self, morfeusz)
+    name = $action(self, morfeusz).decode('utf8')
+    return name.split('|') if name else []
 %}
 
 %feature("shadow") morfeusz::MorphInterpretation::getLabelsAsString %{
@@ -232,9 +235,9 @@ def getLabelsAsUnicode(self, morfeusz):
 %feature("shadow") morfeusz::MorphInterpretation::getLabels %{
 def getLabels(self, morfeusz):
     """
-    Returns this interpretation labels as a set of strings
+    Returns this interpretation labels as a list of strings
     """
-    return { l.decode('utf8') for l in $action(self, morfeusz) }
+    return [l.decode('utf8') for l in $action(self, morfeusz)]
 %}
 
 %feature("shadow") morfeusz::MorphInterpretation::createIgn %{
@@ -282,12 +285,158 @@ def getLabelsAsUnicode(self, labelsId):
 
 %feature("shadow") morfeusz::IdResolver::getLabels %{
 def getLabels(self, labelsId):
-    return { l.decode('utf8') for l in $action(self, labelsId) }
+    return [l.decode('utf8') for l in $action(self, labelsId)]
 %}
 
 %feature("shadow") morfeusz::IdResolver::getLabelsId %{
 def getLabelsId(self, labelsStr):
     return $action(self, labelsStr.encode('utf8'))
+%}
+
+%pythoncode %{
+import collections
+import os.path
+
+# skopiowane, bo kod sie wkleja na poczatku zamiast na koncu
+CONTINUOUS_NUMBERING = _morfeusz2.CONTINUOUS_NUMBERING
+CONDITIONALLY_CASE_SENSITIVE = _morfeusz2.CONDITIONALLY_CASE_SENSITIVE
+SKIP_WHITESPACES = _morfeusz2.SKIP_WHITESPACES
+ANALYSE_ONLY = _morfeusz2.ANALYSE_ONLY
+GENERATE_ONLY = _morfeusz2.GENERATE_ONLY
+BOTH_ANALYSE_AND_GENERATE = _morfeusz2.BOTH_ANALYSE_AND_GENERATE
+
+__version__ = _morfeusz2._Morfeusz_getVersion()
+
+__copyright__ = _morfeusz2._Morfeusz_getCopyright()
+
+GENDERS = ['m1', 'm2', 'm3', 'f', 'n1', 'n2', 'p1', 'p2', 'p3']
+
+
+class Morfeusz(_object):
+    def __init__(self, dict_name=None, dict_path=None,
+                 analyse=True, generate=True, expand_dag=False,
+                 expand_tags=False, expand_dot=True, expand_underscore=True,
+                 aggl=None, praet=None, separate_numbering=True,
+                 case_handling=CONDITIONALLY_CASE_SENSITIVE,
+                 whitespace=SKIP_WHITESPACES):
+        """
+        case_handling options:
+            CONDITIONALLY_CASE_SENSITIVE, STRICTLY_CASE_SENSITIVE, IGNORE_CASE
+        whitespace options:
+            SKIP_WHITESPACES, KEEP_WHITESPACES, APPEND_WHITESPACES
+        """
+        if analyse and generate:
+            usage = BOTH_ANALYSE_AND_GENERATE
+        elif analyse:
+            usage = ANALYSE_ONLY
+        elif generate:
+            usage = GENERATE_ONLY
+        else:
+            raise ValueError(
+                'At least one of "analyse" and "generate" must be True')
+        self.expand_dag = expand_dag
+        self.expand_tags = expand_tags
+        self.expand_dot = expand_dot
+        self.expand_underscore = expand_underscore
+        if dict_path:
+            self.add_dictionary_path(dict_path)
+        if dict_name:
+            m = _Morfeusz.createInstance(dict_name, usage)
+        else:
+            m = _Morfeusz.createInstance(usage)
+        self._morfeusz_obj = m
+        if aggl:
+            m.setAggl(aggl)
+        if praet:
+            m.setPraet(praet)
+        if not separate_numbering:
+            m.setTokenNumbering(CONTINUOUS_NUMBERING)
+        m.setCaseHandling(case_handling)
+        m.setWhitespaceHandling(whitespace)
+
+    def add_dictionary_path(self, dict_path):
+        dict_paths = _morfeusz2._Morfeusz_dictionarySearchPaths_get()
+        if dict_path not in dict_paths:
+            _morfeusz2._Morfeusz_dictionarySearchPaths_set(
+                (dict_path,) + dict_paths)
+
+    def _expand_tag(self, tag):
+        chunks = [
+            GENDERS if chunk == '_' and self.expand_underscore
+            else chunk.split('.')
+            for chunk in tag.split(':')
+        ]
+
+        if not self.expand_dot:
+            yield ':'.join('.'.join(values) for values in chunks)
+            return
+
+        def expand_chunks(i):
+            if i >= len(chunks):
+                yield ()
+            else:
+                tail = tuple(expand_chunks(i + 1))
+                for chunk_variant in chunks[i]:
+                    for tail_variant in tail:
+                        yield (chunk_variant,) + tail_variant
+
+        for x in expand_chunks(0):
+            yield ':'.join(x)
+
+    def _expand_interp(self, interp):
+        tags = self._expand_tag(interp[2])
+        for tag in tags:
+            yield (interp[0], interp[1], tag, interp[3], interp[4])
+
+    @staticmethod
+    def _dag_to_list(interps):
+        dag = collections.defaultdict(list)
+        for start, end, interp in interps:
+            dag[start].append((interp, end))
+        def expand_dag(start):
+            nexts = dag[start]
+            if not nexts:
+                yield []
+            else:
+                for head, end in nexts:
+                    for tail in expand_dag(end):
+                        yield [head] + tail
+        return list(expand_dag(0))
+
+    def analyse(self, text):
+        m = self._morfeusz_obj
+        interps = m.analyse(text)
+        interp_tuples = [
+            (i.startNode, i.endNode,
+             (i.lemma, i.orth, i.getTag(m), i.getName(m), i.getLabels(m)))
+            for i in interps]
+
+        def expand_interps():
+            for start, end, interp in interp_tuples:
+                for exp_interp in self._expand_interp(interp):
+                    yield start, end, exp_interp
+
+        if self.expand_tags:
+            interp_tuples = list(expand_interps())
+        if self.expand_dag:
+            interp_tuples = self._dag_to_list(interp_tuples)
+        return interp_tuples
+
+    def generate(self, lemma, tag_id=None):
+        m = self._morfeusz_obj
+        interps = m.generate(lemma, tag_id)
+        interp_tuples = [
+            (i.orth, i.lemma, i.getTag(m), i.getName(m), i.getLabels(m))
+            for i in interps]
+
+        def expand_interps():
+            for interp in interp_tuples:
+                for exp_interp in self._expand_interp(interp):
+                    yield exp_interp
+
+        if self.expand_tags:
+            interp_tuples = list(expand_interps())
+        return interp_tuples
 %}
 
 %include "std_vector.i"
