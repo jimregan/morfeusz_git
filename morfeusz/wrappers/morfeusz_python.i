@@ -308,7 +308,7 @@ BOTH_ANALYSE_AND_GENERATE = _morfeusz2.BOTH_ANALYSE_AND_GENERATE
 
 __version__ = _morfeusz2._Morfeusz_getVersion()
 
-__copyright__ = _morfeusz2._Morfeusz_getCopyright()
+__copyright__ = _morfeusz2._Morfeusz_getCopyright().decode('utf-8')
 
 GENDERS = ['m1', 'm2', 'm3', 'f', 'n1', 'n2', 'p1', 'p2', 'p3']
 
@@ -438,6 +438,12 @@ class Morfeusz(_object):
         if self.expand_tags:
             interp_tuples = list(expand_interps())
         return interp_tuples
+
+    def dict_id(self):
+        return self._morfeusz_obj.getDictID().decode('utf-8')
+
+    def dict_copyright(self):
+        return self._morfeusz_obj.getDictCopyright().decode('utf-8')
 %}
 
 %include "std_vector.i"
