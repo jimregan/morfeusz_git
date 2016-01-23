@@ -17,8 +17,8 @@ D	D	romandig
 M	M	romandig
 pół	pół	num:comp
 ń	on	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
-naj		naj
-nie		nie
+naj	naj	naj
+nie	nie	nie
 się	się	qub
 sobie	siebie	siebie:loc
 sobie	siebie	siebie:dat
@@ -27,6 +27,7 @@ siebie	siebie	siebie:gen
 sobą	siebie	siebie:inst
 se	siebie	siebie:dat		niepopr.|pot.
 wolnoć	wolnoć	pred
+boć	boć	comp
 -	-	interp
 –	–	interp
 —	—	interp
@@ -36,6 +37,8 @@ wolnoć	wolnoć	pred
 )	)	interp
 [	[	interp
 ]	]	interp
+{	{	interp
+}	}	interp
 "	"	interp
 „	„	interp
 ”	”	interp
@@ -54,20 +57,32 @@ wolnoć	wolnoć	pred
 “	“	interp
 ‘	‘	interp
 ’	’	interp
+°	°	interp
+•	•	interp
+©	©	interp
+†	†	interp
 °C	stopień_Celsjusza	brev:npun
 °F	stopień_Fahrenheita	brev:npun
 m²	metr_kwadratowy	brev:npun
 m³	metr_sześcienny	brev:npun
 €	euro	brev:npun
 ¥	jen	brev:npun
-:-)	:-)	emoticon
-:)	:)	emoticon
-;-)	;-)	emoticon
-;)	;)	emoticon
-:-))	:-))	emoticon
-:))	:))	emoticon
-;-))	;-))	emoticon
-;))	;))	emoticon
+:-)	:-)	emo
+:)	:)	emo
+;-)	;-)	emo
+;)	;)	emo
+:-))	:-))	emo
+:))	:))	emo
+;-))	;-))	emo
+;))	;))	emo
+:-(	:-(	emo
+:(	:(	emo
+;-(	;-(	emo
+;(	;(	emo
+:-((	:-((	emo
+:((	:((	emo
+;-((	;-((	emo
+;((	;((	emo
 to	to	pred
 a	A	brev:pun
 b	B	brev:pun
@@ -109,6 +124,8 @@ anty	anty+	prefa
 anty	anty+	prefs
 arcy	arcy+	prefa
 arcy	arcy+	prefs
+archi	archi+	prefa
+archi	archi+	prefs
 audio	audio+	prefa
 audio	audio+	prefs
 auto	auto+	prefa

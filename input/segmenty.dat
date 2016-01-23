@@ -56,6 +56,7 @@ polpauza
 
 #ifdef isolated
 adja
+pacta
 li
 suf_num
 miary
@@ -154,17 +155,26 @@ moze_interp((z_aglt_by|z_aglt_nwok) (aglsg1_nwok|aglsg2_nwok))
 moze_interp(z_aglt (aglpl1_wok|aglpl2_wok))
 moze_interp((z_aglt_by|z_aglt_nwok) (aglpl1_nwok|aglpl2_nwok))
 # oraz wersje z by, np. chybabym
-moze_interp((z_aglt|z_aglt_nwok) by (aglsg1_nwok|aglsg2_nwok))
+moze_interp((z_aglt|z_aglt_nwok) by (aglsg1_nwok|aglsg2_nwok)?)
 moze_interp((z_aglt|z_aglt_nwok) by (aglpl1_nwok|aglpl2_nwok))
+
+# pot. part. ‹że› + aglt, jak w zdaniu „Ty żeś to powiedział”.
+# oraz spójnik ‹że› + aglt, np. „Dziękuję, żeś przyszedł”.
+moze_interp(z_aglt_nwok2 (aglsg1_nwok|aglsg2_nwok|aglpl1_nwok|aglpl2_nwok))
 
 # Aglutynant przy przymiotnikach i rzeczownikach: 
 # ładni·śmy, świnia·ś
 # Problem: nie można sprawdzić, którą wersję (wok czy nwok) 
 # aglutynantu przykleić, więc dopuszczamy obie, ale to może
 # wpuszczać śmieci.
+# Możliwe dopracowanie: dla rzeczowników można przyciąć intepretacje tylko
+# do mianownika odpowiednich liczb, bo są to konstrukcje orzecznikowe i nie może
+# się tam pojawić nic innego niż mianownik. Nie da się tego samego zrobić
+# dla przymiotników, np.:
+# „Pięknegoście nam przyprowadzili kawalera. 
 #ifdef permissive
-moze_interp((adj|subst) aglsg)
-moze_interp((adj|subst) aglpl)
+moze_interp((adj|subst|adv_pos|adv_ndm) aglsg)
+moze_interp((adj|subst) aglpl|adv_pos|adv_ndm)
 #endif
 
 # złożenia z zaimkami 1. i 2. osoby: ja·m, ty·ś, my·śmy, wy·ście
@@ -174,14 +184,22 @@ moze_interp(ty aglsg2_nwok)
 moze_interp(my aglpl1_nwok)
 moze_interp(wy aglpl2_nwok)
 
+# złożenie z rzeczownikiem PT ‹wszyscy› i aglt: wszyscy·śmy, wszyscy·ście
+moze_interp(wszyscy)
+moze_interp(wszyscy (aglpl2_nwok|aglpl1_nwok))
+
 # Złożone formy przymiotnikowe
 # np. „biało·-·czerwony”
 moze_interp( (adja dywiz)+ adj )
-# poniższe załatwione przez + powyżej:
-# np. „niebiesko·-·biało·-·czerwona”
-# adja dywiz adja dywiz adj interp?
-# adja dywiz adja dywiz adja dywiz adj interp?
-# adja dywiz adja dywiz adja dywiz adja dywiz adj interp?
+
+# Złożone formy imiesłowowe
+# np. ssąco-tłoczący
+moze_interp( (pacta dywiz)+ pact )
+
+# Forma złoż. + celownik poprzyimkowy
+# «po serbsko-chorwacku»
+moze_interp(adjp)
+moze_interp( (adja dywiz)+ adjp )
 
 # Formy zanegowane stopnia wyższego przymiotników i przysłówków
 # np. „nie·grzeczniejszy”, „nie·grzeczniej”
@@ -200,7 +218,9 @@ moze_interp( nie > subst )
 
 # Wersja z dywizem: nie·-·Polak — niestety nie kontrolujemy 
 # wielkości litery początkowej w rzeczowniku, więc akceptowane 
-# jest również nie·-·krzesło. 
+# jest również nie·-·krzesło. Jeśli w SGJP zostaną odpowiednio uzupełnione
+# kwalifikatory etn., to pewnie będzie można zrezygnować z tej reguły na rzecz:
+# nie > dywiz > etnonimy
 moze_interp( nie > dywiz > subst )
 
 # Przyimki akceptujące krótką formę „-ń”
@@ -319,12 +339,14 @@ moze_interp(impt_sg_perf ze)
 moze_interp(impt_pl_imperf z)
 moze_interp(impt_pl_perf z)
 
-# TODO! potrzebna jeszcze reguła dla ‹on·że›.
+# TODO? potrzebna jeszcze reguła dla ‹on·że›.
 
 # dziwności: potrzebował·że·by·ś (Lem)
-moze_interp(praet_sg_masc ze by (aglsg1_nwok|aglsg2_nwok))
-moze_interp(praet_sg_nmasc z by (aglsg1_nwok|aglsg2_nwok))
-moze_interp(praet_pl z by (aglpl1_nwok|aglpl2_nwok))
+moze_interp(praet_sg_masc ze by (aglsg1_nwok|aglsg2_nwok)?)
+moze_interp(praet_sg_nmasc z by (aglsg1_nwok|aglsg2_nwok)?)
+moze_interp(praet_pl z by (aglpl1_nwok|aglpl2_nwok)?)
+# oddzielna wersja dla czasowników z formą nagl: mógł·że·by·m
+moze_interp(praet_sg_nagl ze by (aglsg1_nwok|aglsg2_nwok)?)
 
 # forma złoż. liczebnika + przymiotnik, np. wieloaspektowy, pięciomasztowy
 # dwudziestopięcioipółletni
@@ -332,6 +354,7 @@ moze_interp( i )
 moze_interp( pol_zloz> adj_pos ) !weak
 moze_interp( pol_zloz> adv_pos ) !weak
 moze_interp( num_zloz>+ adj_pos ) !weak
+moze_interp( num_zloz>+ adv_pos ) !weak
 moze_interp( num_zloz>+ i> pol_zloz> adj_pos ) !weak
 
 # półdolarówka, półsiostra
@@ -433,7 +456,7 @@ pref_dyw
 prefppas
 ppas
 li
-substa
+# substa
 sufs
 suf_num
 suf_ord
@@ -472,11 +495,14 @@ romandigD
 romandigM
 liczba_rzymska
 adja
+pacta
+adjp
 adj_pos
 adj_com
 adj_sup
 adv_pos
 adv_com
+adv_ndm
 tym
 bardziej
 niemniej
@@ -496,10 +522,12 @@ aglpl2_nwok
 z_aglt
 z_aglt_by
 z_aglt_nwok
+z_aglt_nwok2
 ja
 ty
 my
 wy
+wszyscy
 by
 praetaglt
 praetcond
@@ -518,7 +546,7 @@ i
 n
 prep_n
 prep_na
-emoticon
+emo
 killfile
 pred
 lewe
@@ -533,23 +561,26 @@ nie	nie
 prefs	prefs
 # prefv	prefv
 prefa	prefa
-prefppas	prefppas
+#prefppas	prefppas
 dig	dig
 adja	adja
-substa	substa
+pacta	pacta
+adjp	adjp
+# substa	substa
 adj_pos	adj:%:pos
 adv_pos	adv:pos
 adj_sup	adj:%:sup
 adj_sup	adv:sup
 adj_com	adj:%:com
 adv_com	adv:com
+adv_ndm	adv
 negat	ger:%:neg
 negat	pact:%:neg
 negat	ppas:%:neg
 brev_pun	brev:pun
 brev_npun	brev:npun
 # samotny	interj
-samotny	emoticon
+samotny	emo
 aglsg1_wok	aglt:sg:pri:%:wok
 aglpl1_wok	aglt:pl:pri:%:wok
 aglsg1_nwok	aglt:sg:pri:%:nwok
@@ -645,6 +676,7 @@ z_aglt	czyż	qub
 z_aglt	jakżeż	qub
 z_aglt	zaliż	qub
 z_aglt	już	qub
+z_aglt	skąd	adv
 z_aglt_by	aby	comp
 z_aglt_by	by	comp
 z_aglt_by	choćby	comp
@@ -666,7 +698,6 @@ z_aglt_nwok	czemu	adv
 z_aglt_nwok	jeszcze	qub
 z_aglt_nwok	gdzie	adv
 z_aglt_nwok	gdzie	qub
-z_aglt_nwok	gdy	adv
 z_aglt_nwok	dopóty	conj
 z_aglt_nwok	dopóki	comp
 z_aglt_nwok	dlaczego	adv
@@ -681,11 +712,16 @@ z_aglt_nwok	kiedy	comp
 z_aglt_nwok	tylko	qub
 z_aglt_nwok	to	conj
 z_aglt_nwok	chyba	qub
-z_aglt_nwok	że	qub
 z_aglt_nwok	czy	qub
 z_aglt_nwok	co	comp
 z_aglt_nwok	bo	comp
 z_aglt_nwok	byle	comp
+# z_aglt_nwok2 jest po to, żeby niektóre jednostki (np. partykułowe ‹że› typu: 
+# „Ty żeś to powiedział”) łączyły się tylko z aglutynantem, ale nie z ‹by›.
+z_aglt_nwok2	że	qub
+z_aglt_nwok2	że	comp
+z_aglt_nwok2	co	subst:%
+z_aglt_nwok2	gdy	adv
 dywiz	-	interp
 pauza	—	interp
 polpauza	–	interp
@@ -818,7 +854,7 @@ miary	metr_kwadratowy	brev:%
 miary	metr_sześcienny	brev:%
 miary	euro	brev:%
 miary	jen	brev:%
-
+wszyscy	wszystek	adj:%
 [separator chars]
 
 # (

@@ -1,6 +1,6 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.5.4
+#!TAGSET-ID pl.sgjp.morfeusz-0.5.5
 
-# największy identyfikator: 729
+# największy identyfikator: 730
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -117,7 +117,7 @@
 149	depr:pl:nom:m2
 150	depr:pl:voc:m2
 # nominal compounds forming form:
-599	substa
+# 599	substa
 # PERSONAL PRONOUNS
 443	ppron12:sg:acc:m1.m2.m3.f.n1.n2:pri:akc
 444	ppron12:sg:acc:m1.m2.m3.f.n1.n2:pri:nakc
@@ -603,6 +603,7 @@
 328	pact:sg:nom.voc:m1.m2.m3:imperf:neg
 329	pact:sg:nom.voc:m1.m2.m3:imperf.perf:aff
 330	pact:sg:nom.voc:m1.m2.m3:imperf.perf:neg
+730	pacta
 # adjectival passive participle:
 333	ppas:pl:acc:m1.p1:imperf:aff
 334	ppas:pl:acc:m1.p1:imperf:neg
@@ -775,12 +776,11 @@
 # Roman digits:
 593	romandig
 # emoticons:
-152	emoticon
+152	emo
 # prefixes:
 574	prefa
-575	prefppas
-576	prefs
-577	prefv
+575	prefs
+
 # (special) 
 236	naj
 237	nie
