@@ -160,6 +160,7 @@ moze_interp((z_aglt|z_aglt_nwok) by (aglpl1_nwok|aglpl2_nwok))
 
 # pot. part. ‹że› + aglt, jak w zdaniu „Ty żeś to powiedział”.
 # oraz spójnik ‹że› + aglt, np. „Dziękuję, żeś przyszedł”.
+moze_interp(z_aglt_nwok2)
 moze_interp(z_aglt_nwok2 (aglsg1_nwok|aglsg2_nwok|aglpl1_nwok|aglpl2_nwok))
 
 # Aglutynant przy przymiotnikach i rzeczownikach: 
@@ -833,6 +834,7 @@ suf_num	+latek	subst:%
 suf_num	+latka	subst:%
 suf_num	+lecie	subst:%
 suf_num	+krotność	subst:%
+suf_num	+ścian	subst:%
 suf_ord	ty	adj:%
 suf_ord	y	adj:%
 romandigI	I	romandig
