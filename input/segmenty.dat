@@ -177,6 +177,7 @@ moze_interp(z_aglt_nwok2 (aglsg1_nwok|aglsg2_nwok|aglpl1_nwok|aglpl2_nwok))
 moze_interp((adj|subst|adv_pos|adv_ndm) aglsg)
 moze_interp((adj|subst) aglpl|adv_pos|adv_ndm)
 #endif
+moze_interp(adv_ndm)
 
 # złożenia z zaimkami 1. i 2. osoby: ja·m, ty·ś, my·śmy, wy·ście
 moze_interp(ja|ty|my|wy)
@@ -723,6 +724,7 @@ z_aglt_nwok2	że	qub
 z_aglt_nwok2	że	comp
 z_aglt_nwok2	co	subst:%
 z_aglt_nwok2	gdy	adv
+z_aglt_nwok2	wcale	adv
 dywiz	-	interp
 pauza	—	interp
 polpauza	–	interp
