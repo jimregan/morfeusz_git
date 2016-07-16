@@ -115,6 +115,8 @@ ch	Ch	brev:pun
 st	St	brev:pun
 aero	aero+	prefa
 aero	aero+	prefs
+afro	afro+	prefs
+afro	afro+	prefa
 anarcho	anarcho+	prefa
 anarcho	anarcho+	prefs
 anglo	anglo+	prefa
@@ -198,8 +200,8 @@ multi	multi+	prefa
 multi	multi+	prefs
 nad	nad+	prefa
 nad	nad+	prefs
-na	na+	prefa
-na	na+	prefs
+# na	na+	prefa
+# na	na+	prefs
 nano	nano+	prefa
 nano	nano+	prefs
 narko	narko+	prefa
@@ -241,6 +243,8 @@ psycho	psycho+	prefa
 psycho	psycho+	prefs
 quasi	quasi+	prefa
 quasi	quasi+	prefs
+radio	radio+	prefs
+radio	radio+	prefa
 re	re+	prefa
 re	re+	prefs
 samo	samo+	prefa
@@ -281,7 +285,7 @@ wszystko	wszystko+	prefs
 za	za+	prefa
 za	za+	prefs
 przed	przed+	prefa
-po	po+	prefa
+# po	po+	prefa
 ściany	ścian	subst:pl:acc:m3	pospolita	mat.
 ścianom	ścian	subst:pl:dat:m3	pospolita	mat.
 ścianów	ścian	subst:pl:gen:m3	pospolita	mat.
