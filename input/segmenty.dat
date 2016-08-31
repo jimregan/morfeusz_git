@@ -78,23 +78,15 @@ n
 # Połączenia z aglutynantami:
 #
 #ifdef split
-# Czas przeszły (z uwzględnieniem prefiksów):
+# Czas przeszły:
 # np. „gniotł·am”
 moze_interp( praet_sg_agl (aglsg1_wok|aglsg2_wok) )
-# i wersja z prefv
-# moze_interp( prefv> praet_sg_agl (aglsg1_wok|aglsg2_wok)) !weak
 # np. „czytał·em”
 moze_interp( praet_sg_masc (aglsg1_wok|aglsg2_wok))
-# i wersja z prefv
-# moze_interp(prefv> praet_sg_masc (aglsg1_wok|aglsg2_wok)) !weak
 # np. czytała·ś, czytało·ś
 moze_interp( praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok))
-# i wersja z prefv
-# moze_interp(prefv> praet_sg_nmasc (aglsg1_nwok|aglsg2_nwok)) !weak
 # np. „czytali·ście”
 moze_interp( praet_pl (aglpl1_nwok|aglpl2_nwok))
-# i wersja z prefv
-# moze_interp(prefv> praet_pl (aglpl1_nwok|aglpl2_nwok)) !weak
 
 
 # przeszlik pojedynczy w formie nieaglutynacyjnej, np. „gniótł”:
@@ -109,24 +101,16 @@ moze_interp(praet_pl)
 # Tryb warunkowy:
 # np. „gniótł·by”
 moze_interp(praet_sg_nagl by)
-# wersja z prefv:
-# moze_interp(prefv> praet_sg_nagl by) !weak
 # np. „czytało·by”
 moze_interp(praet_sg by)
-# wersja prefv
-# moze_interp(prefv> praet_sg by) !weak
 # np. „gnietli·by”
 moze_interp( praet_pl by)
-# moze_interp(prefv> praet_pl by) !weak
 # np. „gniótł·by·ś”
 moze_interp(praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok))
-# moze_interp(prefv> praet_sg_nagl by (aglsg1_nwok|aglsg2_nwok)) !weak
 # np. „czytał·by·m”
 moze_interp(praet_sg by (aglsg1_nwok|aglsg2_nwok))
-# moze_interp(prefv> praet_sg by (aglsg1_nwok|aglsg2_nwok)) !weak
 # np. „gnietli·by·śmy”
 moze_interp(praet_pl by (aglpl1_nwok|aglpl2_nwok))
-# moze_interp(prefv> praet_pl by (aglpl1_nwok|aglpl2_nwok)) !weak
 #else
 moze_interp(praetcond)
 moze_interp(praetaglt)
@@ -135,12 +119,8 @@ moze_interp(praet_pl) !weak
 #endif
 
 # Prefiksy czasownikowe dla form fin, rozkaźników i imiesłowów przysłówkowych
-# moze_interp(prefv> fin) !weak
-# moze_interp(prefv> impt) !weak
 moze_interp(pcon)
 moze_interp(pant)
-# moze_interp(prefv> pcon) !weak
-# moze_interp(prefv> pant) !weak
 
 
 # np. „by·ś”
@@ -286,7 +266,6 @@ moze_interp( prefs> dywiz> rzeczowniki ) !weak
 moze_interp( pref_dyw> rzeczowniki ) !weak
 # czasownikowe np. „po·nakapywać”
 moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|impt_sg_perf|impt_pl_perf)
-# moze_interp( prefv> (inf_imperf by? |praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|ppas|pact|ger) ) !weak
 # przymiotnikowe i przysłówkowe np. „do·żylny”, 
 # „euro·sodomski”, „bez·argumentowy”
 moze_interp(ppas|adv_pos|pact)
@@ -460,7 +439,6 @@ moze_interp(niemniej)
 [segment types]
 nie
 prefs
-# prefv
 prefa
 pref_dyw
 prefppas
@@ -570,7 +548,6 @@ samodz
 [tags]
 nie	nie
 prefs	prefs
-# prefv	prefv
 prefa	prefa
 #prefppas	prefppas
 dig	dig
