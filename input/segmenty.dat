@@ -378,9 +378,9 @@ moze_interp(brev_pun kropka)
 # formy złoż. rzeczowników i sufiksoidów rzeczownikowych
 # moze_interp( substa> sufs ) !weak
 
-moze_interp( substa> rzeczowniki) !weak
+#moze_interp( substa> rzeczowniki) !weak
 
-moze_interp( substa> adj) !weak
+#moze_interp( substa> adj) !weak
 
 # złożenia imiesłowów przymiotnikowych czynnych:
 # trzeba poczekać na formy złoż. imiesłowów.
