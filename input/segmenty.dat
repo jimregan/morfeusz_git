@@ -446,7 +446,7 @@ prefppas
 ppas
 li
 li_tylko
-substa
+# substa
 sufs
 suf_num
 suf_ord
@@ -555,7 +555,7 @@ dig	dig
 adja	adja
 pacta	pacta
 adjp	adjp
-substa	substa
+#substa	substa
 adj_pos	adj:%:pos
 adv_pos	adv:pos
 adj_sup	adj:%:sup
