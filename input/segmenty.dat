@@ -187,9 +187,9 @@ moze_interp( (adja dywiz)+ adjp )
 
 # Formy zanegowane stopnia wyższego przymiotników i przysłówków
 # np. „nie·grzeczniejszy”, „nie·grzeczniej”
-moze_interp( adj_com )
-moze_interp( nie> adj_com )
-moze_interp( nie> adv_com )
+moze_interp( adj_com|adv_com )
+moze_interp( nie> adj_com ) !weak
+moze_interp( nie> adv_com ) !weak
 
 # Formy „zanegowane” gerundiów i imiesłowów:
 # np. „nie·czytanie”, „nie·przeczytany”, „nie·czytający”:
