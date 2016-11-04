@@ -376,6 +376,11 @@ moze_interp(pred)
 moze_interp(brev_npun)
 moze_interp(brev_pun kropka)
 
+# Zapisy typ 67' (67. minuta) — ze względu na NKJP1M
+apostrof
+moze_interp(dig>* dig apostrof)
+
+
 # REGUŁY EKSPERYMENTALNE
 # formy złoż. rzeczowników i sufiksoidów rzeczownikowych
 # moze_interp( substa> sufs ) !weak
@@ -457,6 +462,7 @@ pauza
 polpauza
 kropka
 przecinek
+apostrof
 adj_anty_zloz
 subst_anty_zloz
 fin_perf
@@ -724,6 +730,7 @@ pauza	—	interp
 polpauza	–	interp
 kropka	.	interp
 przecinek	,	interp
+apostrof	'	interp
 n	on	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
 adj_anty_zloz	ten	adj:%
 adj_anty_zloz	tenże	adj:%
@@ -1816,12 +1823,17 @@ miary	jen	brev:%
 wszyscy	wszystek	adj:%
 
 [separator chars]
+# numery dziesiętne (decimal)
+# http://www.fileformat.info/info/charset/UTF-8/list.htm
 
 # !
 33
 
 # "
 34
+
+# %
+37
 
 # (
 40
@@ -1846,6 +1858,9 @@ wszyscy	wszystek	adj:%
 
 # ?
 63
+
+# @
+64
 
 # [
 91

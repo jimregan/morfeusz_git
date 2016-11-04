@@ -17,8 +17,7 @@ D	D	romandig
 M	M	romandig
 pół	pół	num:comp
 ń	on	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
-naj	naj	naj
-nie	nie	nie
+# naj	naj	naj
 się	się	qub
 sobie	siebie	siebie:loc
 sobie	siebie	siebie:dat
@@ -31,6 +30,7 @@ boć	boć	comp
 -	-	interp
 –	–	interp
 —	—	interp
+―	―	interp
 .	.	interp
 ,	,	interp
 (	(	interp
@@ -55,6 +55,7 @@ boć	boć	comp
 §	§	interp
 %	%	interp
 “	“	interp
+'	'	interp
 ‘	‘	interp
 ’	’	interp
 °	°	interp
@@ -62,6 +63,9 @@ boć	boć	comp
 ©	©	interp
 †	†	interp
 /	/	interp
++	+	interp
+=	=	interp
+@	@	interp
 °C	stopień_Celsjusza	brev:npun
 °F	stopień_Fahrenheita	brev:npun
 m²	metr_kwadratowy	brev:npun
