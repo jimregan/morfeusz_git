@@ -3,9 +3,9 @@ aggl=strict permissive isolated
 praet=split composite
 
 [combinations]
-# define wsz_interp (interp|dywiz|polpauza)*
+# define wsz_interp (interp|dywiz|polpauza|kropka|przecinek)
 
-# define moze_interp(segmenty) wsz_interp segmenty wsz_interp
+# define moze_interp(segmenty) (wsz_interp)* segmenty (wsz_interp)*
 #define moze_interp(segmenty) segmenty
 
 #define rzeczowniki (subst|ger|depr)
@@ -200,7 +200,7 @@ moze_interp( negat )
 # Formy zanegowane rzeczowników: nie·apostoł, nie·krzesło.
 # Może reguła powinna być „słaba”, żeby wykluczyć z niej
 # subst homonimiczne z ger (nie·mieszkanie)?
-moze_interp( nie > subst )
+moze_interp( nie > subst ) !weak
 
 # Wersja z dywizem: nie·-·Polak — niestety nie kontrolujemy 
 # wielkości litery początkowej w rzeczowniku, więc akceptowane 
@@ -385,9 +385,9 @@ moze_interp(dig>* dig apostrof)
 # formy złoż. rzeczowników i sufiksoidów rzeczownikowych
 # moze_interp( substa> sufs ) !weak
 
-#moze_interp( substa> rzeczowniki) !weak
+# moze_interp( substa> rzeczowniki) !weak
 
-#moze_interp( substa> adj) !weak
+# moze_interp( substa> adj) !weak
 
 # złożenia imiesłowów przymiotnikowych czynnych:
 # trzeba poczekać na formy złoż. imiesłowów.
@@ -412,6 +412,7 @@ moze_interp( dig>+ dywiz> suf_num )
 
 # interpretacja znaków interpunkcyjnych
 # moze_interp(samodz interp)
+
 
 # REGUŁY DLA ZAPISÓW NIEPOPRAWNYCH
 
@@ -453,7 +454,6 @@ prefppas
 ppas
 li
 li_tylko
-#substa
 sufs
 suf_num
 suf_ord
@@ -545,10 +545,7 @@ n
 prep_n
 prep_na
 emo
-killfile
 pred
-lewe
-prawe
 brev_pun
 brev_npun
 samodz
@@ -562,7 +559,6 @@ dig	dig
 adja	adja
 pacta	pacta
 adjp	adjp
-#substa	substa
 adj_pos	adj:%:pos
 adv_pos	adv:pos
 adj_sup	adj:%:sup
@@ -1879,6 +1875,9 @@ wszyscy	wszystek	adj:%
 
 # »
 187
+
+# .
+1748
 
 # …
 8230
