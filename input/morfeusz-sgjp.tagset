@@ -731,7 +731,7 @@
 265	num:sg:nom.gen.dat.inst.acc.loc.voc:f:rec
 266	num:sg:nom.gen.dat.inst.acc.loc.voc:m1.m2.m3.n1.n2:rec
 802	num:sg:nom.gen.dat.inst.acc.loc.voc:m1.m2.m3.f.n1.n2:rec
-803	num:sg:nom.acc:m1.m2.m3.f.n1.n2:rec
+803	num:sg:nom.gen.acc:m1.m2.m3.f.n1.n2:rec
 804	num:sg.pl:nom.acc:m1.m2.m3.f.n1.n2.p1.p2:rec
 # numeral compounds forming form:
 238	num:comp
