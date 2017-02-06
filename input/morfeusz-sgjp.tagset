@@ -717,7 +717,7 @@
 251	num:pl:inst:m1.m2.m3.n2:congr
 252	num:pl:inst:m1.m2.m3.n2.f:congr
 253	num:pl:inst:n1.p1.p2:rec
-254	num:pl:nom.acc:m1.m2.m3.f.n1.n2.p1.p2:rec
+254	num:pl:nom.gen.acc:m1.m2.m3.f.n1.n2.p1.p2:rec
 255	num:pl:nom.acc.voc:f:congr
 256	num:pl:nom.acc.voc:m1:rec
 257	num:pl:nom.acc.voc:m2.m3.f.n1.n2.p1.p2:rec
