@@ -207,7 +207,7 @@ moze_interp( nie > subst ) !weak
 # jest również nie·-·krzesło. Jeśli w SGJP zostaną odpowiednio uzupełnione
 # kwalifikatory etn., to pewnie będzie można zrezygnować z tej reguły na rzecz:
 # nie > dywiz > etnonimy
-moze_interp( nie > dywiz > subst )
+moze_interp( nie > dywiz > subst ) !weak
 
 # Przyimki akceptujące krótką formę „-ń”
 # moze_interp(z_on_agl)
@@ -265,7 +265,9 @@ moze_interp(prefs> dywiz> etnonimy)
 moze_interp(subst_anty_zloz)
 moze_interp( prefs> rzeczowniki ) !weak
 # wersja z dywizem, bez ‹e-›
-moze_interp( prefs> dywiz> rzeczowniki ) !weak
+moze_interp( prefs> dywiz> rzeczowniki ) 
+#!weak
+# powyżej wyłączenie weak
 moze_interp( pref_dyw> rzeczowniki ) !weak
 # czasownikowe np. „po·nakapywać”
 moze_interp(inf_imperf|praet_imperf|imps_imperf|fin_imperf|impt_sg_imperf|impt_pl_imperf|impt_sg_perf|impt_pl_perf)
