@@ -310,7 +310,7 @@ __version__ = _morfeusz2._Morfeusz_getVersion()
 
 __copyright__ = _morfeusz2._Morfeusz_getCopyright().decode('utf-8')
 
-GENDERS = ['m1', 'm2', 'm3', 'f', 'n1', 'n2', 'p1', 'p2', 'p3']
+GENDERS = ['m1', 'm2', 'm3', 'f', 'n']
 
 
 class Morfeusz(_object):
