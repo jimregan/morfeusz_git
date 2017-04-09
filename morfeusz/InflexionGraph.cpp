@@ -4,6 +4,7 @@
 #include <climits>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 #include "utils.hpp"
 #include "InflexionGraph.hpp"
 
@@ -226,8 +227,60 @@ void InflexionGraph::repairLastNodeNumbers() {
     }
 }
 
+static vector<unsigned int> createIdentityNodesMap(long unsigned int n) {
+    vector<unsigned int> res(n);
+    for (unsigned int i = 0; i < n; i++) {
+        res[i] = i;
+    }
+    return res;
+}
+
+class TopologicalComparator {
+public:
+    TopologicalComparator(vector< const char* > node2ChunkStartPtr)
+    : node2ChunkStartPtr(node2ChunkStartPtr) {}
+    
+    bool operator()(unsigned int i, unsigned int j) {
+        return node2ChunkStartPtr[i] < node2ChunkStartPtr[j];
+    }
+private:
+    vector< const char* > node2ChunkStartPtr;
+};
+
+void InflexionGraph::swapNodes(unsigned int node1, unsigned int node2) {
+    swap(this->graph[node1], this->graph[node2]);
+    swap(this->node2ChunkStartPtr[node1], this->node2ChunkStartPtr[node2]);
+}
+
+// XXX this is a bit dirty
+// fixes problem with "radem," (incorrect node numbers when inflexion graph is NOT a tree)
+void InflexionGraph::sortNodeNumbersTopologically() {
+    vector<unsigned int> nodesNewPositions(createIdentityNodesMap(this->graph.size()));
+    TopologicalComparator comparator(this->node2ChunkStartPtr);
+    sort(nodesNewPositions.begin(), nodesNewPositions.end(), comparator);
+    // swap pointers in edges
+    for (unsigned int node = 0; node < this->graph.size(); node++) {
+        for (unsigned int edgeIdx = 0; edgeIdx < this->graph[node].size(); edgeIdx++) {
+            InflexionGraph::Edge& edge = this->graph[node][edgeIdx];
+            if (edge.nextNode < this->graph.size()) { // don't change UINT_MAX nodes (outside current graph)
+                edge.nextNode = nodesNewPositions[edge.nextNode];
+            }
+        }
+    }
+    
+    // swap nodes
+    for (unsigned int node = 0; node < this->graph.size(); node++) {
+        if (node < nodesNewPositions[node]) { // prevent swapping 2 times
+            swapNodes(node, nodesNewPositions[node]);
+        }
+    }
+}
+
 const vector< vector<InflexionGraph::Edge> >& InflexionGraph::getTheGraph() {
     minimizeGraph();
+    if (this->graph.size() > 2) {
+        sortNodeNumbersTopologically();
+    }
     repairLastNodeNumbers();
     return this->graph;
 }
