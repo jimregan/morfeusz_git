@@ -1,4 +1,4 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.6.0
+#!TAGSET-ID pl.sgjp.morfeusz-0.6.1
 
 # największy identyfikator: 730
 
@@ -132,20 +132,20 @@
 460	ppron12:sg:nom:m1.m2.m3.f.n:sec
 800	ppron12:sg:voc:m1.m2.m3.f.n:pri
 461	ppron12:sg:voc:m1.m2.m3.f.n:sec
-429	ppron12:pl:acc:_:pri
-430	ppron12:pl:acc:_:sec
-431	ppron12:pl:dat:_:pri
-432	ppron12:pl:dat:_:sec
-433	ppron12:pl:gen:_:pri
-434	ppron12:pl:gen:_:sec
-435	ppron12:pl:inst:_:pri
-436	ppron12:pl:inst:_:sec
-437	ppron12:pl:loc:_:pri
-438	ppron12:pl:loc:_:sec
-439	ppron12:pl:nom:_:pri
-440	ppron12:pl:nom:_:sec
-441	ppron12:pl:voc:_:pri
-442	ppron12:pl:voc:_:sec
+429	ppron12:pl:acc:m1.m2.m3.f.n:pri
+430	ppron12:pl:acc:m1.m2.m3.f.n:sec
+431	ppron12:pl:dat:m1.m2.m3.f.n:pri
+432	ppron12:pl:dat:m1.m2.m3.f.n:sec
+433	ppron12:pl:gen:m1.m2.m3.f.n:pri
+434	ppron12:pl:gen:m1.m2.m3.f.n:sec
+435	ppron12:pl:inst:m1.m2.m3.f.n:pri
+436	ppron12:pl:inst:m1.m2.m3.f.n:sec
+437	ppron12:pl:loc:m1.m2.m3.f.n:pri
+438	ppron12:pl:loc:m1.m2.m3.f.n:sec
+439	ppron12:pl:nom:m1.m2.m3.f.n:pri
+440	ppron12:pl:nom:m1.m2.m3.f.n:sec
+441	ppron12:pl:voc:m1.m2.m3.f.n:pri
+442	ppron12:pl:voc:m1.m2.m3.f.n:sec
 474	ppron3:sg:acc:f:ter:akc.nakc:npraep
 475	ppron3:sg:acc:f:ter:akc.nakc:praep
 476	ppron3:sg:acc:m1.m2.m3:ter:akc:npraep
@@ -185,12 +185,12 @@
 463	ppron3:pl:acc:m1:ter:akc.nakc:praep
 464	ppron3:pl:acc:m2.m3.f.n:ter:akc.nakc:npraep
 465	ppron3:pl:acc:m2.m3.f.n:ter:akc.nakc:praep
-466	ppron3:pl:dat:_:ter:akc.nakc:npraep
-467	ppron3:pl:dat:_:ter:akc.nakc:praep
-468	ppron3:pl:gen:_:ter:akc.nakc:npraep
-469	ppron3:pl:gen:_:ter:akc.nakc:praep
-470	ppron3:pl:inst:_:ter:akc.nakc:praep.npraep
-471	ppron3:pl:loc:_:ter:akc.nakc:praep.npraep
+466	ppron3:pl:dat:m1.m2.m3.f.n:ter:akc.nakc:npraep
+467	ppron3:pl:dat:m1.m2.m3.f.n:ter:akc.nakc:praep
+468	ppron3:pl:gen:m1.m2.m3.f.n:ter:akc.nakc:npraep
+469	ppron3:pl:gen:m1.m2.m3.f.n:ter:akc.nakc:praep
+470	ppron3:pl:inst:m1.m2.m3.f.n:ter:akc.nakc:praep.npraep
+471	ppron3:pl:loc:m1.m2.m3.f.n:ter:akc.nakc:praep.npraep
 472	ppron3:pl:nom:m1:ter:akc.nakc:praep.npraep
 473	ppron3:pl:nom:m2.m3.f.n:ter:akc.nakc:praep.npraep
 # PRONOUN ‘SIEBIE’
