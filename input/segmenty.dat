@@ -6,7 +6,6 @@ praet=split composite
 #define wsz_interp (interp|dywiz|polpauza|kropka|przecinek)*
 
 #define moze_interp(segmenty) (wsz_interp) segmenty (wsz_interp)
-# define moze_interp(segmenty) segmenty
 
 #define rzeczowniki (subst|ger|depr)
 
@@ -640,7 +639,7 @@ impt_sg_imperf	impt:sg:%:imperf
 impt_sg_perf	impt:sg:%:perf
 impt_pl_imperf	impt:pl:%:imperf
 impt_pl_perf	impt:pl:%:perf
-num_zloz	num:comp
+num_zloz	numcomp
 prep_n		prep:%:wok
 pred		pred
 interp		interp
@@ -651,7 +650,7 @@ tym	tym	adv
 bardziej	bardziej	adv
 niemniej	niemniej	qub
 pewno	pewno	qub
-pol_zloz	pół	num:comp
+pol_zloz	pół	numcomp
 i	i	conj
 by	by	qub
 li	li	qub	labels=przest.

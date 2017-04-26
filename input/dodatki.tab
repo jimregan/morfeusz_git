@@ -15,7 +15,6 @@ L	L	romandig
 C	C	romandig
 D	D	romandig
 M	M	romandig
-pół	pół	num:comp
 ń	on	ppron3:sg:gen.acc:m1.m2.m3:ter:nakc:praep
 # naj	naj	naj
 się	się	qub
@@ -72,6 +71,12 @@ m²	metr_kwadratowy	brev:npun
 m³	metr_sześcienny	brev:npun
 €	euro	brev:npun
 ¥	jen	brev:npun
+art	artykuł	brev:pun
+tys	tysiąc	brev:pun
+r	rok	brev:pun
+zach	zachód	brev:pun
+wsch	wschód	brev:pun
+inż	inżynier	brev:pun
 :-)	:-)	emo
 :)	:)	emo
 ;-)	;-)	emo
