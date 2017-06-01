@@ -1,6 +1,6 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.6.2
+#!TAGSET-ID pl.sgjp.morfeusz-0.6.3
 
-# największy identyfikator: 731
+# największy identyfikator: 738
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -106,10 +106,16 @@
 659	subst:pl:voc:n:ncol
 660	subst:pl:voc:m1:pt
 661	subst:pl:voc:n:pt
+731	subst:sg.pl:nom.gen.dat.acc.inst.loc.voc:m1
+732	subst:sg.pl:nom.gen.dat.acc.inst.loc.voc:m2
+733	subst:sg.pl:nom.gen.dat.acc.inst.loc.voc:m3
+734	subst:sg.pl:nom.gen.dat.acc.inst.loc.voc:f
+735	subst:sg.pl:nom.gen.dat.acc.inst.loc.voc:n:col
+736	subst:sg.pl:nom.gen.dat.acc.inst.loc.voc:n:ncol
+737	subst:pl:nom.gen.dat.acc.inst.loc.voc:m1:pt
+738	subst:pl:nom.gen.dat.acc.inst.loc.voc:n:pt
 # depreciative nominal flexeme:
-149	depr:pl:nom:m2
-150	depr:pl:voc:m2
-731	depr:pl:acc:m2
+149	depr:pl:nom.acc.voc:m2
 # nominal compounds forming form:
 # 599	substa
 # PERSONAL PRONOUNS
