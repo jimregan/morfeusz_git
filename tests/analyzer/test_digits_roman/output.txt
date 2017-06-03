@@ -41,4 +41,7 @@
 [0,1,LL,LL,ign,_,_]
 [0,1,LLX,LLX,ign,_,_]
 []
+[0,1,x,X,romandig,_,_]
+[0,1,xx,XX,romandig,_,_]
+[0,1,MmXiV,MMXIV,romandig,_,_]
 

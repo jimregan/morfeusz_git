@@ -157,7 +157,7 @@ namespace morfeusz {
         }
         const unsigned char* currPtr = getInterpretationsPtr(prefixChunk.interpsGroupPtr);
         EncodedInterpretation ei = this->decodeEncodedInterp(currPtr, *prefixChunk.interpsGroupPtr);
-        if (env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
+        if (prefixChunk.forceIgnoreCase || env.getCasePatternHelper().checkCasePattern(normalizedCodepoints, orthCodepoints, ei.orthCasePattern)) {
             this->decodeLemma(ei.value, prefixChunk.codepointsNum, true, lemma4Prefixes);
             return true;
         } else {
