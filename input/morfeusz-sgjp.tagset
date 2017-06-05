@@ -1,6 +1,6 @@
 #!TAGSET-ID pl.sgjp.morfeusz-0.6.3
 
-# największy identyfikator: 738
+# największy identyfikator: 744
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -25,7 +25,7 @@
 672	subst:sg:dat:m3
 673	subst:sg:dat:n:col
 674	subst:sg:dat:n:ncol
-669	subst:sg:dat:f
+669	subst:sg:dat.loc:f
 664	subst:sg:acc:m1
 665	subst:sg:acc:m2
 666	subst:sg:acc:m3
@@ -43,7 +43,7 @@
 690	subst:sg:loc:m3
 691	subst:sg:loc:n:col
 692	subst:sg:loc:n:ncol
-687	subst:sg:loc:f
+#687	subst:sg:loc:f
 700	subst:sg:voc:m1
 701	subst:sg:voc:m2
 702	subst:sg:voc:m3
@@ -51,13 +51,13 @@
 704	subst:sg:voc:n:ncol
 699	subst:sg:voc:f
 646	subst:pl:nom:m1
-647	subst:pl:nom:m2
-648	subst:pl:nom:m3
+647	subst:pl:nom.acc:m2
+648	subst:pl:nom.acc:m3
 649	subst:pl:nom:n:col
 650	subst:pl:nom:n:ncol
 651	subst:pl:nom:m1:pt
-652	subst:pl:nom:n:pt
-645	subst:pl:nom:f
+652	subst:pl:nom.acc:n:pt
+645	subst:pl:nom.acc:f
 619	subst:pl:gen:m1
 620	subst:pl:gen:m2
 621	subst:pl:gen:m3
@@ -75,13 +75,13 @@
 616	subst:pl:dat:n:pt
 609	subst:pl:dat:f
 601	subst:pl:acc:m1
-602	subst:pl:acc:m2
-603	subst:pl:acc:m3
+#602	subst:pl:acc:m2
+#603	subst:pl:acc:m3
 604	subst:pl:acc:n:col
 605	subst:pl:acc:n:ncol
 606	subst:pl:acc:m1:pt
-607	subst:pl:acc:n:pt
-600	subst:pl:acc:f
+#607	subst:pl:acc:n:pt
+#600	subst:pl:acc:f
 628	subst:pl:inst:m1
 629	subst:pl:inst:m2
 630	subst:pl:inst:m3
@@ -114,6 +114,13 @@
 736	subst:sg.pl:nom.gen.dat.acc.inst.loc.voc:n:ncol
 737	subst:pl:nom.gen.dat.acc.inst.loc.voc:m1:pt
 738	subst:pl:nom.gen.dat.acc.inst.loc.voc:n:pt
+739	subst:pl:nom:n:pt
+740	subst:sg:dat.loc:m1
+741	subst:pl:acc:n:pt
+742	subst:sg:dat.loc:m2
+743	subst:pl:nom.acc:n:ncol
+744	subst:pl:acc:m3
+745	subst:pl:nom:m3
 # depreciative nominal flexeme:
 149	depr:pl:nom.acc.voc:m2
 # nominal compounds forming form:
