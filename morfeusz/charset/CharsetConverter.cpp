@@ -29,8 +29,8 @@ CharsetConverter::~CharsetConverter() {
 }
 
 static inline void iterateThroughInvalidUtf8Sequence(const char*& it, const char* end) {
-    uint32_t _dupa;
-    while (it != end && utf8::internal::validate_next(it, end, _dupa) != utf8::internal::UTF8_OK) {
+    uint32_t ignoredChar;
+    while (it != end && utf8::internal::validate_next(it, end, ignoredChar) != utf8::internal::UTF8_OK) {
         it++;
     }
 }

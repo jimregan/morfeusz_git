@@ -43,5 +43,5 @@ class Visualizer(object):
         plt.axis('off')
         plt.draw()
         plt.show()
-#         plt.savefig('dupa.png')
+#         plt.savefig('filename.png')
         print 'done'
