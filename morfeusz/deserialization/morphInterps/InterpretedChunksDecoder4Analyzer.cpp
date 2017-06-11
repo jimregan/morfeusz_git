@@ -68,6 +68,7 @@ namespace morfeusz {
         encodedForm.suffixToAdd = readString(ptr);
         assert(encodedForm.casePattern.size() == 0);
         if (isLemmaOnlyLower(compressionByte)) {
+            // do nothing - empty case pattern
         } else if (isLemmaOnlyTitle(compressionByte)) {
             encodedForm.casePattern.push_back(true);
         } else {
@@ -113,7 +114,7 @@ namespace morfeusz {
         }
         EncodedInterpretation ei = this->decodeEncodedInterp(ptr, *params.chunk.interpsGroupPtr);
         
-        if (!params.chunk.forceIgnoreCase && !ei.orthCasePattern.empty() && !params.chunk.prefixChunks.empty()) {
+        if (!ei.orthCasePattern.empty() && !params.chunk.prefixChunks.empty()) {
             addPrefixLengthToCasePatterns(params.chunk, ei);
         }
         
