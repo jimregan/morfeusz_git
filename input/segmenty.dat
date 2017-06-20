@@ -7,7 +7,8 @@ praet=split composite
 
 #define moze_interp(segmenty) (wsz_interp) segmenty (wsz_interp)
 
-#define rzeczowniki (subst|ger|depr)
+#define rzeczowniki (subst|depr)
+# jednak z klasy rzeczowniki wyłączam ger
 
 #define	adj (adj_pos|adv_pos|adj_com|adv_com)
 
@@ -318,9 +319,10 @@ moze_interp( (fin_perf|fin_imperf) dywiz li)
 li_tylko
 
 # reguła z partykułą ‹+że› przy trybie rozkazującym
-# zakończonym na spółgłoskę
-moze_interp(impt_sg_imperf ze)
-moze_interp(impt_sg_perf ze)
+# zakończonym na spółgłoskę, z fakultatywnym podwojeniem partykuły,
+# np. idźżeż (raczej potoczne?)
+moze_interp(impt_sg_imperf ze z?)
+moze_interp(impt_sg_perf ze z?)
 # dodatkowo reguła dla part+że (niemalże, omalże, nieomalże):
 # moze_interp(part_z_ze ze) --- już niepotrzebne, part. wpisane do słownika
 
