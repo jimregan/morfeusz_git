@@ -1798,6 +1798,7 @@ suf_num	+latka	subst:%
 suf_num	+lecie	subst:%
 suf_num	+krotność	subst:%
 suf_num	+ścian	subst:%
+suf_num	+kroć	adv
 suf_ord	ty	adj:%
 suf_ord	y	adj:%
 romandigI	I	romandig
