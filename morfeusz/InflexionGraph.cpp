@@ -141,7 +141,7 @@ void InflexionGraph::redirectEdges(unsigned int fromNode, unsigned int toNode) {
             if (oldEdge.nextNode == fromNode) {
                 Edge newEdge = {oldEdge.chunk, toNode};
                 if (!containsEqualEdge(edges, newEdge)) {
-                    // if newEdge is not in edges, redirect edgeEdge
+                    // if newEdge is not in edges, redirect oldEdge
                     // so it becomes newEdge
                     oldEdge.nextNode = toNode;
                 }
@@ -179,14 +179,8 @@ void InflexionGraph::doMergeNodes(unsigned int node1, unsigned int node2) {
                 this->graph[node1].push_back(e);
             }
         }
-        //        DEBUG("1");
-        //        debugGraph(this->graph);
         this->redirectEdges(node2, node1);
-        //        DEBUG("2");
-        //        debugGraph(this->graph);
         this->doRemoveNode(node2);
-        //        DEBUG("3");
-        //        debugGraph(this->graph);
     }
 }
 
@@ -206,7 +200,7 @@ void InflexionGraph::minimizeGraph() {
     if (this->graph.size() > 2) {
         //        debugGraph(this->graph);
         while (this->tryToMergeTwoNodes()) {
-            //            debugGraph(this->graph);
+                        //debugGraph(this->graph);
         }
     }
 }
@@ -247,32 +241,35 @@ private:
     vector< const char* > node2ChunkStartPtr;
 };
 
-void InflexionGraph::swapNodes(unsigned int node1, unsigned int node2) {
-    swap(this->graph[node1], this->graph[node2]);
-    swap(this->node2ChunkStartPtr[node1], this->node2ChunkStartPtr[node2]);
-}
-
 // XXX this is a bit dirty
 // fixes problem with "radem," (incorrect node numbers when inflexion graph is NOT a tree)
+// and "Z rozdrażnienieniem:)"
 void InflexionGraph::sortNodeNumbersTopologically() {
-    vector<unsigned int> nodesNewPositions(createIdentityNodesMap(this->graph.size()));
+    vector<unsigned int> nodesTopologicallySorted(createIdentityNodesMap(this->graph.size()));
     TopologicalComparator comparator(this->node2ChunkStartPtr);
-    sort(nodesNewPositions.begin(), nodesNewPositions.end(), comparator);
+    sort(nodesTopologicallySorted.begin(), nodesTopologicallySorted.end(), comparator);
+    vector<unsigned int> oldNode2NewNode(nodesTopologicallySorted.size());
+    for (unsigned int newNode = 0; newNode < nodesTopologicallySorted.size(); newNode++) {
+        unsigned int oldNode = nodesTopologicallySorted[newNode];
+        oldNode2NewNode[oldNode] = newNode;
+    }
     // swap pointers in edges
     for (unsigned int node = 0; node < this->graph.size(); node++) {
         for (unsigned int edgeIdx = 0; edgeIdx < this->graph[node].size(); edgeIdx++) {
             InflexionGraph::Edge& edge = this->graph[node][edgeIdx];
             if (edge.nextNode < this->graph.size()) { // don't change UINT_MAX nodes (outside current graph)
-                edge.nextNode = nodesNewPositions[edge.nextNode];
+                edge.nextNode = oldNode2NewNode[edge.nextNode];
             }
         }
     }
     
     // swap nodes
-    for (unsigned int node = 0; node < this->graph.size(); node++) {
-        if (node < nodesNewPositions[node]) { // prevent swapping 2 times
-            swapNodes(node, nodesNewPositions[node]);
-        }
+    vector< vector<Edge> > graphCopy(this->graph);
+    vector< const char* > node2ChunkStartPtrCopy(this->node2ChunkStartPtr);
+    for (unsigned int oldNode = 0; oldNode < this->graph.size(); oldNode++) {
+        unsigned int newNode = oldNode2NewNode[oldNode];
+        this->graph[newNode] = graphCopy[oldNode];
+        this->node2ChunkStartPtr[newNode] = node2ChunkStartPtrCopy[oldNode];
     }
 }
 

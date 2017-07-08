@@ -96,8 +96,6 @@ private:
 
     void doRemoveNode(unsigned int node);
     
-    void swapNodes(unsigned int node1, unsigned int node2);
-    
     void repairLastNodeNumbers();
     
     void sortNodeNumbersTopologically();
