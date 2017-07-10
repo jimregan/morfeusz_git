@@ -478,7 +478,6 @@ nazwiska
 czlonynazwisk
 geograficzne
 subst
-ger
 depr
 pact
 inf_imperf
@@ -630,7 +629,6 @@ wlasne		subst:%	name=krój_pisma
 wlasne		subst:%	name=środek_lokomocji
 etnonimy	subst:%	labels=etn.
 subst		subst:%
-ger		ger:%
 depr		depr:%
 ppas		ppas:%
 pact		pact:%
