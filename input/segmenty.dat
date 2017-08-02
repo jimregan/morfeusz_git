@@ -1791,11 +1791,11 @@ sufs	+żerca	subst:%
 sufs	+maniak	subst:%
 sufs	+logia	subst:%
 sufs	+log	subst:%
-suf_num	+latek	subst:%
-suf_num	+latka	subst:%
-suf_num	+lecie	subst:%
-suf_num	+krotność	subst:%
-suf_num	+ścian	subst:%
+suf_num	latek	subst:%
+suf_num	latka	subst:%
+suf_num	lecie	subst:%
+suf_num	krotność	subst:%
+suf_num	ścian	subst:%
 suf_num	+kroć	adv
 suf_ord	ty	adj:%
 suf_ord	y	adj:%
