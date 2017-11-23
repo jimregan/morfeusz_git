@@ -377,11 +377,14 @@ moze_interp(pred)
 
 # SKRÓTY Z KROPKĄ I BEZ
 moze_interp(brev_npun)
-moze_interp(brev_pun kropka)
+moze_interp((brev_pun|rok) kropka)
 
 # Zapisy typ 67' (67. minuta) — ze względu na NKJP1M
 apostrof
 moze_interp(dig>* dig apostrof)
+
+# Obsługa zapisu typu „2017r.” (podobno częsta w niektórych tekstach). 
+moze_interp((dig> dig>? dig>? dig) rok kropka)
 
 
 # REGUŁY EKSPERYMENTALNE
@@ -548,6 +551,7 @@ prep_n
 prep_na
 emo
 pred
+rok
 brev_pun
 brev_npun
 samodz
@@ -674,6 +678,7 @@ z_aglt	zaliż	qub
 z_aglt	już	qub
 z_aglt	skąd	adv
 z_aglt	tak	adv:%
+z_aglt	niż	conj
 z_aglt_by	aby	comp
 z_aglt_by	by	comp
 z_aglt_by	choćby	comp
@@ -708,12 +713,15 @@ z_aglt_nwok	ale	conj
 z_aglt_nwok	kiedy	adv
 z_aglt_nwok	kiedy	comp
 z_aglt_nwok	tylko	qub
-z_aglt_nwok	to	conj
+z_aglt_nwok	to	comp
 z_aglt_nwok	chyba	qub
 z_aglt_nwok	czy	qub
 z_aglt_nwok	co	comp
 z_aglt_nwok	bo	comp
 z_aglt_nwok	byle	comp
+z_aglt_nwok	niźli	conj
+z_aglt_nwok     niżeli   conj
+z_aglt_nwok     aniżeli   conj
 # z_aglt_nwok2 jest po to, żeby niektóre jednostki (np. partykułowe ‹że› typu: 
 # „Ty żeś to powiedział”) łączyły się tylko z aglutynantem, ale nie z ‹by›.
 z_aglt_nwok2	że	qub
@@ -1812,6 +1820,7 @@ my	my	ppron12:pl:nom:%
 wy	wy	ppron12:pl:nom:%
 pref_dyw	e-+	prefa
 pref_dyw	e-+	prefs
+rok	rok	brev:pun
 miary	stopień_Celsjusza	brev:%
 miary	stopień_Fahrenheita	brev:%
 miary	metr_kwadratowy	brev:%
