@@ -730,6 +730,8 @@
 809	num:pl:nom.voc:m1:rec:ncol
 810	num:pl:nom.acc.voc:m1:rec:ncol
 811	num:pl:nom.acc.voc:m2.m3.f.n:congr:ncol
+812	num:sg:dat.inst.loc:m1.m2.m3.f.n:congr.rec
+813	num:sg:nom.gen.acc.voc:m1.m2.m3.f.n:rec
 # numeral compounds forming form:
 238	numcomp
 # PREPOSITIONS
