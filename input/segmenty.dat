@@ -249,10 +249,10 @@ moze_interp(wlasne)
 moze_interp(etnonimy)
 
 # połączenia nazwisk i członów nazwisk dywizem: Korwin-Mikke
-moze_interp(nazwiska)
-moze_interp(czlonynazwisk)
-moze_interp(czlonynazwisk> dywiz> nazwiska)
-moze_interp(nazwiska> dywiz> nazwiska)
+# moze_interp(nazwiska)
+# moze_interp(czlonynazwisk)
+# moze_interp(czlonynazwisk> dywiz> nazwiska)
+# moze_interp(nazwiska> dywiz> nazwiska)
 
 # Nazwy geograficzne dwuczłonowe: Bielsko-Biała, Kudowa-Zdrój.
 # Nie jest to idealne rozwiązanie, ale lepszego chyba nie ma…
@@ -386,6 +386,8 @@ moze_interp(dig>* dig apostrof)
 # Obsługa zapisu typu „2017r.” (podobno częsta w niektórych tekstach). 
 moze_interp((dig> dig>? dig>? dig) rok kropka)
 
+# Liczby ułamkowe dziesiętne z przecinkiem lub kropką:
+moze_interp(dig>+ (przecinek|kropka) > dig+)
 
 # REGUŁY EKSPERYMENTALNE
 # formy złoż. rzeczowników i sufiksoidów rzeczownikowych
@@ -477,7 +479,7 @@ pcon
 pant
 wlasne
 etnonimy
-nazwiska
+# nazwiska
 czlonynazwisk
 geograficzne
 subst
@@ -609,7 +611,7 @@ fin_imperf	fin:%:imperf
 pcon		pcon:%
 pant		pant:%
 wlasne		subst:%	name=imię
-nazwiska	subst:%	name=nazwisko
+# nazwiska	subst:%	name=nazwisko
 geograficzne	subst:%	name=geograficzna
 wlasne		subst:%	name=budowla
 wlasne		subst:%	name=firma
@@ -625,8 +627,8 @@ wlasne		subst:%	name=tytuł
 wlasne		subst:%	name=własna
 wlasne		subst:%	name=osoba
 wlasne		subst:%	name=członek_rodu
-czlonynazwisk	subst:%	name=człon_nazwiska
-czlonynazwisk	subst:%	name=człon_nazwiska_(herb)
+# czlonynazwisk	subst:%	name=człon_nazwiska
+# czlonynazwisk	subst:%	name=człon_nazwiska_(herb)
 wlasne		subst:%	name=człon_nazwy_firmy
 wlasne		subst:%	name=język_programowania
 wlasne		subst:%	name=krój_pisma
