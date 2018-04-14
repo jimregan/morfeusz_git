@@ -21,6 +21,8 @@ praet=split composite
 
 #define fin (fin_imperf|fin_perf)
 
+#define cyfry (dig>* dig)
+
 # Segmenty występujące samodzielnie:
 #
 # domyślny typ segmentu samodzielnego:
@@ -216,7 +218,11 @@ moze_interp( nie > dywiz > subst ) !weak
 # DO USUNIĘCIA — zrobione lepiej poniżej
 
 # Liczba zapisana jako ciąg cyfr:
-moze_interp( dig>* dig )
+moze_interp( cyfry )
+
+# Liczby zawierające kropki lub przecinki wewnątrz:
+moze_interp( cyfry > ((kropka|przecinek) > cyfry)>+ )
+
 
 # Liczby rzymskie
 #define	one_to_three(rdig)	(rdig>{0,2} rdig)
@@ -284,7 +290,7 @@ moze_interp( pref_dyw> ( adj_pos|adv_pos ) ) !weak
 moze_interp( rzeczowniki (dywiz) rzeczowniki ) !weak
 
 # Zakresy liczbowe, daty, np. 1911-1939.
-moze_interp((dig>* dig) dywiz (dig>* dig))
+# moze_interp((dig>* dig) dywiz (dig>* dig))
 
 # poniższe do sprawdzenia, najwyraźniej obecne w tekstach, skoro wprowadziliśmy:
 # ?
@@ -370,7 +376,7 @@ moze_interp((prep_n|prep_na) n)
 
 # Zapis łączny liczby wraz z jednostką miary, np: 5°C, 2m².
 moze_interp(miary)
-moze_interp( dig+ miary )
+moze_interp( cyfry miary )
 
 # predykatywy (typ pred jest używany w regułach dla zapisów niepoprawnych poniżej)
 moze_interp(pred)
@@ -381,13 +387,13 @@ moze_interp((brev_pun|rok) kropka)
 
 # Zapisy typ 67' (67. minuta) — ze względu na NKJP1M
 apostrof
-moze_interp(dig>* dig apostrof)
+moze_interp(cyfry apostrof)
 
 # Obsługa zapisu typu „2017r.” (podobno częsta w niektórych tekstach). 
 moze_interp((dig> dig>? dig>? dig) rok kropka)
 
 # Liczby ułamkowe dziesiętne z przecinkiem lub kropką:
-moze_interp(dig>+ (przecinek|kropka) > dig+)
+# moze_interp(dig>+ (przecinek|kropka) > dig+)
 
 # REGUŁY EKSPERYMENTALNE
 # formy złoż. rzeczowników i sufiksoidów rzeczownikowych
