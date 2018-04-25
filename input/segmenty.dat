@@ -290,7 +290,7 @@ moze_interp( pref_dyw> ( adj_pos|adv_pos ) ) !weak
 moze_interp( rzeczowniki (dywiz) rzeczowniki ) !weak
 
 # Zakresy liczbowe, daty, np. 1911-1939.
-# moze_interp((dig>* dig) dywiz (dig>* dig))
+moze_interp((dig>* dig) dywiz (dig>* dig))
 
 # poniższe do sprawdzenia, najwyraźniej obecne w tekstach, skoro wprowadziliśmy:
 # ?
