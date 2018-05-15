@@ -418,7 +418,9 @@ moze_interp( (liczba_rzymska)> dywiz> adj_pos )
 moze_interp( (liczba_rzymska)> dywiz> adv_pos )
 
 # formy złoż. z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
-# moze_interp( num_zloz>+ suf_num ) !weak
+moze_interp( num_zloz>+ suf_num )
+
+# wersja z ‹pół›, np. dwudziestodwuipółlatek, to już chyba przesada… Choć Gazeta Wyborcza tak pisze…
 # moze_interp(num_zloz>+ i> pol_zloz> suf_num ) !weak
 
 # złożenia liczbowe z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
@@ -1812,7 +1814,7 @@ suf_num	latka	subst:%
 suf_num	lecie	subst:%
 suf_num	krotność	subst:%
 suf_num	ścian	subst:%
-suf_num	+kroć	adv
+suf_num	kroć	adv
 suf_ord	ty	adj:%
 suf_ord	y	adj:%
 romandigI	I	romandig
