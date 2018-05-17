@@ -250,15 +250,11 @@ liczba_rzymska
 # np. „euro·sodoma”, „e-·papieros”
 moze_interp(rzeczowniki)
 
-# nazwy własne i etnonimy — wyłączenie ze zbioru ‹rzeczowniki›
+# nazwy własne, nazwiska i etnonimy — wyłączenie ze zbioru ‹rzeczowniki›
 moze_interp(wlasne)
+moze_interp(nazwiska)
+moze_interp(czlonynazwisk)
 moze_interp(etnonimy)
-
-# połączenia nazwisk i członów nazwisk dywizem: Korwin-Mikke
-# moze_interp(nazwiska)
-# moze_interp(czlonynazwisk)
-# moze_interp(czlonynazwisk> dywiz> nazwiska)
-# moze_interp(nazwiska> dywiz> nazwiska)
 
 # Nazwy geograficzne dwuczłonowe: Bielsko-Biała, Kudowa-Zdrój.
 # Nie jest to idealne rozwiązanie, ale lepszego chyba nie ma…
@@ -487,7 +483,7 @@ pcon
 pant
 wlasne
 etnonimy
-# nazwiska
+nazwiska
 czlonynazwisk
 geograficzne
 subst
@@ -619,7 +615,7 @@ fin_imperf	fin:%:imperf
 pcon		pcon:%
 pant		pant:%
 wlasne		subst:%	name=imię
-# nazwiska	subst:%	name=nazwisko
+nazwiska	subst:%	name=nazwisko
 geograficzne	subst:%	name=geograficzna
 wlasne		subst:%	name=budowla
 wlasne		subst:%	name=firma
@@ -635,8 +631,8 @@ wlasne		subst:%	name=tytuł
 wlasne		subst:%	name=własna
 wlasne		subst:%	name=osoba
 wlasne		subst:%	name=członek_rodu
-# czlonynazwisk	subst:%	name=człon_nazwiska
-# czlonynazwisk	subst:%	name=człon_nazwiska_(herb)
+czlonynazwisk	subst:%	name=człon_nazwiska
+czlonynazwisk	subst:%	name=człon_nazwiska_(herb)
 wlasne		subst:%	name=człon_nazwy_firmy
 wlasne		subst:%	name=język_programowania
 wlasne		subst:%	name=krój_pisma
@@ -1792,6 +1788,7 @@ subst_anty_zloz	ZWM	subst:%:m3
 subst_anty_zloz	ZWZ	subst:%:m3
 subst_anty_zloz	ZZ	subst:%:m3
 # Koniec skrótowców ndm
+#
 prep_na		na	prep:%
 prep_n		do	prep:%
 prep_n		dla	prep:%
