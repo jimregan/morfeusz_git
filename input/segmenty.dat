@@ -221,11 +221,7 @@ moze_interp( nie > dywiz > subst ) !weak
 moze_interp( cyfry )
 
 # Liczby zawierające kropki lub przecinki wewnątrz:
-# moze_interp( cyfry > ((kropka|przecinek) > cyfry)>+ )
-
-moze_interp( cyfry > (kropka|przecinek) > cyfry )
-moze_interp( cyfry > (kropka|przecinek) > cyfry > (kropka|przecinek) > cyfry )
-moze_interp( cyfry > (kropka|przecinek) > cyfry > (kropka|przecinek) > cyfry > (kropka|przecinek) > cyfry )
+moze_interp( (cyfry > (kropka|przecinek) >)+ cyfry )
 
 # Liczby rzymskie
 #define	one_to_three(rdig)	(rdig>{0,2} rdig)
