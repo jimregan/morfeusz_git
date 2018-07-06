@@ -9,7 +9,7 @@ import sys
 class TestSequenceFunctions(unittest.TestCase):
 
     def setUp(self):
-        self.morfeusz = morfeusz2.Morfeusz.createInstance()
+        self.morfeusz = morfeusz2.Morfeusz()
 
     def testAnalyzeAsList(self):
         res = self.morfeusz.analyse("Aaaa żżżż");

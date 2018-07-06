@@ -1,3 +1,10 @@
 add_subdirectory (java)
-add_subdirectory (python)
 add_subdirectory (perl)
+
+if (${PY})
+	if(${PY} EQUAL "2")
+		add_subdirectory (python2)
+	elseif(${PY} EQUAL "3")
+		add_subdirectory (python3)
+	endif()
+endif()

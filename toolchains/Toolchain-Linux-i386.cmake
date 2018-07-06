@@ -10,6 +10,11 @@ set (CMAKE_SYSTEM_PROCESSOR "x86")
 
 set (JAVA_ROOT ${CROSSMORFEUSZ_ROOT}/linux32/jdk1.7.0_45)
 set (PYTHON_ROOT ${CROSSMORFEUSZ_ROOT}/linux32/python)
+if(${PY})
+	if(${PY} EQUAL "3")
+		set (PYTHON_ROOT ${CROSSMORFEUSZ_ROOT}/linux32/python3)
+	endif()
+endif()
 
 # here is the target environment located
 set (CMAKE_FIND_ROOT_PATH  ${JAVA_ROOT} ${PYTHON_ROOT})

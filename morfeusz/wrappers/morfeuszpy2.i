@@ -19,6 +19,12 @@
 #ifdef SWIGJAVA
 %include "morfeusz_java.i"
 #endif
+
+#ifdef SWIGPYTHON
+%include "morfeusz_python2.i"
+#endif
+
+
         
 #ifdef SWIGPERL
 %include "morfeusz_perl.i"

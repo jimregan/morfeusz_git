@@ -21,7 +21,7 @@ namespace std {
         %rename(isEmpty) empty;
         bool empty() const;
         void clear();
-        void push_back(const value_type& x);
+        //void push_back(const value_type& x);
         %extend {
             const_reference get(int32_t i) const throw (std::out_of_range) {
                 return $self->at(i);
@@ -33,6 +33,10 @@ namespace std {
             }
             void add(int32_t i, const value_type& VECTOR_VALUE_IN) {
                 $self->insert($self->begin() + i, VECTOR_VALUE_IN);
+            }
+            bool add(const value_type& VECTOR_VALUE_IN) {
+                $self->push_back(VECTOR_VALUE_IN);
+                return true;
             }
             int32_t size() const {
               return $self->size();
@@ -73,6 +77,11 @@ namespace std {
             std::list<T>::iterator it = $self->begin();
             std::advance(it, i);
             $self->insert(it, VECTOR_VALUE_IN);
+        }
+        
+        bool add(const value_type& VECTOR_VALUE_IN) {
+            $self->push_back(VECTOR_VALUE_IN);
+            return true;
         }
         
         value_type remove(int32_t i, const value_type& VECTOR_VALUE_IN) throw (std::out_of_range) {
