@@ -184,8 +184,8 @@ moze_interp( (pacta dywiz)+ pact )
 
 # Forma złoż. + celownik poprzyimkowy
 # «po serbsko-chorwacku»
-moze_interp(adjp)
-moze_interp( (adja dywiz)+ adjp )
+moze_interp(adjp_dat)
+moze_interp( (adja dywiz)+ adjp_dat )
 
 # Formy zanegowane stopnia wyższego przymiotników i przysłówków
 # np. „nie·grzeczniejszy”, „nie·grzeczniej”
@@ -258,7 +258,7 @@ moze_interp(etnonimy)
 # Nazwy geograficzne dwuczłonowe: Bielsko-Biała, Kudowa-Zdrój.
 # Nie jest to idealne rozwiązanie, ale lepszego chyba nie ma…
 moze_interp(geograficzne)
-moze_interp(geograficzne dywiz geograficzne)
+# moze_interp(geograficzne dywiz geograficzne)
 
 # prefiks z etnonimem tylko przez połączenie dywizem: pseudo-Abchaz
 moze_interp(prefs> dywiz> etnonimy)
@@ -297,7 +297,7 @@ moze_interp((dig>* dig) dywiz (dig>* dig))
 
 # Stopień najwyższy:
 # np. „naj·zieleńszy”, „naj·mądrzej”
-moze_interp( adj_sup )
+# moze_interp( adj_sup )
 
 
 # Cząstka li przy osobowych formach czasownika oddzielona dywizem: znasz-li ten kraj
@@ -374,7 +374,9 @@ moze_interp(miary)
 moze_interp( cyfry miary )
 
 # predykatywy (typ pred jest używany w regułach dla zapisów niepoprawnych poniżej)
-moze_interp(pred)
+moze_interp(pred|pred_z)
+# z partykułą: trzebaż, możnaż
+moze_interp(pred_z z)
 
 # SKRÓTY Z KROPKĄ I BEZ
 moze_interp(brev_npun)
@@ -504,10 +506,10 @@ romandigM
 liczba_rzymska
 adja
 pacta
-adjp
+adjp_dat
 adj_pos
 adj_com
-adj_sup
+# adj_sup
 adv_pos
 adv_com
 adv_ndm
@@ -555,6 +557,7 @@ n
 prep_n
 prep_na
 emo
+pred_z
 pred
 rok
 brev_pun
@@ -569,11 +572,11 @@ prefa	prefa
 dig	dig
 adja	adja
 pacta	pacta
-adjp	adjp
+adjp_dat	adjp:dat
 adj_pos	adj:%:pos
 adv_pos	adv:pos
-adj_sup	adj:%:sup
-adj_sup	adv:sup
+# adj_sup	adj:%:sup
+# adj_sup	adv:sup
 adj_com	adj:%:com
 adv_com	adv:com
 adv_ndm	adv
@@ -655,32 +658,34 @@ interp		interp
 samodz		%
 
 [lexemes]
+pred_z	trzeba	pred
+pred_z	można	pred
 tym	tym	adv
 bardziej	bardziej	adv
-niemniej	niemniej	qub
-pewno	pewno	qub
+niemniej	niemniej	part
+pewno	pewno	part
 pol_zloz	pół	numcomp
 i	i	conj
-by	by	qub
-li	li	qub	labels=przest.
-li_tylko	li	qub	labels=przest._dziś_książk.
-ze	+że	qub
-z	+ż	qub
-nie	nie	qub
+by	by	part
+li	li	part	labels=przest.
+li_tylko	li	part	labels=przest._dziś_książk.
+ze	+że	part
+z	+ż	part
+nie	nie	part
 z_aglt	bowiem	comp
 z_aglt	iż	comp
 z_aglt	cóż	subst:%
 z_aglt	gdzież	adv
 z_aglt	któż	subst:%
-z_aglt	czyż	qub
-z_aglt	alboż	qub
-z_aglt	ależ	qub
-z_aglt	azaliż	qub
-z_aglt	czyliż	qub
-z_aglt	czyż	qub
-z_aglt	jakżeż	qub
-z_aglt	zaliż	qub
-z_aglt	już	qub
+z_aglt	czyż	part
+z_aglt	alboż	part
+z_aglt	ależ	part
+z_aglt	azaliż	part
+z_aglt	czyliż	part
+z_aglt	czyż	part
+z_aglt	jakżeż	part
+z_aglt	zaliż	part
+z_aglt	już	part
 z_aglt	skąd	adv
 z_aglt	tak	adv:%
 z_aglt	niż	conj
@@ -698,29 +703,29 @@ z_aglt_by	jeżeliby	comp
 z_aglt_by	jeśliby	comp
 z_aglt_by	byleby	comp
 z_aglt_by	kieby	comp
-z_aglt_by	oby	qub
-z_aglt_by	bodajby	qub
-z_aglt_by	czyżby	qub
+z_aglt_by	oby	part
+z_aglt_by	bodajby	part
+z_aglt_by	czyżby	part
 z_aglt_nwok	czemu	adv
-z_aglt_nwok	jeszcze	qub
+z_aglt_nwok	jeszcze	part
 z_aglt_nwok	gdzie	adv
-z_aglt_nwok	gdzie	qub
+z_aglt_nwok	gdzie	part
 z_aglt_nwok	dopóty	conj
 z_aglt_nwok	dopóki	comp
 z_aglt_nwok	skoro	comp
 z_aglt_nwok	dlaczego	adv
-z_aglt_nwok	zali	qub
-z_aglt_nwok	azali	qub
-z_aglt_nwok	albo	qub
-z_aglt_nwok	czyli	qub
-z_aglt_nwok	ale	qub
+z_aglt_nwok	zali	part
+z_aglt_nwok	azali	part
+z_aglt_nwok	albo	part
+z_aglt_nwok	czyli	part
+z_aglt_nwok	ale	part
 z_aglt_nwok	ale	conj
 z_aglt_nwok	kiedy	adv
 z_aglt_nwok	kiedy	comp
-z_aglt_nwok	tylko	qub
+z_aglt_nwok	tylko	part
 z_aglt_nwok	to	comp
-z_aglt_nwok	chyba	qub
-z_aglt_nwok	czy	qub
+z_aglt_nwok	chyba	part
+z_aglt_nwok	czy	part
 z_aglt_nwok	co	comp
 z_aglt_nwok	bo	comp
 z_aglt_nwok	byle	comp
@@ -729,7 +734,7 @@ z_aglt_nwok     niżeli   conj
 z_aglt_nwok     aniżeli   conj
 # z_aglt_nwok2 jest po to, żeby niektóre jednostki (np. partykułowe ‹że› typu: 
 # „Ty żeś to powiedział”) łączyły się tylko z aglutynantem, ale nie z ‹by›.
-z_aglt_nwok2	że	qub
+z_aglt_nwok2	że	part
 z_aglt_nwok2	że	comp
 z_aglt_nwok2	co	subst:%
 z_aglt_nwok2	kto	subst:%

@@ -1,6 +1,6 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.6.
+#!TAGSET-ID pl.sgjp.morfeusz-0.7.0
 
-# największy identyfikator: 703
+# największy identyfikator: 704
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -277,7 +277,8 @@
 # predicative adjective:
 3	adjc
 # post-prepositional adjective:
-4	adjp
+4	adjp:gen
+704	adjp:dat
 # VERBS
 # finitive (present/future) flexeme:
 153	fin:pl:pri:imperf
@@ -755,16 +756,16 @@
 81	adv:pos
 82	adv:sup
 # OTHER
-# kubliki (particles):
-592	qub
+# partykuły (particles):
+592	part
 # conjunctions:
 148	conj
 # complementizers:
 99	comp
 # interjections:
 234	interj
-# burkinostki (bound words):
-98	burk
+# dawniej burkinostki (bound words):
+98	frag
 # abbreviations:
 97	brev:pun
 801	brev:npun
