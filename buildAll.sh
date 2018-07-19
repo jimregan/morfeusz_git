@@ -251,28 +251,28 @@ mkdir -p log buildall
 buildDictionaries 2>&1 | log All all
 
 {
-    # echo "build Linux amd64 true 2 package package-java package-python2 package-builder 2>&1 | log Linux-tgz2 amd64; \
-    #     build Linux amd64 true 3 package-python3 2>&1 | log Linux-tgz3 amd64"
-    # echo "build Linux amd64 false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb 2>&1 | log Linux-deb amd64"
-    # echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 2 package package-java py2morfeusz 2>&1 | log Linux-tgz i386; \
-    #     buildegg Linux i386 true 2 2>&1 | log Linux i386; \
-    #     LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 3 py3morfeusz 2>&1 | log Linux-tgz i386; \
-    #     buildegg Linux i386 true 3 2>&1 | log Linux i386"
-    # echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false 0 lib-deb bin-deb java-deb 2>&1 | log Linux-deb i386"
-    # echo "build Windows amd64 true 2 package package-java py2morfeusz 2>&1 | log Windows amd64; \
-    #     buildegg Windows amd64 true 2 2>&1 | log Windows amd64; \
-    #     build Windows amd64 true 3 py3morfeusz 2>&1 | log Windows amd64; \
-    #     buildegg Windows amd64 true 3 2>&1 | log Windows amd64"
-    # echo "build Windows i386 true 2 package package-java py2morfeusz 2>&1 | log Windows i386; \
-    #     buildegg Windows i386 true 2 2>&1 | log Windows i386; \
-    #     build Windows i386 true 3 py3morfeusz 2>&1 | log Windows i386 \
-    #     buildegg Windows i386 true 3 2>&1 | log Windows i386"
+    echo "build Linux amd64 true 2 package package-java package-python2 package-builder 2>&1 | log Linux-tgz2 amd64; \
+        build Linux amd64 true 3 package-python3 2>&1 | log Linux-tgz3 amd64"
+    echo "build Linux amd64 false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb 2>&1 | log Linux-deb amd64"
+    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 2 package package-java py2morfeusz 2>&1 | log Linux-tgz i386; \
+        buildegg Linux i386 true 2 2>&1 | log Linux i386; \
+        LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 3 py3morfeusz 2>&1 | log Linux-tgz i386; \
+        buildegg Linux i386 true 3 2>&1 | log Linux i386"
+    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false 0 lib-deb bin-deb java-deb 2>&1 | log Linux-deb i386"
+    echo "build Windows amd64 true 2 package package-java py2morfeusz 2>&1 | log Windows amd64; \
+        buildegg Windows amd64 true 2 2>&1 | log Windows amd64; \
+        build Windows amd64 true 3 py3morfeusz 2>&1 | log Windows amd64; \
+        buildegg Windows amd64 true 3 2>&1 | log Windows amd64"
+    echo "build Windows i386 true 2 package package-java py2morfeusz 2>&1 | log Windows i386; \
+        buildegg Windows i386 true 2 2>&1 | log Windows i386; \
+        build Windows i386 true 3 py3morfeusz 2>&1 | log Windows i386 \
+        buildegg Windows i386 true 3 2>&1 | log Windows i386"
     echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
         buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
         build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
         buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
-    # echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
-    # echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
+    echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
+    echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
 
 } | xargs -n1 -P4 -d$'\n' bash -c
 
