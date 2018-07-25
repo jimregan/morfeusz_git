@@ -2,7 +2,7 @@
 # SWIG
 #set(CMAKE_SWIG_OUTDIR swig)
 #~ FIND_PACKAGE (SWIG REQUIRED)
-FIND_PACKAGE (PythonLibs 3.0 REQUIRED)
+FIND_PACKAGE (PythonLibs ${PY} REQUIRED)
 #~ INCLUDE (${SWIG_USE_FILE})
 
 set (PY3MORFEUSZ_VERSION "0.4.0")
@@ -31,6 +31,7 @@ set (OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build")
 configure_file (${SETUP_PY_IN} ${SETUP_PY})
 
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/morfeusz2-0.4.0-py3.6" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/morfeusz2-0.4.0-py3.7" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_custom_target (generate_python3_setup_file
         DEPENDS ${SETUP_PY})
