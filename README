@@ -20,7 +20,7 @@ sudo apt-get install g++-multilib g++-mingw-w64 nsis libssl.0.9.8:i386 moreutils
 
 For Java and Python bindings:
 -----------------------------
-sudo apt-get install default-jdk swig python3-all-dev python3-sdeb
+sudo apt-get install default-jdk swig python3-all-dev python3-stdeb
 
 Ubuntu 16.04 has buggy swig 3.0, so choose swig2.0 instead.
 
