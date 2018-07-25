@@ -126,8 +126,8 @@ function buildegg {
     python_ver=$4
 
     srcDir=`pwd`
-    buildDir=buildall/$os-$arch-$embedded/morfeusz/wrappers/python$python_ver
-    if [ "$python_ver" = 2 ]
+    buildDir=buildall/$os-$arch-$embedded/morfeusz/wrappers/python${python_ver:0:1}
+    if [[ "$python_ver" =~ 2.* ]]
     then
         eggName=morfeusz2-0.4.0-py2.7
         eggDir=$buildDir/$eggName
@@ -148,23 +148,37 @@ function buildegg {
             pythonLib=$CROSSMORFEUSZ_ROOT/darwin64/Python.framework/Versions/2.7/lib
         fi
     else
-        eggName=morfeusz2-0.4.0-py3.6
-        eggDir=$buildDir/$eggName
-        pythonIncl=python36
         if [ "$os-$arch" == "Windows-amd64" ]
         then
-            pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python36
-        elif [ "$os-$arch" == "Windows-i386" ]
-        then
-            pythonDir=$CROSSMORFEUSZ_ROOT/windows32/Python36-32
-        elif [ "$os-$arch" == "Linux-i386" ]
-        then
-            pythonDir=$CROSSMORFEUSZ_ROOT/linux32/python3/include/python3.4m
-        elif [ "$os-$arch" == "Darwin-amd64" ]
-        then
-            pythonIncl=python3.6
-            pythonDir=$CROSSMORFEUSZ_ROOT/darwin64/Python3.framework/Versions/3.6/Headers
-            pythonLib=$CROSSMORFEUSZ_ROOT/darwin64/Python3.framework/Versions/3.6/lib
+            if [ "$python_ver" == "3.6" ]
+            then
+                pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python36
+                eggName=morfeusz2-0.4.0-py3.6
+                eggDir=$buildDir/$eggName
+                pythonIncl=python36
+            elif [ "$python_ver" == "3.7" ]
+            then
+                pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python37
+                eggName=morfeusz2-0.4.0-py3.7
+                eggDir=$buildDir/$eggName
+                pythonIncl=python37
+            fi
+        else
+            eggName=morfeusz2-0.4.0-py3.6
+            eggDir=$buildDir/$eggName
+            pythonIncl=python36
+            if [ "$os-$arch" == "Windows-i386" ]
+            then
+                pythonDir=$CROSSMORFEUSZ_ROOT/windows32/Python36-32
+            elif [ "$os-$arch" == "Linux-i386" ]
+            then
+                pythonDir=$CROSSMORFEUSZ_ROOT/linux32/python3/include/python3.4m
+            elif [ "$os-$arch" == "Darwin-amd64" ]
+            then
+                pythonIncl=python3.6
+                pythonDir=$CROSSMORFEUSZ_ROOT/darwin64/Python3.framework/Versions/3.6/Headers
+                pythonLib=$CROSSMORFEUSZ_ROOT/darwin64/Python3.framework/Versions/3.6/lib
+            fi
         fi
     fi
 
@@ -220,23 +234,25 @@ function buildegg {
     fi
 
     cp $buildDir/morfeusz2.py $eggDir/
-    cd $buildDir/$eggName
-    if [ "$os-$arch" == "Windows-amd64" ]
-    then
-        zip -r $eggName-win-amd64.zip ./*
-        cp $eggName-win-amd64.zip $targetDir/$eggName-win-amd64.egg
-    elif [ "$os-$arch" == "Windows-i386" ]
-    then
-        zip -r $eggName-win32.zip ./*
-        cp $eggName-win32.zip $targetDir/$eggName-win32.egg
-    elif [ "$os-$arch" == "Linux-i386" ]
-    then
-        zip -r $eggName-linux-i686.zip ./*
-        cp $eggName-linux-i686.zip $targetDir/$eggName-linux-i686.egg
-    elif [ "$os-$arch" == "Darwin-amd64" ]
-    then
-        zip -r $eggName-macosx-10.9-x86_64.zip ./*
-        cp $eggName-macosx-10.9-x86_64.zip $targetDir/$eggName-macosx-10.9-x86_64.egg
+    if [ -d "$buildDir/$eggName" ]; then
+        cd $buildDir/$eggName
+        if [ "$os-$arch" == "Windows-amd64" ]
+        then
+            zip -r $eggName-win-amd64.zip ./*
+            cp $eggName-win-amd64.zip $targetDir/$eggName-win-amd64.egg
+        elif [ "$os-$arch" == "Windows-i386" ]
+        then
+            zip -r $eggName-win32.zip ./*
+            cp $eggName-win32.zip $targetDir/$eggName-win32.egg
+        elif [ "$os-$arch" == "Linux-i386" ]
+        then
+            zip -r $eggName-linux-i686.zip ./*
+            cp $eggName-linux-i686.zip $targetDir/$eggName-linux-i686.egg
+        elif [ "$os-$arch" == "Darwin-amd64" ]
+        then
+            zip -r $eggName-macosx-10.9-x86_64.zip ./*
+            cp $eggName-macosx-10.9-x86_64.zip $targetDir/$eggName-macosx-10.9-x86_64.egg
+        fi
     fi
 
 }
@@ -251,29 +267,43 @@ mkdir -p log buildall
 buildDictionaries 2>&1 | log All all
 
 {
-    echo "build Linux amd64 true 2 package package-java package-python2 package-builder 2>&1 | log Linux-tgz2 amd64; \
-        build Linux amd64 true 3 package-python3 2>&1 | log Linux-tgz3 amd64"
+    echo "build Linux amd64 true 2.7 package package-java package-python2 package-builder 2>&1 | log Linux-tgz2 amd64; \
+        build Linux amd64 true 3.0 package-python3 2>&1 | log Linux-tgz3 amd64"
     echo "build Linux amd64 false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb 2>&1 | log Linux-deb amd64"
-    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 2 package package-java py2morfeusz 2>&1 | log Linux-tgz i386; \
-        buildegg Linux i386 true 2 2>&1 | log Linux i386; \
-        LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 3 py3morfeusz 2>&1 | log Linux-tgz i386; \
-        buildegg Linux i386 true 3 2>&1 | log Linux i386"
+    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 2.7 package package-java py2morfeusz 2>&1 | log Linux-tgz i386; \
+        buildegg Linux i386 true 2.7 2>&1 | log Linux i386; \
+        LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 3.0 py3morfeusz 2>&1 | log Linux-tgz i386; \
+        buildegg Linux i386 true 3.0 2>&1 | log Linux i386"
     echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false 0 lib-deb bin-deb java-deb 2>&1 | log Linux-deb i386"
-    echo "build Windows amd64 true 2 package package-java py2morfeusz 2>&1 | log Windows amd64; \
-        buildegg Windows amd64 true 2 2>&1 | log Windows amd64; \
-        build Windows amd64 true 3 py3morfeusz 2>&1 | log Windows amd64; \
-        buildegg Windows amd64 true 3 2>&1 | log Windows amd64"
-    echo "build Windows i386 true 2 package package-java py2morfeusz 2>&1 | log Windows i386; \
-        buildegg Windows i386 true 2 2>&1 | log Windows i386; \
-        build Windows i386 true 3 py3morfeusz 2>&1 | log Windows i386 \
-        buildegg Windows i386 true 3 2>&1 | log Windows i386"
-    echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
-        buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
-        build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
-        buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
-    echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
-    echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
+    echo "build Windows amd64 true 2.7 package package-java py2morfeusz 2>&1 | log Windows amd64; \
+        buildegg Windows amd64 true 2.7 2>&1 | log Windows amd64; \
+        build Windows amd64 true 3.6 py3morfeusz 2>&1 | log Windows amd64; \
+        buildegg Windows amd64 true 3.6 2>&1 | log Windows amd64; \
+        build Windows amd64 true 3.7 py3morfeusz 2>&1 | log Windows amd64; \
+        buildegg Windows amd64 true 3.7 2>&1 | log Windows amd64"
+    echo "build Windows i386 true 2.7 package package-java py2morfeusz 2>&1 | log Windows i386; \
+        buildegg Windows i386 true 2.7 2>&1 | log Windows i386; \
+        build Windows i386 true 3.0 py3morfeusz 2>&1 | log Windows i386 \
+        buildegg Windows i386 true 3.0 2>&1 | log Windows i386"
+    # echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
+    #     buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
+    #     build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
+    #     buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
+    # echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
+    # echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
 
-} | xargs -n1 -P4 -d$'\n' bash -c
+} | xargs -n1 -P6 -d$'\n' bash -c
 
+srcDir=`pwd`
+targetDir=$srcDir/target
 
+for f in `find "$targetDir" -name "*-py3.6-linux-x86_64.egg"`
+do 
+    cp -f "$f" "`echo $f | sed -r 's/py3.6/py3.7/'`"
+done
+
+for f in `find "$targetDir" -name "*-py3.5-linux-x86_64.egg"`
+do 
+    cp -f "$f" "`echo $f | sed -r 's/py3.5/py3.6/'`"
+    cp -f "$f" "`echo $f | sed -r 's/py3.5/py3.7/'`"
+done
