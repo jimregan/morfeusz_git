@@ -285,12 +285,12 @@ buildDictionaries 2>&1 | log All all
         buildegg Windows i386 true 2.7 2>&1 | log Windows i386; \
         build Windows i386 true 3.0 py3morfeusz 2>&1 | log Windows i386 \
         buildegg Windows i386 true 3.0 2>&1 | log Windows i386"
-    # echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
-    #     buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
-    #     build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
-    #     buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
-    # echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
-    # echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
+    echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
+        buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
+        build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
+        buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
+    echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
+    echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
 
 } | xargs -n1 -P6 -d$'\n' bash -c
 
