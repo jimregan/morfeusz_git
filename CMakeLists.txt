@@ -132,9 +132,9 @@ endif ()
 ### Compilation and linking flags
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align -Wno-write-strings")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -Wcast-align -Wextra -Wmissing-noreturn -Wconversion -Wcast-qual -Wcast-align -Wno-write-strings")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -O2")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -O2")
     set (CMAKE_SHARED_LIBRARY_PREFIX "")
     # here is some magic - must statically link libstdc++ and libgcc
     # but exclude libgcc_eh.a as it causes "multiple definition of (...)" errors
@@ -184,7 +184,7 @@ endif ()
 include (CPack)
 
 ##### END initialize some vars #####
-file (COPY fsabuilder doTest.sh testJavaWrapper.sh testPythonWrapper.sh morfeusz/wrappers/python/test.py DESTINATION .)
+file (COPY fsabuilder doTest.sh testJavaWrapper.sh testPythonWrapper.sh morfeusz/wrappers/python2/test2.py morfeusz/wrappers/python3/test3.py DESTINATION .)
 
 ###### add main sources ########
 

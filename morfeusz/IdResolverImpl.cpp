@@ -54,6 +54,10 @@ namespace morfeusz {
     charsetConverter(&UTF8CharsetConverter::getInstance()) {
         
     }
+    
+    IdResolverImpl::~IdResolverImpl(){
+        
+    }
 
     IdResolverImpl::IdResolverImpl(const unsigned char* ptr, const CharsetConverter* charsetConverter)
     : tagsetId(),

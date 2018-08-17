@@ -22,6 +22,8 @@ namespace morfeusz {
         IdResolverImpl(const unsigned char* ptr, const CharsetConverter* charsetConverter);
         
         IdResolverImpl();
+
+        ~IdResolverImpl();
         
         void setCharsetConverter(const CharsetConverter* charsetConverter);
         
@@ -41,8 +43,8 @@ namespace morfeusz {
         size_t getNamesCount() const;
         size_t getLabelsCount() const;
 
-        virtual ~IdResolverImpl() {
-        }
+        // virtual ~IdResolverImpl() {
+        // }
         
         struct IdStringMapping {
             std::vector<std::string> id2String;

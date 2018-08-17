@@ -5,7 +5,7 @@ Compilation - prerequisites
 
 This tutorial assumes that build process is performed on Linux 64bit machine (preferably from Debian/Ubuntu family).
 
-sudo apt-get install build-essential autotools-dev python python-setuptools python-stdeb python-pip python-all-dev python-pyparsing devscripts libcppunit-dev acl
+sudo apt-get install cmake zip build-essential autotools-dev python python-setuptools python-stdeb python-pip python-all-dev python-pyparsing devscripts libcppunit-dev acl
 sudo pip install pyinstaller
 
 For cross compiling:
@@ -20,14 +20,20 @@ sudo apt-get install g++-multilib g++-mingw-w64 nsis libssl.0.9.8:i386 moreutils
 
 For Java and Python bindings:
 -----------------------------
-sudo apt-get install default-jdk swig
+sudo apt-get install default-jdk swig python3-all-dev python3-stdeb
+
+Ubuntu 16.04 has buggy swig 3.0, so choose swig2.0 instead. (sudo apt-get install swig2.0)
 
 
 Java and Python bindings with cross-compilation support:
 --------------------------------------------------------
+On Ubuntu 14 and earlier:
+
 Download CMake 2.8.x (tested on 2.8.12.1).
 Apply cmake-2.8.12..1-patch.diff on the sources.
 Build and install CMake from patched sources.
+
+Ubuntu 16.04 has cmake 3.5.1, which is already OK.
 
 Java and Python bindings without cross-compilation support:
 -----------------------------------------------------------

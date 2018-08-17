@@ -10,6 +10,11 @@ set (CMAKE_SYSTEM_PROCESSOR "x86_64")
 
 set (JAVA_ROOT ${DARWIN64_ROOT}/JavaVM.framework)
 set (PYTHON_ROOT ${DARWIN64_ROOT}/Python.framework/Versions/2.7)
+if(${PY})
+	if(${PY} EQUAL "3")
+		set (PYTHON_ROOT ${DARWIN64_ROOT}/Python3.framework/Versions/3.6)
+	endif()
+endif()
 
 set (INSTALL_NAME_TOOL /usr/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-install_name_tool)
 
