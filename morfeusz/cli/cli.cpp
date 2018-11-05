@@ -108,14 +108,26 @@ namespace morfeusz {
         Morfeusz* morfeusz = getMorfeusz4Help(argc, argv, processorType);
         string res = "select past tense segmentation (provide --dict and optionally --dict-dir options to see values for given custom dictionary):\n";
         res += getOptionsString(morfeusz->getAvailablePraetOptions(), morfeusz->getPraet());
-        return (new string(res))->c_str();
+        // KKK
+        delete morfeusz;
+        const std::string::size_type size = res.size();
+        char *buffer = new char[size + 1];   //we need extra char for NUL
+        memcpy(buffer, res.c_str(), size + 1);
+        return buffer;
+
     }
 
     static const char* getAgglOptionsString(int argc, const char** argv, MorfeuszProcessorType processorType) {
         Morfeusz* morfeusz = getMorfeusz4Help(argc, argv, processorType);
         string res = "select agglutination rules (provide --dict and optionally --dict-dir options to see values for given custom dictionary):\n";
         res += getOptionsString(morfeusz->getAvailableAgglOptions(), morfeusz->getAggl());
-        return (new string(res))->c_str();
+        // KKK
+        delete morfeusz;
+        const std::string::size_type size = res.size();
+        char *buffer = new char[size + 1];   //we need extra char for NUL
+        memcpy(buffer, res.c_str(), size + 1);
+        return buffer;
+
     }
 
     static ezOptionParser* doGetOptions(int argc, const char** argv, MorfeuszProcessorType processorType) {

@@ -65,7 +65,10 @@ SegrulesOptions getDefaultSegrulesOptions(const unsigned char* ptr) {
     currPtr++;
     for (unsigned char i = 0; i < fsasNum; i++) {
         deserializeOptions(currPtr);
-        deserializeFSA(currPtr);
+        // KKK
+        SegrulesFSA* tmp = deserializeFSA(currPtr);
+        delete tmp;
+        // deserializeFSA(currPtr)
     }
     return deserializeOptions(currPtr);
 }
