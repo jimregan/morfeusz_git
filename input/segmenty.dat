@@ -255,10 +255,13 @@ moze_interp(nazwiska)
 moze_interp(czlonynazwisk)
 moze_interp(etnonimy)
 
+#Nazwiska dwuczłonowe, np. Gronkiewicz-Waltz
+moze_interp((nazwiska|czlonynazwisk) dywiz (nazwiska|czlonynazwisk))
+
 # Nazwy geograficzne dwuczłonowe: Bielsko-Biała, Kudowa-Zdrój.
 # Nie jest to idealne rozwiązanie, ale lepszego chyba nie ma…
 moze_interp(geograficzne)
-# moze_interp(geograficzne dywiz geograficzne)
+moze_interp(geograficzne dywiz geograficzne)
 
 # prefiks z etnonimem tylko przez połączenie dywizem: pseudo-Abchaz
 moze_interp(prefs> dywiz> etnonimy)
@@ -282,7 +285,8 @@ moze_interp( pref_dyw> ( adj_pos|adv_pos ) ) !weak
 
 # Apozycje z dywizem
 # np. „kobieta-prezydent”
-moze_interp( rzeczowniki (dywiz) rzeczowniki ) !weak
+moze_interp( rzeczowniki (dywiz) rzeczowniki )
+# na razie wyłączam !weak, bo ‹Bielsko-Biała›
 
 # Zakresy liczbowe, daty, np. 1911-1939.
 moze_interp((dig>* dig) dywiz (dig>* dig))
@@ -617,29 +621,32 @@ fin_imperf	fin:%:imperf
 pcon		pcon:%
 pant		pant:%
 wlasne		subst:%	name=imię
-nazwiska	subst:%	name=nazwisko
-geograficzne	subst:%	name=geograficzna
-wlasne		subst:%	name=budowla
-wlasne		subst:%	name=firma
-wlasne		subst:%	name=instytucja
-wlasne		subst:%	name=marka
-wlasne		subst:%	name=oprogramowanie
-wlasne		subst:%	name=organizacja
-wlasne		subst:%	name=patronimicum
-wlasne		subst:%	name=przydomek
-wlasne		subst:%	name=pseudonim
-wlasne		subst:%	name=święto
-wlasne		subst:%	name=tytuł
-wlasne		subst:%	name=własna
-wlasne		subst:%	name=osoba
-wlasne		subst:%	name=członek_rodu
-czlonynazwisk	subst:%	name=człon_nazwiska
-czlonynazwisk	subst:%	name=człon_nazwiska_(herb)
-wlasne		subst:%	name=człon_nazwy_firmy
-wlasne		subst:%	name=język_programowania
-wlasne		subst:%	name=krój_pisma
-wlasne		subst:%	name=środek_lokomocji
-etnonimy	subst:%	labels=etn.
+nazwiska	subst:%	name=nazwisko%
+nazwiska	depr:% name=nazwisko%
+geograficzne	subst:%	name=nazwa_geograficzna%
+geograficzne    subst:% name=człon_nazwy_geograficznej%
+wlasne		subst:%	name=budowla%
+wlasne		subst:%	name=firma%
+wlasne		subst:%	name=instytucja%
+wlasne		subst:%	name=marka%
+wlasne		subst:%	name=oprogramowanie%
+wlasne		subst:%	name=organizacja%
+wlasne		subst:%	name=patronimicum%
+wlasne		subst:%	name=przydomek%
+wlasne		subst:%	name=pseudonim%
+wlasne		subst:%	name=święto%
+wlasne		subst:%	name=tytuł%
+wlasne		subst:%	name=własna%
+wlasne		subst:%	name=osoba%
+czlonynazwisk	subst:%	name=człon_nazwiska%
+czlonynazwisk	depr:%	name=człon_nazwiska%
+czlonynazwisk	subst:%	name=człon_nazwiska_(herb)%
+czlonynazwisk	depr:%	name=człon_nazwiska_(herb)%
+wlasne		subst:%	name=człon_nazwy_firmy%
+wlasne		subst:%	name=język_programowania%
+wlasne		subst:%	name=krój_pisma%
+wlasne		subst:%	name=środek_lokomocji%
+etnonimy	subst:%	labels=etn.%
 subst		subst:%
 depr		depr:%
 ppas		ppas:%
@@ -706,6 +713,8 @@ z_aglt_by	kieby	comp
 z_aglt_by	oby	part
 z_aglt_by	bodajby	part
 z_aglt_by	czyżby	part
+z_aglt_nwok	jeśli	comp
+z_aglt_nwok	jeżeli	comp
 z_aglt_nwok	czemu	adv
 z_aglt_nwok	jeszcze	part
 z_aglt_nwok	gdzie	adv
