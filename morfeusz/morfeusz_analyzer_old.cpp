@@ -25,9 +25,10 @@ int main() {
         if (mo[0].p == -1) continue;
         printf("[");
         while (mo[i].p != -1) {
-            if (prevp != -1)
-                if (prevp != mo[i].p) printf("]\n[");
-                else printf("; ");
+	  if (prevp != -1) {
+	    if (prevp != mo[i].p) printf("]\n[");
+	    else printf("; ");
+	  }
             printf("%s,%s,%s",
 //                    mo[i].p, mo[i].k,
                     mo[i].forma,

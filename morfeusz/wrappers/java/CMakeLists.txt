@@ -67,7 +67,7 @@ add_jar (jmorfeusz
 
 add_custom_target(generate-javadoc
     COMMAND javadoc
-        -d "${TARGET_DIR}/javadoc"
+        -d "${CMAKE_CURRENT_BINARY_DIR}/javadoc"
         -sourcepath "${CMAKE_CURRENT_BINARY_DIR}"
         -windowtitle "JMorfeusz - Morfeusz Java binding"
         -use
@@ -77,7 +77,7 @@ add_custom_target(generate-javadoc
     DEPENDS jmorfeusz)
 
 add_custom_target(package-javadoc
-    COMMAND mkdir -p "${TARGET_DIR}" && ${CMAKE_COMMAND} -E tar "cfvz" "${TARGET_DIR}/javadoc.tgz" "${TARGET_DIR}/javadoc"
+    COMMAND mkdir -p "${TARGET_DIR}" && ${CMAKE_COMMAND} -E tar "cfvz" "${TARGET_DIR}/jmorfeusz-javadoc.tgz" "${CMAKE_CURRENT_BINARY_DIR}/javadoc"
     DEPENDS generate-javadoc)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -94,5 +94,5 @@ add_custom_target(package-java
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_custom_target(java-deb
-        COMMAND "${PROJECT_SOURCE_DIR}/createJavaDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_LIB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}")
+        COMMAND "${PROJECT_SOURCE_DIR}/createJavaDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_DEB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}")
 endif ()

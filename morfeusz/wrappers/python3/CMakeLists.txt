@@ -60,10 +60,17 @@ if (UNIX)
     set (PACKAGE_DEPENDS "package-python3-bin")
     
     if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+      if (BUILT_ON)
         add_custom_target (package-python3-deb-sdist
-            COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"
-            DEPENDS py3morfeusz
-        )
+          COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"  --debian-version ${BUILT_ON}
+          DEPENDS py3morfeusz
+          )
+      else ()
+        add_custom_target (package-python3-deb-sdist
+          COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"
+          DEPENDS py3morfeusz
+          )
+      endif ()
         add_custom_target (package-python3-deb-build
             COMMAND debuild -us -uc
             WORKING_DIRECTORY deb_dist/morfeusz2-${PY3MORFEUSZ_VERSION}

@@ -6,6 +6,7 @@ FIND_PACKAGE (PythonLibs ${PY} EXACT)
 #~ INCLUDE (${SWIG_USE_FILE})
 
 set (PY2MORFEUSZ_VERSION "0.4.0")
+#set (PY2MORFEUSZ_VERSION "${Morfeusz_VERSION}")
 
 # SWIG Java
 INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
@@ -58,12 +59,20 @@ if (UNIX)
     set (PACKAGE_DEPENDS "package-python2-bin")
     
     if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+      if (BUILT_ON)
+        add_custom_target (package-python2-deb-sdist
+            COMMAND python2 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt" --debian-version ${BUILT_ON}
+            DEPENDS py2morfeusz
+        )
+      else ()
         add_custom_target (package-python2-deb-sdist
             COMMAND python2 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"
             DEPENDS py2morfeusz
         )
+      endif ()
         add_custom_target (package-python2-deb-build
             COMMAND debuild -us -uc
+#            WORKING_DIRECTORY deb_dist/morfeusz2-${Morfeusz_DEB_VERSION}
             WORKING_DIRECTORY deb_dist/morfeusz2-${PY2MORFEUSZ_VERSION}
             DEPENDS package-python2-deb-sdist
         )

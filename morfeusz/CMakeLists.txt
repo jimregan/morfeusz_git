@@ -42,13 +42,13 @@ add_custom_target ( dictionary-deb
     COMMAND "${PROJECT_SOURCE_DIR}/createDictionaryDeb.sh" "${DEFAULT_DICT_DIR}" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${TARGET_DIR}"
         DEPENDS dictionary)
 add_custom_target ( bin-deb
-    COMMAND "${PROJECT_SOURCE_DIR}/createBinDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_LIB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}"
+    COMMAND "${PROJECT_SOURCE_DIR}/createBinDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_DEB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}"
         DEPENDS morfeusz_analyzer morfeusz_generator)
 add_custom_target ( lib-deb
-    COMMAND "${PROJECT_SOURCE_DIR}/createLibraryDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_LIB_VERSION}" "${ARCHITECTURE}" ${DEFAULT_DICT_NAME} "${TARGET_DIR}"
+    COMMAND "${PROJECT_SOURCE_DIR}/createLibraryDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_DEB_VERSION}" "${ARCHITECTURE}" ${DEFAULT_DICT_NAME} "${TARGET_DIR}"
         DEPENDS libmorfeusz)
 add_custom_target ( dev-deb
-    COMMAND "${PROJECT_SOURCE_DIR}/createDevDeb.sh" "${PROJECT_SOURCE_DIR}/morfeusz" "${Morfeusz_LIB_VERSION}" "${TARGET_DIR}"
+    COMMAND "${PROJECT_SOURCE_DIR}/createDevDeb.sh" "${PROJECT_SOURCE_DIR}/morfeusz" "${Morfeusz_DEB_VERSION}" "${TARGET_DIR}"
     DEPENDS "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2.h" "${PROJECT_SOURCE_DIR}/morfeusz/morfeusz2_c.h")
 
 
