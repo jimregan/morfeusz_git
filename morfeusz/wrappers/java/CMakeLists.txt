@@ -61,9 +61,10 @@ endif ()
 # build jmorfeusz
 file(GLOB_RECURSE JAVA_SOURCES "${JAVA_SRC_DIR}" "${JAVA_SRC_DIR}/*.java")
 add_jar (jmorfeusz
-    SOURCES "${JAVA_SOURCES}"
-    ENTRY_POINT pl/sgjp/morfeusz/app/App
-    DEPENDS libjmorfeusz generate-java-wrapper)
+  SOURCES "${JAVA_SOURCES}"
+  ENTRY_POINT pl/sgjp/morfeusz/app/App
+  )
+add_dependencies(jmorfeusz libjmorfeusz)
 
 add_custom_target(generate-javadoc
     COMMAND javadoc
