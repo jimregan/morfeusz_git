@@ -16,7 +16,7 @@ namespace morfeusz {
             UTF8;
 #endif
 
-    static inline void printCLIUsage(int argc, const char** argv, MorfeuszProcessorType processorType, ezOptionParser& opt, ostream& out) {
+    static inline void printCLIUsage(int , const char** , MorfeuszProcessorType , ezOptionParser& opt, ostream& out) {
         string usage;
         opt.getUsage(usage);
         out << usage;
