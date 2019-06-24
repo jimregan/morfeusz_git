@@ -39,7 +39,7 @@ else ()
 endif ()
 add_custom_target ( dictionary DEPENDS analyzer-dictionary generator-dictionary)
 add_custom_target ( dictionary-deb
-    COMMAND "${PROJECT_SOURCE_DIR}/createDictionaryDeb.sh" "${DEFAULT_DICT_DIR}" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${TARGET_DIR}"
+    COMMAND "${PROJECT_SOURCE_DIR}/createDictionaryDeb.sh" "${DEFAULT_DICT_DIR}" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${TARGET_DIR}" "${DEFAULT_DICT_INSTALL_DIR}"
         DEPENDS dictionary)
 add_custom_target ( bin-deb
     COMMAND "${PROJECT_SOURCE_DIR}/createBinDeb.sh" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_DEB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}"

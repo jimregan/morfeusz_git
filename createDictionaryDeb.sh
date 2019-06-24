@@ -6,12 +6,13 @@ DICT_DIR="$1"
 DICT_NAME="$2"
 DICT_VERSION="$3"
 TARGET_DIR="$4"
+DICT_INSTALL_DIR="$5"
 
 PKG_NAME="morfeusz2-dictionary-${DICT_NAME}"
 
 TMP_DIR=`mktemp -d`
 PKG_DIR="$TMP_DIR"/"$PKG_NAME"_"$DICT_VERSION"
-TARGET_DICT_DIR="$PKG_DIR/usr/share/morfeusz/dictionaries"
+TARGET_DICT_DIR="$PKG_DIR/usr/$DICT_INSTALL_DIR"
 mkdir -p "$TARGET_DICT_DIR"
 cp "$DICT_DIR/$DICT_NAME-a.dict" "$TARGET_DICT_DIR"
 cp "$DICT_DIR/$DICT_NAME-s.dict" "$TARGET_DICT_DIR"
