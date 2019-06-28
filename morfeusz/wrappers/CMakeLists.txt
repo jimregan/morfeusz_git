@@ -1,5 +1,5 @@
 add_subdirectory (java)
-add_subdirectory (perl)
+#add_subdirectory (perl)
 
 if (${PY})
 	if("${PY}" MATCHES "2.*")

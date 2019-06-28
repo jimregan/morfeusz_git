@@ -4,7 +4,7 @@ project (Morfeusz)
 
 set (Morfeusz_VERSION_MAJOR 1)
 set (Morfeusz_VERSION_MINOR 9)
-set (Morfeusz_VERSION_PATCH 11)
+set (Morfeusz_VERSION_PATCH 12)
 set (Morfeusz_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
 set (Morfeusz_LIB_VERSION "${Morfeusz_VERSION}")
 if (BUILT_ON)
@@ -202,6 +202,7 @@ file (COPY fsabuilder doTest.sh testJavaWrapper.sh testPythonWrapper.sh morfeusz
 
 add_subdirectory (morfeusz)
 add_subdirectory (fsabuilder)
+add_subdirectory (gui)
 
 ########## add tests ##########
 

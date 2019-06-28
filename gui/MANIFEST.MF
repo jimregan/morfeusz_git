@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: /usr/share/java/jmorfeusz.jar jmorfeusz.jar
+Main-Class: morfeusz.Morfeusz

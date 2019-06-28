@@ -1,0 +1,1 @@
+?package(morfeusz2-gui):needs="X11" section="Applications/Education"  title="morfeusz2" command="/usr/bin/morfeusz-gui"
