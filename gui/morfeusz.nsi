@@ -9,7 +9,7 @@
 !define WEB_SITE "morfeusz.sgjp.pl/"
 !define COPYRIGHT "Institute of Computer Science, Polish Academy of Sciences"
 !define DESCRIPTION "Morfological analyzer and generator for Polish"
-!define INSTALLER_NAME "${TARGET_DIR}/morfeusz-gui${VERSION}-Windows-${ARCHITECTURE}.exe"
+!define INSTALLER_NAME "${TARGET_DIR}/morfeusz2-gui-${VERSION}-Windows-${ARCHITECTURE}.exe"
 !define MAIN_APP_EXE "morfeusz-gui.exe"
 !define INSTALL_TYPE "SetShellVarContext all"
 !define REG_ROOT "HKLM"

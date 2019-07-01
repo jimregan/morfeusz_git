@@ -15,7 +15,7 @@ public class AboutDialog extends JPanel
 	private JDialog dialog;
 	private JCheckBox pr = new JCheckBox("Program");
 	private JCheckBox dict = new JCheckBox("S\u0142ownik");
-	private JTextArea ta = new JTextArea(4, 58);
+	private JTextArea ta = new JTextArea(14, 58);
 	private Rectangle rect = new Rectangle(0, 0, 0, 0);
 	private String copyrights;
 	private String dictCopyrights;

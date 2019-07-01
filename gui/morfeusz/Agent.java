@@ -54,13 +54,18 @@ public class Agent
 		
 		morfeusz = null;
 		if (prefs.dictionary != null) {
-			try {
-				morfeusz = pl.sgjp.morfeusz.Morfeusz.createInstance(prefs.dictionary, MorfeuszUsage.BOTH_ANALYSE_AND_GENERATE);
+			File file = new File(prefs.dictionary);
+			
+			if (file.exists()) {
+				try {
+					morfeusz = pl.sgjp.morfeusz.Morfeusz.createInstance(prefs.dictionary, MorfeuszUsage.BOTH_ANALYSE_AND_GENERATE);
+				}
+				catch (Exception exception) {
+					morfeusz = null;
+					prefs.dictionary = null;
+				}
 			}
-			catch (Exception exception) {
-				morfeusz = null;
-				prefs.dictionary = null;
-			}
+			else prefs.dictionary = null;
 		}
 		if (morfeusz == null) {
 			try {
