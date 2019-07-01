@@ -1,0 +1,21 @@
+<launch4jConfig>
+  <headerType>gui</headerType>
+  <jar>morfeusz.jar</jar>
+  <dontWrapJar>true</dontWrapJar>
+  <outfile>morfeusz-gui64.exe</outfile>
+  <errTitle>Morfeusz 2</errTitle>
+  <chdir>.</chdir>
+  <icon>morfeusz.ico</icon>
+  <restartOnCrash>false</restartOnCrash>
+  <jre>
+    <minVersion>1.8.0</minVersion>
+    <!-- <runtimeBits>64|64/32|32/64|32</runtimeBits> -->
+    <runtimeBits>64</runtimeBits>
+  </jre>
+  <!-- <splash> -->
+  <!--   <file>splash.bmp</file> -->
+  <!--   <waitForWindow>true</waitForWindow> -->
+  <!--   <timeout>60</timeout> -->
+  <!--   <timeoutErr>true</timeoutErr> -->
+  <!-- </splash> -->
+</launch4jConfig>

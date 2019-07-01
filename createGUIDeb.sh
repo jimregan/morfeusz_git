@@ -16,7 +16,7 @@ install -D "$SRC_DIR/gui/morfeusz.desktop" "$PKG_DIR/usr/share/applications/morf
 install -D "$BIN_DIR/morfeusz.jar" "$PKG_DIR/usr/share/java/morfeusz.jar"
 install -D "$SRC_DIR/gui/morfeusz.svg" "$PKG_DIR/usr/share/morfeusz2/morfeusz.svg"
 install -D "$SRC_DIR/gui/morfeusz2-gui.menu" "$PKG_DIR/usr/share/menu/morfeusz2-gui"
-install -D "$SRC_DIR/gui/morfeusz2-gui" "$PKG_DIR/usr/bin/morfeusz2-gui"
+install -D "$SRC_DIR/gui/morfeusz-gui" "$PKG_DIR/usr/bin/morfeusz-gui"
 
 
 #SRC_DIR="$( cd "$( dirname "$0" )" && pwd )"

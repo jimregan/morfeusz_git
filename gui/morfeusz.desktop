@@ -5,6 +5,6 @@ Name=Morfeusz
 Comment=Morphological analyzer and generator Morfeusz 2
 Comment[pl]=Analizator i generator fleksyjny Morfeusz 2
 Icon=/usr/share/morfeusz2/morfeusz.svg
-Exec=/usr/bin/morfeusz2-gui
+Exec=/usr/bin/morfeusz-gui
 Terminal=false
 Categories=Office;Dictionary;GTK;

@@ -48,17 +48,22 @@ add_jar (gui-proto-jar
 #  INCLUDE_JARS jmorfeusz.jar QuitAboutPreferencesHandler.jar images.jar
 #  INCLUDE_JARS ${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/wrappers/java/jmorfeusz.jar QuitAboutPreferencesHandler.jar Images/*.png
   INCLUDE_JARS jmorfeusz  QuitAboutPreferencesHandler.jar
-  #  ENTRY_POINT morfeusz/Morfeusz
-  MANIFEST MANIFEST.MF
+  ENTRY_POINT morfeusz/Morfeusz
+# Moim zdaniem byłoby eleganciej z Manifestem włączającym systemowy
+#  jmorfeusz.jar, ale 14.04 (cmake 2.8.12) nie rozumie tego, więc
+#  zamiast wzipowujemy całe jmorfeusz poniżej do gui-jar:
+#
+# MANIFEST  MANIFEST.MF
   OUTPUT_NAME morfeusz
   )
 
 add_dependencies(gui-proto-jar jmorfeusz)
 
 add_custom_target(gui-jar
-  COMMAND zip -q morfeusz.jar "*.png"
-  COMMAND zip -q morfeusz.jar "*.gif"
+  COMMAND zip -q morfeusz.jar "*.png" "*.gif"
   COMMAND zip -q morfeusz.jar "quitaboutpreferenceshandler/*"
+  COMMAND ln -s ../morfeusz/wrappers/java/pl .
+  COMMAND zip -qr morfeusz.jar "pl"
   DEPENDS gui-proto-jar
   )
 
@@ -68,14 +73,31 @@ add_custom_target (gui-deb
   DEPENDS gui-jar
   )
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  if (${ARCHITECTURE} MATCHES "amd64")
+    file(COPY morfeusz-gui64.exe DESTINATION ./morfeusz-gui.exe)
+  else ()
+    file(COPY morfeusz-gui32.exe DESTINATION ./morfeusz-gui.exe)
+  endif ()
+  set (NSIS_SCRIPT "${PROJECT_SOURCE_DIR}/morfeusz.nsi")
+
+  add_custom_target (gui-installer
+    COMMAND makensis -NOCD "-DVERSION=${Morfeusz_LIB_VERSION}.${DICT_VERSION}" "$-DARCHITECTURE={ARCHITECTURE}" "-DTARGET_DIR=${TARGET_DIR}" "${NSIS_SCRIPT}"
+    DEPENDS gui-jar "${NSIS_SCRIPT}"
+    )
+  
+endif ()
+    
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(MAC_APP_DIR "dmg/Morfeusz.app")
   file(COPY Morfeusz.app/ DESTINATION "${MAC_APP_DIR}")
+
   add_custom_target(gui-dmg
     COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/libmorfeusz2.dylib" "${MAC_APP_DIR}/Contents/MacOS/libmorfeusz2.dylib"
     COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/wrappers/java/libjmorfeusz.jnilib" "${MAC_APP_DIR}/Contents/MacOS/libjmorfeusz.jnilib"
     COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/morfeusz.jar" "${MAC_APP_DIR}/Contents/Java/morfeusz.jar"
-    COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/wrappers/java/jmorfeusz.jar" "${MAC_APP_DIR}/Contents/Java/jmorfeusz.jar"
-    COMMAND genisoimage -V Morfeusz2 -D -R -apple -no-pad -o "$TARGET_DIR/morfeusz2-gui_${Morfeusz_LIB_VERSION}.${DICT_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}.dmg" "dmg/"
+#    COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/wrappers/java/jmorfeusz.jar" "${MAC_APP_DIR}/Contents/Java/jmorfeusz.jar"
+    COMMAND genisoimage -V Morfeusz2 -D -R -apple -no-pad -o "${TARGET_DIR}/morfeusz2-gui_${Morfeusz_LIB_VERSION}.${DICT_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}.dmg" "dmg/"
+    DEPENDS gui-jar "${NSIS_SCRIPT}"
     )
 endif ()

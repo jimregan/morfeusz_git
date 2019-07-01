@@ -4,14 +4,13 @@
 #              by Vlasis K. Barkas aka Red Wine red_wine@freemail.gr Sep 2006               
 ############################################################################################
 
-!define APP_NAME "Morfeusz 2.0"
+!define APP_NAME "Morfeusz 2"
 !define COMP_NAME "Institute of Computer Science, Polish Academy of Sciences"
-!define WEB_SITE "sgjp.pl/morfeusz"
-!define VERSION "02.00.00.00"
+!define WEB_SITE "morfeusz.sgjp.pl/"
 !define COPYRIGHT "Institute of Computer Science, Polish Academy of Sciences"
-!define DESCRIPTION "Morfological analyzer for Polish"
-!define INSTALLER_NAME "Morfeusz_Setup.exe"
-!define MAIN_APP_EXE "morfeusz64.exe"
+!define DESCRIPTION "Morfological analyzer and generator for Polish"
+!define INSTALLER_NAME "morfeusz-gui${VERSION}-Windows-${ARCHITECTURE}.exe"
+!define MAIN_APP_EXE "morfeusz-gui.exe"
 !define INSTALL_TYPE "SetShellVarContext all"
 !define REG_ROOT "HKLM"
 !define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${MAIN_APP_EXE}"
@@ -39,7 +38,7 @@ OutFile "${INSTALLER_NAME}"
 BrandingText "${APP_NAME}"
 XPStyle on
 InstallDirRegKey "${REG_ROOT}" "${REG_APP_PATH}" ""
-InstallDir "$PROGRAMFILES\Morfeusz 2.0"
+InstallDir "$PROGRAMFILES\Morfeusz 2"
 
 ######################################################################
 
@@ -61,7 +60,7 @@ InstallDir "$PROGRAMFILES\Morfeusz 2.0"
 !insertmacro MUI_PAGE_DIRECTORY
 
 !ifdef REG_START_MENU
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Morfeusz 2.0"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Morfeusz 2"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${REG_ROOT}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${UNINSTALL_PATH}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${REG_START_MENU}"
@@ -96,10 +95,12 @@ Section -MainProgram
 ${INSTALL_TYPE}
 SetOverwrite ifnewer
 SetOutPath "$INSTDIR"
-File "morfeusz64.exe"
-File "jmorfeusz.dll"
-File "morfeusz2.dll"
-File "libwinpthread-1.dll"
+File "morfeusz-gui.exe"
+File "morfeusz.jar"
+#File "../morfeusz/wrappers/java/jmorfeusz.jar"
+File "../morfeusz/wrappers/java/jmorfeusz.dll"
+File "../morfeusz/morfeusz2.dll"
+#File "/usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll"
 SectionEnd
 
 ######################################################################
@@ -123,14 +124,14 @@ CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME} Website.lnk" "$INSTDIR\${APP_
 !endif
 
 !ifndef REG_START_MENU
-CreateDirectory "$SMPROGRAMS\Morfeusz 2.0"
-CreateShortCut "$SMPROGRAMS\Morfeusz 2.0\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
+CreateDirectory "$SMPROGRAMS\Morfeusz 2"
+CreateShortCut "$SMPROGRAMS\Morfeusz 2\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
 CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
-CreateShortCut "$SMPROGRAMS\Morfeusz 2.0\Uninstall ${APP_NAME}.lnk" "$INSTDIR\uninstall.exe"
+CreateShortCut "$SMPROGRAMS\Morfeusz 2\Uninstall ${APP_NAME}.lnk" "$INSTDIR\uninstall.exe"
 
 !ifdef WEB_SITE
 WriteIniStr "$INSTDIR\${APP_NAME} website.url" "InternetShortcut" "URL" "${WEB_SITE}"
-CreateShortCut "$SMPROGRAMS\Morfeusz 2.0\${APP_NAME} Website.lnk" "$INSTDIR\${APP_NAME} website.url"
+CreateShortCut "$SMPROGRAMS\Morfeusz 2\${APP_NAME} Website.lnk" "$INSTDIR\${APP_NAME} website.url"
 !endif
 !endif
 
@@ -174,14 +175,14 @@ RmDir "$SMPROGRAMS\$SM_Folder"
 !endif
 
 !ifndef REG_START_MENU
-Delete "$SMPROGRAMS\Morfeusz 2.0\${APP_NAME}.lnk"
-Delete "$SMPROGRAMS\Morfeusz 2.0\Uninstall ${APP_NAME}.lnk"
+Delete "$SMPROGRAMS\Morfeusz 2\${APP_NAME}.lnk"
+Delete "$SMPROGRAMS\Morfeusz 2\Uninstall ${APP_NAME}.lnk"
 !ifdef WEB_SITE
-Delete "$SMPROGRAMS\Morfeusz 2.0\${APP_NAME} Website.lnk"
+Delete "$SMPROGRAMS\Morfeusz 2\${APP_NAME} Website.lnk"
 !endif
 Delete "$DESKTOP\${APP_NAME}.lnk"
 
-RmDir "$SMPROGRAMS\Morfeusz 2.0"
+RmDir "$SMPROGRAMS\Morfeusz 2"
 !endif
 
 DeleteRegKey ${REG_ROOT} "${REG_APP_PATH}"
