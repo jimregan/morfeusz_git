@@ -62,14 +62,20 @@ add_dependencies(gui-proto-jar jmorfeusz)
 add_custom_target(gui-jar
   COMMAND zip -q morfeusz.jar "*.png" "*.gif"
   COMMAND zip -q morfeusz.jar "quitaboutpreferenceshandler/*"
-  COMMAND ln -sf ../morfeusz/wrappers/java/pl .
+  COMMAND ln -sf ../morfeusz/wrappers/java/CMakeFiles/jmorfeusz.dir/pl .
   COMMAND zip -qr morfeusz.jar "pl"
   DEPENDS gui-proto-jar
   )
 
-
 add_custom_target (gui-deb
   COMMAND "${PROJECT_SOURCE_DIR}/createGUIDeb.sh" "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "${Morfeusz_DEB_VERSION}" "${ARCHITECTURE}" "${TARGET_DIR}"
+  DEPENDS gui-jar
+  )
+
+add_custom_target (gui-tgz
+  COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/morfeusz-gui.LD_PATH morfeusz-gui
+  COMMAND cp ../morfeusz/wrappers/java/libjmorfeusz.so ../morfeusz/libmorfeusz2.so .
+  COMMAND tar czvf "${TARGET_DIR}/morfeusz2-gui-${Morfeusz_LIB_VERSION}.${DICT_VERSION}-Linux-${ARCHITECTURE}.tgz" morfeusz-gui morfeusz.jar libjmorfeusz.so libmorfeusz2.so
   DEPENDS gui-jar
   )
 
@@ -97,8 +103,9 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   file(COPY Morfeusz.app/ DESTINATION "${MAC_APP_DIR}")
 
   add_custom_target(gui-dmg
-    COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/libmorfeusz2.dylib" "${MAC_APP_DIR}/Contents/MacOS/libmorfeusz2.dylib"
-    COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/wrappers/java/libjmorfeusz.jnilib" "${MAC_APP_DIR}/Contents/MacOS/libjmorfeusz.jnilib"
+    # muszą być dyliby z podkatalogu gui-libs, które mają inaczej ustawione name
+    COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/gui-libs/libmorfeusz2.dylib" "${MAC_APP_DIR}/Contents/MacOS/libmorfeusz2.dylib"
+    COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/wrappers/java/gui-libs/libjmorfeusz.jnilib" "${MAC_APP_DIR}/Contents/MacOS/libjmorfeusz.jnilib"
     COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/morfeusz.jar" "${MAC_APP_DIR}/Contents/Java/morfeusz.jar"
 #    COMMAND install -D "${CMAKE_CURRENT_BINARY_DIR}/../morfeusz/wrappers/java/jmorfeusz.jar" "${MAC_APP_DIR}/Contents/Java/jmorfeusz.jar"
     COMMAND genisoimage -V Morfeusz2 -D -R -apple -no-pad -o "${TARGET_DIR}/morfeusz2-gui_${Morfeusz_LIB_VERSION}.${DICT_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}.dmg" "dmg/"
