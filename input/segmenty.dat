@@ -63,6 +63,7 @@ pacta
 li
 suf_num
 miary
+praet_sg_agl
 aglsg1_wok
 aglsg2_wok
 aglpl1_wok
@@ -1890,6 +1891,9 @@ wszyscy	wszystek	adj:%
 
 # [
 91
+
+# \
+92
 
 # ]
 93
