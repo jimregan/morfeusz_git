@@ -1,6 +1,5 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.7.0
+#!TAGSET-ID pl.sgjp.morfeusz-0.7.1
 
-# największy identyfikator: 704
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -758,6 +757,8 @@
 # OTHER
 # partykuły (particles):
 592	part
+731	part:nwok
+732	part:wok
 # conjunctions:
 148	conj
 # complementizers:
