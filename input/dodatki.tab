@@ -76,6 +76,8 @@ m²	metr_kwadratowy	brev:npun
 m³	metr_sześcienny	brev:npun
 €	euro	brev:npun
 ¥	jen	brev:npun
+$	dolar	brev:npun
+&	&	conj
 art	artykuł	brev:pun
 tys	tysiąc	brev:pun
 r	rok	brev:pun

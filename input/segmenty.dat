@@ -23,6 +23,8 @@ praet=split composite
 
 #define cyfry (dig>* dig)
 
+#define przecinkowe ((cyfry > (kropka|przecinek) >)+ cyfry )
+
 # Segmenty występujące samodzielnie:
 #
 # domyślny typ segmentu samodzielnego:
@@ -63,7 +65,6 @@ pacta
 li
 suf_num
 miary
-praet_sg_agl
 aglsg1_wok
 aglsg2_wok
 aglpl1_wok
@@ -76,6 +77,7 @@ brev_pun
 pol_zloz
 num_zloz
 n
+praet_sg_agl
 #endif
 
 
@@ -222,7 +224,8 @@ moze_interp( nie > dywiz > subst ) !weak
 moze_interp( cyfry )
 
 # Liczby zawierające kropki lub przecinki wewnątrz:
-moze_interp( (cyfry > (kropka|przecinek) >)+ cyfry )
+# moze_interp( (cyfry > (kropka|przecinek) >)+ cyfry )
+moze_interp(przecinkowe)
 
 # Liczby rzymskie
 #define	one_to_three(rdig)	(rdig>{0,2} rdig)
@@ -241,7 +244,7 @@ moze_interp( (cyfry > (kropka|przecinek) >)+ cyfry )
 #define liczba_rzymska  ((rzymskie1000_shift? rzymskie100_shift? rzymskie10_shift? rzymskie1) | (rzymskie1000_shift? rzymskie100_shift? rzymskie10) | (rzymskie1000_shift? rzymskie100) | rzymskie1000)
 
 # Liczby rzymskie
-liczba_rzymska
+liczba_rzymska (wsz_interp)?
 
 
 # Formacje prefiksalne
@@ -374,9 +377,14 @@ moze_interp((adja|num_zloz|pol_zloz) dywiz )
 moze_interp(prep_n|prep_na)
 moze_interp((prep_n|prep_na) n)
 
+# Zapis łączy liczby (również z przecinkiem) ze skrótem niekropkowanym,
+# np. 24m, 34ha
+#moze_interp(((cyfry > (kropka|przecinek) >)+ cyfry) (brev_npun))
+moze_interp((cyfry|przecinkowe) brev_npun)
+
 # Zapis łączny liczby wraz z jednostką miary, np: 5°C, 2m².
 moze_interp(miary)
-moze_interp( cyfry miary )
+moze_interp( (cyfry|przecinkowe) miary )
 
 # predykatywy (typ pred jest używany w regułach dla zapisów niepoprawnych poniżej)
 moze_interp(pred|pred_z)
@@ -677,8 +685,8 @@ i	i	conj
 by	by	part
 li	li	part	labels=przest.
 li_tylko	li	part	labels=przest._dziś_książk.
-ze	+że	part
-z	+ż	part
+ze	+ż	part:wok
+z	+ż	part:nwok
 nie	nie	part
 z_aglt	bowiem	comp
 z_aglt	iż	comp
@@ -742,6 +750,9 @@ z_aglt_nwok	byle	comp
 z_aglt_nwok	niźli	conj
 z_aglt_nwok     niżeli   conj
 z_aglt_nwok     aniżeli   conj
+z_aglt_nwok	ledwie	comp
+z_aglt_nwok	zaledwie	comp
+z_aglt_nwok	póki	comp
 # z_aglt_nwok2 jest po to, żeby niektóre jednostki (np. partykułowe ‹że› typu: 
 # „Ty żeś to powiedział”) łączyły się tylko z aglutynantem, ale nie z ‹by›.
 z_aglt_nwok2	że	part
@@ -1891,9 +1902,6 @@ wszyscy	wszystek	adj:%
 
 # [
 91
-
-# \
-92
 
 # ]
 93
