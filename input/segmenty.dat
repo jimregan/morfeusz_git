@@ -468,9 +468,6 @@ moze_interp(niemniej)
 # moze_interp(tym niemniej)
 # moze_interp(tym adj_com) !weak
 
-# ‹na pewno› zapisane łącznie
-# moze_interp(prep_na pewno) !weak
-
 [segment types]
 nie
 prefs
@@ -529,7 +526,6 @@ adv_ndm
 tym
 bardziej
 niemniej
-pewno
 negat
 samotny
 miary
@@ -679,7 +675,6 @@ pred_z	można	pred
 tym	tym	adv
 bardziej	bardziej	adv
 niemniej	niemniej	part
-pewno	pewno	part
 pol_zloz	pół	numcomp
 i	i	conj
 by	by	part
