@@ -70,6 +70,7 @@ boć	boć	comp
 +	+	interp
 =	=	interp
 @	@	interp
+|	|	interp
 °C	stopień_Celsjusza	brev:npun
 °F	stopień_Fahrenheita	brev:npun
 m²	metr_kwadratowy	brev:npun
@@ -172,6 +173,7 @@ aero	aero+	prefa
 aero	aero+	prefs
 afro	afro+	prefs
 afro	afro+	prefa
+agro	agro+	prefa
 anarcho	anarcho+	prefa
 anarcho	anarcho+	prefs
 anglo	anglo+	prefa
