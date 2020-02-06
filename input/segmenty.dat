@@ -1851,8 +1851,15 @@ miary	stopień_Celsjusza	brev:%
 miary	stopień_Fahrenheita	brev:%
 miary	metr_kwadratowy	brev:%
 miary	metr_sześcienny	brev:%
+miary	milimetr_kwadratowy	brev:%
+miary	milimetr_sześcienny	brev:%
+miary	decymetr_kwadratowy	brev:%
+miary	decymetr_sześcienny	brev:%
+miary	kilometr_kwadratowy	brev:%
+miary	kilometr_sześcienny	brev:%
 miary	euro	brev:%
 miary	jen	brev:%
+miary	funt	brev:%
 wszyscy	wszystek	adj:%
 
 [separator chars]
@@ -1865,6 +1872,9 @@ wszyscy	wszystek	adj:%
 # "
 34
 
+# $
+36
+
 # %
 37
 
@@ -1874,8 +1884,14 @@ wszyscy	wszystek	adj:%
 # )
 41
 
+# +
+43
+
 # ,
- 44
+44
+
+# -
+45
 
 # .
 46
@@ -1907,11 +1923,23 @@ wszyscy	wszystek	adj:%
 # }
 125
 
+# §
+167
+
 # «
 171
 
+# ·
+183
+
 # »
 187
+
+# ×
+215
+
+# ÷
+247
 
 # .
 1748
