@@ -43,9 +43,12 @@ static inline std::vector<char> initializeWhitespaces() {
     res[0x2008] = true; // PUNCTUATION SPACE
     res[0x2009] = true; // THIN SPACE
     res[0x200A] = true; // HAIR SPACE
+    res[0x200B] = true; // ZERO WIDTH SPACE (for marking words in CJK lanugages)
     res[0x2028] = true; // LINE SEPARATOR
     res[0x2029] = true; // PARAGRAPH SEPARATOR
+    res[0x202F] = true; // NARROW NO-BREAK SPACE
     res[0x205F] = true; // MEDIUM MATHEMATICAL SPACE
+    res[0x2060] = true; // WORD JOINER (no-break version of 0x200B)
     res[0x3000] = true; // IDEOGRAPHIC SPACE
     return res;
 }
