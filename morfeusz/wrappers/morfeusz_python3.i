@@ -312,7 +312,7 @@ __copyright__ = _morfeusz2._Morfeusz_getCopyright()
 GENDERS = ['m1', 'm2', 'm3', 'f', 'n']
 
 
-class Morfeusz(_object):
+class Morfeusz(object):
     def __init__(self, dict_name=None, dict_path=None,
                  analyse=True, generate=True, expand_dag=False,
                  expand_tags=False, expand_dot=True, expand_underscore=True,
