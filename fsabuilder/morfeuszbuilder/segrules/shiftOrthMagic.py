@@ -36,7 +36,7 @@ class ShiftOrthMagic(object):
         for segtype in shiftOrthSegtypes - nonShiftOrthSegtypes:
             self._onlyShiftSegnums.add(segtypesHelper.getSegnum4Segtype(segtype))
 
-        for _, rules in resultsMap.iteritems():
+        for _, rules in list(resultsMap.items()):
             for rule in rules:
                 for atomicRule in rule.getAtomicRules():
                     if atomicRule.segnum in self._bothShiftAndNonShiftSegnums and atomicRule.shiftOrth:

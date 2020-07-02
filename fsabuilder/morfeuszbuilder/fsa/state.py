@@ -45,7 +45,7 @@ class State(object):
         return self.transitionsMap.get(byte, None)
     
     def getRegisterKey(self):
-        return ( frozenset(self.transitionsMap.iteritems()), tuple(self.encodedData) if self.encodedData else None )
+        return ( frozenset(iter(list(self.transitionsMap.items()))), tuple(self.encodedData) if self.encodedData else None )
     
     def isAccepting(self):
         return self.encodedData is not None
@@ -60,10 +60,10 @@ class State(object):
         else:
             return self.encodedData
     
-    def dfs(self, alreadyVisited, sortKey=lambda (_, state): -state.freq):
+    def dfs(self, alreadyVisited, sortKey=lambda __state: -__state[1].freq):
         if not self in alreadyVisited:
             alreadyVisited.add(self)
-            for _, state in sorted(self.transitionsMap.iteritems(), key=sortKey):
+            for _, state in sorted(iter(list(self.transitionsMap.items())), key=sortKey):
                 for state1 in state.dfs(alreadyVisited):
                     yield state1
             yield self
@@ -77,7 +77,7 @@ class State(object):
             state.offset = currReverseOffset - state.reverseOffset
     
     def debug(self):
-        print '----------------'
-        print 'STATE:', self.idx, 'accepting', self.isAccepting()
-        for label, s in self.transitionsMap.iteritems():
-            print label, '-->', s.idx
+        print('----------------')
+        print(('STATE:', self.idx, 'accepting', self.isAccepting()))
+        for label, s in list(self.transitionsMap.items()):
+            print((label, '-->', s.idx))

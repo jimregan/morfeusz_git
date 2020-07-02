@@ -4,8 +4,8 @@ Created on Oct 8, 2013
 @author: mlenart
 '''
 
-import state
-import register
+from . import state
+from . import register
 import logging
 from morfeuszbuilder.utils import exceptions
 
@@ -35,7 +35,7 @@ class FSA(object):
         assert not self.closed
         assert data is not None
         encodedWord = self.encodeWord(word)
-        assert encodedWord > self.encodedPrevWord
+        assert self.encodedPrevWord is None or encodedWord > self.encodedPrevWord
         self._addSorted(encodedWord, self.encodeData(data))
         self.encodedPrevWord = encodedWord
         
@@ -43,7 +43,7 @@ class FSA(object):
         
         # debug
         if self.n < 10 or (self.n < 10000 and self.n % 1000 == 0) or self.n % 10000 == 0:
-            logging.info(u'%d %s' % (self.n, word))
+            logging.info('%d %s' % (self.n, word))
         for label in encodedWord:
             self.label2Freq[label] = self.label2Freq.get(label, 0) + 1
     
@@ -78,7 +78,7 @@ class FSA(object):
         return res
         
     def _addSorted(self, encodedWord, data):
-        assert self.encodedPrevWord < encodedWord
+        assert self.encodedPrevWord is None or self.encodedPrevWord < encodedWord
         assert type(data) == bytearray
         q = self.initialState
         i = 0

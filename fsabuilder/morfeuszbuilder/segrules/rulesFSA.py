@@ -49,7 +49,7 @@ class RulesFSA(object):
     def transitionsData2bytearray(self, state):
         res = bytearray()
 #         logging.debug('next')
-        for (segnum, shiftOrth), nextState in sorted(state.transitionsMap.iteritems()):
+        for (segnum, shiftOrth), nextState in sorted(state.transitionsMap.items()):
             res.append(segnum)
             if shiftOrth:
                 res.append(1)
@@ -57,8 +57,8 @@ class RulesFSA(object):
                 res.append(0)
             offset = nextState.offset
             exceptions.validate(offset <= MAX_FSA_SIZE,
-                                u'Segmentation rules are too big and complicated' \
-                                + u'- the resulting automaton would exceed its max size which is %d' \
+                                'Segmentation rules are too big and complicated' \
+                                + '- the resulting automaton would exceed its max size which is %d' \
                                 % MAX_FSA_SIZE)
             res.extend(htons(offset))
         return res

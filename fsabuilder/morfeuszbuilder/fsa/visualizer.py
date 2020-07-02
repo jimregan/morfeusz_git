@@ -19,7 +19,7 @@ class Visualizer(object):
         nodeLabelsMap = {}
         for idx, state in enumerate(allStates):
             G.add_node(idx, offset=state.offset)
-            for c, targetState in state.transitionsMap.iteritems():
+            for c, targetState in list(state.transitionsMap.items()):
                 G.add_edge(idx, allStates.index(targetState))
                 label = (chr(c) if c <= 127 else '%') if charLabels \
                     else c
@@ -37,11 +37,11 @@ class Visualizer(object):
                                nodelist=list([allStates.index(s) for s in allStates if s.isAccepting()]),
                                node_shape='s')
 #         nx.draw_networkx_nodes(G, pos, nodelist=list([allStates.index(s) for s in allStates if s.isFinal()])), )
-        nx.draw_networkx_edges(G, pos, edgelist=edgeLabelsMap.keys())
+        nx.draw_networkx_edges(G, pos, edgelist=list(edgeLabelsMap.keys()))
         nx.draw_networkx_edge_labels(G, pos, edge_labels = edgeLabelsMap)
         nx.draw_networkx_labels(G, pos, labels=nodeLabelsMap)
         plt.axis('off')
         plt.draw()
         plt.show()
 #         plt.savefig('filename.png')
-        print 'done'
+        print('done')

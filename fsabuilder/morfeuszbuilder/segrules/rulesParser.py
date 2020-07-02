@@ -28,11 +28,11 @@ class RulesParser(object):
                 key, defs = lineToParse.parseString(line)
                 res[key] = tuple(defs)
             except Exception as ex:
-                raise exceptions.ConfigFileException(segtypesConfigFile.filename, lineNum, u'Error in [options] section: %s' % str(ex))
+                raise exceptions.ConfigFileException(segtypesConfigFile.filename, lineNum, 'Error in [options] section: %s' % str(ex))
         return res
 
     def _key2DefAsKey(self, key2Def):
-        return frozenset(key2Def.items())
+        return frozenset(list(key2Def.items()))
 
     def parse(self, filename):
         
@@ -53,12 +53,12 @@ class RulesParser(object):
         res = rulesManager.RulesManager(segtypesHelper, separatorsList)
         
         def2Key = {}
-        for key, defs in key2Defs.iteritems():
+        for key, defs in list(key2Defs.items()):
             for define in defs:
                 def2Key[define] = key
         
         resultsMap = {}
-        for idx, defs in enumerate(itertools.product(*key2Defs.values())):
+        for idx, defs in enumerate(itertools.product(*list(key2Defs.values()))):
             key2Def = dict([(def2Key[define], define) for define in defs])
             currRes = []
             resultsMap[self._key2DefAsKey(key2Def)] = currRes
@@ -86,7 +86,7 @@ class RulesParser(object):
 
         self.doShiftOrthMagic(resultsMap, res)
 
-        for idx, defs in enumerate(itertools.product(*key2Defs.values())):
+        for idx, defs in enumerate(itertools.product(*list(key2Defs.values()))):
             key2Def = dict([(def2Key[define], define) for define in defs])
 
             nfa = rulesNFA.RulesNFA()
@@ -115,20 +115,20 @@ class RulesParser(object):
     
     def _createNewTagRule(self, segtype, shiftOrth, lineNum, line, segtypesHelper):
         if not segtypesHelper.hasSegtype(segtype):
-            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid segment type: %s' % (line, segtype))
+            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, '%s - invalid segment type: %s' % (line, segtype))
         else:
 #             return rules.TagRule(segtype)
             return rules.TagRule(segtypesHelper.getSegnum4Segtype(segtype), shiftOrth, segtype, lineNum)
     
     def _createQuantRule1(self, child, quantity, lineNum, line, segtypesHelper):
         if quantity <= 0:
-            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid quantity: %d' % (line, quantity))
+            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, '%s - invalid quantity: %d' % (line, quantity))
         else:
             return rules.ConcatRule(quantity * [child], lineNum)
     
     def _createQuantRule2(self, child, leftN, rightN, lineNum, line, segtypesHelper):
         if leftN > rightN or (leftN, rightN) == (0, 0):
-            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid quantities: %d %d' % (line, leftN, rightN))
+            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, '%s - invalid quantities: %d %d' % (line, leftN, rightN))
         elif leftN == 0:
             children = [rules.OptionalRule(child, lineNum)]
             for n in range(2, rightN + 1):
@@ -140,7 +140,7 @@ class RulesParser(object):
     
     def _createQuantRule3(self, child, quantity, lineNum, line, segtypesHelper):
         if quantity <= 0:
-            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, u'%s - invalid quantity: %d' % (line, quantity))
+            raise exceptions.ConfigFileException(segtypesHelper.filename, lineNum, '%s - invalid quantity: %d' % (line, quantity))
         else:
             return rules.ConcatRule(
                                     [
@@ -200,7 +200,7 @@ class RulesParser(object):
         shiftOrthSegtypes = set()
         nonShiftOrthSegtypes = set()
 
-        for _, rules in resultsMap.iteritems():
+        for _, rules in list(resultsMap.items()):
             for rule in rules:
                 for atomicRule in rule.getAtomicRules():
                     if atomicRule.shiftOrth:

@@ -6,10 +6,10 @@ Created on 18 lut 2014
 
 import re
 import codecs
-import exceptions
+from . import exceptions
 
 def getHeaderValue(line, lineNum):
-    m = re.match(ur'\s*\[(.*?)\]\s*(\#.*)?', line)
+    m = re.match(r'\s*\[(.*?)\]\s*(\#.*)?', line)
     if m:
         return m.group(1)
     else:
@@ -40,7 +40,7 @@ class ConfigFile(object):
             self.section2Lines[self.currSection].append((lineNum, line))
     
     def _getHeaderValue(self, line, lineNum):
-        m = re.match(ur'\s*\[(.*?)\]\s*(\#.*)?', line)
+        m = re.match(r'\s*\[(.*?)\]\s*(\#.*)?', line)
         if m:
             return m.group(1)
         else:
@@ -48,7 +48,7 @@ class ConfigFile(object):
     
     def enumerateLinesInSection(self, sectionName, ignoreComments=True):
         if sectionName not in self.section2Lines:
-            raise exceptions.ConfigFileException(self.filename, None, u'Missing section: "%s"' % sectionName)
+            raise exceptions.ConfigFileException(self.filename, None, 'Missing section: "%s"' % sectionName)
         if not ignoreComments:
             return self.section2Lines[sectionName]
         else:

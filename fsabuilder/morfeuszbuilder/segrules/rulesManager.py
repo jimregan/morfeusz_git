@@ -7,7 +7,7 @@ import logging
 from morfeuszbuilder.utils.serializationUtils import htons, htonl
 from morfeuszbuilder.utils import serializationUtils
 from morfeuszbuilder.utils import exceptions
-import shiftOrthMagic
+from . import shiftOrthMagic
 
 class RulesManager(object):
     
@@ -19,7 +19,7 @@ class RulesManager(object):
         self.shiftOrthMagic = shiftOrthMagic.ShiftOrthMagic()
     
     def _options2Key(self, optionsMap):
-        return frozenset(optionsMap.items())
+        return frozenset(list(optionsMap.items()))
     
     def _key2Options(self, optionsKey):
         return dict(optionsKey)
@@ -46,9 +46,9 @@ class RulesManager(object):
         dfasNum = len(self.options2DFA)
         exceptions.validate(
                             dfasNum > 0 and dfasNum < 256,
-                            u'Too many segmentation rules variants')
+                            'Too many segmentation rules variants')
         res.append(dfasNum)
-        for key, dfa in self.options2DFA.iteritems():
+        for key, dfa in list(self.options2DFA.items()):
             optionsMap = self._key2Options(key)
             res.extend(self._serializeOptionsMap(optionsMap))
             res.extend(self._serializeDFA(dfa))

@@ -24,7 +24,7 @@ class Encoder(object):
         #~ self.qualifiersMap = { frozenset(): 0}
     
     def encodeWord(self, word, lowercase=True):
-        assert type(word) == unicode
+        assert type(word) == str
         res = bytearray(word.lower() if self.lowercase and lowercase else word, self.encoding)
         return res
     
@@ -35,16 +35,16 @@ class Encoder(object):
         return NotImplementedError()
 
     def decodeWord(self, rawWord):
-        return unicode(str(rawWord).strip('\x00'), self.encoding)
+        return str(str(rawWord).strip('\x00'), self.encoding)
     
     def word2SortKey(self, word):
         normalizedWord = word.lower() if self.lowercase else word
-        return normalizedWord.encode(self.encoding)
+        return normalizedWord
     
     def _encodeTypeNum(self, typenum):
         exceptions.validate(
                             typenum <= limits.MAX_SEGMENT_TYPES,
-                            u'Too many segment types. The limit is %d' % limits.MAX_SEGMENT_TYPES)
+                            'Too many segment types. The limit is %d' % limits.MAX_SEGMENT_TYPES)
         return bytearray([typenum])
     
     def _hasUpperPrefix(self, casePattern):
@@ -62,13 +62,13 @@ class Encoder(object):
     
     def _encodeTagNum(self, tagnum):
         res = bytearray()
-        exceptions.validate(tagnum <= limits.MAX_TAGS, u'Too many tags. The limit is %d' % limits.MAX_TAGS)
+        exceptions.validate(tagnum <= limits.MAX_TAGS, 'Too many tags. The limit is %d' % limits.MAX_TAGS)
         res.append((tagnum & 0xFF00) >> 8)
         res.append(tagnum & 0x00FF)
         return res
     
     def _encodeNameNum(self, namenum):
-        exceptions.validate(namenum <= limits.MAX_NAMES, u'Too many named entity types. The limit is %d' % limits.MAX_NAMES)
+        exceptions.validate(namenum <= limits.MAX_NAMES, 'Too many named entity types. The limit is %d' % limits.MAX_NAMES)
         return bytearray([namenum])
     
     def _groupInterpsByType(self, interpsList):
@@ -86,7 +86,7 @@ class Encoder(object):
         
         res = bytearray()
         
-        for typenum, interpsList in segnum2Interps.iteritems():
+        for typenum, interpsList in list(segnum2Interps.items()):
             res.extend(self._encodeInterps4Type(typenum, interpsList))
         del interpsList
         
@@ -135,10 +135,10 @@ class MorphEncoder(Encoder):
             return res
     
     def _casePatternsHaveOnlyLowercase(self, casePatterns):
-        return not any(map(lambda cp: cp and True in cp, casePatterns))
+        return not any([cp and True in cp for cp in casePatterns])
     
     def _casePatternsAreOnlyTitles(self, casePatterns):
-        return all(map(lambda cp: cp and cp[0] == True and not True in cp[1:], casePatterns))
+        return all([cp and cp[0] == True and not True in cp[1:] for cp in casePatterns])
     
     def _casePatternsAreEncodedInCompressByte(self, casePatterns):
         return self._casePatternsHaveOnlyLowercase(casePatterns) or self._casePatternsAreOnlyTitles(casePatterns)

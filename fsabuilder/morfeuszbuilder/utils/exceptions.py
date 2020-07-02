@@ -25,7 +25,7 @@ class SegtypesException(FSABuilderException):
         self.msg = msg
     
     def __str__(self):
-        return u'Error in segment rules: %s' % self.msg
+        return 'Error in segment rules: %s' % self.msg
 
 class ConfigFileException(FSABuilderException):
     
@@ -36,7 +36,7 @@ class ConfigFileException(FSABuilderException):
     
     def __str__(self):
         if self.lineNum:
-            return u'%s:%d - %s' % (self.filename, self.lineNum, self.msg)
+            return '%s:%d - %s' % (self.filename, self.lineNum, self.msg)
         else:
-            return u'%s - %s' % (self.filename, self.msg)
+            return '%s - %s' % (self.filename, self.msg)
 

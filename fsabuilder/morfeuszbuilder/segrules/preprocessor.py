@@ -7,10 +7,10 @@ Created on 23 sty 2014
 import re
 from pyparsing import *
 from morfeuszbuilder.utils import exceptions
-from pyparseString import pyparseString
+from .pyparseString import pyparseString
 
-identifier = Word(alphas, bodyChars=alphanums+u'_>*+{},')
-define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + Word(alphas, bodyChars=alphanums+u'_') + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
+identifier = Word(alphas, bodyChars=alphanums+'_>*+{},')
+define = Keyword('#define').suppress() + identifier + Optional(Suppress('(') + Word(alphas, bodyChars=alphanums+'_') + Suppress(')')) + restOfLine + LineEnd() + StringEnd()
 ifdef = Keyword('#ifdef').suppress() + identifier + LineEnd() + StringEnd()
 endif = Keyword('#endif').suppress() + LineEnd() + StringEnd()
 
@@ -107,5 +107,5 @@ def preprocess(inputLines, defs, filename):
             ifdefsStack.pop()
         elif line.startswith('#'):
             yield lineNum, line
-        elif len(ifdefsStack) == 0 or all(map(lambda (name, isActive): (name in defs and isActive) or (name not in defs and not isActive), ifdefsStack)):
+        elif len(ifdefsStack) == 0 or all([(name_isActive[0] in defs and name_isActive[1]) or (name_isActive[0] not in defs and not name_isActive[1]) for name_isActive in ifdefsStack]):
             yield lineNum, _processLine(lineNum, line, defines, filename)

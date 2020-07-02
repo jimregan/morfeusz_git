@@ -4,7 +4,7 @@ project (Morfeusz)
 
 set (Morfeusz_VERSION_MAJOR 1)
 set (Morfeusz_VERSION_MINOR 9)
-set (Morfeusz_VERSION_PATCH 15)
+set (Morfeusz_VERSION_PATCH 16)
 set (Morfeusz_VERSION "${Morfeusz_VERSION_MAJOR}.${Morfeusz_VERSION_MINOR}.${Morfeusz_VERSION_PATCH}")
 set (Morfeusz_LIB_VERSION "${Morfeusz_VERSION}")
 if (BUILT_ON)

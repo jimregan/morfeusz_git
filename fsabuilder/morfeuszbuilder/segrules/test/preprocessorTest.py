@@ -19,7 +19,7 @@ class Test(unittest.TestCase):
         parsedFile = configFile.ConfigFile(filename, ['options', 'combinations', 'tags', 'lexemes', 'segment types'])
         linesEnum = parsedFile.enumerateLinesInSection('combinations')
         for lineNum, line in preprocessor.preprocess(linesEnum, ['extra', 'superextra']):
-            print (lineNum, line)
+            print((lineNum, line))
 
 
 if __name__ == "__main__":

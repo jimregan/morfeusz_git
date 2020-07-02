@@ -4,7 +4,7 @@ Created on Oct 23, 2013
 @author: mlenart
 '''
 import logging
-from common import Interpretation4Analyzer
+from .common import Interpretation4Analyzer
 from morfeuszbuilder.fsa.common import Interpretation4Generator
 #from morfeuszbuilder.fsa import externalsort
 
@@ -36,24 +36,24 @@ class LineParser(object):
     def ignoreLine(self, line):
         if not line:
             return True
-        elif line.strip() == u'#<COPYRIGHT>':
+        elif line.strip() == '#<COPYRIGHT>':
             self.inCopyright = True
             return True
-        elif line.strip() == u'#</COPYRIGHT>':
+        elif line.strip() == '#</COPYRIGHT>':
             self.inCopyright = False
             return True
         elif self.inCopyright:
             return True
         elif line and not ' ' in ''.join(line.split('\t')[:2]):
             return False
-        elif line.startswith(u'#!DICT-ID'):
+        elif line.startswith('#!DICT-ID'):
             return True
         else:
-            logging.warn(u'Ignoring line: "%s" - contains space in text form or lemma' % (line.strip()))
+            logging.warn('Ignoring line: "%s" - contains space in text form or lemma' % (line.strip()))
             return True
 
     def parseLine(self, line):
-        splitLine = line.strip().split(u'\t')
+        splitLine = line.strip().split('\t')
         if len(splitLine) == 5:
             orth, base, tag, name, qualifier = splitLine
         elif len(splitLine) == 4:
@@ -69,7 +69,7 @@ class LineParser(object):
 
 def parseQualifiers(string):
     if string:
-        return frozenset(string.split(u'|'))
+        return frozenset(string.split('|'))
     else:
         return frozenset()
 
@@ -87,7 +87,7 @@ class PolimorfConverter4Analyzer(object):
     def _partiallyParseLines(self, inputLines):
         lineParser = LineParser()
         for line in inputLines:
-            line = line.decode(self.inputEncoding).strip('\n')
+            line = line.strip('\n')
             if not lineParser.ignoreLine(line):
                 orth, base, tag, name, qualifier = lineParser.parseLine(line)
                 
@@ -106,8 +106,8 @@ class PolimorfConverter4Analyzer(object):
                     base = orth
 
                 yield '\t'.join((
-                            orth.encode(self.inputEncoding),
-                            base.encode(self.inputEncoding),
+                            orth,
+                            base,
                             str(tagnum),
                             str(namenum),
                             str(typenum), 
@@ -118,8 +118,8 @@ class PolimorfConverter4Analyzer(object):
                     base = orth
                     typenum = self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum)
                     yield '\t'.join((
-                            orth.encode(self.inputEncoding),
-                            base.encode(self.inputEncoding),
+                            orth,
+                            base,
                             str(tagnum),
                             str(namenum),
                             str(typenum),
@@ -127,14 +127,14 @@ class PolimorfConverter4Analyzer(object):
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
-        return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split('\t')[0].decode('utf8')))
+        return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split('\t')[0]))
 #         return sorted(inputLines, key=lambda line: self.encoder.word2SortKey(line.split('\t')[0].decode('utf8')))
     
     def _reallyParseLines(self, inputLines):
         for line in inputLines:
-            line = line.decode(self.inputEncoding).strip(u'\n')
+            line = line.strip('\n')
             if line:
-                orth, base, tagnum, namenum, typenum, qualsnum = line.split(u'\t')
+                orth, base, tagnum, namenum, typenum, qualsnum = line.split('\t')
                 tagnum = int(tagnum)
                 namenum = int(namenum)
                 typenum = int(typenum)
@@ -159,14 +159,14 @@ class PolimorfConverter4Generator(object):
     def _partiallyParseLines(self, inputLines):
         lineParser = LineParser()
         for line in inputLines:
-            line = line.decode(self.inputEncoding).strip('\n')
+            line = line.strip('\n')
             if not lineParser.ignoreLine(line):
                 orth, base, tag, name, qualifier = lineParser.parseLine(line)
                 if base:
-                    homonymId = u''
-                    if u':' in base:
-                        assumedBase, assumedHomonymId = base.split(u':', 1)
-                        if assumedBase != u'' and assumedHomonymId != u'' and assumedHomonymId.isalnum():
+                    homonymId = ''
+                    if ':' in base:
+                        assumedBase, assumedHomonymId = base.split(':', 1)
+                        if assumedBase != '' and assumedHomonymId != '' and assumedHomonymId.isalnum():
                             base, homonymId = assumedBase, assumedHomonymId
                     tagnum = self.tagset.getTagnum4Tag(tag)
                     namenum = self.namesMap[name]
@@ -179,39 +179,39 @@ class PolimorfConverter4Generator(object):
                         base = orth
 
                     yield '\t'.join((
-                                orth.encode(self.inputEncoding), 
-                                base.encode(self.inputEncoding), 
+                                orth, 
+                                base, 
                                 str(tagnum), 
                                 str(namenum), 
                                 str(typenum),
-                                homonymId.encode(self.inputEncoding), 
+                                homonymId, 
                                 str(qualsnum)))
 
                     if self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum) != None:
                         base = orth
                         typenum = self.segmentRulesManager.shiftOrthMagic.getNewSegnum4ShiftOrth(typenum)
                         yield '\t'.join((
-                                orth.encode(self.inputEncoding),
-                                base.encode(self.inputEncoding),
+                                orth,
+                                base,
                                 str(tagnum),
                                 str(namenum),
                                 str(typenum),
-                                homonymId.encode(self.inputEncoding),
+                                homonymId,
                                 str(qualsnum)))
                 else:
                     logging.warn('Ignoring line: "%s" - contains empty lemma', line.strip())
     
     # input lines are encoded and partially parsed
     def _sortLines(self, inputLines):
-        return sorted(inputLines, key=lambda line: (self.encoder.word2SortKey(line.split('\t')[1].decode('utf8')), line))
+        return sorted(inputLines, key=lambda line: (self.encoder.word2SortKey(line.split('\t')[1]), line))
     
     def _reallyParseLines(self, inputLines):
         prevLine = None
         for line in inputLines:
-            line = line.decode(self.inputEncoding).strip(u'\n')
+            line = line.strip('\n')
             if line and line != prevLine:
-                orth, base, tagnum, namenum, typenum, homonymId, qualsnum = line.split(u'\t')
-#                 print orth.encode('utf8'), base.encode('utf8'), homonymId
+                orth, base, tagnum, namenum, typenum, homonymId, qualsnum = line.split('\t')
+#                 print orth, base, homonymId
                 tagnum = int(tagnum)
                 namenum = int(namenum)
                 typenum = int(typenum)

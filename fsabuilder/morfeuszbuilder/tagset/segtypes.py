@@ -11,11 +11,11 @@ from morfeuszbuilder.utils import exceptions
 def _getLemmaHomonymPair(lemma):
     if lemma is None:
         return (None, None)
-    elif u':' in lemma:
-        if lemma.replace(u':', '') == '':
+    elif ':' in lemma:
+        if lemma.replace(':', '') == '':
             return (lemma, None)
         else:
-            return lemma.split(u':', 1)
+            return lemma.split(':', 1)
     else:
         return (lemma, None)
 
@@ -26,7 +26,7 @@ class Segtypes(object):
         self.tagset = tagset
         self.namesMap = namesMap
         self.labelsMap = labelsMap
-        self._reverseLabelsMap = dict([(v, k) for (k, v) in labelsMap.iteritems()])
+        self._reverseLabelsMap = dict([(v, k) for (k, v) in list(labelsMap.items())])
         
         self.filename = segrulesConfigFile.filename
         
@@ -59,13 +59,13 @@ class Segtypes(object):
     
     def _readSegtypes(self, segrulesConfigFile):
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('segment types'):
-            assert type(line) == unicode
+            assert type(line) == str
             self._validate(
-                           u'Segment type must be a single word', 
+                           'Segment type must be a single word', 
                            lineNum,
                            re.match(r'^\w+$', line))
             self._validate(
-                           u'Segment type already defined: "%s"' % line, 
+                           'Segment type already defined: "%s"' % line, 
                            lineNum,
                            line not in self.segtypes)
             self.segtypes.append(line)
@@ -75,13 +75,13 @@ class Segtypes(object):
         for lineNum, line in segrulesConfigFile.enumerateLinesInSection('tags'):
             self._parsePattern(lineNum, line, withLemma=False)
             self._validate(
-                u'Pattern that matches everything must be the last one',
+                'Pattern that matches everything must be the last one',
                 lineNum - 1,
                 not gotWildcardPattern)
             gotWildcardPattern = gotWildcardPattern or self.patternsList[-1].isWildcardPattern()
 
         self._validate(
-            u'There must be a pattern that matches everything at the end of [tags] section',
+            'There must be a pattern that matches everything at the end of [tags] section',
             lineNum,
             self.patternsList[-1].isWildcardPattern())
     
@@ -94,18 +94,18 @@ class Segtypes(object):
         for f in fields:
             match = re.match(r'(name|labels)=([\S]+)', f, re.U)
             self._validate(
-                        u'invalid name or labels constraint: "%s"' % f,
+                        'invalid name or labels constraint: "%s"' % f,
                         lineNum,
                         match)
             key = match.group(1)
             value = match.group(2)
             self._validate(
-                u'%s already specified' % key,
+                '%s already specified' % key,
                 lineNum,
                 key not in res)
             if key == 'labels':
                 if value:
-                    value = frozenset(value.split(u'|'))
+                    value = frozenset(value.split('|'))
                 else:
                     value = frozenset()
             res[key] = value
@@ -115,7 +115,7 @@ class Segtypes(object):
         split = re.split(r'\s+', line.strip())
         if withLemma:
             self._validate(
-                u'Line in [lexemes] section must contain 3 to 5 fields - segment type, lemma, tag pattern and optional constraints on name and labels',
+                'Line in [lexemes] section must contain 3 to 5 fields - segment type, lemma, tag pattern and optional constraints on name and labels',
                 lineNum,
                 len(split) in [3, 4, 5])
             segtype = split[0]
@@ -124,7 +124,7 @@ class Segtypes(object):
             additionalConstraints = self._parseAdditionalConstraints(lineNum, split[3:])
         else:
             self._validate(
-                u'Line in [tags] section must contain 2 to 4 fields - segment type, tag pattern and optional constraints on name and labels',
+                'Line in [tags] section must contain 2 to 4 fields - segment type, tag pattern and optional constraints on name and labels',
                 lineNum,
                 len(split) in [2, 3, 4])
             segtype = split[0]
@@ -132,32 +132,32 @@ class Segtypes(object):
             pattern = split[1]
             additionalConstraints = self._parseAdditionalConstraints(lineNum, split[2:])
         self._validate(
-            u'Undeclared segment type: "%s"' % segtype,
+            'Undeclared segment type: "%s"' % segtype,
             lineNum,
             segtype in self.segtypes)
         segnum = self.segtypes.index(segtype)
 
         self._validate(
-            u'Pattern must contain only ":", "%", "." and lowercase alphanumeric letters',
+            'Pattern must contain only ":", "%", "." and lowercase alphanumeric letters',
             lineNum,
             re.match(r'[a-z_\.\:\%]+', pattern))
 
         segtypePattern = SegtypePattern(
             lemma,
             pattern,
-            additionalConstraints.get('name', u''),
+            additionalConstraints.get('name', ''),
             additionalConstraints.get('labels', frozenset()),
             segnum)
         # print 'segtypePattern', repr(str(segtypePattern))
         self._validate(
-            u'There is no tag that matches pattern "%s".' % (pattern),
+            'There is no tag that matches pattern "%s".' % (pattern),
             lineNum,
             any([segtypePattern.tryToMatchTag(tag) != -1 for tag in self.tagset.getAllTags()]))
         self.patternsList.append(segtypePattern)
 
     def _getAllExistingLabelsnumCombinations(self, labels):
         if labels:
-            for labelsCombination, labelsnum in self.labelsMap.iteritems():
+            for labelsCombination, labelsnum in list(self.labelsMap.items()):
                 if labels <= labelsCombination:
                     yield labelsnum
         else:
@@ -232,7 +232,7 @@ class SegtypePattern(object):
             return -1
 
     def isWildcardPattern(self):
-        return (self.lemma, self.pattern, self.name, self.labels) == (None, '%', u'', frozenset())
+        return (self.lemma, self.pattern, self.name, self.labels) == (None, '%', '', frozenset())
 
     def __str__(self):
-        return u'%s %s %s %s -> %d' % (self.lemma, self.pattern, self.name, self.labels, self.segnum)
+        return '%s %s %s %s -> %d' % (self.lemma, self.pattern, self.name, self.labels, self.segnum)

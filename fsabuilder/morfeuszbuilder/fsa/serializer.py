@@ -5,7 +5,7 @@ Created on Oct 20, 2013
 '''
 
 import logging
-from state import State
+from .state import State
 from morfeuszbuilder.utils import limits, exceptions
 from morfeuszbuilder.utils.serializationUtils import *
 
@@ -106,7 +106,7 @@ class Serializer(object):
         res = bytearray()
         numOfTags = len(tagsMap)
         res.extend(htons(numOfTags))
-        for tag, tagnum in sorted(tagsMap.iteritems(), key=lambda (tag, tagnum): tagnum):
+        for tag, tagnum in sorted(iter(list(tagsMap.items())), key=lambda tag_tagnum: tag_tagnum[1]):
             res.extend(htons(tagnum))
             res.extend(self.fsa.encodeWord(tag))
             res.append(0)
@@ -121,7 +121,7 @@ class Serializer(object):
         #~ return res
     
     def serializeQualifiersMap(self):
-        label2labelId = dict([ (u'|'.join(qualifiers), n) for qualifiers, n in sorted(self.qualifiersMap.iteritems(), key=lambda (qs, n): n) ])
+        label2labelId = dict([ ('|'.join(sorted(qualifiers)), n) for qualifiers, n in sorted(iter(list(self.qualifiersMap.items())), key=lambda qs_n: qs_n[1]) ])
         return self._serializeTags(label2labelId)
         #~ res = bytearray()
         #~ res.extend(htons(len(self.qualifiersMap)))
@@ -186,9 +186,9 @@ class Serializer(object):
         return res
     
     def getSortedTransitions(self, state):
-        defaultKey = lambda (label, nextState): (-state.label2Freq.get(label, 0), -self.fsa.label2Freq.get(label, 0))
+        defaultKey = lambda label_nextState: (-state.label2Freq.get(label_nextState[0], 0), -self.fsa.label2Freq.get(label_nextState[0], 0))
         return list(sorted(
-                           state.transitionsMap.iteritems(),
+                           iter(list(state.transitionsMap.items())),
                            key=defaultKey))
     
     def stateData2bytearray(self, state):
@@ -215,9 +215,9 @@ class SimpleSerializer(Serializer):
     
     def getStateSize(self, state):
         if self.serializeTransitionsData:
-            return 1 + 5 * len(state.transitionsMap.keys()) + self.getDataSize(state)
+            return 1 + 5 * len(list(state.transitionsMap.keys())) + self.getDataSize(state)
         else:
-            return 1 + 4 * len(state.transitionsMap.keys()) + self.getDataSize(state)
+            return 1 + 4 * len(list(state.transitionsMap.keys())) + self.getDataSize(state)
     
     def getDataSize(self, state):
         return len(state.encodedData) if state.isAccepting() else 0
@@ -270,12 +270,12 @@ class VLengthSerializer1(Serializer):
         res = bytearray()
         
         # labels sorted by popularity
-        sortedLabels = [label for (label, freq) in sorted(self.fsa.label2Freq.iteritems(), key=lambda (label, freq): (-freq, label))]
+        sortedLabels = [label for (label, freq) in sorted(iter(list(self.fsa.label2Freq.items())), key=lambda label_freq: (-label_freq[1], label_freq[0]))]
         
         # popular labels table
         self.label2ShortLabel = dict([(label, sortedLabels.index(label) + 1) for label in sortedLabels[:63]])
         
-        logging.debug(dict([(chr(label), shortLabel) for label, shortLabel in self.label2ShortLabel.items()]))
+        logging.debug(dict([(chr(label), shortLabel) for label, shortLabel in list(self.label2ShortLabel.items())]))
         
         # write remaining short labels (zeros)
         for label in range(256):
@@ -354,7 +354,7 @@ class VLengthSerializer1(Serializer):
                     offsetSize += 1
                 exceptions.validate(
                                     offset < 256 * 256 * 256,
-                                    u'Cannot build the automaton - it would exceed its max size which is %d' % (256 * 256 * 256))
+                                    'Cannot build the automaton - it would exceed its max size which is %d' % (256 * 256 * 256))
 #                 assert offset < 256 * 256 * 256  # TODO - przerobic na jakis porzadny wyjatek
                 assert offsetSize <= 3
                 firstByte |= offsetSize
@@ -380,7 +380,7 @@ class VLengthSerializer1(Serializer):
         newState.encodedData = state.encodedData
         newState.reverseOffset = state.reverseOffset
         newState.offset = state.offset
-        newState.transitionsMap = dict([(label, nextState) for (label, nextState) in state.transitionsMap.iteritems()])
+        newState.transitionsMap = dict([(label, nextState) for (label, nextState) in list(state.transitionsMap.items())])
 #         newState.transitionsMap = dict([(label, nextState) for (label, nextState) in state.transitionsMap.iteritems() if not label in self.label2ShortLabel or not self.label2ShortLabel[label] in range(1,64)])
         newState.serializeAsArray = False
         return newState
@@ -388,12 +388,12 @@ class VLengthSerializer1(Serializer):
     def _transitions2ArrayBytes(self, state):
         res = bytearray()
         array = [0] * 64
-        for label, nextState in state.transitionsMap.iteritems():
+        for label, nextState in list(state.transitionsMap.items()):
             if label in self.label2ShortLabel:
                 shortLabel = self.label2ShortLabel[label]
                 array[shortLabel] = nextState.offset
         logging.debug(array)
-        for offset in map(lambda x: x if x else 0, array):
+        for offset in [x if x else 0 for x in array]:
             res.append(0)
             res.append((offset & 0xFF0000) >> 16)
             res.append((offset & 0x00FF00) >> 8)
@@ -409,8 +409,8 @@ class VLengthSerializer1(Serializer):
             return self._transitions2ListBytes(state)
     
     def _chooseArrayStates(self):
-        for state1 in self.fsa.initialState.transitionsMap.values():
-            for state2 in state1.transitionsMap.values():
+        for state1 in list(self.fsa.initialState.transitionsMap.values()):
+            for state2 in list(state1.transitionsMap.values()):
 #                 for state3 in state2.transitionsMap.values():
 #                     state3.serializeAsArray = True
                 state2.serializeAsArray = True

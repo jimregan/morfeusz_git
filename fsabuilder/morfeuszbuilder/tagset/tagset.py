@@ -20,7 +20,7 @@ class Tagset(object):
         #~ self._name2namenum = {}
         if filename:
             self._doInit(filename, encoding)
-        self._tagnum2tag = dict(map(lambda (k, v): (v, k), self.tag2tagnum.iteritems()))
+        self._tagnum2tag = dict([(k_v[1], k_v[0]) for k_v in iter(list(self.tag2tagnum.items()))])
     
     def _doInit(self, filename, encoding):
         insideTags = False
@@ -33,11 +33,11 @@ class Tagset(object):
                         self.tagsetId = match.group(1)
                     else:
                         raise FSABuilderException('missing TAGSET-ID in first line of tagset file')
-                elif line == u'[TAGS]':
+                elif line == '[TAGS]':
                     insideTags = True
                 #~ elif line == u'[NAMES]':
                     #~ addingTo = Tagset.NAMES
-                elif line and not line.startswith(u'#'):
+                elif line and not line.startswith('#'):
                     if not insideTags:
                         raise FSABuilderException('"%s" - text outside [TAGS] section in tagset file line %d' % (line, linenum))
                     res = self.tag2tagnum
@@ -47,12 +47,12 @@ class Tagset(object):
                     tag = line.split(Tagset.SEP)[1]
                     if tag in res:
                         raise FSABuilderException('duplicate tag: "%s"' % tag)
-                    if int(tagNum) in res.values():
+                    if int(tagNum) in list(res.values()):
                         raise FSABuilderException('line %d: tagId %d assigned for tag "%s" already appeared somewhere else.' % (linenum, int(tagNum), tag))
                     res[tag] = int(tagNum)
     
     def getAllTags(self):
-        return self.tag2tagnum.keys()
+        return list(self.tag2tagnum.keys())
     
     def getTagnum4Tag(self, tag):
         if tag in self.tag2tagnum:

@@ -10,9 +10,9 @@ import logging
 class EncodedFormWithoutPrefix(object):
     
     def __init__(self, fromWord, targetWord, lowercase):
-        assert type(fromWord) == unicode
-        assert type(targetWord) == unicode
-        root = u''
+        assert type(fromWord) == str
+        assert type(targetWord) == str
+        root = ''
         for o, b in zip(fromWord, targetWord):
             if ((o.lower() == b.lower()) if lowercase else o == b):
                 root += b
@@ -26,8 +26,8 @@ class EncodedFormWithoutPrefix(object):
 class EncodedForm4Generator(object):
     
     def __init__(self, fromWord, targetWord):
-        assert type(fromWord) == unicode
-        assert type(targetWord) == unicode
+        assert type(fromWord) == str
+        assert type(targetWord) == str
         bestEncodedForm = None
         bestPrefixLength = -1
         for prefixLength in range(min(len(targetWord), 5)):
@@ -45,8 +45,8 @@ class EncodedForm4Generator(object):
 class EncodedForm4Analyzer(object):
     
     def __init__(self, fromWord, targetWord):
-        assert type(fromWord) == unicode
-        assert type(targetWord) == unicode
+        assert type(fromWord) == str
+        assert type(targetWord) == str
         bestEncodedForm = None
         bestPrefixCutLength = -1
         for prefixCutLength in range(min(len(fromWord), 5)):
@@ -123,7 +123,7 @@ class Interpretation4Generator(object):
         return hash(self.getSortKey())
     
     def __unicode__(self):
-        return u'<%s,(%d %s),%d,%d>' % (self.lemma.decode('utf8'), self.encodedForm.cutLength, self.encodedForm.suffixToAdd.decode('utf8'), self.tagnum, self.namenum)
+        return '<%s,(%d %s),%d,%d>' % (self.lemma, self.encodedForm.cutLength, self.encodedForm.suffixToAdd.decode('utf8'), self.tagnum, self.namenum)
     
     def __repr__(self):
-        return unicode(self)
+        return str(self)

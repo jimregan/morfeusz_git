@@ -90,7 +90,7 @@ def _serializeTable(table):
 def _serializeExtendedTable(table):
     res = []
     res.append('{')
-    for code, targetCode in table.iteritems():
+    for code, targetCode in list(table.items()):
         res.append('{')
         res.append(str(code))
         res.append(',')
