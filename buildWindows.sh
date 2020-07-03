@@ -1,60 +1,68 @@
 #!/bin/bash
+#  Kompiluje bibliotekę i buduje paczki dystrybucyjne zawierające
+#  Morfeusza i słowniki SGJP i Polimorf
+#
+# Założenia:
+# • kod źródłowy Morfeusza jest w MORFEUSZ_SRC
+# • słowniki są już skompilowane w katalogu DICT_DIR
+# • kompilacja odbędzie się w katalogu BUILD_DIR (który zostanie skasowany i utworzony)
+# • wyniki zostaną umieszczone w TARGET_DIR
 
-set -e -o pipefail
+#set -ex -o pipefail
+set -x
 
-if [ "$#" -ne 4 ]; then
-    echo "Must provide exactly 4 arguments: <CROSSMORFEUSZ_ROOT> <INPUT_DICTIONARIES> <DEFAULT_DICT_NAME> <DICT_VERSION>"
+if [ "$#" -ne 3 ]; then
+    echo "Expected arguments: ‹DICT_NAME› ‹DICT_VERSION› ‹64/32›"
     exit 1
 fi
 
-export CROSSMORFEUSZ_ROOT="$1"
-export INPUT_DICTIONARIES="$2"
-export DEFAULT_DICT_NAME="$3"
-export DICT_VERSION="$4"
-export ANALYZER_DICTIONARY_CPP=`mktemp`.cpp
-export GENERATOR_DICTIONARY_CPP=`mktemp`.cpp
-export DICT_DIR=`mktemp -d`
+export DICT_NAME="$1"
+export DICT_VERSION="$2"
+export BITS=$3
 
-function buildDictionaries {
-    
-    INPUT_TAGSET=input/morfeusz-sgjp.tagset
-    SEGMENT_RULES_FILE=input/segmenty.dat
-    
-    python fsabuilder/morfeusz_builder \
-        --input-files="$INPUT_DICTIONARIES" \
-        --tagset-file="$INPUT_TAGSET" \
-        --segments-file="$SEGMENT_RULES_FILE" \
-        --analyzer-cpp="$ANALYZER_DICTIONARY_CPP" \
-        --generator-cpp="$GENERATOR_DICTIONARY_CPP" \
-        --dict="$DEFAULT_DICT_NAME" \
-        --dict-dir="$DICT_DIR"
-    
-    echo "DONE building dictionaries" >&2
-}
+
+export MORFEUSZ_SRC=`pwd`/Morfeusz
+export DICT_DIR=`pwd`/dicts
+export CROSSMORFEUSZ_ROOT=${HOME}/crosslibs
+export ANALYZER_DICTIONARY_CPP=$DICT_DIR/$DICT_NAME-a.cpp
+export GENERATOR_DICTIONARY_CPP=$DICT_DIR/$DICT_NAME-s.cpp
+
+
+export BUILD_ROOT=`pwd`/build/$1
+export TARGET_ROOT=`pwd`/target
+
+
 
 function build {
     set -e -o pipefail
     os=$1
-    arch=$2
+    bity=$2
     embedded=$3
     python_ver=$4
-    shift
-    shift
-    shift
-    shift
+    shift 4
     targets=$@
+
+    if [ "$bity" = "64" ]; then
+	arch=amd64
+    else
+	arch=i386
+    fi
+
+    toolchain=$MORFEUSZ_SRC/toolchains/Toolchain-$os-$arch.cmake
+
+    buildDir=$BUILD_ROOT/$os-$bity-$embedded
+    targetDir=$TARGET_ROOT/$os/$bity
+
+#    rm -rf $buildDir || true
+    mkdir -p $buildDir
+
     
-    srcDir=`pwd`
-    buildDir=buildall/$os-$arch-$embedded
-    targetDir=$srcDir/target
-    toolchain=$srcDir/toolchains/Toolchain-$os-$arch.cmake
-    
-    echo "Will use $toolchain toolchain"
+#    echo "Will use $toolchain toolchain"
 
     # rm -rf $buildDir
     #~ rm -rf $targetDir
-    rm -f $buildDir/CMakeCache.txt
     mkdir -p $buildDir
+    rm -f $buildDir/CMakeCache.txt
     mkdir -p $targetDir
     cd $buildDir
     
@@ -69,64 +77,59 @@ function build {
             -D TARGET_DIR=$targetDir \
             -D ANALYZER_DICTIONARY_CPP=$ANALYZER_DICTIONARY_CPP \
             -D GENERATOR_DICTIONARY_CPP=$GENERATOR_DICTIONARY_CPP \
-            -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
+            -D DEFAULT_DICT_NAME=$DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
             -D EMBEDDED_DEFAULT_DICT=1 \
-            -D DICT_VERSION=$DICT_VERSION"
+            -D DICT_VERSION=$DICT_VERSION "
         if [ "$CPACK_GENERATOR" != "" ]
         then
             CMAKE_ARGS="$CMAKE_ARGS -D CPACK_GENERATOR=$CPACK_GENERATOR"
         fi
     else
-        echo "setting default ACL to prevent control-file-has-bad-permissions lintian error"
-        setfacl -R -d -m o::rx -m g::rx -m u::rwx .
+        # "setting default ACL to prevent control-file-has-bad-permissions lintian error"
+        #setfacl -R -d -m o::rx -m g::rx -m u::rwx .
         
         CMAKE_ARGS="-D CROSSMORFEUSZ_ROOT=$CROSSMORFEUSZ_ROOT \
             -D CMAKE_TOOLCHAIN_FILE=$toolchain \
             -D TARGET_DIR=$targetDir \
             -D DEFAULT_DICT_DIR=$DICT_DIR \
-            -D DEFAULT_DICT_NAME=$DEFAULT_DICT_NAME \
+            -D DEFAULT_DICT_NAME=$DICT_NAME \
             -D SKIP_DICTIONARY_BUILDING=1 \
             -D CPACK_GENERATOR=DEB \
-            -D DICT_VERSION=$DICT_VERSION"
+            -D DICT_VERSION=$DICT_VERSION "
     fi
     CMAKE_ARGS="$CMAKE_ARGS -D PY=$python_ver"
-    cmake $CMAKE_ARGS $srcDir 2>&1
-    echo "building $toolchain" >&2
-    make
+    cmake $CMAKE_ARGS $MORFEUSZ_SRC 2>&1
+    echo "building for $os-$arch" >&2
+#    make
     make $targets
 
-    for f in `find "$targetDir" -name "*-Linux-*.deb"`
-    do 
-        mv "$f" "`echo $f | sed -r 's/Linux-amd64.deb$/amd64.deb/' | sed -r 's/Linux-i386.deb/i386.deb/'`"
-    done
+    # for f in `find "$targetDir" -name "*-Linux-*.deb"`
+    # do 
+    #     mv "$f" "`echo $f | sed -r 's/Linux-amd64.deb$/amd64.deb/' | sed -r 's/Linux-i386.deb/i386.deb/'`"
+    # done
 
-    for f in `find "$targetDir" -name "*-Linux-*.egg"`
-    do 
-        mv "$f" "`echo $f | sed -r 's/Linux-amd64.egg$/linux-x86_64.egg/' | sed -r 's/Linux-i386.egg$/linux-i686.egg/'`"
-    done
+    # for f in `find "$targetDir" -name "*-Linux-*.egg"`
+    # do 
+    #     mv "$f" "`echo $f | sed -r 's/Linux-amd64.egg$/linux-x86_64.egg/' | sed -r 's/Linux-i386.egg$/linux-i686.egg/'`"
+    # done
 
-    if [ "$os" = Linux -a "$embedded" = false ]; then
-        "$srcDir/createDictionaryDeb.sh" "$DICT_DIR" "${DEFAULT_DICT_NAME}" "${DICT_VERSION}" "${targetDir}"
-    fi
-
-    cd "$srcDir"
 }
-
-function log {
-    os=$1
-    arch=$2
-    stdbuf -oL sed -e $"s/^/$os-$arch:\t/" | tee "log/$os-$arch.out"
-}
+export -f build
 
 function buildegg {
     os=$1
-    arch=$2
+    bity=$2
     embedded=$3
     python_ver=$4
 
-    srcDir=`pwd`
-    buildDir=buildall/$os-$arch-$embedded/morfeusz/wrappers/python${python_ver:0:1}
+    if [ "$bity" = "64" ]; then
+	arch=amd64
+    else
+	arch=i386
+    fi
+
+    buildDir=$BUILD_ROOT/$os-$bity-$embedded/morfeusz/wrappers/python${python_ver:0:1}
     if [[ "$python_ver" =~ 2.* ]]
     then
         eggName=morfeusz2-0.4.0-py2.7
@@ -182,14 +185,14 @@ function buildegg {
         fi
     fi
 
-    targetDir=$srcDir/target
-    echo "$srcDir"
-    echo "$buildDir"
-    echo "$eggDir"
-    echo "$pythonDir"
+    targetDir=$TARGET_ROOT/$os/$bity
+    echo "src_dir: $MORFEUSZ_SRC"
+    echo "python_build_dir: $buildDir"
+    echo "egg_dir: $eggDir"
+    echo "python_lib_dir: $pythonDir"
     if [ "$os-$arch" == "Windows-amd64" ]
     then
-        gcc_command="x86_64-w64-mingw32-gcc -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I$srcDir/morfeusz -I$buildDir/../../.. -I$pythonDir/include -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
+        gcc_command="x86_64-w64-mingw32-gcc -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I$MORFEUSZ_SRC/morfeusz -I$buildDir/../../.. -I$pythonDir/include -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
         echo "$gcc_command"
         eval $gcc_command
         gpp_command="x86_64-w64-mingw32-g++ -pthread -static-libgcc -static-libstdc++ -DMS_WIN64 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -Wl,-Bsymbolic-functions -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security $buildDir/swigPYTHON.o -L$buildDir/../.. -L$pythonDir/libs -lmorfeusz2 -l$pythonIncl -o $eggDir/_morfeusz2.pyd"
@@ -197,7 +200,7 @@ function buildegg {
         eval $gpp_command
     elif [ "$os-$arch" == "Windows-i386" ]
     then
-        gcc_command="i686-w64-mingw32-gcc -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I$srcDir/morfeusz -I$buildDir/../../.. -I$pythonDir/include -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
+        gcc_command="i686-w64-mingw32-gcc -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I$MORFEUSZ_SRC/morfeusz -I$buildDir/../../.. -I$pythonDir/include -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
         echo "$gcc_command"
         eval $gcc_command
         gpp_command="i686-w64-mingw32-g++ -pthread -static-libgcc -static-libstdc++ -DMS_WIN64 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -Wl,-Bsymbolic-functions -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security $buildDir/swigPYTHON.o -L$buildDir/../.. -L$pythonDir/libs -lmorfeusz2 -l$pythonIncl -o $eggDir/_morfeusz2.pyd"
@@ -205,7 +208,7 @@ function buildegg {
         eval $gpp_command
     elif [ "$os-$arch" == "Linux-i386" ]
     then
-        gcc_command="x86_64-linux-gnu-gcc -m32 -pthread -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -I$srcDir/morfeusz -I$buildDir/../../.. -I$pythonDir -I$pythonDir/.. -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
+        gcc_command="x86_64-linux-gnu-gcc -m32 -pthread -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -I$MORFEUSZ_SRC/morfeusz -I$buildDir/../../.. -I$pythonDir -I$pythonDir/.. -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
         echo "$gcc_command"
         eval $gcc_command
         gpp_command="x86_64-linux-gnu-g++ -m32 -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -specs=/usr/share/dpkg/no-pie-link.specs -Wl,-z,relro -Wl,-Bsymbolic-functions -Wl,-z,relro -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 $buildDir/swigPYTHON.o -L$buildDir/../.. -lmorfeusz2 -o $eggDir/_morfeusz2.so"
@@ -213,7 +216,7 @@ function buildegg {
         eval $gpp_command
     elif [ "$os-$arch" == "Darwin-amd64" ]
     then
-        gcc_command="/home/zil/crossmorfeusz/darwin64/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-gcc -std=c++98 -pthread -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -g -O2 -Wformat -D_FORTIFY_SOURCE=2 -fPIC -I$srcDir/morfeusz -I$buildDir/../../.. -I$pythonDir -I$pythonDir/.. -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
+        gcc_command="/home/zil/crossmorfeusz/darwin64/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-gcc -std=c++98 -pthread -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -g -O2 -Wformat -D_FORTIFY_SOURCE=2 -fPIC -I$MORFEUSZ_SRC/morfeusz -I$buildDir/../../.. -I$pythonDir -I$pythonDir/.. -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
         echo "$gcc_command"
         eval $gcc_command
         gpp_command="/home/zil/crossmorfeusz/darwin64/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-g++ -std=c++98 -Wall -O3 -DNDEBUG -dynamiclib -Wl,-headerpad_max_install_names -install_name _morfeusz2.so $buildDir/swigPYTHON.o -L$buildDir/../.. -L$pythonLib -lmorfeusz2 -l$pythonIncl -o $eggDir/_morfeusz2.so"
@@ -256,54 +259,56 @@ function buildegg {
     fi
 
 }
-
-export -f build
-export -f log
 export -f buildegg
 
-rm -rf log target buildall
-mkdir -p log buildall
+function log {
+    os=$1
+    arch=$2
+    stdbuf -oL sed -e $"s/^/$os-$arch:\t/" | tee -a "log/$os-$arch.out"
+}
+export -f log
 
-buildDictionaries 2>&1 | log All all
+##??? rm -rf log $BUILD_ROOT
+mkdir -p log 
 
-{
-    echo "build Linux amd64 true 2.7 package package-java package-python2 package-builder 2>&1 | log Linux-tgz2 amd64; \
-        build Linux amd64 true 3.0 package-python3 2>&1 | log Linux-tgz3 amd64"
-    echo "build Linux amd64 false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb 2>&1 | log Linux-deb amd64"
-    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 2.7 package package-java py2morfeusz 2>&1 | log Linux-tgz i386; \
-        buildegg Linux i386 true 2.7 2>&1 | log Linux i386; \
-        LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 3.0 py3morfeusz 2>&1 | log Linux-tgz i386; \
-        buildegg Linux i386 true 3.0 2>&1 | log Linux i386"
-    echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false 0 lib-deb bin-deb java-deb 2>&1 | log Linux-deb i386"
-    echo "build Windows amd64 true 2.7 package package-java py2morfeusz 2>&1 | log Windows amd64; \
-        buildegg Windows amd64 true 2.7 2>&1 | log Windows amd64; \
-        build Windows amd64 true 3.6 py3morfeusz 2>&1 | log Windows amd64; \
-        buildegg Windows amd64 true 3.6 2>&1 | log Windows amd64; \
-        build Windows amd64 true 3.7 py3morfeusz 2>&1 | log Windows amd64; \
-        buildegg Windows amd64 true 3.7 2>&1 | log Windows amd64"
-    echo "build Windows i386 true 2.7 package package-java py2morfeusz 2>&1 | log Windows i386; \
-        buildegg Windows i386 true 2.7 2>&1 | log Windows i386; \
-        build Windows i386 true 3.0 py3morfeusz 2>&1 | log Windows i386 \
-        buildegg Windows i386 true 3.0 2>&1 | log Windows i386"
-    echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
-        buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
-        build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
-        buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
-    echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
-    echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
+build Windows $BITS true 2.7 package package-java py2morfeusz 2>&1 | log Windows $BITS
+build Windows $BITS true 2.7 gui-installer 2>&1 | log Windows $BITS
+buildegg Windows $BITS true 2.7 2>&1 | log Windows $BITS
+build Windows $BITS true 3.6 py3morfeusz 2>&1 | log Windows $BITS
+buildegg Windows $BITS true 3.6 2>&1 | log Windows $BITS 
+build Windows $BITS true 3.7 py3morfeusz 2>&1 | log Windows $BITS
+buildegg Windows $BITS true 3.7 2>&1 | log Windows $BITS
 
-} | xargs -n1 -P6 -d$'\n' bash -c
+# build Windows $BITS true 2.7 package package-java py2morfeusz 2>&1 | log Windows $BITS
+# buildegg Windows $BITS true 2.7 2>&1 | log Windows $BITS
+# build Windows $BITS true 3.0 py3morfeusz 2>&1 | log Windows $BITS 
+# buildegg Windows $BITS true 3.0 2>&1 | log Windows $BITS
 
-srcDir=`pwd`
-targetDir=$srcDir/target
 
-for f in `find "$targetDir" -name "*-py3.6-linux-x86_64.egg"`
-do 
-    cp -f "$f" "`echo $f | sed -r 's/py3.6/py3.7/'`"
-done
+# {
+#     echo "build Linux amd64 true 2.7 package package-java package-python2 package-builder 2>&1 | log Linux-tgz2 amd64; \
+#         build Linux amd64 true 3.0 package-python3 2>&1 | log Linux-tgz3 amd64"
+#     echo "build Linux amd64 false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb 2>&1 | log Linux-deb amd64"
+#     echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 2.7 package package-java py2morfeusz 2>&1 | log Linux-tgz i386; \
+#         buildegg Linux i386 true 2.7 2>&1 | log Linux i386; \
+#         LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 3.0 py3morfeusz 2>&1 | log Linux-tgz i386; \
+#         buildegg Linux i386 true 3.0 2>&1 | log Linux i386"
+#     echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false 0 lib-deb bin-deb java-deb 2>&1 | log Linux-deb i386"
+#     echo "build Windows amd64 true 2.7 package package-java py2morfeusz 2>&1 | log Windows amd64; \
+#         buildegg Windows amd64 true 2.7 2>&1 | log Windows amd64; \
+#         build Windows amd64 true 3.6 py3morfeusz 2>&1 | log Windows amd64; \
+#         buildegg Windows amd64 true 3.6 2>&1 | log Windows amd64; \
+#         build Windows amd64 true 3.7 py3morfeusz 2>&1 | log Windows amd64; \
+#         buildegg Windows amd64 true 3.7 2>&1 | log Windows amd64"
+#     echo "build Windows i386 true 2.7 package package-java py2morfeusz 2>&1 | log Windows i386; \
+#         buildegg Windows i386 true 2.7 2>&1 | log Windows i386; \
+#         build Windows i386 true 3.0 py3morfeusz 2>&1 | log Windows i386 \
+#         buildegg Windows i386 true 3.0 2>&1 | log Windows i386"
+#     echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
+#         buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
+#         build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
+#         buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
+#     echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
+#     echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
 
-for f in `find "$targetDir" -name "*-py3.5-linux-x86_64.egg"`
-do 
-    cp -f "$f" "`echo $f | sed -r 's/py3.5/py3.6/'`"
-    cp -f "$f" "`echo $f | sed -r 's/py3.5/py3.7/'`"
-done
+# } | xargs -n1 -P6 -d$'\n' bash -c
