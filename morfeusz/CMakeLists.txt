@@ -16,14 +16,14 @@ else ()
         endif ()
         add_custom_command (
             OUTPUT "${ANALYZER_DICTIONARY_CPP}" "${GENERATOR_DICTIONARY_CPP}"
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --analyzer-cpp="${ANALYZER_DICTIONARY_CPP}" --generator-cpp="${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" ${ADDITIONAL_CMD}
+            COMMAND python3 ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --analyzer-cpp="${ANALYZER_DICTIONARY_CPP}" --generator-cpp="${GENERATOR_DICTIONARY_CPP}" --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}" ${ADDITIONAL_CMD}
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary C++ files"
         )
     else ()
         add_custom_command (
             OUTPUT "${ANALYZER_DICTIONARY_FILE}" "${GENERATOR_DICTIONARY_FILE}" 
-            COMMAND python ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --dict-dir="${DEFAULT_DICT_DIR}"  --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
+            COMMAND python3 ${PROJECT_SOURCE_DIR}/fsabuilder/morfeusz_builder --input-files="${INPUT_DICTIONARIES}" --dict="${DEFAULT_DICT_NAME}" --dict-dir="${DEFAULT_DICT_DIR}"  --tagset-file="${INPUT_TAGSET}" --segments-file="${SEGMENT_RULES_FILE}"
             DEPENDS "${INPUT_DICTIONARY}"
             COMMENT "Building default dictionary files"
         )

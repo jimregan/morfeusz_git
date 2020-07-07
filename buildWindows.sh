@@ -132,8 +132,6 @@ function buildegg {
     buildDir=$BUILD_ROOT/$os-$bity-$embedded/morfeusz/wrappers/python${python_ver:0:1}
     if [[ "$python_ver" =~ 2.* ]]
     then
-        eggName=morfeusz2-0.4.0-py2.7
-        eggDir=$buildDir/$eggName
         pythonIncl=python27
         if [ "$os-$arch" == "Windows-amd64" ]
         then
@@ -156,19 +154,13 @@ function buildegg {
             if [ "$python_ver" == "3.6" ]
             then
                 pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python36
-                eggName=morfeusz2-0.4.0-py3.6
-                eggDir=$buildDir/$eggName
                 pythonIncl=python36
             elif [ "$python_ver" == "3.7" ]
             then
                 pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python37
-                eggName=morfeusz2-0.4.0-py3.7
-                eggDir=$buildDir/$eggName
                 pythonIncl=python37
             fi
         else
-            eggName=morfeusz2-0.4.0-py3.6
-            eggDir=$buildDir/$eggName
             pythonIncl=python36
             if [ "$os-$arch" == "Windows-i386" ]
             then
@@ -186,8 +178,19 @@ function buildegg {
     fi
 
     targetDir=$TARGET_ROOT/$os/$bity
+    echo 'pwd:' `pwd`
+
+    cd $buildDir
+    eggName=$(echo morfeusz2-*-py$python_ver)
+    if [[ ! -d $eggName  ]]; then
+	echo Egg directory $eggName not found in $buildDir!!!
+	exit 1
+    fi
+    eggDir=$buildDir/$eggName
+
     echo "src_dir: $MORFEUSZ_SRC"
     echo "python_build_dir: $buildDir"
+    echo "egg_name: $eggName"
     echo "egg_dir: $eggDir"
     echo "python_lib_dir: $pythonDir"
     if [ "$os-$arch" == "Windows-amd64" ]
@@ -236,6 +239,7 @@ function buildegg {
         cp $buildDir/../../libmorfeusz2.dylib $eggDir/
     fi
 
+    cp $buildDir/morfeusz2.egg-info/PKG-INFO $eggDir/EGG-INFO/
     cp $buildDir/morfeusz2.py $eggDir/
     if [ -d "$buildDir/$eggName" ]; then
         cd $buildDir/$eggName
@@ -271,44 +275,11 @@ export -f log
 ##??? rm -rf log $BUILD_ROOT
 mkdir -p log 
 
-build Windows $BITS true 2.7 package package-java py2morfeusz 2>&1 | log Windows $BITS
-build Windows $BITS true 2.7 gui-installer 2>&1 | log Windows $BITS
+build Windows $BITS true 2.7 package package-java gui-installer 2>&1 | log Windows $BITS
+build Windows $BITS true 2.7 package-python2-egg-info 2>&1 | log Windows $BITS
 buildegg Windows $BITS true 2.7 2>&1 | log Windows $BITS
-build Windows $BITS true 3.6 py3morfeusz 2>&1 | log Windows $BITS
+build Windows $BITS true 3.6 package-python3-egg-info 2>&1 | log Windows $BITS
 buildegg Windows $BITS true 3.6 2>&1 | log Windows $BITS 
-build Windows $BITS true 3.7 py3morfeusz 2>&1 | log Windows $BITS
+build Windows $BITS true 3.7 package-python3-egg-info 2>&1 | log Windows $BITS
 buildegg Windows $BITS true 3.7 2>&1 | log Windows $BITS
 
-# build Windows $BITS true 2.7 package package-java py2morfeusz 2>&1 | log Windows $BITS
-# buildegg Windows $BITS true 2.7 2>&1 | log Windows $BITS
-# build Windows $BITS true 3.0 py3morfeusz 2>&1 | log Windows $BITS 
-# buildegg Windows $BITS true 3.0 2>&1 | log Windows $BITS
-
-
-# {
-#     echo "build Linux amd64 true 2.7 package package-java package-python2 package-builder 2>&1 | log Linux-tgz2 amd64; \
-#         build Linux amd64 true 3.0 package-python3 2>&1 | log Linux-tgz3 amd64"
-#     echo "build Linux amd64 false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb 2>&1 | log Linux-deb amd64"
-#     echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 2.7 package package-java py2morfeusz 2>&1 | log Linux-tgz i386; \
-#         buildegg Linux i386 true 2.7 2>&1 | log Linux i386; \
-#         LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 3.0 py3morfeusz 2>&1 | log Linux-tgz i386; \
-#         buildegg Linux i386 true 3.0 2>&1 | log Linux i386"
-#     echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false 0 lib-deb bin-deb java-deb 2>&1 | log Linux-deb i386"
-#     echo "build Windows amd64 true 2.7 package package-java py2morfeusz 2>&1 | log Windows amd64; \
-#         buildegg Windows amd64 true 2.7 2>&1 | log Windows amd64; \
-#         build Windows amd64 true 3.6 py3morfeusz 2>&1 | log Windows amd64; \
-#         buildegg Windows amd64 true 3.6 2>&1 | log Windows amd64; \
-#         build Windows amd64 true 3.7 py3morfeusz 2>&1 | log Windows amd64; \
-#         buildegg Windows amd64 true 3.7 2>&1 | log Windows amd64"
-#     echo "build Windows i386 true 2.7 package package-java py2morfeusz 2>&1 | log Windows i386; \
-#         buildegg Windows i386 true 2.7 2>&1 | log Windows i386; \
-#         build Windows i386 true 3.0 py3morfeusz 2>&1 | log Windows i386 \
-#         buildegg Windows i386 true 3.0 2>&1 | log Windows i386"
-#     echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
-#         buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
-#         build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
-#         buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
-#     echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
-#     echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
-
-# } | xargs -n1 -P6 -d$'\n' bash -c

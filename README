@@ -5,7 +5,7 @@ Compilation - prerequisites
 
 This tutorial assumes that build process is performed on Linux 64bit machine (preferably from Debian/Ubuntu family).
 
-sudo apt-get install cmake zip build-essential autotools-dev python python-setuptools python-stdeb python-pip python-all-dev python-pyparsing devscripts libcppunit-dev acl
+sudo apt-get install cmake zip build-essential autotools-dev python python-setuptools python-stdeb python-pip python-all-dev python3-pyparsing devscripts libcppunit-dev acl
 sudo pip install pyinstaller
 
 For cross compiling:
@@ -232,10 +232,6 @@ crossmorfeusz
   linux32
     jdk1.7.0_45
     python  
-
-Notes on Mac OS X cross-compilation:
-------------------
-Very special, very magic and ancient version of gcc OSX compiler is required (Apple is evil and does not support cross-compilation anymore). The best way to obtain it is to personally ask the authors (michal.lenart@ipipan.waw.pl, wolinski@ipipan.waw.pl). Once you get it, the compiler directory (x86_64-apple-darwin9) must be copied into /usr directory.
 
 
 buildAll.sh script:

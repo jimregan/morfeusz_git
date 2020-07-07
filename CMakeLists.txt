@@ -160,8 +160,8 @@ endif ()
 
 # general
 set (CPACK_PACKAGE_FILE_NAME "morfeusz2-${Morfeusz_VERSION}-${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}")
-set (CPACK_PACKAGE_VENDOR "Michał Lenart")
-set (CPACK_PACKAGE_CONTACT "michal.lenart@ipipan.waw.pl")
+set (CPACK_PACKAGE_VENDOR "Morfeusz SGJP Team")
+set (CPACK_PACKAGE_CONTACT "morfeusz@ipipan.waw.pl")
 set (CPACK_DEBIAN_PACKAGE_VERSION "${Morfeusz_VERSION}")
 if (BUILT_ON)
   set (CPACK_DEBIAN_PACKAGE_RELEASE "${BUILT_ON}")

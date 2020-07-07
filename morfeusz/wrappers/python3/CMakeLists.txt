@@ -6,8 +6,7 @@ set(Python_ADDITIONAL_VERSIONS 3.4)
 FIND_PACKAGE (PythonLibs ${PY} REQUIRED)
 #~ INCLUDE (${SWIG_USE_FILE})
 
-set (PY3MORFEUSZ_VERSION "0.4.0")
-
+set (PY3MORFEUSZ_VERSION "${Morfeusz_LIB_VERSION}")
 # SWIG Java
 INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
 INCLUDE_DIRECTORIES (../..)
@@ -31,8 +30,9 @@ set (OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build")
 
 configure_file (${SETUP_PY_IN} ${SETUP_PY})
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/morfeusz2-0.4.0-py3.6" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/morfeusz2-0.4.0-py3.7" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+set (EGG_NAME "morfeusz2-${PY3MORFEUSZ_VERSION}-py${PY}")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${EGG_NAME}")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/EGG-INFO" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${EGG_NAME}/")
 
 add_custom_target (generate_python3_setup_file
         DEPENDS ${SETUP_PY})
@@ -53,11 +53,16 @@ if (UNIX)
         COMMAND python3 ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX}
         DEPENDS py3morfeusz
     )
-    add_custom_target (package-python3-bin
-        COMMAND python3 ${SETUP_PY} bdist_egg -d "${TARGET_DIR}" --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
+    add_custom_target (package-python3-egg
+      COMMAND python3 ${SETUP_PY} bdist_egg -d "${TARGET_DIR}" --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
         DEPENDS py3morfeusz
     )
-    set (PACKAGE_DEPENDS "package-python3-bin")
+    add_custom_target (package-python3-whl
+      COMMAND python3 ${SETUP_PY} bdist_wheel -d "${TARGET_DIR}"
+      #--plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
+        DEPENDS py3morfeusz
+    )
+    set (PACKAGE_DEPENDS package-python3-egg package-python3-whl)
     
     if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
       if (BUILT_ON)
@@ -83,7 +88,17 @@ if (UNIX)
         list (APPEND PACKAGE_DEPENDS package-python3-deb)
     endif ()
     add_custom_target (package-python3
-        DEPENDS py3morfeusz ${PACKAGE_DEPENDS})
+      DEPENDS py3morfeusz ${PACKAGE_DEPENDS})
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
+    add_custom_target (package-python3-egg-info
+      COMMAND python3 ${SETUP_PY} egg_info
+      DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz
+    )
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_CROSSCOMPILING)
+    add_custom_target (package-python3-egg-info
+      COMMAND python3 ${SETUP_PY} egg_info
+      DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz
+    )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND NOT CMAKE_CROSSCOMPILING)
     add_custom_target (package-python3-win-installer
         COMMAND python3 ${SETUP_PY} bdist_wininst -d ${TARGET_DIR} --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"

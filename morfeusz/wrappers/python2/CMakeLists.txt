@@ -5,8 +5,7 @@
 FIND_PACKAGE (PythonLibs ${PY} EXACT)
 #~ INCLUDE (${SWIG_USE_FILE})
 
-set (PY2MORFEUSZ_VERSION "0.4.0")
-#set (PY2MORFEUSZ_VERSION "${Morfeusz_VERSION}")
+set (PY2MORFEUSZ_VERSION "${Morfeusz_LIB_VERSION}")
 
 # SWIG Java
 INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
@@ -31,7 +30,9 @@ set (OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build")
 
 configure_file (${SETUP_PY_IN} ${SETUP_PY})
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/morfeusz2-0.4.0-py2.7" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+set (EGG_NAME "morfeusz2-${PY2MORFEUSZ_VERSION}-py${PY}")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${EGG_NAME}")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/EGG-INFO" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${EGG_NAME}/")
 
 add_custom_target (generate_python2_setup_file
         DEPENDS ${SETUP_PY})
@@ -52,11 +53,15 @@ if (UNIX)
         COMMAND python2 ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX}
         DEPENDS py2morfeusz
     )
-    add_custom_target (package-python2-bin
+    add_custom_target (package-python2-egg
         COMMAND python2 ${SETUP_PY} bdist_egg -d "${TARGET_DIR}" --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
         DEPENDS py2morfeusz
     )
-    set (PACKAGE_DEPENDS "package-python2-bin")
+    add_custom_target (package-python2-whl
+        COMMAND python2 ${SETUP_PY} bdist_wheel -d "${TARGET_DIR}"
+        DEPENDS py2morfeusz
+    )
+    set (PACKAGE_DEPENDS "package-python2-egg" "package-python2-whl")
     
     if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
       if (BUILT_ON)
@@ -72,7 +77,6 @@ if (UNIX)
       endif ()
         add_custom_target (package-python2-deb-build
             COMMAND debuild -us -uc
-#            WORKING_DIRECTORY deb_dist/morfeusz2-${Morfeusz_DEB_VERSION}
             WORKING_DIRECTORY deb_dist/morfeusz2-${PY2MORFEUSZ_VERSION}
             DEPENDS package-python2-deb-sdist
         )
@@ -84,6 +88,16 @@ if (UNIX)
     endif ()
     add_custom_target (package-python2
         DEPENDS py2morfeusz ${PACKAGE_DEPENDS})
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
+    add_custom_target (package-python2-egg-info
+      COMMAND python ${SETUP_PY} egg_info
+      DEPENDS generate_python2_wrapper generate_python2_setup_file libmorfeusz
+    )
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_CROSSCOMPILING)
+    add_custom_target (package-python2-egg-info
+      COMMAND python ${SETUP_PY} egg_info
+      DEPENDS generate_python2_wrapper generate_python2_setup_file libmorfeusz
+    )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND NOT CMAKE_CROSSCOMPILING)
     add_custom_target (package-python2-win-egg
         COMMAND python2 ${SETUP_PY} bdist_egg -d ${TARGET_DIR} --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
