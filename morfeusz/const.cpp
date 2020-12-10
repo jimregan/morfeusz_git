@@ -14,7 +14,7 @@ namespace morfeusz {
     extern const char FILESYSTEM_PATH_SEPARATOR = '/';
 
     extern const std::string COPYRIGHT_TEXT = 
-    "Copyright © 2014–2019 by Institute of Computer Science, Polish Academy of\n\
+    "Copyright © 2014–2020 by Institute of Computer Science, Polish Academy of\n\
 Science\n\
 \n\
 All rights reserved.\n\

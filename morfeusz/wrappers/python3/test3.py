@@ -12,24 +12,24 @@ class TestSequenceFunctions(unittest.TestCase):
         self.morfeusz = morfeusz2.Morfeusz()
 
     def testAnalyzeAsList(self):
-        res = self.morfeusz.analyse("Aaaa żżżż");
-        self.assertEquals(2, len(res));
-        self.assertEquals(u"Aaaa", res[0].orth);
-        self.assertEquals(u"żżżż", res[1].orth);
+        res = self.morfeusz.analyse("Aaaa żżżż")
+        self.assertEquals(2, len(res))
+        self.assertEquals(u"Aaaa", res[0].orth)
+        self.assertEquals(u"żżżż", res[1].orth)
         try:
-            res[2];
-            fail();
+            res[2]
+            self.fail()
         except IndexError:
             pass
     
     def testAnalyzeAsIterator(self):
-        res = list(self.morfeusz.analyse_iter("Aaaa żżżż"));
-        self.assertEquals(2, len(res));
-        self.assertEquals(u"Aaaa", res[0].orth);
-        self.assertEquals(u"żżżż", res[1].orth);
+        res = list(self.morfeusz.analyse_iter("Aaaa żżżż"))
+        self.assertEquals(2, len(res))
+        self.assertEquals(u"Aaaa", res[0].orth)
+        self.assertEquals(u"żżżż", res[1].orth)
         try:
-            res[2];
-            fail();
+            res[2]
+            self.fail()
         except IndexError:
             pass
             

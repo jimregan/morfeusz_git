@@ -103,17 +103,6 @@ function build {
     echo "building for $os-$arch ($BUILD_ENV)" >&2
 #    make
     make $targets
-
-    # for f in `find "$targetDir" -name "*-Linux-*.deb"`
-    # do 
-    #     mv "$f" "`echo $f | sed -r 's/Linux-amd64.deb$/amd64.deb/' | sed -r 's/Linux-i386.deb/i386.deb/'`"
-    # done
-
-    # for f in `find "$targetDir" -name "*-Linux-*.egg"`
-    # do 
-    #     mv "$f" "`echo $f | sed -r 's/Linux-amd64.egg$/linux-x86_64.egg/' | sed -r 's/Linux-i386.egg$/linux-i686.egg/'`"
-    # done
-
 }
 export -f build
 
@@ -127,35 +116,23 @@ export -f log
 ##??? rm -rf log $BUILD_ROOT
 mkdir -p log 
 
+# Pakiety z wkompilowanym słownikiem i niewrażliwe na kwestię słownika:
 build Linux $BITS true 2.7 package package-java gui-tgz package-python2 2>&1 | log Linux-tgz2 $BITS;
 build Linux $BITS true 3.0 package-python3 package-builder 2>&1 | log Linux-tgz3 $BITS
+
+# Kompilujemy dodatkowe wheele w środowiskach wirutalnych:
+(
+    cd $BUILD_ROOT/Linux-$BUILD_ENV-$BITS-true
+    if [ -d ~/env/ ]; then
+	for pyenv in ~/env/* ; do
+	    source $pyenv/bin/activate
+	    make package-python3-whl
+	    python --version
+	    deactivate
+	done
+    fi
+) | log Linux-whl $BITS
+
+# Pakiety debianowe bez wkompilowanego słownika:
 build Linux $BITS false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb gui-deb 2>&1 | log Linux-deb $BITS
 
-
-# {
-#     echo "build Linux amd64 true 2.7 package package-java package-python2 package-builder 2>&1 | log Linux-tgz2 amd64; \
-#         build Linux amd64 true 3.0 package-python3 2>&1 | log Linux-tgz3 amd64"
-#     echo "build Linux amd64 false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb 2>&1 | log Linux-deb amd64"
-#     echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 2.7 package package-java py2morfeusz 2>&1 | log Linux-tgz i386; \
-#         buildegg Linux i386 true 2.7 2>&1 | log Linux i386; \
-#         LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 true 3.0 py3morfeusz 2>&1 | log Linux-tgz i386; \
-#         buildegg Linux i386 true 3.0 2>&1 | log Linux i386"
-#     echo "LDFLAGS=-m32;CFLAGS=-m32;CXXFLAGS=-m32 build Linux i386 false 0 lib-deb bin-deb java-deb 2>&1 | log Linux-deb i386"
-#     echo "build Windows amd64 true 2.7 package package-java py2morfeusz 2>&1 | log Windows amd64; \
-#         buildegg Windows amd64 true 2.7 2>&1 | log Windows amd64; \
-#         build Windows amd64 true 3.6 py3morfeusz 2>&1 | log Windows amd64; \
-#         buildegg Windows amd64 true 3.6 2>&1 | log Windows amd64; \
-#         build Windows amd64 true 3.7 py3morfeusz 2>&1 | log Windows amd64; \
-#         buildegg Windows amd64 true 3.7 2>&1 | log Windows amd64"
-#     echo "build Windows i386 true 2.7 package package-java py2morfeusz 2>&1 | log Windows i386; \
-#         buildegg Windows i386 true 2.7 2>&1 | log Windows i386; \
-#         build Windows i386 true 3.0 py3morfeusz 2>&1 | log Windows i386 \
-#         buildegg Windows i386 true 3.0 2>&1 | log Windows i386"
-#     echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64; \
-#         buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64; \
-#         build Darwin amd64 true 3 py3morfeusz 2>&1 | log Darwin amd64; \
-#         buildegg Darwin amd64 true 3 2>&1 | log Darwin amd64"
-#     echo "build Darwin amd64 true 2 package package-java py2morfeusz 2>&1 | log Darwin amd64"
-#     echo "buildegg Darwin amd64 true 2 2>&1 | log Darwin amd64"
-
-# } | xargs -n1 -P6 -d$'\n' bash -c
