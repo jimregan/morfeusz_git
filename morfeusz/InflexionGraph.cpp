@@ -121,7 +121,7 @@ static bool containsEqualEdge(const vector<InflexionGraph::Edge>& edges, const I
     for (unsigned int i = 0; i < edges.size(); i++) {
         const InflexionGraph::Edge& e1 = edges[i];
         if (e1.chunk.textStartPtr == e.chunk.textStartPtr
-                && e1.chunk.textStartPtr == e.chunk.textStartPtr
+	        && e1.chunk.textNoPrefixesStartPtr == e.chunk.textNoPrefixesStartPtr
                 && e1.chunk.textEndPtr == e.chunk.textEndPtr
                 && e1.chunk.segmentType == e.chunk.segmentType
                 && e1.nextNode == e.nextNode
