@@ -166,7 +166,7 @@ class PolimorfConverter4Generator(object):
                     homonymId = ''
                     if ':' in base:
                         assumedBase, assumedHomonymId = base.split(':', 1)
-                        if assumedBase != '' and assumedHomonymId != '' and assumedHomonymId.isalnum():
+                        if assumedBase != '' and assumedHomonymId != '':
                             base, homonymId = assumedBase, assumedHomonymId
                     tagnum = self.tagset.getTagnum4Tag(tag)
                     namenum = self.namesMap[name]
