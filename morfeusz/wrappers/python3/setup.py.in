@@ -2,10 +2,16 @@
 from setuptools import setup, Extension
 
 morfeusz2 = Extension('_morfeusz2',
-                    libraries=['morfeusz2'],
-                    library_dirs=['${CMAKE_CURRENT_BINARY_DIR}/../..'],
-                    include_dirs=['${CMAKE_CURRENT_SOURCE_DIR}/../..', '${PROJECT_BINARY_DIR}'],
-                    sources=['${SWIG_PYTHON_OUTFILE_CXX}'])
+                      libraries=['morfeusz2'],
+                      library_dirs=['${CMAKE_CURRENT_BINARY_DIR}/../..'],
+                      include_dirs=['${CMAKE_CURRENT_SOURCE_DIR}/../..',
+                                    '${PROJECT_BINARY_DIR}'],
+                      sources=['${SWIG_PYTHON_OUTFILE_CXX}'],
+                      #
+                      # The .so name will include curent ABI number
+                      # (abi3) instead of cp38-cp38-linux_x86_64 (thus
+                      # can be used by multiple versions of Python3):
+                      py_limited_api=True)
 
 if __name__ == '__main__':
     setup(name='morfeusz2',
@@ -13,6 +19,6 @@ if __name__ == '__main__':
           author_email='${CPACK_PACKAGE_CONTACT}',
           description='Python3 bindings for Morfeusz',
           version='${PY3MORFEUSZ_VERSION}',
-          package_dir={ '': '${CMAKE_CURRENT_BINARY_DIR}'},
-          py_modules = ['morfeusz2'],
-          ext_modules = [morfeusz2])
+          package_dir={'': '${CMAKE_CURRENT_BINARY_DIR}'},
+          py_modules=['morfeusz2'],
+          ext_modules=[morfeusz2])
