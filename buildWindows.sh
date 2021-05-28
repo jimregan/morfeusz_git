@@ -151,15 +151,8 @@ function buildegg {
     else
         if [ "$os-$arch" == "Windows-amd64" ]
         then
-            if [ "$python_ver" == "3.6" ]
-            then
-                pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python36
-                pythonIncl=python36
-            elif [ "$python_ver" == "3.7" ]
-            then
-                pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python37
-                pythonIncl=python37
-            fi
+            pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python${python_ver//./}
+            pythonIncl=python${python_ver//./}
         else
             pythonIncl=python36
             if [ "$os-$arch" == "Windows-i386" ]
@@ -282,4 +275,8 @@ build Windows $BITS true 3.6 package-python3-egg-info 2>&1 | log Windows $BITS
 buildegg Windows $BITS true 3.6 2>&1 | log Windows $BITS 
 build Windows $BITS true 3.7 package-python3-egg-info 2>&1 | log Windows $BITS
 buildegg Windows $BITS true 3.7 2>&1 | log Windows $BITS
+build Windows $BITS true 3.8 package-python3-egg-info 2>&1 | log Windows $BITS
+buildegg Windows $BITS true 3.8 2>&1 | log Windows $BITS
+build Windows $BITS true 3.9 package-python3-egg-info 2>&1 | log Windows $BITS
+buildegg Windows $BITS true 3.9 2>&1 | log Windows $BITS
 
