@@ -6,7 +6,7 @@
 # • kod źródłowy Morfeusza jest w MORFEUSZ_SRC
 # • słowniki są już skompilowane w katalogu DICT_DIR
 # • kompilacja odbędzie się w katalogu BUILD_DIR (który zostanie skasowany i utworzony)
-# • wyniki zostaną umieszczone w TARGET_DIR
+# • wyniki zostaną umieszczone w podkatalogu TARGET_ROOT
 
 #set -ex -o pipefail
 set -x
@@ -157,7 +157,7 @@ function buildegg {
             pythonIncl=python36
             if [ "$os-$arch" == "Windows-i386" ]
             then
-                pythonDir=$CROSSMORFEUSZ_ROOT/windows32/Python36-32
+                pythonDir=$CROSSMORFEUSZ_ROOT/windows32/Python36
             elif [ "$os-$arch" == "Linux-i386" ]
             then
                 pythonDir=$CROSSMORFEUSZ_ROOT/linux32/python3/include/python3.4m
@@ -269,14 +269,14 @@ export -f log
 mkdir -p log 
 
 build Windows $BITS true 2.7 package package-java gui-installer 2>&1 | log Windows $BITS
-build Windows $BITS true 2.7 package-python2-egg-info 2>&1 | log Windows $BITS
+build Windows $BITS true 2.7 package-python2-fatwhl package-python2-egg-info 2>&1 | log Windows $BITS
 buildegg Windows $BITS true 2.7 2>&1 | log Windows $BITS
-build Windows $BITS true 3.6 package-python3-egg-info 2>&1 | log Windows $BITS
-buildegg Windows $BITS true 3.6 2>&1 | log Windows $BITS 
-build Windows $BITS true 3.7 package-python3-egg-info 2>&1 | log Windows $BITS
-buildegg Windows $BITS true 3.7 2>&1 | log Windows $BITS
-build Windows $BITS true 3.8 package-python3-egg-info 2>&1 | log Windows $BITS
-buildegg Windows $BITS true 3.8 2>&1 | log Windows $BITS
-build Windows $BITS true 3.9 package-python3-egg-info 2>&1 | log Windows $BITS
-buildegg Windows $BITS true 3.9 2>&1 | log Windows $BITS
 
+for py in 3.6 3.7 3.8 3.9 3.10
+do
+    if [ -d ${CROSSMORFEUSZ_ROOT}/windows${BITS}/Python${py//\./}/ ]; then
+	echo Building package for Python ${py}
+	build Windows $BITS true $py package-python3-fatwhl package-python3-egg-info 2>&1 | log Windows $BITS
+	buildegg Windows $BITS true $py 2>&1 | log Windows $BITS
+    fi
+done

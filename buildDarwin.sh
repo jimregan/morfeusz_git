@@ -164,7 +164,7 @@ function buildegg {
             pythonIncl=python36
             if [ "$os-$arch" == "Windows-i386" ]
             then
-                pythonDir=$CROSSMORFEUSZ_ROOT/windows32/Python36-32
+                pythonDir=$CROSSMORFEUSZ_ROOT/windows32/Python36
             elif [ "$os-$arch" == "Linux-i386" ]
             then
                 pythonDir=$CROSSMORFEUSZ_ROOT/linux32/python3/include/python3.4m

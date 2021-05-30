@@ -93,6 +93,26 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
       COMMAND python ${SETUP_PY} egg_info
       DEPENDS generate_python2_wrapper generate_python2_setup_file libmorfeusz
     )
+    add_custom_target (package-python2-dist-info
+      COMMAND python2 ${SETUP_PY} dist_info
+      DEPENDS generate_python2_setup_file generate_python2_wrapper
+      )
+    add_custom_target (build_pyd2
+      COMMAND echo Building pyd2 using ${CMAKE_CXX_COMPILER}
+      COMMAND ${CMAKE_CXX_COMPILER} -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I${PROJECT_SOURCE_DIR}/morfeusz -I${PYTHON_INCLUDE_DIRS} -c ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.cpp -o ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.o
+      COMMAND ${CMAKE_CXX_COMPILER} -pthread -static-libgcc -static-libstdc++ -DMS_WIN64 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.o -L${CMAKE_CURRENT_BINARY_DIR}/../.. -L${PYTHON_LIBRARIES} -lmorfeusz2 -lpython27 -o ${CMAKE_CURRENT_BINARY_DIR}/_morfeusz2.pyd
+      DEPENDS generate_python2_setup_file generate_python2_wrapper libmorfeusz
+      )
+    configure_file (WHEEL.win.in WHEEL)
+    add_custom_target (package-python2-fatwhl
+      COMMAND mkdir win-wheel
+      COMMAND mv morfeusz2.dist-info win-wheel/morfeusz2-${PY2MORFEUSZ_VERSION}.dist-info
+      COMMAND cp morfeusz2.py _morfeusz2.pyd ../../morfeusz2.dll win-wheel
+      COMMAND cp WHEEL win-wheel/morfeusz2-${PY2MORFEUSZ_VERSION}.dist-info/
+      COMMAND python2 -m wheel pack --build-number ${DICT_VERSION} --dest-dir ${TARGET_DIR} win-wheel/
+      COMMAND rm -r win-wheel
+      DEPENDS package-python2-dist-info build_pyd2
+      )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_CROSSCOMPILING)
     add_custom_target (package-python2-egg-info
       COMMAND python ${SETUP_PY} egg_info

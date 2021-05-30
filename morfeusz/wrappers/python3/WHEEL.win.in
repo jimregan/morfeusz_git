@@ -1,0 +1,3 @@
+Wheel-Version: 1.0
+Root-Is-Purelib: false
+Tag: cp${PY_SHORT}-cp${PY_SHORT}-win_${ARCHITECTURE}

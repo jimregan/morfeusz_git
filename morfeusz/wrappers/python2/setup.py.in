@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, Extension
 
-
-
 morfeusz2 = Extension('_morfeusz2',
                     libraries=['morfeusz2'],
                     library_dirs=['${CMAKE_CURRENT_BINARY_DIR}/../..'],
@@ -13,8 +11,15 @@ if __name__ == '__main__':
     setup(name='morfeusz2',
           author='${CPACK_PACKAGE_VENDOR}',
           author_email='${CPACK_PACKAGE_CONTACT}',
-          description='Python bindings for Morfeusz',
+          description='Python 2 bindings for Morfeusz 2',
+          long_description="""
+${CPACK_PACKAGE_DESCRIPTION_SUMMARY}
+
+${CPACK_PACKAGE_DESCRIPTION}
+""",
+          url='http://morfeusz.sgjp.pl',
+          license='http://morfeusz.sgjp.pl/doc/license/',
           version='${PY2MORFEUSZ_VERSION}',
-          package_dir={ '': '${CMAKE_CURRENT_BINARY_DIR}'},
-          py_modules = ['morfeusz2'],
-          ext_modules = [morfeusz2])
+          package_dir={'': '${CMAKE_CURRENT_BINARY_DIR}'},
+          py_modules=['morfeusz2'],
+          ext_modules=[morfeusz2])
