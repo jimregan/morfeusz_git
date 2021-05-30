@@ -101,7 +101,7 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
       DEPENDS generate_python3_setup_file generate_python3_wrapper
       )
     add_custom_target (build_pyd
-      COMMAND echo Building pyd using ${CMAKE_CXX_COMPILER}
+      COMMAND echo Building pyd using ${CMAKE_CXX_COMPILER} and ${PYTHON_LIBRARIES}
       COMMAND ${CMAKE_CXX_COMPILER} -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I${PROJECT_SOURCE_DIR}/morfeusz -I${PYTHON_INCLUDE_DIRS} -c ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.cpp -o ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.o
       COMMAND ${CMAKE_CXX_COMPILER} -pthread -static-libgcc -static-libstdc++ -DMS_WIN64 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.o -L${CMAKE_CURRENT_BINARY_DIR}/../.. -L${PYTHON_LIBRARIES} -lmorfeusz2 -lpython${PY_SHORT} -o ${CMAKE_CURRENT_BINARY_DIR}/_morfeusz2.pyd
       DEPENDS generate_python3_setup_file generate_python3_wrapper libmorfeusz

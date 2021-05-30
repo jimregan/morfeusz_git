@@ -2,7 +2,9 @@
 # SWIG
 #set(CMAKE_SWIG_OUTDIR swig)
 #~ FIND_PACKAGE (SWIG REQUIRED)
-FIND_PACKAGE (PythonLibs ${PY} EXACT)
+if (NOT PYTHON_INCLUDE_DIRS)
+  FIND_PACKAGE (PythonLibs ${PY} EXACT)
+endif ()
 #~ INCLUDE (${SWIG_USE_FILE})
 
 set (PY2MORFEUSZ_VERSION "${Morfeusz_LIB_VERSION}")
@@ -98,7 +100,7 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
       DEPENDS generate_python2_setup_file generate_python2_wrapper
       )
     add_custom_target (build_pyd2
-      COMMAND echo Building pyd2 using ${CMAKE_CXX_COMPILER}
+      COMMAND echo Building pyd2 using ${CMAKE_CXX_COMPILER} and ${PYTHON_LIBRARIES}
       COMMAND ${CMAKE_CXX_COMPILER} -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I${PROJECT_SOURCE_DIR}/morfeusz -I${PYTHON_INCLUDE_DIRS} -c ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.cpp -o ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.o
       COMMAND ${CMAKE_CXX_COMPILER} -pthread -static-libgcc -static-libstdc++ -DMS_WIN64 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security ${CMAKE_CURRENT_BINARY_DIR}/swigPYTHON.o -L${CMAKE_CURRENT_BINARY_DIR}/../.. -L${PYTHON_LIBRARIES} -lmorfeusz2 -lpython27 -o ${CMAKE_CURRENT_BINARY_DIR}/_morfeusz2.pyd
       DEPENDS generate_python2_setup_file generate_python2_wrapper libmorfeusz
@@ -109,7 +111,7 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
       COMMAND mv morfeusz2.dist-info win-wheel/morfeusz2-${PY2MORFEUSZ_VERSION}.dist-info
       COMMAND cp morfeusz2.py _morfeusz2.pyd ../../morfeusz2.dll win-wheel
       COMMAND cp WHEEL win-wheel/morfeusz2-${PY2MORFEUSZ_VERSION}.dist-info/
-      COMMAND python2 -m wheel pack --build-number ${DICT_VERSION} --dest-dir ${TARGET_DIR} win-wheel/
+      COMMAND python3 -m wheel pack --build-number ${DICT_VERSION} --dest-dir ${TARGET_DIR} win-wheel/
       COMMAND rm -r win-wheel
       DEPENDS package-python2-dist-info build_pyd2
       )
