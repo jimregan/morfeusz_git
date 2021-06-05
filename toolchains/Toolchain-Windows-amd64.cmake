@@ -6,6 +6,7 @@ set (CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
 set (CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
 
 set (CMAKE_SYSTEM_PROCESSOR "x86_64")
+set (PYTHON_PLATFORM_TAG "win_amd64")
 
 # here is the target environment located
 set (WIN64_ROOT ${CROSSMORFEUSZ_ROOT}/windows64)

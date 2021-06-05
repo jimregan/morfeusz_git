@@ -11,7 +11,7 @@ if __name__ == '__main__':
     setup(name='morfeusz2',
           author='${CPACK_PACKAGE_VENDOR}',
           author_email='${CPACK_PACKAGE_CONTACT}',
-          description='Python 2 bindings for Morfeusz 2',
+          description='Python bindings for Morfeusz 2',
           long_description="""
 ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}
 

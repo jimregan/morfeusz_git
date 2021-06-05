@@ -69,12 +69,12 @@ if (UNIX)
     if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
       if (BUILT_ON)
         add_custom_target (package-python3-deb-sdist
-          COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"  --debian-version ${BUILT_ON}
+          COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends3 libmorfeusz2 --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"  --debian-version ${BUILT_ON}
           DEPENDS py3morfeusz
           )
       else ()
         add_custom_target (package-python3-deb-sdist
-          COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"
+          COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --depends3 libmorfeusz2 --copyright-file "${PROJECT_SOURCE_DIR}/License.txt"
           DEPENDS py3morfeusz
           )
       endif ()
