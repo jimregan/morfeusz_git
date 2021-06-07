@@ -120,18 +120,18 @@ mkdir -p log
 build Linux $BITS true 2.7 package package-java gui-tgz package-python2 2>&1 | log Linux-tgz2 $BITS;
 build Linux $BITS true 3.0 package-python3 package-builder 2>&1 | log Linux-tgz3 $BITS
 
-# Kompilujemy dodatkowe wheele w środowiskach wirutalnych:
-(
-    cd $BUILD_ROOT/Linux-$BUILD_ENV-$BITS-true
-    if [ -d ~/env/ ]; then
-	for pyenv in ~/env/* ; do
-	    source $pyenv/bin/activate
-	    make package-python3-whl
-	    python --version
-	    deactivate
-	done
-    fi
-) | log Linux-whl $BITS
+# # Kompilujemy dodatkowe wheele w środowiskach wirutalnych:
+# (
+#     cd $BUILD_ROOT/Linux-$BUILD_ENV-$BITS-true
+#     if [ -d ~/env/ ]; then
+# 	for pyenv in ~/env/* ; do
+# 	    source $pyenv/bin/activate
+# 	    make package-python3-whl
+# 	    python --version
+# 	    deactivate
+# 	done
+#     fi
+# ) | log Linux-whl $BITS
 
 # Pakiety debianowe bez wkompilowanego słownika:
 build Linux $BITS false 0 lib-deb bin-deb dev-deb dictionary-deb java-deb gui-deb 2>&1 | log Linux-deb $BITS
