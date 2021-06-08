@@ -117,147 +117,6 @@ function build {
 }
 export -f build
 
-function buildegg {
-    os=$1
-    bity=$2
-    embedded=$3
-    python_ver=$4
-
-    if [ "$bity" = "64" ]; then
-	arch=amd64
-    else
-	arch=i386
-    fi
-
-    buildDir=$BUILD_ROOT/$os-$bity-$embedded/morfeusz/wrappers/python${python_ver:0:1}
-    if [[ "$python_ver" =~ 2.* ]]
-    then
-        pythonIncl=python27
-        if [ "$os-$arch" == "Windows-amd64" ]
-        then
-            pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python27
-        elif [ "$os-$arch" == "Windows-i386" ]
-        then
-            pythonDir=$CROSSMORFEUSZ_ROOT/windows32/Python27
-        elif [ "$os-$arch" == "Linux-i386" ]
-        then
-            pythonDir=$CROSSMORFEUSZ_ROOT/linux32/python/include/python2.7
-        elif [ "$os-$arch" == "Darwin-amd64" ]
-        then
-            pythonIncl=python2.7
-            pythonDir=$CROSSMORFEUSZ_ROOT/darwin64/Python.framework/Headers
-            pythonLib=$CROSSMORFEUSZ_ROOT/darwin64/Python.framework/Versions/2.7/lib
-        fi
-    else
-        if [ "$os-$arch" == "Windows-amd64" ]
-        then
-            pythonDir=$CROSSMORFEUSZ_ROOT/windows64/Python${python_ver//./}
-            pythonIncl=python${python_ver//./}
-        else
-            pythonIncl=python36
-            if [ "$os-$arch" == "Windows-i386" ]
-            then
-                pythonDir=$CROSSMORFEUSZ_ROOT/windows32/Python36
-            elif [ "$os-$arch" == "Linux-i386" ]
-            then
-                pythonDir=$CROSSMORFEUSZ_ROOT/linux32/python3/include/python3.4m
-            elif [ "$os-$arch" == "Darwin-amd64" ]
-            then
-                pythonIncl=python3.6
-                pythonDir=$CROSSMORFEUSZ_ROOT/darwin64/Python3.framework/Versions/3.6/Headers
-                pythonLib=$CROSSMORFEUSZ_ROOT/darwin64/Python3.framework/Versions/3.6/lib
-            fi
-        fi
-    fi
-
-    targetDir=$TARGET_ROOT/$os/$bity
-    echo 'pwd:' `pwd`
-
-    cd $buildDir
-    eggName=$(echo morfeusz2-*-py$python_ver)
-    if [[ ! -d $eggName  ]]; then
-	echo Egg directory $eggName not found in $buildDir!!!
-	exit 1
-    fi
-    eggDir=$buildDir/$eggName
-
-    echo "src_dir: $MORFEUSZ_SRC"
-    echo "python_build_dir: $buildDir"
-    echo "egg_name: $eggName"
-    echo "egg_dir: $eggDir"
-    echo "python_lib_dir: $pythonDir"
-    if [ "$os-$arch" == "Windows-amd64" ]
-    then
-        gcc_command="x86_64-w64-mingw32-gcc -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I$MORFEUSZ_SRC/morfeusz -I$buildDir/../../.. -I$pythonDir/include -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
-        echo "$gcc_command"
-        eval $gcc_command
-        gpp_command="x86_64-w64-mingw32-g++ -pthread -static-libgcc -static-libstdc++ -DMS_WIN64 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -Wl,-Bsymbolic-functions -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security $buildDir/swigPYTHON.o -L$buildDir/../.. -L$pythonDir/libs -lmorfeusz2 -l$pythonIncl -o $eggDir/_morfeusz2.pyd"
-        echo "$gpp_command"
-        eval $gpp_command
-    elif [ "$os-$arch" == "Windows-i386" ]
-    then
-        gcc_command="i686-w64-mingw32-gcc -pthread -static-libgcc -static-libstdc++ -std=c++98 -DNDEBUG -DMS_WIN64 -g -fwrapv -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -fPIC -I$MORFEUSZ_SRC/morfeusz -I$buildDir/../../.. -I$pythonDir/include -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
-        echo "$gcc_command"
-        eval $gcc_command
-        gpp_command="i686-w64-mingw32-g++ -pthread -static-libgcc -static-libstdc++ -DMS_WIN64 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security -Wl,-Bsymbolic-functions -Wdate-time -D_FORTIFY_SOURCE=2 -g -fno-stack-protector -Wformat -Werror=format-security $buildDir/swigPYTHON.o -L$buildDir/../.. -L$pythonDir/libs -lmorfeusz2 -l$pythonIncl -o $eggDir/_morfeusz2.pyd"
-        echo "$gpp_command"
-        eval $gpp_command
-    elif [ "$os-$arch" == "Linux-i386" ]
-    then
-        gcc_command="x86_64-linux-gnu-gcc -m32 -pthread -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -fPIC -I$MORFEUSZ_SRC/morfeusz -I$buildDir/../../.. -I$pythonDir -I$pythonDir/.. -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
-        echo "$gcc_command"
-        eval $gcc_command
-        gpp_command="x86_64-linux-gnu-g++ -m32 -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -specs=/usr/share/dpkg/no-pie-link.specs -Wl,-z,relro -Wl,-Bsymbolic-functions -Wl,-z,relro -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 $buildDir/swigPYTHON.o -L$buildDir/../.. -lmorfeusz2 -o $eggDir/_morfeusz2.so"
-        echo "$gpp_command"
-        eval $gpp_command
-    elif [ "$os-$arch" == "Darwin-amd64" ]
-    then
-        gcc_command="/home/zil/crossmorfeusz/darwin64/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-gcc -std=c++98 -pthread -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -g -O2 -Wformat -D_FORTIFY_SOURCE=2 -fPIC -I$MORFEUSZ_SRC/morfeusz -I$buildDir/../../.. -I$pythonDir -I$pythonDir/.. -c $buildDir/swigPYTHON.cpp -o $buildDir/swigPYTHON.o"
-        echo "$gcc_command"
-        eval $gcc_command
-        gpp_command="/home/zil/crossmorfeusz/darwin64/x86_64-apple-darwin9/bin/x86_64-apple-darwin9-g++ -std=c++98 -Wall -O3 -DNDEBUG -dynamiclib -Wl,-headerpad_max_install_names -install_name _morfeusz2.so $buildDir/swigPYTHON.o -L$buildDir/../.. -L$pythonLib -lmorfeusz2 -l$pythonIncl -o $eggDir/_morfeusz2.so"
-        echo "$gpp_command"
-        eval $gpp_command
-    fi
-
-
-    if [ "$os" == "Windows" ]
-    then
-        cp $buildDir/../../morfeusz2.dll $eggDir/
-    elif  [ "$os" == "Linux" ]
-    then
-        cp $buildDir/../../libmorfeusz2.so $eggDir/
-    elif  [ "$os" == "Darwin" ]
-    then
-        cp $buildDir/../../libmorfeusz2.dylib $eggDir/
-    fi
-
-    cp $buildDir/morfeusz2.egg-info/PKG-INFO $eggDir/EGG-INFO/
-    cp $buildDir/morfeusz2.py $eggDir/
-    if [ -d "$buildDir/$eggName" ]; then
-        cd $buildDir/$eggName
-        if [ "$os-$arch" == "Windows-amd64" ]
-        then
-            zip -r $eggName-win-amd64.zip ./*
-            cp $eggName-win-amd64.zip $targetDir/$eggName-win-amd64.egg
-        elif [ "$os-$arch" == "Windows-i386" ]
-        then
-            zip -r $eggName-win32.zip ./*
-            cp $eggName-win32.zip $targetDir/$eggName-win32.egg
-        elif [ "$os-$arch" == "Linux-i386" ]
-        then
-            zip -r $eggName-linux-i686.zip ./*
-            cp $eggName-linux-i686.zip $targetDir/$eggName-linux-i686.egg
-        elif [ "$os-$arch" == "Darwin-amd64" ]
-        then
-            zip -r $eggName-macosx-10.9-x86_64.zip ./*
-            cp $eggName-macosx-10.9-x86_64.zip $targetDir/$eggName-macosx-10.9-x86_64.egg
-        fi
-    fi
-
-}
-export -f buildegg
-
 function log {
     os=$1
     arch=$2
@@ -269,14 +128,12 @@ export -f log
 mkdir -p log 
 
 build Windows $BITS true 2.7 package package-java gui-installer 2>&1 | log Windows $BITS
-build Windows $BITS true 2.7 package-python2-fatwhl package-python2-egg-info 2>&1 | log Windows $BITS
-buildegg Windows $BITS true 2.7 2>&1 | log Windows $BITS
+build Windows $BITS true 2.7 package-python2-fatwhl 2>&1 | log Windows $BITS
 
 for py in 3.6 3.7 3.8 3.9 3.10
 do
     if [ -d ${CROSSMORFEUSZ_ROOT}/windows${BITS}/Python${py//\./}/ ]; then
 	echo Building package for Python ${py}
-	build Windows $BITS true $py package-python3-fatwhl package-python3-egg-info 2>&1 | log Windows $BITS
-	buildegg Windows $BITS true $py 2>&1 | log Windows $BITS
+	build Windows $BITS true $py package-python3-fatwhl 2>&1 | log Windows $BITS
     fi
 done

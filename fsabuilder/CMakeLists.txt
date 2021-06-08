@@ -37,8 +37,7 @@ add_custom_target (package-builder-sdist
     DEPENDS builder-setup
 )
 
-set (PACKAGE_DEPENDS "package-builder-egg" "package-builder-whl"
-  "package-builder-sdist")
+set (PACKAGE_DEPENDS "package-builder-whl" "package-builder-sdist")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   if (BUILT_ON)
