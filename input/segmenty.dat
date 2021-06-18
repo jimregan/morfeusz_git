@@ -62,7 +62,6 @@ polpauza
 #ifdef isolated
 adja
 pacta
-li
 suf_num
 miary
 aglsg1_wok
@@ -325,7 +324,7 @@ moze_interp( (fin_perf|fin_imperf) dywiz li)
 # moze_interp( (fin_perf|fin_imperf) li)
 
 # Partykuła ‹li› z wyrażenia ‹li tylko›:
-li_tylko
+li
 
 # reguła z partykułą ‹+że› przy trybie rozkazującym
 # zakończonym na spółgłoskę, z fakultatywnym podwojeniem partykuły,
@@ -476,7 +475,6 @@ pref_dyw
 prefppas
 ppas
 li
-li_tylko
 sufs
 suf_num
 suf_ord
@@ -678,10 +676,9 @@ niemniej	niemniej	part
 pol_zloz	pół	numcomp
 i	i	conj
 by	by	part
-li	li	part	labels=przest.
-li_tylko	li	part	labels=przest._dziś_książk.
-ze	+ż	part:wok
-z	+ż	part:nwok
+li	li	part
+ze	ż	part:wok
+z	ż	part:nwok
 nie	nie	part
 z_aglt	bowiem	comp
 z_aglt	iż	comp
