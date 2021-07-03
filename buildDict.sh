@@ -36,7 +36,7 @@ function buildDictionary {
     DICT_NAME=$1
 
     MAIN_DICT=$SRC_DICT_DIR/$DICT_NAME-$DICT_VERSION.tab
-    INPUT_DICTIONARIES="$MAIN_DICT,$MORFEUSZ_SRC/input/dodatki.tab"
+    INPUT_DICTIONARIES="$MAIN_DICT,$MORFEUSZ_SRC/input/dodatki.tab,$MORFEUSZ_SRC/input/emoji.tab"
     INPUT_TAGSET=$MORFEUSZ_SRC/input/morfeusz-sgjp.tagset
     SEGMENT_RULES_FILE=$MORFEUSZ_SRC/input/segmenty.dat
     ANALYZER_DICTIONARY_CPP=$DICT_DIR/$DICT_NAME-a.cpp

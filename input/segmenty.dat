@@ -3,7 +3,7 @@ aggl=strict permissive isolated
 praet=split composite
 
 [combinations]
-#define wsz_interp (interp|dywiz|polpauza|kropka|przecinek)*
+#define wsz_interp (interp|dywiz|polpauza|kropka|przecinek|emo)*
 
 #define moze_interp(segmenty) (wsz_interp) segmenty (wsz_interp)
 
@@ -435,6 +435,10 @@ moze_interp( num_zloz>+ suf_num )
 # złożenia liczbowe z sufiksami rzeczownikowymi przyłączającymi formy złoż. liczebników:
 moze_interp( dig>+ dywiz> suf_num )
 
+# emoji
+moze_interp(emo)
+# moze_interp(emo (emo emo)+)
+
 # interpretacja znaków interpunkcyjnych
 # moze_interp(samodz interp)
 
@@ -593,7 +597,7 @@ negat	ppas:%:neg
 brev_pun	brev:pun
 brev_npun	brev:npun
 # samotny	interj
-samotny	emo
+emo	emo
 aglsg1_wok	aglt:sg:pri:%:wok
 aglpl1_wok	aglt:pl:pri:%:wok
 aglsg1_nwok	aglt:sg:pri:%:nwok
