@@ -136,7 +136,8 @@ inż	inżynier	brev:pun
 :3	:3	emo
 ¯\_(ツ)_/¯	¯\_(ツ)_/¯	emo
 ^‿^	^‿^	emo
-to	to	pred
+^_^	^_^	emo
+to	to:V	pred
 A	A	brev:pun
 a	A	brev:pun
 B	B	brev:pun
