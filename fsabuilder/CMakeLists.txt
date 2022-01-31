@@ -42,12 +42,12 @@ set (PACKAGE_DEPENDS "package-builder-whl" "package-builder-sdist")
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   if (BUILT_ON)
     add_custom_target (package-builder-deb-sdist
-        COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --package3 "${MORFEUSZBUILDER}" --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --depends python3-pyparsing --debian-version ${BUILT_ON}
+        COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --package3 "${MORFEUSZBUILDER}" --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --depends3 python3-pyparsing --debian-version ${BUILT_ON}
         DEPENDS builder-setup
     )
   else ()
     add_custom_target (package-builder-deb-sdist
-        COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --package3 "${MORFEUSZBUILDER}" --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --depends python3-pyparsing
+        COMMAND python3 ${SETUP_PY} --command-packages=stdeb.command sdist_dsc --package3 "${MORFEUSZBUILDER}" --depends "${CPACK_DEBIAN_PACKAGE_NAME}" --depends3 python3-pyparsing
         DEPENDS builder-setup
     )
   endif ()

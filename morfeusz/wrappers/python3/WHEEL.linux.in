@@ -5,4 +5,5 @@ Tag: cp36-abi3-linux_${CMAKE_SYSTEM_PROCESSOR}
 Tag: cp37-abi3-linux_${CMAKE_SYSTEM_PROCESSOR}
 Tag: cp38-abi3-linux_${CMAKE_SYSTEM_PROCESSOR}
 Tag: cp39-abi3-linux_${CMAKE_SYSTEM_PROCESSOR}
+Tag: cp310-abi3-linux_${CMAKE_SYSTEM_PROCESSOR}
 Build: ${DICT_VERSION}
