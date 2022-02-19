@@ -1,6 +1,6 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.7.0
+#!TAGSET-ID pl.sgjp.morfeusz-0.7.1
 
-# największy identyfikator: 815
+# największy identyfikator: 816
 
 [TAGS]
 # special: unknown word (ignotum):
@@ -778,7 +778,9 @@
 # Roman digits:
 593	romandig
 # emoticons:
-152	emo
+###152	emo
+# symbols:
+816	sym
 # prefixes:
 574	prefa
 575	prefs
