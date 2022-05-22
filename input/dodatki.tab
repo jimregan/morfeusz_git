@@ -207,10 +207,12 @@ dm²	decymetr_kwadratowy	brev:npun
 dm³	decymetr_sześcienny	brev:npun
 km²	kilometr_kwadratowy	brev:npun
 km³	kilometr_sześcienny	brev:npun
+dB	decybel			brev:npun
 €	euro	brev:npun
 ¥	jen	brev:npun
 $	dolar	brev:npun
 £	funt	brev:npun
+¢	cent	brev:npun
 &	&	conj
 art	artykuł	brev:pun
 tys	tysiąc	brev:pun
@@ -243,8 +245,10 @@ inż	inżynier	brev:pun
 ;-((	;-((	sym
 ;((	;((	sym
 :-P	:-P	sym
+:P	:P	sym
 ;-P	;-P	sym
 :-D	:-D	sym
+:D	:D	sym
 :-P	:-P	sym
 ;-P	;-P	sym
 :'-(	:'-(	sym
@@ -252,6 +256,7 @@ inż	inżynier	brev:pun
 :-|	:-|	sym
 >:-)	>:-)	sym
 :3	:3	sym
+XD	XD	sym
 ¯\_(ツ)_/¯	¯\_(ツ)_/¯	sym
 ^‿^	^‿^	sym
 ^_^	^_^	sym
