@@ -207,7 +207,7 @@ dm²	decymetr_kwadratowy	brev:npun
 dm³	decymetr_sześcienny	brev:npun
 km²	kilometr_kwadratowy	brev:npun
 km³	kilometr_sześcienny	brev:npun
-dB	decybel			brev:npun
+dB	decybel	brev:npun
 €	euro	brev:npun
 ¥	jen	brev:npun
 $	dolar	brev:npun
