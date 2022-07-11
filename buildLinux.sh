@@ -117,8 +117,11 @@ export -f log
 mkdir -p log 
 
 # Pakiety z wkompilowanym słownikiem i niewrażliwe na kwestię słownika:
-build Linux $BITS true 2.7 package package-java gui-tgz package-python2 2>&1 | log Linux-tgz2 $BITS;
-build Linux $BITS true 3.0 package-python3 package-builder 2>&1 | log Linux-tgz3 $BITS
+build Linux $BITS true 3.0 package package-java gui-tgz package-python3 package-builder 2>&1 | log Linux-tgz3 $BITS
+if [ -x /usr/bin/python2 ]
+then
+     build Linux $BITS true 2.7 package-python2 2>&1 | log Linux-tgz2 $BITS;
+fi
 
 # # Kompilujemy dodatkowe wheele w środowiskach wirutalnych:
 # (
