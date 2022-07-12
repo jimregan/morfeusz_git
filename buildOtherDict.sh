@@ -11,8 +11,8 @@
 #set -ex -o pipefail
 set -x
 
-if [ "$#" -ne 2 ]; then
-    echo "Expected arguments: ‹DICT_NAME› ‹DICT_VERSION›"
+if [ "$#" -ne 3 ]; then
+    echo "Expected arguments: ‹DICT_NAME› ‹DICT_VERSION› ‹BUILD_ENV›"
     exit 1
 fi
 
@@ -27,7 +27,7 @@ export GENERATOR_DICTIONARY_CPP=$DICT_DIR/$DICT_NAME-s.cpp
 
 # Wersja środowiska kompilacyjnego (znaczy pod którym Ubuntu budujemy: 14.04, 16.04, 18.04, 19.04 …):
 # Staje się debianowym numerem subwersji: morfeusz…_1.9.27-18.04_amd64.deb
-export BUILD_ENV=18.04
+export BUILD_ENV=$3
 
 export BITS=64
 
