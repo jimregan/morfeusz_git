@@ -68,12 +68,12 @@ if (UNIX)
   configure_file (WHEEL.linux.in WHEEL)
   add_custom_target (package-python3-fatwhl
     COMMAND python3 setup.py build_py
-    COMMAND python3 setup.py build_ext --rpath '\$\${ORIGIN}'
-    COMMAND python3 setup.py bdist_wheel --skip-build --keep-temp --bdist-dir tmp.wheel
-    COMMAND cp WHEEL tmp.wheel/morfeusz2-${PY3MORFEUSZ_VERSION}.dist-info/
-    COMMAND cp ../../libmorfeusz2.so tmp.wheel/
-    COMMAND python3 -m wheel pack --build-number ${DICT_VERSION} --dest-dir ${TARGET_DIR} tmp.wheel/
-    COMMAND rm -r tmp.wheel
+    COMMAND python3 setup.py build_ext --rpath [['$${ORIGIN}']] -b fatlib
+    COMMAND python3 setup.py bdist_wheel --skip-build --keep-temp -b fatlib
+    COMMAND cp WHEEL fatlib/morfeusz2-${PY3MORFEUSZ_VERSION}.dist-info/
+    COMMAND cp ../../libmorfeusz2.so fatlib/
+    COMMAND python3 -m wheel pack --build-number ${DICT_VERSION} --dest-dir ${TARGET_DIR} fatlib/
+    COMMAND rm -r fatlib
     DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz
     )
 #  set (PACKAGE_DEPENDS package-python3-egg package-python3-whl)
