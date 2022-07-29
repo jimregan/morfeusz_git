@@ -65,11 +65,11 @@ if (UNIX)
     )
   add_custom_target (package-python2-fatwhl
     COMMAND python2 setup.py build_py
-    COMMAND python2 setup.py build_ext --rpath '\$\${ORIGIN}'
-    COMMAND python2 setup.py bdist_wheel --skip-build --keep-temp --bdist-dir tmp.wheel
-    COMMAND cp ../../libmorfeusz2.so tmp.wheel/
-    COMMAND python3 -m wheel pack --build-number ${DICT_VERSION} --dest-dir ${TARGET_DIR} tmp.wheel/
-    COMMAND rm -r tmp.wheel
+    COMMAND python2 setup.py build_ext --rpath [['$${ORIGIN}']] -b fatlib
+    COMMAND python2 setup.py bdist_wheel --skip-build --keep-temp -b fatlib
+    COMMAND cp ../../libmorfeusz2.so fatlib/
+    COMMAND python3 -m wheel pack --build-number ${DICT_VERSION} --dest-dir ${TARGET_DIR} fatlib/
+    COMMAND rm -r fatlib
     DEPENDS generate_python2_wrapper generate_python2_setup_file libmorfeusz
     )
 #  set (PACKAGE_DEPENDS "package-python2-egg" "package-python2-whl")
