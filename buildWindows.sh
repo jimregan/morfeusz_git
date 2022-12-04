@@ -130,7 +130,7 @@ mkdir -p log
 build Windows $BITS true 2.7 package package-java gui-installer 2>&1 | log Windows $BITS
 build Windows $BITS true 2.7 package-python2-fatwhl 2>&1 | log Windows $BITS
 
-for py in 3.6 3.7 3.8 3.9 3.10
+for py in 3.6 3.7 3.8 3.9 3.10 3.11
 do
     if [ -d ${CROSSMORFEUSZ_ROOT}/windows${BITS}/Python${py//\./}/ ]; then
 	echo Building package for Python ${py}
