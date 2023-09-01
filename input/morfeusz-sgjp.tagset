@@ -1,4 +1,4 @@
-#!TAGSET-ID pl.sgjp.morfeusz-0.7.1
+#!TAGSET-ID pl.sgjp.morfeusz-0.8.0
 
 # największy identyfikator: 816
 
@@ -702,13 +702,12 @@
 244	num:pl:gen.dat.loc:m1.m2.m3.f.n:congr:ncol
 245	num:pl:gen.loc:m1.m2.m3.f.n:congr
 246	num:pl:gen.loc:m1.m2.m3.f.n:congr:ncol
-247	num:pl:gen:m1.n:rec:col
+247	num:pl:gen:m1.n:congr:col
 248	num:pl:inst:f:congr:ncol
 249	num:pl:inst:m1.m2.m3.f.n:congr
 250	num:pl:inst:m1.m2.m3.f.n:congr:ncol
-251	num:pl:inst:m1.m2.m3.n:congr:ncol
+251	num:pl:gen:m1.m2.m3.f.n:congr
 253	num:pl:inst:m1.n:rec:col
-254	num:pl:nom.gen.acc:m1.m2.m3.f.n:rec
 255	num:pl:nom.acc.voc:f:congr:ncol
 256	num:pl:nom.acc.voc:m1:rec
 257	num:pl:nom.acc.voc:m2.m3.f.n:rec
@@ -716,14 +715,15 @@
 259	num:pl:nom.acc.voc:m2.m3.n:congr:ncol
 260	num:pl:nom.acc.voc:m2.m3.f.n:congr
 261	num:pl:nom.acc.voc:m1.n:rec:col
-262	num:pl:nom.gen.dat.inst.acc.loc.voc:m1.m2.m3.f.n:rec
+262	num:pl:nom.dat.inst.acc.loc.voc:m1.m2.m3.f.n:rec
 263	num:pl:nom.voc:m1:congr:ncol
 264	num:pl:nom.voc:m1:rec
-265	num:sg:nom.gen.dat.inst.acc.loc.voc:f:rec
-266	num:sg:nom.gen.dat.inst.acc.loc.voc:m1.m2.m3.n:rec
-802	num:sg:nom.gen.dat.inst.acc.loc.voc:m1.m2.m3.f.n:rec
-803	num:sg:nom.gen.acc:m1.m2.m3.f.n:rec
-804	num:sg.pl:nom.gen.acc:m1.m2.m3.f.n:rec
+254	num:sg:gen:m1.m2.m3.f.n:congr
+265	num:sg:nom.dat.inst.acc.loc.voc:f:rec
+266	num:sg:nom.dat.inst.acc.loc.voc:m1.m2.m3.n:rec
+802	num:sg:gen:f:congr
+803	num:sg:nom.acc.voc:m1.m2.m3.f.n:rec
+804	num:sg.pl:gen:m1.m2.m3.f.n:congr
 805	num:pl:nom.acc:m1.m2.m3.f.n:rec
 806	num:sg.pl:nom.acc:m1.m2.m3.f.n:rec
 807	num:sg:nom.acc:m1.m2.m3.f.n:rec
@@ -732,7 +732,7 @@
 810	num:pl:nom.acc.voc:m1:rec:ncol
 811	num:pl:nom.acc.voc:m2.m3.f.n:congr:ncol
 812	num:sg:dat.inst.loc:m1.m2.m3.f.n:congr.rec
-813	num:sg:nom.gen.acc.voc:m1.m2.m3.f.n:rec
+813	num:sg:gen:m1.m2.m3.n:congr
 # numeral compounds forming form:
 238	numcomp
 # PREPOSITIONS
