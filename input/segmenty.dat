@@ -479,7 +479,13 @@ moze_interp(niemniej)
 # moze_interp(tym niemniej)
 # moze_interp(tym adj_com) !weak
 
+# Homonimiczne „dynozaury” (np. ‹pokazować›, ‹muzułman›) interpretują się tylko jako weak, 
+# dzięki czemu w wynikach pojawiają się tylko dla form niehomonimicznych i jednocześnie
+# nie wpływają na generator.
+moze_interp(dyno) !weak
+
 [segment types]
+dyno
 nie
 prefs
 prefa
@@ -899,6 +905,32 @@ subst_anty_zloz	wc	subst:%:n:ncol
 subst_anty_zloz	we	subst:%:n:ncol
 subst_anty_zloz	wf	subst:%:m3
 subst_anty_zloz	wu	subst:%:n:ncol
+##################################
+#           Dynozaury            #
+##################################
+dyno	pokazować	%
+dyno	okazować	%
+dyno	muzułman	%
+dyno	podróża	%
+dyno	znajść	%
+dyno	wieczor	%
+dyno	przychod	%
+dyno	wpatrować	%
+dyno	obiecować	%
+dyno	ciesać	%
+dyno	tkwieć	%
+#zwolnieć -> brak kwal.
+dyno	zbladnąć	%
+#nazwa_geograficzna:
+dyno	Niemce	%
+dyno	pierog	%
+dyno	kozieł	%
+dyno	nienawidzieć	%
+dyno	posieść	%
+dyno	boginia	%
+dyno	tętnieć	%
+dyno	przesiąc	%
+dyno	osłabieć	%
 ##################################
 #        Skrótowce ndm           #
 ##################################
