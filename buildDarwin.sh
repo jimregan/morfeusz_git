@@ -280,10 +280,11 @@ export -f log
 mkdir -p log 
 
 build Darwin $BITS true 2 package package-java gui-dmg 2>&1 | log Darwin $BITS; 
-build Darwin $BITS true 2 package-python2-egg-info 2>&1 | log Darwin $BITS; 
-buildegg Darwin $BITS true 2 2>&1 | log Darwin $BITS; 
-build Darwin $BITS true 3 package-python3-egg-info 2>&1 | log Darwin $BITS; 
-buildegg Darwin $BITS true 3 2>&1 | log Darwin $BITS
+# build Darwin $BITS true 2 package-python2-egg-info 2>&1 | log Darwin $BITS; 
+# buildegg Darwin $BITS true 2 2>&1 | log Darwin $BITS; 
+# build Darwin $BITS true 3 package-python3-egg-info 2>&1 | log Darwin $BITS; 
+# buildegg Darwin $BITS true 3 2>&1 | log Darwin $BITS
+
 #build Darwin $BITS true 2 package package-java py2morfeusz 2>&1 | log Darwin $BITS
 #buildegg Darwin $BITS true 2 2>&1 | log Darwin $BITS
 
