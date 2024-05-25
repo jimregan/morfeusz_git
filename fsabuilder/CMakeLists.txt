@@ -29,15 +29,11 @@ add_custom_target (package-builder-egg
     DEPENDS builder-setup
 )
 add_custom_target (package-builder-whl
-    COMMAND python3 ${SETUP_PY} bdist_wheel -d "${TARGET_DIR}"
-    DEPENDS builder-setup
-)
-add_custom_target (package-builder-sdist
-    COMMAND python3 ${SETUP_PY} sdist -d "${TARGET_DIR}"
+    COMMAND python3 -m build --outdir "${TARGET_DIR}"
     DEPENDS builder-setup
 )
 
-set (PACKAGE_DEPENDS "package-builder-whl" "package-builder-sdist")
+set (PACKAGE_DEPENDS "package-builder-whl")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   if (BUILT_ON)
@@ -61,7 +57,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         COMMAND mkdir -p "${TARGET_DIR}" && cp ${CMAKE_CURRENT_BINARY_DIR}/deb_dist/${MORFEUSZBUILDER}*.deb "${TARGET_DIR}"
         DEPENDS package-builder-deb-build
     )
-    list (APPEND PACKAGE_DEPENDS package-builder-deb)
+#    list (APPEND PACKAGE_DEPENDS package-builder-deb)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     #~ add_custom_target (package-python-win-installer
         #~ COMMAND python ${SETUP_PY} bdist_wininst -d ${TARGET_DIR} --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"

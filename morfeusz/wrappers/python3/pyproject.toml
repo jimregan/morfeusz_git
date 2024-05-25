@@ -1,0 +1,9 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "morfeusz2"  # as it would appear on PyPI                                                   
+dynamic = ["authors", "license", "readme", "description", "version"]
+

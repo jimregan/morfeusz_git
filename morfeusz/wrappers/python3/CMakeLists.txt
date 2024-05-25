@@ -2,15 +2,10 @@
 # SWIG
 #set(CMAKE_SWIG_OUTDIR swig)
 #~ FIND_PACKAGE (SWIG REQUIRED)
-if (NOT PYTHON_INCLUDE_DIRS)
-  set(Python_ADDITIONAL_VERSIONS 3.4)
-  FIND_PACKAGE (PythonLibs ${PY} REQUIRED)
-endif ()
 #~ INCLUDE (${SWIG_USE_FILE})
 
 set (PY3MORFEUSZ_VERSION "${Morfeusz_LIB_VERSION}")
 # SWIG Java
-INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
 INCLUDE_DIRECTORIES (../..)
 
 
@@ -26,57 +21,47 @@ add_custom_target (generate_python3_wrapper ALL
   )
 
 set (SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
-set (SETUP_PY_TMP    "${CMAKE_CURRENT_BINARY_DIR}/setupTmp.py")
 set (SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
 set (DEPS        "${SWIG_PYTHON_OUTFILE_CXX}" "${SWIG_PYTHON_OUTFILE_PY}")
 set (OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build")
 
 configure_file (${SETUP_PY_IN} ${SETUP_PY})
+file(COPY pyproject.toml setup.cfg DESTINATION .)
 
-set (EGG_NAME "morfeusz2-${PY3MORFEUSZ_VERSION}-py${PY}")
-file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${EGG_NAME}")
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/EGG-INFO" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${EGG_NAME}/")
+# set (EGG_NAME "morfeusz2-${PY3MORFEUSZ_VERSION}-py${PY}")
+# file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${EGG_NAME}")
+# file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/EGG-INFO" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${EGG_NAME}/")
 
 add_custom_target (generate_python3_setup_file
   DEPENDS ${SETUP_PY})
 
-add_custom_command (OUTPUT ${OUTPUT}
-  COMMAND python3
-  ARGS ${SETUP_PY} build
-  DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz)
+# add_custom_command (OUTPUT ${OUTPUT}
+#   COMMAND python3
+#   ARGS ${SETUP_PY} build
+#   DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz)
 
-add_custom_target (build_python3_wrapper
-  DEPENDS ${OUTPUT})
+# add_custom_target (build_python3_wrapper
+#   DEPENDS ${OUTPUT})
 
 add_custom_target (py3morfeusz
-  DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz build_python3_wrapper)
+  DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz)
 
 if (UNIX)
-  add_custom_target (install-python3
-    COMMAND python3 ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX}
-    DEPENDS py3morfeusz
-    )
-  add_custom_target (package-python3-egg
-    COMMAND python3 ${SETUP_PY} bdist_egg -d "${TARGET_DIR}" --plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
-    DEPENDS py3morfeusz
-    )
+  # add_custom_target (install-python3
+  #   COMMAND python3 ${SETUP_PY} install --home=${CMAKE_INSTALL_PREFIX}
+  #   DEPENDS py3morfeusz
+  #   )
   add_custom_target (package-python3-whl
-    COMMAND python3 ${SETUP_PY} bdist_wheel -d "${TARGET_DIR}"
-    #--plat-name "${CMAKE_SYSTEM_NAME}-${ARCHITECTURE}"
-    DEPENDS py3morfeusz
-    )
-  configure_file (WHEEL.linux.in WHEEL)
-  add_custom_target (package-python3-fatwhl
-    COMMAND python3 setup.py build_py
-    COMMAND python3 setup.py build_ext --rpath [['$${ORIGIN}']] -b fatlib
-    COMMAND python3 setup.py bdist_wheel --skip-build --keep-temp -b fatlib
-    COMMAND cp WHEEL fatlib/morfeusz2-${PY3MORFEUSZ_VERSION}.dist-info/
-    COMMAND cp ../../libmorfeusz2.so fatlib/
-    COMMAND python3 -m wheel pack --build-number ${DICT_VERSION} --dest-dir ${TARGET_DIR} fatlib/
-    COMMAND rm -r fatlib
+    COMMAND python3 -m build --outdir "${TARGET_DIR}"
     DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz
     )
-#  set (PACKAGE_DEPENDS package-python3-egg package-python3-whl)
+  add_custom_target (package-python3-fatwhl
+    COMMAND python3 -m build
+    COMMAND zip -j dist/morfeusz2-*-abi3-*.whl ../../libmorfeusz2.so
+    COMMAND mv dist/morfeusz2-*-abi3-*.whl ${TARGET_DIR} 
+    DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz
+    )
+#  set (PACKAGE_DEPENDS package-python3-whl)
   set (PACKAGE_DEPENDS package-python3-fatwhl)
   
   if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -100,11 +85,16 @@ if (UNIX)
       COMMAND mkdir -p "${TARGET_DIR}" && cp ${CMAKE_CURRENT_BINARY_DIR}/deb_dist/python3-morfeusz2*.deb "${TARGET_DIR}"
       DEPENDS package-python3-deb-build
       )
-    list (APPEND PACKAGE_DEPENDS package-python3-deb)
+    # list (APPEND PACKAGE_DEPENDS package-python3-deb)
   endif ()
   add_custom_target (package-python3
     DEPENDS ${PACKAGE_DEPENDS})
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND CMAKE_CROSSCOMPILING)
+  if (NOT PYTHON_INCLUDE_DIRS)
+    set(Python_ADDITIONAL_VERSIONS 3.4)
+    FIND_PACKAGE (PythonLibs ${PY} REQUIRED)
+  endif ()
+  INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
   add_custom_target (package-python3-egg-info
     COMMAND python3 ${SETUP_PY} egg_info
     DEPENDS generate_python3_wrapper generate_python3_setup_file libmorfeusz
